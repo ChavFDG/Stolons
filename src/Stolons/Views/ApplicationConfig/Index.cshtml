@@ -1,0 +1,154 @@
+﻿@model ApplicationConfig
+@using Stolons.Helpers;
+
+@{
+    ViewData["Title"] = "Configuration du site web";
+}
+
+<h2>@ViewData["Title"]</h2>
+<p>Mode actuel : <b>@(EnumHelper<ApplicationConfig.Modes>.GetDisplayValue(Configurations.Mode))</b></p>
+<div>
+    <h4>Configuration de la structure</h4>
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.StolonsLabel)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.StolonsLabel)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.StolonsAddress)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.StolonsAddress)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.StolonsPhoneNumber)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.StolonsPhoneNumber)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Comission)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Comission)%
+        </dd>
+    </dl>
+
+    <h4>Configuration des pages du site</h4>
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.StolonsAboutPageText)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.StolonsAboutPageText)
+        </dd>       
+    </dl>
+    <h4>Courriel de contact</h4>
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.ContactMailAddress)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ContactMailAddress)
+        </dd>
+    </dl>
+        
+    <h4>Courriel de Stolons pour envoie des messages aux utilisateurs</h4>
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.MailAddress)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.MailAddress)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.MailPassword)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.MailPassword)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.MailSmtp)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.MailSmtp)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.MailPort)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.MailPort)
+        </dd>
+    </dl>
+    <h4>Message d'information utilisateurs</h4>
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.OrderDeliveryMessage)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.OrderDeliveryMessage)
+        </dd>
+    </dl>
+    <h4>Début des commandes :</h4>
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.OrderDayStartDate)
+        </dt>
+        <dd>
+            @Model.OrderDayStartDate.ToFrench()
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.OrderHourStartDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.OrderHourStartDate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.OrderMinuteStartDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.OrderMinuteStartDate)
+        </dd>
+    </dl>
+    <h4>Début livraison et mise à jour des stocks :</h4>
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.DeliveryAndStockUpdateDayStartDate)
+        </dt>
+        <dd>
+            @Model.DeliveryAndStockUpdateDayStartDate.ToFrench()
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.DeliveryAndStockUpdateDayStartDateHourStartDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.DeliveryAndStockUpdateDayStartDateHourStartDate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.DeliveryAndStockUpdateDayStartDateMinuteStartDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.DeliveryAndStockUpdateDayStartDateMinuteStartDate)
+        </dd>
+    </dl>
+    <h4>Simulation :</h4>
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.IsModeSimulated)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.IsModeSimulated)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.SimulationMode)
+        </dt>
+        <dd>
+            @(EnumHelper<ApplicationConfig.Modes>.GetDisplayValue(Model.SimulationMode))
+        </dd>
+    </dl>
+</div>
+<p>
+    <a asp-action="Edit" class="btn btn-default">Modifier</a>
+</p>

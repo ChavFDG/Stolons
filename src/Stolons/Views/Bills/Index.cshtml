@@ -1,0 +1,53 @@
+﻿@model IEnumerable<Stolons.Models.IBill>
+@using Stolons.Helpers
+@using Stolons.Models
+
+@{
+ViewData["Title"] = "Mes Factures";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+@if (Model.Any())
+{
+
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.EditionDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BillNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.State)
+            </th>
+            <th>
+            </th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EditionDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BillNumber)
+                </td>
+                <td>
+                    @(EnumHelper<BillState>.GetDisplayValue(@item.State))
+                </td>
+                <td>
+                    @{
+                        <a href="@Configurations.GetUrl(item)">Télécharger</a>
+                    }
+                </td>
+            </tr>
+        }
+    </table>
+}
+else
+{
+    <p>Aucune facture</p>
+}

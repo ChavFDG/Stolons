@@ -1,0 +1,200 @@
+﻿@model Stolons.Models.ApplicationConfig
+
+@{
+ViewData["Title"] = "Modifier la configuration";
+
+}
+
+@functions
+{
+string DayToFrench(DayOfWeek dayOfWeekValue)
+{
+var culture = new System.Globalization.CultureInfo("fr-FR");
+return culture.DateTimeFormat.GetDayName(dayOfWeekValue);
+}
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Edit">
+    <div class="form-horizontal">
+
+        <h4>Configuration de la structure</h4>
+        <div class="form-group">
+            <label asp-for="StolonsLabel" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="StolonsLabel" class="form-control" />
+                <span asp-validation-for="StolonsLabel" class="text-danger" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="StolonsAddress" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <textarea rows="2" asp-for="StolonsAddress" class="form-control"></textarea>
+                <span asp-validation-for="StolonsAddress" class="text-danger" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="StolonsPhoneNumber" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="StolonsPhoneNumber" class="form-control" />
+                <span asp-validation-for="StolonsPhoneNumber" class="text-danger" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Comission" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Comission" class="form-control" min="0" max="100" />
+                <span asp-validation-for="Comission" class="text-danger" />
+            </div>
+        </div>
+
+        <h4>Configuration des pages du site</h4>
+        <div class="form-group">
+            <label asp-for="StolonsAboutPageText" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <textarea rows="10" asp-for="StolonsAboutPageText" class="form-control"></textarea>
+                <span asp-validation-for="StolonsAboutPageText" class="text-danger" />
+            </div>
+        </div>
+
+        <h4>Courriel de Stolons pour contact :</h4>
+        <div class="form-group">
+            <label asp-for="ContactMailAddress" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="ContactMailAddress" class="form-control" />
+                <span asp-validation-for="ContactMailAddress" class="text-danger" />
+            </div>
+        </div>
+
+        <h4>Courriel de Stolons pour envoie des messages aux utilisateurs :</h4>
+        <div class="form-group">
+            <label asp-for="MailAddress" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="MailAddress" class="form-control" />
+                <span asp-validation-for="MailAddress" class="text-danger" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="MailPassword" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="MailPassword" class="form-control" />
+                <span asp-validation-for="MailPassword" class="text-danger" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="MailSmtp" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="MailSmtp" class="form-control" />
+                <span asp-validation-for="MailSmtp" class="text-danger" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="MailPort" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="MailPort" class="form-control" />
+                <span asp-validation-for="MailPort" class="text-danger" />
+            </div>
+        </div>
+
+        <h4>Message d'information utilisateurs :</h4>
+        <div class="form-group">
+            <label asp-for="OrderDeliveryMessage" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="OrderDeliveryMessage" class="form-control" />
+                <span asp-validation-for="OrderDeliveryMessage" class="text-danger" />
+            </div>
+        </div>
+
+        <h4>Début livraison et mise à jour des stocks :</h4>
+        <div class="form-group">
+          <label asp-for="DeliveryAndStockUpdateDayStartDate" class="col-md-2 control-label"></label>
+          <div class="col-md-10">
+	    <select asp-for="DeliveryAndStockUpdateDayStartDate" class="form-control">
+	      @foreach (DayOfWeek item in Enum.GetValues(typeof(DayOfWeek)))
+	      {
+	      <option value="@item">@DayToFrench(item)</option>
+	      }
+	    </select>
+            <span asp-validation-for="DeliveryAndStockUpdateDayStartDate" class="text-danger" />
+          </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="DeliveryAndStockUpdateDayStartDateHourStartDate" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+              <input asp-for="DeliveryAndStockUpdateDayStartDateHourStartDate" class="form-control" />
+              <span asp-validation-for="DeliveryAndStockUpdateDayStartDateHourStartDate" class="text-danger" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="DeliveryAndStockUpdateDayStartDateMinuteStartDate" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="DeliveryAndStockUpdateDayStartDateMinuteStartDate" class="form-control" />
+                <span asp-validation-for="DeliveryAndStockUpdateDayStartDateMinuteStartDate" class="text-danger" />
+            </div>
+        </div>
+
+        <h4>Début des commandes :</h4>
+        <div asp-validation-summary="ValidationSummary.ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="Id" />
+        <div class="form-group">
+            <label asp-for="OrderDayStartDate" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+              <select asp-for="OrderDayStartDate" class="form-control">
+		@foreach (DayOfWeek item in Enum.GetValues(typeof(DayOfWeek)))
+		{
+		<option value="@item">@DayToFrench(item)</option>
+		}
+	      </select>
+              <span asp-validation-for="OrderDayStartDate" class="text-danger" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="OrderHourStartDate" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="OrderHourStartDate" class="form-control" />
+                <span asp-validation-for="OrderHourStartDate" class="text-danger" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="OrderMinuteStartDate" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="OrderMinuteStartDate" class="form-control" />
+                <span asp-validation-for="OrderMinuteStartDate" class="text-danger" />
+            </div>
+        </div>
+
+        <h4>Simulation :</h4>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <div class="checkbox">
+                    <input  asp-for="IsModeSimulated" />
+                    <label asp-for="IsModeSimulated"></label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="SimulationMode" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <select asp-for="SimulationMode" asp-items="Html.GetEnumSelectList<ApplicationConfig.Modes>()" class="form-control"></select>
+                <span asp-validation-for="SimulationMode" class="text-danger" />
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Sauvegarder" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+</form>
+
+<div>
+    <a asp-action="Index">Revenir</a>
+</div>
+
+@section Scripts {
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+}

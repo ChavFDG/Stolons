@@ -1,0 +1,9 @@
+@model Stolons.ViewModels.Producers.ProducerViewModel
+
+@{
+    ViewData["Title"] = "Bienvenue "+ Model.Producer.CompanyName +" chez " + Configurations.ApplicationConfig.StolonsLabel;
+}
+
+<h2>@ViewData["Title"]</h2>
+<h3>Votre compte vient d'être créé, vous pouvez dès maintenant vous rendre sur www.Stolons.org afin de créer vos produits</h3>
+@Html.Partial("Templates/RememberCredentialTemplate")

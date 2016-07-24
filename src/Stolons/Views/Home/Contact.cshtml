@@ -1,0 +1,15 @@
+﻿@{
+    ViewData["Title"] = "Qui sommes nous ?";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<p>@(new HtmlString(Configurations.ApplicationConfig.StolonsAboutPageText))</p>
+
+<h3>Nous contacter:</h3>
+
+<address>
+    <strong>Adresse : </strong>@Configurations.ApplicationConfig.StolonsAddress<br />
+    <strong>Téléphone : </strong>@Configurations.ApplicationConfig.StolonsPhoneNumber<br />
+    <strong>Courriel:</strong> <a href="mailto:@Configurations.ApplicationConfig.ContactMailAddress">@Configurations.ApplicationConfig.ContactMailAddress</a><br/>
+</address>

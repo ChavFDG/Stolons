@@ -1,0 +1,57 @@
+﻿@model Stolons.Models.Product
+
+@{
+    ViewData["Title"] = "Supression définitive";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<h3>Etes vous sur de vouloir supprimer définitivement ce produit ?</h3>
+<p>Si vous compter vendre se produit l'année prochaine mieux vaut le passer "indisponible".</p>
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Type)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Type)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Price)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Price)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ProductUnit)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ProductUnit)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.State)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.State)
+        </dd>
+    </dl>    
+    <form asp-action="Delete">
+        <div class="form-actions no-color">
+            <input type="submit" value="Supprimer" class="btn btn-default" /> |
+            <a asp-action="Index">Retourner aux produits</a>
+        </div>
+    </form>
+</div>

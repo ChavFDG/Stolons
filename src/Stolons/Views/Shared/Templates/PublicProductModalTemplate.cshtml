@@ -1,0 +1,41 @@
+<script id="productModalTemplate" type="text/template">
+  <div id="productModal-<%= product.Id %>" class="modals">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div id="productModal-info" class="col-md-8">
+              <h3><%= product.Name %></h3>
+              <ul>
+		Type de vente:
+		<b>
+		  <%= productModel.getSellTypeString() %>
+		</b>
+              </ul>
+            </div>
+	    <div class="col-md-4">
+              <div id="productModal-img" class="pr_img">
+		<img src="<%= productModel.getPictureUrl() %>" />
+              </div>
+	      <div>
+		<% _.forEach(product.LabelsSerialized.split(';'), function(label) {
+		   if (!_.isEmpty(label)) {
+		   %>
+		<div class="pr_label">
+		  <img src="/images/labels/<%= label %>.jpg" />
+		</div>
+		<% } }); %>
+	      </div>
+	    </div>
+          </div>
+          <div id="productModal-desc">
+            <b>Description: </b><%= product.Description %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</script>

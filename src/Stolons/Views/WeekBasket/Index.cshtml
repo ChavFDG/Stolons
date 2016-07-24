@@ -1,0 +1,315 @@
+﻿@using Stolons.Helpers;
+@using Stolons.ViewModels.WeekBasket;
+@model WeekBasketViewModel
+
+@if (Configurations.Mode == ApplicationConfig.Modes.DeliveryAndStockUpdate)
+{
+    <h3>Commande indisponible</h3>
+    <p>Les commandes seront à nouveau disponible : </p>
+    <p><b>@(Configurations.ApplicationConfig.OrderDayStartDate.ToFrench() + " à " + String.Format("{0:00}", Configurations.ApplicationConfig.OrderHourStartDate)  + ":" + String.Format("{0:00}", Configurations.ApplicationConfig.OrderMinuteStartDate))</b></p>
+    <a asp-controller="Bills" asp-action="Index">(Cliquer ici pour voir vos commandes / factures)</a>
+
+}
+else
+{
+    <h2>Mon panier</h2>
+
+
+    <div class="weekBasketContainer">
+
+        <div class="row">
+            <div class="row">
+                <div class="col-lg-4">
+                </div>
+                <div class="col-lg-8">
+                    <div id="filters">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4">
+                    <div id="baskets">
+                        <div id="tmpBasket">
+                        </div>
+                        <div id="validatedBasket">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="products col-lg-8">
+                    <div id="products">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="productModal" class="modal fade"></div>
+    <div id="producerModal" class="modal fade"></div>
+
+    <!-- below are templates definitions to be rendered under placeholders defined above -->
+
+    <script id="filtersTemplate" type="text/template">
+
+        <fieldset>
+
+            <label class="control-label" for="familiesDropDown">Famille : </label>
+            <select id="familiesDropDown" name="familiesDropDown">
+
+                <option value="Tous">Tous</option>
+
+                <% _.forEach(productTypes, function(productType) { %>
+
+                <optgroup label="<%= productType.Name %>">
+
+                    <% _.forEach(productType.ProductFamilly, function (productFamily) { %>
+
+                    <option id="<%= productFamily.FamillyName %>" value="<%= productFamily.FamillyName %>" data-image="<%= productFamily.Image %>"> <%= productFamily.FamillyName %> </option>
+
+                    <% }); %>
+
+                </optgroup>
+
+                <% }); %>
+            </select>
+
+            <div class="searchFilter">
+                <label>Recherche :</label>
+                <input id="search" type="text">
+            </div>
+
+        </fieldset>
+
+    </script>
+
+    <!-- Include the product template -->
+    { await Html.RenderPartialAsync("Templates/ProductTemplate"); }
+
+    <!-- Include the product modal template -->
+    { await Html.RenderPartialAsync("Templates/ProductModalTemplate"); }
+
+    <!-- Include the producer modal template -->
+    { await Html.RenderPartialAsync("Templates/ProducerModalTemplate"); }
+
+    <script id="productActionTemplate" type="text/template">
+
+        <% if (billEntry) { %>
+        <div class="productQuantityChanger">
+            <a href="#" class="minus">
+                <img src="/images/basket-remove.png" />
+            </a>
+            <span class="quantity">
+                <%= billEntry.QuantityString %>
+            </span>
+
+            <% if (canIncrement()) { %>
+            <a href="#" class="plus">
+                <img src="/images/basket-add.png" />
+            </a>
+            <% } %>
+        </div>
+        <% } else { %>
+        <% if (canAddToBasket()) {%>
+        <div class="addProduct">
+            <button type="button" class="btn btn-default addProductBtn">Ajouter au panier</button>
+        </div>
+        <% } else { %>
+        <span class="outOfStock">Ce produit n'est plus disponible</span>
+        <% } %>
+        <% } %>
+        <div class="productQuantityLoading hidden">
+            <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate">
+            </span>
+        </div>
+
+    </script>
+
+    <script id="productsTemplate" type="text/template">
+
+        <% _.forEach(products, function(productModel) { %>
+        <div id="product-<%= productModel.get('Id') %>">
+        </div>
+        <% }); %>
+
+	<div id="emptyProducts" class="hidden">
+	  <span>Aucun produit disponible ou pas de produits correspondants à votre recherche</span>
+	</div>
+
+    </script>
+
+    <script id="validatedWeekBasketTemplate" type="text/template">
+
+        <% if (validatedBasketModel.exists() && !tmpBasket.Validated) { %>
+
+        <div class="basketTitle">
+            <a class="validatedBasketCollapse" href="#">
+                <span class="glyphicon glyphicon-collapse-up hidden">
+                </span>
+                <span class="glyphicon glyphicon-collapse-down">
+                </span>
+                <b>Voir mes produits validés</b>
+            </a>
+        </div>
+
+        <div id="collapsible" class="collapse">
+            <table class="table basketTable">
+                <tr class="basketHeader">
+                    <th>
+                        Produit
+                    </th>
+                    <th>
+                        <span data-toggle="tooltip" title="Quantité">
+                            Quantité
+                        </span>
+                    </th>
+                    <th>
+                        <span class="glyphicon glyphicon-euro" data-toggle="tooltip" title="Prix en euros">
+                        </span>
+                    </th>
+                </tr>
+
+                <% if (validatedBasketModel.exists()) { %>
+                <% _.forEach(validatedBasket.Products, function(entry) { %>
+                <tr class="billEntry">
+                    <td>
+                        <a href="#" onclick="ProductModalView.open('<%= entry.Product.Id %>');return false;">
+                            <%= entry.Product.Name %>
+                        </a>
+                    </td>
+                    <td>
+                        <span> <%= entry.QuantityString %> </span>
+                    </td>
+                    <td>
+                        <span> <%= entry.Price %> </span>
+                    </td>
+                </tr>
+                <% });
+                } else { %>
+                <tr>
+                    <td colspan="3">
+                        <b>Aucun produit validé</b>
+                    </td>
+                </tr>
+                <% } %>
+                <tr>
+                    <td colspan="2">
+                        <b>Total : </b>
+                    </td>
+                    <td>
+                        <b>
+                            <%= validatedBasket.TotalPrice %>
+                            <span class="glyphicon glyphicon-euro" data-toggle="tooltip" title="Prix en euros">
+                            </span>
+                        </b>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <hr />
+
+        <% } %>
+
+    </script>
+
+    <script id="tmpWeekBasketTemplate" type="text/template">
+
+        <!-- <p class="basketTitle"><b>Panier non validé</b></p> -->
+
+        <table class="table basketTable">
+            <tr class="basketHeader">
+                <th>
+                    Produit
+                </th>
+                <th>
+                    <span data-toggle="tooltip" title="Quantité">
+                        Quantité
+                    </span>
+                </th>
+                <th>
+                    <span class="glyphicon glyphicon-euro" data-toggle="tooltip" title="Prix en euros"></span>
+                </th>
+                <th>
+                    <!-- <span class="glyphicon glyphicon-trash" data-toggle="tooltip" title="Cliquer pour supprimer le produit du panier"> -->
+                    <!-- </span> -->
+                </th>
+            </tr>
+
+            <% _.forEach(tmpBasket.Products, function(entry) { %>
+
+            <tr class="billEntry">
+                <td>
+                    <a href="#" onclick="ProductModalView.open('<%= entry.ProductId %>');return false;">
+                        <%= entry.Product.Name %>
+                    </a>
+                </td>
+                <td>
+                    <span> <%= entry.QuantityString %></span>
+                </td>
+                <td>
+                    <span> <%= entry.Price %> </span>
+                </td>
+                <td data-toggle="tooltip" title="Cliquer pour supprimer le produit du panier">
+                    <a href="#" class="deleteEntry" onclick="WeekBasket.TmpWeekBasketModel.removeBillEntry('<%= entry.ProductId %>');return false;">
+                        <span class="glyphicon glyphicon-trash">
+                        </span>
+                    </a>
+                </td>
+            </tr>
+            <% }); %>
+            <% if (tmpBasket.Products.length === 0) { %>
+            <tr>
+                <td colspan="5">
+                    <b>Aucun produit dans le panier</b>
+                </td>
+            </tr>
+            <% } %>
+            <tr>
+                <td colspan="2">
+                    <b>Total : </b>
+                </td>
+                <td>
+                    <b>
+                        <%= tmpBasket.TotalPrice %>
+                        <span class="glyphicon glyphicon-euro" data-toggle="tooltip" title="Prix en euros">
+                        </span>
+                    </b>
+                </td>
+                <td></td>
+            </tr>
+        </table>
+
+        <div class="basketValidation">
+            <% if (!tmpBasket.Validated && !(tmpBasketModel.isEmpty() && !validatedBasketModel.exists())) { %>
+            <div class="isa_warning">
+                <span class="glyphicon glyphicon-warning-sign"></span>
+                <span class="warning-text">Ce panier doit être validé</span>
+            </div>
+            <% } else if (validatedBasketModel.exists()) { %>
+            <span class="isa_success">
+                <span class="glyphicon glyphicon-check"></span>
+                <span>Ces produits ont déjà été validés</span>
+            </span>
+            <% } %>
+
+            <form id="validateBasketForm" action="WeekBasket/ValidateBasket" method="post">
+                <div class="hidden">
+                    <input name="basketId" value="<%= tmpBasket.Id %>" class="form-control" />
+                </div>
+                <% if (!tmpBasket.Validated) { %>
+                <% if (tmpBasketModel.isEmpty()) { %>
+                <% if (validatedBasketModel.exists()) { %>
+                <input type="submit" value="Annuler mon panier" class="btn btn-default" />
+                <%  } %>
+                <!-- Si il n'y a rien a valider/annuler, on affichir rien -->
+                <% } else { %>
+                <input type="submit" value="Valider mon panier" class="btn btn-default" />
+                <% } %>
+                <% } %>
+            </form>
+        </div>
+    </script>
+
+    <script src="/js/productModel.js"></script>
+    <script src="/js/weekbasket.js"></script>
+
+}

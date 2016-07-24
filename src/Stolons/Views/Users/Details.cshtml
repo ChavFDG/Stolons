@@ -1,0 +1,95 @@
+@model Stolons.ViewModels.Users.UserStolonViewModel
+
+@{
+    ViewData["Title"] = "Details de " + Model.Consumer.Surname + " "+ Model.Consumer.Name;
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Consumer.Id)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Consumer.Id)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Consumer.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Consumer.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Consumer.Surname)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Consumer.Surname)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Consumer.Email)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Consumer.Email)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Consumer.RegistrationDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Consumer.RegistrationDate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.UserRole)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.UserRole)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Consumer.PhoneNumber)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Consumer.PhoneNumber)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Consumer.Address)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Consumer.Address)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Consumer.PostCode)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Consumer.PostCode)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Consumer.City)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Consumer.City)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Consumer.Cotisation)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Consumer.Cotisation)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Consumer.Enable)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Consumer.Enable)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.UserRole)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.UserRole)
+        </dd>
+    </dl>
+</div>
+<p>
+    <a asp-action="Edit" asp-route-id="@Model.Consumer.Id">Editer @Model.Consumer.Surname @Model.Consumer.Name</a> |
+    <a asp-action="Index">Retourner aux adhérents</a>
+</p>

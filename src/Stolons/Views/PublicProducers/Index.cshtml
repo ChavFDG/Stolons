@@ -1,0 +1,54 @@
+
+@model IEnumerable<Stolons.Models.Producer>
+
+  <link rel="stylesheet" href="~/css/leaflet.css" />
+
+@{
+  ViewData["Title"] = "Nos producteurs";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+
+<div class="publicProducersContainer row">
+
+  <div class="col-lg-5 producersList">
+    <table class="table publicProducersTable">
+      @foreach (var producer in Model.OrderBy(x => x.CompanyName))
+      {
+      <tr>
+        <td >
+          <div class="public_Prod_avatar">
+            <img src="@Configurations.GetUrl(producer.Avatar)" class="avatar" />
+          </div>
+        </td>
+        <td>
+	  <a href="#" onclick="PublicProducers.selectProducer('@producer.Id')">
+            <h3>@Html.DisplayFor(modelItem => producer.CompanyName)</h3>
+	  </a>
+          <p>
+            @Html.DisplayFor(modelItem => producer.Production)
+          </p>
+        </td>
+      </tr>
+      }
+    </table>
+  </div>
+  <div class="col-lg-7 producersMapContainer">
+    <div id="map" style="height: 400px">
+    </div>
+  </div>
+</div>
+
+<div id="producerModal" class="modals">
+</div>
+
+@section Scripts {
+
+<!-- Include the producer modal template -->
+@{ await Html.RenderPartialAsync("Templates/ProducerModalTemplate"); }
+
+<script src="/lib/leaflet.js"></script>
+<script src="/js/publicProducers.js"></script>
+
+}

@@ -1,0 +1,9 @@
+﻿@model Stolons.ViewModels.Users.UserStolonViewModel
+
+@{
+    ViewData["Title"] = "Bienvenue "+ Model.Consumer.Surname +" "+ Model.Consumer.Name +" chez " + Configurations.ApplicationConfig.StolonsLabel;
+}
+
+<h2>@ViewData["Title"]</h2>
+<h3>Votre compte vient d'être créé, retrouvé dès maintenant les produits locaux de nos producteurs sur www.Stolons.org</h3>
+@Html.Partial("Templates/RememberCredentialTemplate")

@@ -1,0 +1,21 @@
+﻿@using System.Security.Claims
+
+@inject SignInManager<ApplicationUser> SignInManager
+
+@if (SignInManager.IsSignedIn(User))
+{
+<div class="bannerAccount">
+  <div class="bannerAvatar">
+    <a asp-controller="Manage" asp-action="Index" title="Manage">
+      <img class="avatar" src="/@Model.User.Avatar" />
+    </a>
+  </div>
+  <form asp-controller="Account" asp-action="LogOff" method="post" id="logoutForm">
+    <button type="submit" class="btn btn-link navbar-btn navbar-link">Déconnexion</button>
+  </form>
+</div>
+}
+else
+{
+   <a asp-controller="Account" asp-action="Login" class="btn btn-link navbar-btn navbar-link">Se connecter</a>
+}

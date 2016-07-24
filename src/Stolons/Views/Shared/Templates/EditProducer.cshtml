@@ -1,0 +1,196 @@
+@model Stolons.ViewModels.Producers.ProducerViewModel
+
+<div class="form-horizontal">
+  <hr />
+  <input asp-for="Producer.Id" hidden="hidden" />
+  <input asp-for="OriginalEmail" hidden="hidden" />
+  <div class="form-group">
+    <label asp-for="Producer.Name" class="col-md-2 control-label"></label>
+    <div class="col-md-10">
+      <input asp-for="Producer.Name" class="form-control" />
+      <span asp-validation-for="Producer.Name" class="text-danger" />
+    </div>
+  </div>
+  <div class="form-group">
+    <label asp-for="Producer.Surname" class="col-md-2 control-label"></label>
+    <div class="col-md-10">
+      <input asp-for="Producer.Surname" class="form-control" />
+      <span asp-validation-for="Producer.Surname" class="text-danger" />
+    </div>
+  </div>
+  <div class="form-group">
+    <label asp-for="Producer.Avatar" class="col-md-2 control-label"></label>
+    <div class="col-md-10">
+      <input type="file" accept="image/*" name="uploadFile" class="form-control" />
+    </div>
+  </div>
+  <input asp-for="Producer.Avatar" hidden="hidden" />
+  <div class="form-group">
+    <label asp-for="Producer.Email" class="col-md-2 control-label"></label>
+    <div class="col-md-10">
+      <input asp-for="Producer.Email" class="form-control" />
+      <span asp-validation-for="Producer.Email" class="text-danger" />
+    </div>
+  </div>
+  <div class="form-group">
+    <label asp-for="Producer.PhoneNumber" class="col-md-2 control-label"></label>
+    <div class="col-md-10">
+      <input asp-for="Producer.PhoneNumber" class="form-control" />
+      <span asp-validation-for="Producer.PhoneNumber" class="text-danger" />
+    </div>
+  </div>
+  <div class="form-group">
+    <label asp-for="Producer.PostCode" class="col-md-2 control-label"></label>
+    <div class="col-md-10">
+      <input asp-for="Producer.PostCode" class="form-control" />
+      <span asp-validation-for="Producer.PostCode" class="text-danger" />
+    </div>
+  </div>
+  <div class="form-group">
+    <label asp-for="Producer.Address" class="col-md-2 control-label"></label>
+    <div class="col-md-10">
+      <input asp-for="Producer.Address" class="form-control" />
+      <span asp-validation-for="Producer.Address" class="text-danger" />
+    </div>
+  </div>
+  <div class="form-group">
+    <label asp-for="Producer.City" class="col-md-2 control-label"></label>
+    <div class="col-md-10">
+      <input asp-for="Producer.City" class="form-control" />
+      <span asp-validation-for="Producer.City" class="text-danger" />
+    </div>
+  </div>
+  <div class="form-group">
+    <label asp-for="Producer.CompanyName" class="col-md-2 control-label"></label>
+    <div class="col-md-10">
+      <input asp-for="Producer.CompanyName" class="form-control" />
+      <span asp-validation-for="Producer.CompanyName" class="text-danger" />
+    </div>
+  </div>
+  <div class="form-group">
+    <label asp-for="Producer.Area" class="col-md-2 control-label"></label>
+    <div class="col-md-10">
+      <input asp-for="Producer.Area" class="form-control" data-val-number="La superficie doit être un nombre." />
+      <span asp-validation-for="Producer.Area" class="text-danger" />
+    </div>
+  </div>
+  <div class="form-group">
+    <label asp-for="Producer.Production" class="col-md-2 control-label"></label>
+    <div class="col-md-10">
+      <input asp-for="Producer.Production" class="form-control" />
+      <span asp-validation-for="Producer.Production" class="text-danger" />
+    </div>
+  </div>
+  <div class="form-group">
+    <label asp-for="Producer.OpenText" class="col-md-2 control-label"></label>
+    <div class="col-md-10">
+      <input asp-for="Producer.OpenText" class="form-control" />
+      <span asp-validation-for="Producer.OpenText" class="text-danger" />
+    </div>
+  </div>
+  <div class="form-group">
+    <label asp-for="Producer.StartDate" class="col-md-2 control-label"></label>
+    <div class="col-md-10">
+      <input asp-for="Producer.StartDate" class="form-control" data-val-number="L'année doit être correcte." />
+      <span asp-validation-for="Producer.StartDate" class="text-danger" />
+    </div>
+  </div>
+  <div class="form-group">
+    <label asp-for="Producer.WebSiteLink" class="col-md-2 control-label"></label>
+    <div class="col-md-10">
+      <input asp-for="Producer.WebSiteLink" class="form-control" />
+      <span asp-validation-for="Producer.WebSiteLink" class="text-danger" />
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label asp-for="Producer.Latitude" class="col-md-2 control-label"></label>
+    <div class="col-md-10">
+      <input asp-for="Producer.Latitude" class="form-control" data-val-number="La latitude doit être un nombre." />
+      <span asp-validation-for="Producer.Latitude" class="text-danger" />
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label asp-for="Producer.Longitude" class="col-md-2 control-label"></label>
+    <div class="col-md-10">
+      <input asp-for="Producer.Longitude" class="form-control" data-val-number="La longitude doit être un nombre." />
+      <span asp-validation-for="Producer.Longitude" class="text-danger" />
+    </div>
+  </div>
+
+  @if (User.IsInRole(Configurations.Role.Volunteer.ToString()) || User.IsInRole(Configurations.Role.Administrator.ToString()))
+  {
+  <hr />
+  <div class="form-group">
+    <div class="col-md-offset-2 col-md-10">
+      <div class="checkbox">
+        <input asp-for="Producer.Cotisation" />
+        <label asp-for="Producer.Cotisation"></label>
+      </div>
+    </div>
+  </div>
+  }
+  else
+  {
+  <input asp-for="Producer.Cotisation" hidden="hidden" />
+  }
+  
+  <div class="form-group">
+    <label asp-for="UserRole" class="col-md-2 control-label"></label>
+    <div class="col-md-10">
+    <select asp-for="UserRole" class="form-control">
+        @if (Model.UserRole == Configurations.Role.User)
+            {
+            <option value="1" selected> Adhérent </option>
+        }
+        else
+        {
+            <option value="1"> Adhérent </option>
+        }
+        @if (Model.UserRole == Configurations.Role.Volunteer || User.IsInRole(Configurations.Role.Volunteer.ToString()) || User.IsInRole(Configurations.Role.Administrator.ToString()))
+        {
+
+            @if (Model.UserRole == Configurations.Role.Volunteer)
+            {
+                <option value="2" selected> Bénévole </option>
+            }
+            else
+            {
+                <option value="2"> Bénévole </option>
+            }
+        }
+        @if (Model.UserRole == Configurations.Role.Administrator || User.IsInRole(Configurations.Role.Administrator.ToString()))
+        {
+
+            @if (Model.UserRole == Configurations.Role.Administrator)
+            {
+                <option value="3" selected> Administrateur </option>
+            }
+            else
+            {
+                <option value="3"> Administrateur </option>
+            }
+        }
+      </select>
+      <span asp-validation-for="UserRole" class="text-danger"></span>
+    </div>
+  </div>
+  @if (User.IsInRole(Configurations.Role.Administrator.ToString()))
+  {
+  <div class="form-group">
+    <div class="col-md-offset-2 col-md-10">
+      <div class="checkbox">
+        <input asp-for="Producer.Enable" />
+        <label asp-for="Producer.Enable"></label>
+      </div>
+    </div>
+  </div>
+  }
+  else
+  {
+  <input asp-for="Producer.Enable" hidden="hidden" />
+  <input asp-for="UserRole" hidden="hidden" />
+  }
+  <input asp-for="Producer.RegistrationDate" hidden="hidden" />
+</div>

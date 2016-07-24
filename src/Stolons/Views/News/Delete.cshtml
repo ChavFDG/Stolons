@@ -1,0 +1,38 @@
+﻿@model Stolons.Models.News
+
+@{
+    ViewData["Title"] = "Suppression de la nouvelle de "+ Model.User.Surname + " " + Model.User.Name + " du " + Model.DateOfPublication;
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.DateOfPublication)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.DateOfPublication)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Message)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Message)
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete">
+        <div class="form-actions no-color">
+            <input type="submit" value="Supprimer" class="btn btn-default" /> |
+            <a asp-action="Index">Retour aux nouvelles</a>
+        </div>
+    </form>
+</div>

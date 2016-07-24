@@ -1,0 +1,32 @@
+<script id="productTemplate" type="text/template">
+  <div class="publicProduct">
+    <div class="product-top">
+      <div class="pr_img product-top" data-toggle="tooltip" title="Voir détails produit">
+	<a href="#" onclick="ProductModalView.open('<%= product.Id %>');return false;">
+          <img src="<%= productModel.getPictureUrl() %>" />
+	</a>
+      </div>
+      <div class="pr_avatar" data-toggle="tooltip" title="Voir détails producteur">
+	<a href="#" onclick="ProducerModalView.open('<%= product.Id %>');return false;">
+ 	  <img class="avatar" src="<%= product.Producer.Avatar %>" />
+	</a>
+      </div>
+      <div class="pr_labels">
+	<% _.forEach(product.LabelsSerialized.split(';'), function(label) {
+	   if (!_.isEmpty(label)) {
+	   %>
+	<div class="pr_label">
+          <img src="/images/labels/<%= label %>.jpg" />
+	</div>
+	<% } }); %>
+      </div>
+    </div>
+    <div class="product-bottom">
+      <div class="pr_text">
+	<div class="pr_name">
+          <%= product.Name %>
+	</div>
+      </div>
+    </div>
+  </div>
+</script>

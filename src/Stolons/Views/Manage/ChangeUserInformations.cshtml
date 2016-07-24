@@ -1,0 +1,91 @@
+﻿@model Stolons.ViewModels.Users.UserStolonViewModel
+
+@{
+    ViewData["Title"] = "Edition de vos informations utilisateur";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Edit" enctype="multipart/form-data">
+    <div class="form-horizontal">
+        <hr />
+        <div asp-validation-summary="ValidationSummary.All" class="text-danger"></div>
+        <input asp-for="Consumer.Id" hidden="hidden" />
+        <input asp-for="OriginalEmail" hidden="hidden" />
+        <div class="form-group">
+            <label asp-for="Consumer.Name" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Consumer.Name" class="form-control" />
+                <span asp-validation-for="Consumer.Name" class="text-danger" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Consumer.Surname" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Consumer.Surname" class="form-control" />
+                <span asp-validation-for="Consumer.Surname" class="text-danger" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Consumer.Avatar" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input type="file" accept="image/*" name="uploadFile" class="form-control" />
+            </div>
+        </div>
+        <input asp-for="Consumer.Avatar" hidden="hidden" />
+        <div class="form-group">
+            <label asp-for="Consumer.Email" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Consumer.Email" class="form-control" />
+                <span asp-validation-for="Consumer.Email" class="text-danger" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Consumer.PhoneNumber" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Consumer.PhoneNumber" class="form-control" />
+                <span asp-validation-for="Consumer.PhoneNumber" class="text-danger" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Consumer.Address" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Consumer.Address" class="form-control" />
+                <span asp-validation-for="Consumer.Address" class="text-danger" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Consumer.PostCode" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Consumer.PostCode" class="form-control" />
+                <span asp-validation-for="Consumer.PostCode" class="text-danger" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Consumer.City" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Consumer.City" class="form-control" />
+                <span asp-validation-for="Consumer.City" class="text-danger" />
+            </div>
+        </div>
+        <input asp-for="Consumer.Cotisation" hidden="hidden" />
+        <input asp-for="Consumer.Enable" hidden="hidden" />
+        <input asp-for="UserRole" hidden="hidden" />
+        <input asp-for="Consumer.RegistrationDate" hidden="hidden" />
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Modifier" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+</form>
+
+<div>
+    <a asp-action="Index">Retourner à mon compte</a>
+</div>
+
+@section Scripts {
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+}

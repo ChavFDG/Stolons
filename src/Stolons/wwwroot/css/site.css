@@ -1,0 +1,502 @@
+﻿
+body {
+    padding-top: 5px;
+    padding-bottom: 20px;
+}
+
+@media (max-width: @screen-xs) {
+    body {font-size: 10px;}
+}
+
+@media (max-width: @screen-sm) {
+    body {font-size: 14px;}
+}
+
+h2 {
+    font-size: 1.45em;
+}
+
+.nav-container {
+    width: 70%;
+    margin-right: auto;
+    margin-left: auto;
+    padding: 0;
+}
+
+.navbar {
+    margin-bottom: 0 !important;
+}
+
+#navbar {
+    width: 80%;
+}
+
+.navbar-right {
+    display: block !important;
+    float: right !important;
+    position: absolute;
+    top: 0;
+    right: 10px;
+    width: auto;
+    height: 100%;
+}
+
+.navbar-toggle {
+    float: left !important;
+    min-width: 40px;
+    margin-right: 10px !important;
+}
+/* Set widths on the form inputs since otherwise they're 100% wide */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
+input[type="file"] {
+    height: auto;
+}
+
+/* Banner */
+.bannerAccount {
+}
+
+.bannerAccount form {
+    display: table-cell;
+}
+
+.bannerAvatar {
+    display: table-cell;
+}
+
+.bannerAvatar img {
+    max-height: 40px;
+    max-width: 37px;
+}
+
+/* Image */
+.responsiveImage {
+    max-width: 100%;
+    max-height: 100%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.newsThumnail {
+    position: relative;
+    width: 375px;
+    height: 216px;
+    background-color: #222;
+}
+
+.nextToDiv {
+    display: inline-block;
+    padding-right: 10px;
+}
+
+.userNewsAvatar {
+    width: 40px;
+    max-width: 40px;
+    height: 40px;
+    max-height: 40px;
+}
+
+.newsIcon {
+    font-size: 15px;
+    padding-right: 10px;
+}
+
+.newContent {
+    padding-top: 10px;
+}
+
+.newsInfos {
+    position: relative;
+}
+
+.newsAuthor {
+    /* parent element needs to be 'position: relative'! */
+    position: absolute;
+    bottom: 10px;
+    font-size: 12px;
+}
+
+.tdImageNews {
+    width: 375px;
+}
+
+.circleAvatarDiv {
+    border-radius: 50%;
+    behavior: url(PIE.htc); /* remove if you don't care about IE8 */
+}
+
+.tdAvatarList {
+    height: 25px;
+    width: 25px;
+}
+
+.userListAvatar {
+    width: 25px;
+    height: 25px;
+}
+
+.avatar {
+
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+
+    -webkit-box-shadow: 0 0 0 3px #fff, 0 0 0 4px #999, 0 2px 5px 4px rgba(0,0,0,.2);
+    -moz-box-shadow: 0 0 0 3px #fff, 0 0 0 4px #999, 0 2px 5px 4px rgba(0,0,0,.2);
+    box-shadow: 0 0 0 3px #fff, 0 0 0 4px #999, 0 2px 5px 4px rgba(0,0,0,.2);
+}
+
+/*-- PUBLIC PRODUCER --*/
+
+.producerOpenText {
+    padding-top: 10px;
+    font-weigh: 50;
+    font-size: 17px
+}
+
+.public_Prod_avatar > img {
+    width: 75px;
+    height: 75px;
+}
+
+/*-- WEEK BASKET --*/
+#validatedBasket {
+    padding-top: 35px;
+}
+
+#tmpBasket {
+    padding-top: 5px;
+}
+
+.isa_success {
+    color: #4F8A10;
+    background-color: #DFF2BF;
+    line-height: 2;
+    margin: 5px;
+}
+
+.isa_warning {
+    color: #9F6000;
+    background-color: #FEEFB3;
+    line-height: 2;
+    margin: 5px;
+}
+
+.warning-text {
+    padding-left: 5px;
+}
+
+.quantity-icon {
+    background: url("/images/basketQuantity.png") no-repeat;
+    background-size: 20px 20px;
+    display: block;
+    width: 22px;
+    height: 22px;
+}
+
+.product {
+    position: relative;
+    display: inline-block;
+    float: left;
+    width: 240px;
+    height: 220px;
+    border: 1px solid #222;
+    margin: 5px;
+}
+
+.publicProduct {
+    display: inline-block;
+    float: left;
+    width: 240px;
+    height: 160px;
+    border: 1px solid #222;
+    margin: 5px;
+}
+
+#filters .searchFilter {
+    display: inline;
+}
+
+.product-top {
+    height: 100px;
+    position: relative;
+}
+.product-bottom{
+    height: 100px;
+}
+.pr_img { 
+}
+.pr_img img {
+    max-height: 100%; 
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 10px;
+    max-width: 65%;
+}
+.pr_avatar {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 5px;
+    margin: 5px;
+}
+
+.pr_avatar img {
+    width: 25px;
+    height: 25p;x
+}
+
+.pr_labels {
+    position: absolute;
+    bottom:0;
+}
+
+.pr_label {
+    float: left;
+    margin: 0 1px;
+    padding-left: 5px;
+}
+
+.pr_label img {
+    width: 20px;
+    height: 20px;
+}
+
+.product-bottom {
+    /* height: 100px; */
+}
+
+.pr_name {
+    text-align: center;
+    font-size: 15px;
+}
+
+.pr_qtystock {
+    text-align: center;
+    padding: 2% 5% 0 5%;
+    /* padding: 10px; */
+}
+
+.pr_qtystock ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.pr_priceQuantity {
+    text-align: left;
+    font-size: medium;
+    font-weight: 500;
+    display: block;
+}
+
+.pr_actions {
+    text-align: center;
+    position: absolute;
+    left: 22%;
+    bottom: 5px;
+    margin-top: 10px;
+}
+.pr_actionDetail {
+    display: inline;
+}
+
+.outOfStock {
+    color: #f00;
+}
+
+.addProduct{
+    display: inline;
+}
+.quantity {
+    font-weight: 900;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+/* Product modal in week basket view */
+
+.producerModalTitle {
+    padding-bottom: 15px;
+}
+
+.producerModalName {
+    font-size: 20px;
+    display: inline-block;
+    padding-left: 10px;
+}
+
+.producerModalAvatar {
+    margin-right: auto;
+    display: inline-block;
+}
+
+.producerModalAvatar img {
+    width: 35px;
+    height: 35px;
+}
+
+.producerInfoList > li {
+    padding: 5px;
+    
+}
+
+.modals .modal-header .close {
+    margin-top: -18px;
+    font-size: 30px;
+}
+
+.modals {
+    display: block !important;
+}
+
+.modals ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+#productModal-desc {
+    margin-right: 10px;
+    padding-top: 20px;
+}
+
+#productModal-pricing {
+    padding-left: 15px;
+}
+
+#productModal-img img {
+    max-width: 150px;
+    max-height: 150px;
+    display: inline-block;
+}
+
+.glyphicon-refresh-animate {
+    -animation: spin .7s infinite linear;
+    -ms-animation: spin .7s infinite linear;
+    -webkit-animation: spinw .7s infinite linear;
+    -moz-animation: spinm .7s infinite linear;
+}
+
+@keyframes spin {
+    from { transform: scale(1) rotate(0deg);}
+    to { transform: scale(1) rotate(360deg);}
+}
+  
+@-webkit-keyframes spinw {
+    from { -webkit-transform: rotate(0deg);}
+    to { -webkit-transform: rotate(360deg);}
+}
+
+@-moz-keyframes spinm {
+    from { -moz-transform: rotate(0deg);}
+    to { -moz-transform: rotate(360deg);}
+}
+
+#filters {
+    margin-bottom: 17px;
+}
+
+.searchFilter {
+    padding-left: 50px;
+}
+
+.select2-container--default, .select2-selection--single {
+    width: 170px !important;
+    height: 30px !important;
+}
+
+.select-option {
+    height: 30px;
+    width: 180px;
+}
+
+.select-option img {
+    max-width: 25px;
+    max-height: 25px;
+}
+
+.basketTable {
+    border-collapse: collapse;
+    border: 1px solid #ddd;
+    margin-bottom: 5px !important;
+}
+
+.basketTable > th {
+    border: 1px solid #ddd;
+}
+
+.basketTitle {
+    font-size: 15px;
+    width: 100%;
+    text-align: center;
+}
+
+.basketValidation {
+    text-align: center;
+}
+
+.deleteEntry {
+    color: #f00;
+}
+
+.dl-horizontal > dt {
+    white-space: normal !important;
+    text-align: left !important;
+}
+
+.hidden {
+    display: none;
+}
+
+.productMgtImage {
+    vertical-align: middle !important;
+}
+
+.productMgtImage img {
+    width: 50px;
+    height: 40px;
+}
+
+.productsMgtTable td,th {
+    vertical-align: middle !important;
+    /* text-align: center; */
+}
+
+.noLiStyle {
+    list-style-type: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.noLiStyle li {
+    padding: 3px;
+}
+
+.btn-small {
+    -moz-user-select: none;
+    background-image: none;
+    border-radius: 4px;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 350;
+    line-height: 1.32857;
+    margin-bottom: 0;
+    padding: 4px 8px;
+    text-align: center;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.imgPreview {
+    width: 60px;
+    height: 50px;   
+}

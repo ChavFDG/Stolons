@@ -1,0 +1,53 @@
+<script id="producerModalTemplate" type="text/template">
+  <div id="producerModal-<%= producer.Id %>" class="modals modal in">
+    <div class="modal-dialog">
+      <div class="modal-content">
+	<div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+	</div>
+	<div class="modal-body">
+	  <div class="producerModalTitle">
+	    <div class="producerModalAvatar">
+	      <img class="avatar" src="<%= producer.Avatar %>" />
+	    </div>
+	    <span class="producerModalName"><%= producer.CompanyName %> </span>
+	  </div>	  
+	  <ul class="producerInfoList">
+	    <li>
+	      <label>Proprietaire: </label>
+	      <span><%= producer.Name %> <%= producer.Surname %> </span>
+	    </li>
+	    <li>
+	      <label>Superficie de production: </label>
+	      <span><%= producer.Area %> m<sup>2</sup> </span>
+	    </li>
+	    <% if (producer.Production) { %>
+	    <li>
+	      <label>Production: </label>
+	      <span><%= producer.Production %></span>
+	    </li>
+	    <% } %>
+	    <li>
+	      <label>Année d'installation: </label>
+	      <span><%= producer.StartDate %></span>
+	    </li>
+	    <% if (producer.WebSiteLink) { %>
+	    <li>
+	      <label>Site web: </label>
+	      <a href="<%= producer.WebSiteLink %>"><%= producer.WebSiteLink %></a>
+	    </li>
+	    <% } %>
+	    <% if (producer.OpenText) { %>
+	    <li>
+	      <label>Le mot du producteur: </label>
+	      <span class="producerOpenText">
+		<%= producer.OpenText %>
+	      </span>
+	    </li>
+	    <% } %>
+	  </ul>
+	</div>
+      </div>
+    </div>
+  </div>
+</script>

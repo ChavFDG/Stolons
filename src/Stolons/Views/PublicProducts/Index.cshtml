@@ -1,0 +1,82 @@
+@model IEnumerable<Stolons.Models.Product>
+
+@{
+    ViewData["Title"] = "Nos produits";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div class="publicProductsContainer">
+
+  <div class="row">
+
+    <div class="products col-lg-12">
+      
+      <div id="filters">
+      </div>
+      <div id="products">
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="productModal" class="modal fade"></div>
+<div id="producerModal" class="modal fade"></div>
+
+<script id="filtersTemplate" type="text/template">
+
+  <fieldset>
+
+    <label class="control-label" for="familiesDropDown">Famille : </label>
+    <select id="familiesDropDown" name="familiesDropDown">
+
+      <option value="Tous">Tous</option>
+
+      <% _.forEach(productTypes, function(productType) { %>
+
+      <optgroup label="<%= productType.Name %>">
+
+	<% _.forEach(productType.ProductFamilly, function (productFamily) { %>
+
+	<option id="<%= productFamily.FamillyName %>" value="<%= productFamily.FamillyName %>" data-image="<%= productFamily.Image %>"> <%= productFamily.FamillyName %> </option>
+
+	<% }); %>
+
+      </optgroup>
+	
+      <% }); %>
+    </select>
+
+    <div class="searchFilter">
+      <label>Recherche :</label>
+      <input id="search" type="text">
+    </div>
+
+  </fieldset>
+
+</script>
+
+<script id="productsTemplate" type="text/template">
+
+  <% _.forEach(products, function(productModel) { %>
+  <div id="product-<%= productModel.get('Id') %>">
+  </div>
+  <% }); %>
+
+  <div id="emptyProducts" class="hidden">
+    <span>Aucun produit disponible ou pas de produits correspondants à votre recherche</span>
+  </div>
+
+</script>
+
+<!-- Include the product template -->
+@{ await Html.RenderPartialAsync("Templates/PublicProductTemplate"); }
+
+<!-- Include the product modal template -->
+@{ await Html.RenderPartialAsync("Templates/PublicProductModalTemplate"); }
+
+<!-- Include the producer modal template -->
+@{ await Html.RenderPartialAsync("Templates/ProducerModalTemplate"); }
+
+<script src="/js/productModel.js"></script>
+<script src="/js/publicProducts.js"></script>

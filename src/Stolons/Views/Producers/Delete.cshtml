@@ -1,0 +1,134 @@
+﻿@model Stolons.ViewModels.Producers.ProducerViewModel
+
+@{
+    ViewData["Title"] = "Suppression du producteur : " + Model.Producer.CompanyName;
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Producer.Id)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Producer.Id)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Producer.CompanyName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Producer.CompanyName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Producer.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Producer.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Producer.Surname)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Producer.Surname)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Producer.Email)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Producer.Email)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Producer.RegistrationDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Producer.RegistrationDate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.UserRole)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.UserRole)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Producer.PhoneNumber)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Producer.PhoneNumber)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Producer.Address)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Producer.Address)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Producer.PostCode)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Producer.PostCode)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Producer.City)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Producer.City)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Producer.Cotisation)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Producer.Cotisation)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Producer.Enable)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Producer.Enable)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Producer.Area)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Producer.Area)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Producer.ExploitationPicuresSerialized)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Producer.ExploitationPicuresSerialized)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Producer.OpenText)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Producer.OpenText)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Producer.Production)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Producer.Production)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Producer.StartDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Producer.StartDate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Producer.WebSiteLink)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Producer.WebSiteLink)
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete">
+        <div class="form-actions no-color"> 
+            <a asp-action="Index">Retourner aux producteurs</a> | 
+            <input type="submit" value="Supprimer" class="btn btn-default" />
+        </div>
+    </form>
+</div>

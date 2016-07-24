@@ -1,0 +1,122 @@
+﻿@model Stolons.ViewModels.WeekBasket.ValidationSummaryViewModel
+
+@{
+    if(Model == null)
+    {
+        ViewData["Title"] = "Panier annulé";
+    }
+    else
+    {
+        if (Model.IsFullValid)
+        {
+            ViewData["Title"] = "Panier validé :)";
+        }
+        else
+        {
+            ViewData["Title"] = "Panier partiellement validé :'(";
+        }
+    }
+}
+
+<h2>@ViewData["Title"]</h2>
+@if (Model == null)
+{
+    <p>
+        Votre panier a été annulé.
+    </p>
+    
+}
+else
+{
+    @if (Model.IsFullValid)
+    {
+        <p>
+            Votre panier a été validé avec succès.
+            @Configurations.ApplicationConfig.OrderDeliveryMessage
+        </p>
+    }
+    else
+    {
+        <p>
+            Votre panier a été partiellement validé.
+            Certains produits ne sont plus disponibles dans la quantité demandée. Veuilliez en prendre connaissance sur le tableau ci-dessous puis ajuster vos besoins.
+            @Configurations.ApplicationConfig.OrderDeliveryMessage
+        </p>
+    }
+
+    @if (!Model.IsFullValid)
+    {
+        <h3>Produits validés</h3>
+    }
+    <table class="table">
+        <tr>
+            <th>
+                Produit
+            </th>
+            <th>
+                Prix unitaire
+            </th>
+            <th>
+                Quantité selectionné
+            </th>
+            <th>
+                Prix total
+            </th>
+        </tr>
+        @foreach (var item in Model.ValidatedWeekBasket.Products)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Product.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Product.UnitPrice) €
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Quantity)
+                </td>
+                <td>
+                    @(item.Quantity * item.Product.UnitPrice) €
+                </td>
+            </tr>
+        }
+    </table>
+    <h2>Prix total de votre panier : @Model.Total€</h2>
+    @if (!Model.IsFullValid)
+    {
+        <h3>Produits non validés</h3>
+        <table class="table">
+            <tr>
+                <th>
+                    Produit
+                </th>
+                <th>
+                    Prix unitaire
+                </th>
+                <th>
+                    Quantité selectionnée
+                </th>
+                <th>
+                    Quantité disponible
+                </th>
+            </tr>
+            @foreach (var item in Model.UnValidBillEntry)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Product.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Product.Price) €
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Quantity)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Product.RemainingStock)
+                    </td>
+                </tr>
+            }
+        </table>
+    }
+}

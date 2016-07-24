@@ -1,0 +1,258 @@
+﻿@model Stolons.ViewModels.ProductsManagement.ProductEditionViewModel
+@using Stolons.Helpers
+
+@{
+    if (Model.IsNew)
+    {
+        ViewData["Title"] = "Ajouter un produit";
+    }
+    else
+    {
+        ViewData["Title"] = "Edition du produit";
+    }
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Create" enctype="multipart/form-data">
+    <div class="form-horizontal">
+        <hr />
+        <!-- <div asp-validation-summary="ValidationSummary.All" class="text-danger"></div> -->
+        <div class="form-group">
+            <label asp-for="Product.Name" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Product.Name" class="form-control" data-val-required="Le nom du produit est requis" />
+                <span asp-validation-for="Product.Name" class="text-danger" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Product.Description" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <textarea rows="5" asp-for="Product.Description" class="form-control"></textarea>
+                <span asp-validation-for="Product.Description" class="text-danger" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Product.Labels" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+              @foreach (Product.Label label in Enum.GetValues(typeof(Product.Label)))
+              {
+              <span>
+                @(EnumHelper<Product.Label>.GetDisplayValue(label))
+                  @if (Model.SelectedLabels.Contains(label.ToString()))
+                  {
+                  <input type="checkbox"  name="SelectedLabels" value="@label.ToString()" id="@label.ToString()" checked>
+                  }
+                  else
+                  {
+                  <input type="checkbox"  name="SelectedLabels" value="@label.ToString()" id="@label.ToString()">
+                  }
+              </span>
+              <br/>
+              }
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label">Photo principale</label>
+            <div class="col-md-4">
+              <input id="UploadFile1" type="file" accept="image/*" name="UploadFile1" class="form-control" value="toto.png" />
+            </div>
+	    <div class="col-md-4">
+	      @{
+              if (!Model.IsNew)
+              {
+
+                {  if (Model.Product.Pictures.Any())
+                    {
+                        <img id="image1Preview" src="/@Model.Product.Pictures[0]" class="imgPreview" />
+                    }
+                    else
+                    {
+                        <img alt="Pas d'image" />
+                    }
+                }
+	      }
+	      else
+	      {
+		    <img id="image1Preview" class="imgPreview" />
+	      }
+	      }
+	    </div>
+        </div>
+        <!-- <div class="form-group"> -->
+        <!--     <label class="col-md-2 control-label">2ieme photo</label> -->
+        <!--     <div class="col-md-10"> -->
+        <!--         <input id="UploadFile2" type="file" accept="image/*" name="UploadFile2" class="form-control" /> -->
+        <!--     </div> -->
+        <!-- </div> -->
+        <!-- <div class="form-group"> -->
+        <!--     <label class="col-md-2 control-label">3ieme photo</label> -->
+        <!--     <div class="col-md-10"> -->
+        <!--         <input id="UploadFile3" type="file" accept="image/*" name="UploadFile3" class="form-control" /> -->
+        <!--     </div> -->
+        <!-- </div> -->
+        <div class="form-group">
+            <label asp-for="Product.DLC" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Product.DLC" class="form-control" />
+                <span asp-validation-for="Product.DLC" class="text-danger" />
+            </div>
+        </div>
+	<!-- just to make the current product familly accessible by js -->
+	<span id="productFamilly" class="hidden">
+	  @if (Model.Product.Familly != null) {
+		@(Model.Product.Familly.FamillyName)
+	  }
+	  else {
+		@("Tous")
+	  }
+	</span>
+	<div id="famillySelect">
+	  <!-- placeholder for backbone view -->
+	</div>
+        <div class="form-group">
+          <label asp-for="Product.Type" class="col-md-2 control-label"></label>
+          <div class="col-md-10">
+            <select id="SellType" asp-for="Product.Type" asp-items="Html.GetEnumSelectList<Product.SellType>()" class="form-control"></select>
+            <span asp-validation-for="Product.Type" class="text-danger" />
+          </div>
+        </div>
+        <div id="productWeightUnit" class="form-group">
+            <label asp-for="Product.ProductUnit" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+              <select asp-for="Product.ProductUnit" asp-items="Html.GetEnumSelectList<Product.Unit>()" class="form-control"></select>
+              <span asp-validation-for="Product.ProductUnit" class="text-danger" />
+            </div>
+        </div>
+        <div id="productQtyStep" class="form-group">
+            <label asp-for="Product.QuantityStep" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+              <input asp-for="Product.QuantityStep" class="form-control" min="0" data-val-required="Le palier de poids doit être un nombre." />
+              <span asp-validation-for="Product.QuantityStep" class="text-danger" />
+            </div>
+        </div>
+        <!-- <div class="form-group" id="productAvgWeight"> -->
+        <!--     <label asp-for="Product.AverageQuantity" class="col-md-2 control-label"></label> -->
+        <!--     <div class="col-md-10"> -->
+        <!--         <input asp-for="Product.AverageQuantity" class="form-control" data-val-required="Le poids moyen doit être un nombre." /> -->
+        <!--         <span asp-validation-for="Product.AverageQuantity" class="text-danger" /> -->
+        <!--     </div> -->
+        <!-- </div> -->
+
+	<div id="pieceHideVolumePrice" class="form-group hidden">
+          <label for="hideVolumePrice" class="col-md-2 control-label">Masquer prix au kg</label>
+          <div class="col-md-10">
+            <input id="hideVolumePrice" name="hideVolumePrice" type="checkbox" class="form-control" />
+            <span validation-for="hideVolumePrice" class="text-danger" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label id="priceLabel" asp-for="Product.Price" class="col-md-2 control-label"></label>
+          <div class="col-md-10">
+            <input id="price" asp-for="Product.Price" class="form-control" data-val-number="Le prix doit être un nombre." />
+            <span asp-validation-for="Product.Price" class="text-danger" />
+          </div>
+        </div>
+	<div class="form-group">
+          <label asp-for="Product.UnitPrice" class="col-md-2 control-label"></label>
+          <div class="col-md-10">
+            <input id="unitPrice" asp-for="Product.UnitPrice" class="form-control" data-val-required="Le prix unitaire est obligatoire" data-val-number="Le prix unitaire doit être un nombre." />
+            <span asp-validation-for="Product.UnitPrice" class="text-danger" />
+          </div>
+        </div>
+        <!--HIDDEN-->
+        <div class="form-group" hidden="hidden">
+            <label asp-for="Product.Id" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Product.Id" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group" hidden="hidden">
+            <label asp-for="Product.PicturesSerialized" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Product.PicturesSerialized" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group" hidden="hidden">
+            <label asp-for="Product.RemainingStock" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Product.RemainingStock" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group" hidden="hidden">
+            <label asp-for="Product.WeekStock" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Product.WeekStock" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group" hidden="hidden">
+            <label asp-for="Product.State" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <select asp-for="Product.State" asp-items="Html.GetEnumSelectList<Product.ProductState>()" class="form-control"></select>
+            </div>
+        </div>
+        <div class="form-group"  hidden="hidden" >
+            <label asp-for="IsNew" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="IsNew"  class="form-control"/>
+            </div>
+        </div>
+
+        <!--Submit-->
+        @if (Model.IsNew)
+        {
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Ajouter" class="btn btn-default" />
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Editer" class="btn btn-default" />
+                </div>
+            </div>
+        }
+    </div>
+</form>
+
+<div>
+    <a asp-action="Index">Revenir aux produits</a>
+</div>
+
+@section Scripts {
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+    <script id="familiesTemplate" type="text/template">
+      <div class="form-group">
+        <label asp-for="Product.Familly" class="col-md-2 control-label">Famille</label>
+        <div class="col-md-10">
+	  <select id="familiesDropDown" name="FamillyName">
+
+	    <option value="Tous" <% if (!currentFamilly || currentFamilly == "Tous") { %> selected="selected" <% }%> >
+	      Tous
+	    </option>
+
+	    <% _.forEach(productTypes, function(productType) { %>
+
+	    <optgroup label="<%= productType.Name %>">
+
+	      <% _.forEach(productType.ProductFamilly, function (productFamily) { %>
+
+	      <option id="<%= productFamily.FamillyName %>" value="<%= productFamily.FamillyName %>" data-image="<%= productFamily.Image %>"
+		      <% if (productFamily.FamillyName == currentFamilly) { %> selected="selected"  <% } %> >
+		<%= productFamily.FamillyName %>
+	      </option>
+	      
+	      <% }); %>
+	    </optgroup>
+	    <% }); %>
+	  </select>
+	</div>
+      </div>
+    </script>
+    <script src="/js/manageProduct.js"></script>
+}
