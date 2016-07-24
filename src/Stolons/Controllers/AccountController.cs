@@ -21,18 +21,15 @@ namespace Stolons.Controllers
         private ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly ILogger _logger;
 
         public AccountController(ApplicationDbContext context,
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            ILoggerFactory loggerFactory,
             IServiceProvider serviceProvider) : base(serviceProvider)
         {
             _context = context;
             _userManager = userManager;
             _signInManager = signInManager;
-            _logger = loggerFactory.CreateLogger<AccountController>();
         }
 
         //
@@ -77,12 +74,10 @@ namespace Stolons.Controllers
                     
                     if (result.Succeeded)
                     {
-                        _logger.LogInformation(1, "User logged in.");
                         return RedirectToLocal(returnUrl);
                     }
                     if (result.IsLockedOut)
                     {
-                        _logger.LogWarning(2, "User account locked out.");
                         return View("Lockout");
                     }
                     else
@@ -105,7 +100,6 @@ namespace Stolons.Controllers
         public async Task<IActionResult> LogOff()
         {
             await _signInManager.SignOutAsync();
-            _logger.LogInformation(4, "User logged out.");
             return RedirectToAction(nameof(HomeController.Index), "Home");
         }
         // GET: /Account/ConfirmEmail
