@@ -10,6 +10,14 @@ namespace Stolons.Helpers
     {
         public static async Task SaveAsAsync(this IFormFile uploadFile, string filePath)
         {
+            using (var stream = System.IO.File.Create(filePath))
+            {
+                await uploadFile.CopyToAsync(stream); 
+            }
+
+        }
+        public static async Task SaveImageAsAsync(this IFormFile uploadFile, string filePath)
+        {
             //TODO a tester
             await uploadFile.CopyToAsync(System.IO.File.Create(filePath)); //Faut il fermer le stream ?
 
