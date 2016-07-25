@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -18,8 +19,10 @@ namespace Stolons.Helpers
         }
         public static async Task SaveImageAsAsync(this IFormFile uploadFile, string filePath)
         {
-            //TODO a tester
-            await uploadFile.CopyToAsync(System.IO.File.Create(filePath)); //Faut il fermer le stream ?
+            //Todo utiliser ImageProcessorCore quand il sera dispo...
+            //https://github.com/JimBobSquarePants/ImageProcessor
+            //Voir les méthodes utilisants : UploadAndResizeImageFile dans Configurations
+            await SaveAsAsync(uploadFile, filePath);
 
         }
     }

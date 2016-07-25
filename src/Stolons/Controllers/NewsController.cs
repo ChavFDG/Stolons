@@ -76,7 +76,7 @@ namespace Stolons.Controllers
                     //Image uploading
                     string uploads = Path.Combine(_environment.WebRootPath, Configurations.NewsImageStockagePath);
                     fileName = Guid.NewGuid().ToString() + "_" + ContentDispositionHeaderValue.Parse(uploadFile.ContentDisposition).FileName.Trim('"');
-                    await uploadFile.SaveAsAsync(Path.Combine(uploads, fileName));
+                    await uploadFile.SaveImageAsAsync(Path.Combine(uploads, fileName));
                 }
                 //Setting value for creation
                 news.Id = Guid.NewGuid();
@@ -127,12 +127,10 @@ namespace Stolons.Controllers
                 {
                     string uploads = Path.Combine(_environment.WebRootPath, Configurations.NewsImageStockagePath);
                     //Deleting old image
-                    string oldImage = Path.Combine(uploads, news.ImageLink);
-                    if (System.IO.File.Exists(oldImage) && news.ImageLink != Path.Combine(Configurations.NewsImageStockagePath,Configurations.DefaultFileName))
-                        System.IO.File.Delete(Path.Combine(uploads, news.ImageLink));
+                    DeleteImage(news.ImageLink);
                     //Image uploading
                     string fileName = Guid.NewGuid().ToString() + "_" + ContentDispositionHeaderValue.Parse(uploadFile.ContentDisposition).FileName.Trim('"');
-                    await uploadFile.SaveAsAsync(Path.Combine(uploads, fileName));
+                    await uploadFile.SaveImageAsAsync(Path.Combine(uploads, fileName));
                     //Setting new value, saving
                     news.ImageLink = Path.Combine(Configurations.NewsImageStockagePath, fileName);
                 }
@@ -177,14 +175,19 @@ namespace Stolons.Controllers
         public IActionResult DeleteConfirmed(Guid id)
         {
             News news = _context.News.Single(m => m.Id == id);
-            //Deleting image
-            string image = Path.Combine(_environment.WebRootPath, news.ImageLink);
-            string defaultImage = Path.Combine(Configurations.NewsImageStockagePath, Configurations.DefaultFileName);
-            if (System.IO.File.Exists(image) && news.ImageLink != defaultImage)
-                System.IO.File.Delete(image);
+            DeleteImage(news.ImageLink);
             _context.News.Remove(news);
             _context.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+        private void DeleteImage(string imagePath)
+        {
+            //Deleting image
+            string image = Path.Combine(_environment.WebRootPath, imagePath);
+            string defaultImage = Path.Combine(Configurations.NewsImageStockagePath, Configurations.DefaultFileName);
+            if (System.IO.File.Exists(image) && imagePath != defaultImage)
+                System.IO.File.Delete(image);
         }
     }
 }
