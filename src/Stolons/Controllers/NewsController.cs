@@ -178,10 +178,10 @@ namespace Stolons.Controllers
         {
             News news = _context.News.Single(m => m.Id == id);
             //Deleting image
-            string uploads = Path.Combine(_environment.WebRootPath, Configurations.NewsImageStockagePath);
-            string image = Path.Combine(uploads, news.ImageLink);
-            if (System.IO.File.Exists(image) && news.ImageLink != Path.Combine(Configurations.NewsImageStockagePath, Configurations.DefaultFileName))
-                System.IO.File.Delete(Path.Combine(uploads, news.ImageLink));
+            string image = Path.Combine(_environment.WebRootPath, news.ImageLink);
+            string defaultImage = Path.Combine(Configurations.NewsImageStockagePath, Configurations.DefaultFileName);
+            if (System.IO.File.Exists(image) && news.ImageLink != defaultImage)
+                System.IO.File.Delete(image);
             _context.News.Remove(news);
             _context.SaveChanges();
             return RedirectToAction("Index");

@@ -34,10 +34,14 @@ Priorité 2
 - Ajouter les photos 2 et 3 sur les produits => caroussel
 - Quand on écrit une news entant que bénévole faire apparaitre le logo de Stolons à la place de l'avatar de la personne ayant mis la news. 
 Et faire apparaitre l'avatar stolons dans les news => quand on aura le logo
+- Quand on modifie ou supprime une news faire apparaitre l'image ( à la manière des produits)
 - Page produits publiques: separer les produits de la semaine de tous ceux enregistres
 - Quand on édite son profil, voir l'avatar qu'on a ( commme pour les produits)
 
-Priorité 3 : pour bien plus tard
+BESOIN EN IMAGE ( Marion )
+- Image de news par défaut au format :375x216
+- Image de "Page not found, errer 404"
+- Logo de Stolons
 
 
 FAIT :
