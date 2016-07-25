@@ -1,9 +1,6 @@
 ﻿A faire :
 
-APRES CORE :
-
 Priorité 0 pour 1er Octobre :
-- Passer en Release Core 1.0.0.0
 - Gestion des adhérent sympatisant
 - Gestion des cotisations
 - Virer "éngagé dans le bio"

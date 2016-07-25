@@ -4,7 +4,7 @@
 
 <h2>@ViewData["Title"]</h2>
 
-<p>@(new HtmlString(Configurations.ApplicationConfig.StolonsAboutPageText))</p>
+<p>@Html.Raw(Configurations.ApplicationConfig.StolonsAboutPageText)</p>
 
 <h3>Nous contacter:</h3>
 
