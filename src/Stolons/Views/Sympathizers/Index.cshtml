@@ -1,0 +1,59 @@
+﻿@model IEnumerable<Stolons.Models.Sympathizer>
+
+@{
+    ViewData["Title"] = "Liste des sympathisants";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<p>
+    <a asp-action="Create" >Ajouter un nouveau sympathisants</a>
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(item => item.Id)
+        </th>
+        <th>
+            @Html.DisplayNameFor(item => item.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(item => item.Surname)
+        </th>
+        <th>
+            @Html.DisplayNameFor(item => item.Cotisation)
+        </th>
+        <th>
+            @Html.DisplayNameFor(item => item.Enable)
+        </th>
+        <th></th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Surname)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Cotisation)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Enable)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Modifier</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Fiche</a> |
+                @if (User.IsInRole(Configurations.Role.Administrator.ToString()))
+                {
+                    <a asp-action="Delete" asp-route-id="@item.Id">Supprimer</a>
+                }
+            </td>
+        </tr>
+    }
+</table>

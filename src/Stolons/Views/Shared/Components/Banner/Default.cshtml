@@ -25,27 +25,40 @@
           <li><a asp-controller="Home" asp-action="Contact">Qui sommes-nous ?</a></li>        
           } else
           {
-          <li><a asp-controller="News" asp-action="Index">Les nouvelles</a></li>
-          @if (User.IsInRole(Configurations.UserType.Consumer.ToString()))
-          {
-          <li><a asp-controller="WeekBasket" asp-action="Index">Mon panier</a></li>
-          <li><a asp-controller="Bills" asp-action="Index">Mes factures</a></li>
-          }
-          @if (User.IsInRole(Configurations.UserType.Producer.ToString()))
-          {
-          <li><a asp-controller="ProductsManagement" asp-action="Index">Mes produits et mes stocks</a></li>
-          <li><a asp-controller="Bills" asp-action="Index">Mes factures</a></li>
-          }
-          @if (User.IsInRole(Configurations.Role.Volunteer.ToString()) || User.IsInRole(Configurations.Role.Administrator.ToString()))
-          {
-          <li><a asp-controller="WeekBasketManagement" asp-action="Index">Gérer les paniers</a></li>
-          <li><a asp-controller="Users" asp-action="Index">Adhérents</a></li>
-          <li><a asp-controller="Producers" asp-action="Index">Producteurs</a></li>
-          }
-          @if (User.IsInRole(Configurations.Role.Administrator.ToString()))
-          {
-          <li><a asp-controller="ApplicationConfig" asp-action="Index">Administrer le site</a></li>
-          }
+              <li><a asp-controller="News" asp-action="Index">Les nouvelles</a></li>
+              @if (User.IsInRole(Configurations.UserType.Consumer.ToString()))
+              {
+              <li><a asp-controller="WeekBasket" asp-action="Index">Mon panier</a></li>
+              <li><a asp-controller="Bills" asp-action="Index">Mes factures</a></li>
+              }
+              @if (User.IsInRole(Configurations.UserType.Producer.ToString()))
+              {
+                <li><a asp-controller="ProductsManagement" asp-action="Index">Mes produits et mes stocks</a></li>
+                <li><a asp-controller="Bills" asp-action="Index">Mes factures</a></li>
+              }
+              @if (User.IsInRole(Configurations.Role.Volunteer.ToString()) || User.IsInRole(Configurations.Role.Administrator.ToString()))
+              {
+                  <li><a asp-controller="WeekBasketManagement" asp-action="Index">Gérer les paniers</a></li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        Adhérents
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a asp-controller="Users" asp-action="Index">Tous les adhérents</a></li>
+                        <li><a asp-controller="Sympathizers" asp-action="Index">Sympathisants</a></li>
+                        <li><a asp-controller="Consumers" asp-action="Index">Consomateurs</a></li>
+                        <li><a asp-controller="Producers" asp-action="Index">Producteurs</a></li>
+                    </ul>
+                </li>
+                //<li><a asp-controller="Users" asp-action="Index">Tous les adhérents</a></li>
+                //<li><a asp-controller="Consumers" asp-action="Index">Consomateurs</a></li>
+                //<li><a asp-controller="Producers" asp-action="Index">Producteurs</a></li>
+              }
+              @if (User.IsInRole(Configurations.Role.Administrator.ToString()))
+              {
+              <li><a asp-controller="ApplicationConfig" asp-action="Index">Administrer le site</a></li>
+              }
           }
         </ul>
       </div>

@@ -1,74 +1,98 @@
-﻿@model IEnumerable<Stolons.Models.Consumer>
+﻿@model IEnumerable<Stolons.Models.Sympathizer>
 
-@{
-    ViewData["Title"] = "Liste des adhérents";
-}
+<script>
+    jQuery(document).ready(function () {
+        jQuery('.tabs .tab-links a').on('click', function (e) {
+            var currentAttrValue = jQuery(this).attr('href');
 
-<h2>@ViewData["Title"]</h2>
+            // Show/Hide Tabs
+            jQuery('.tabs ' + currentAttrValue).show().siblings().hide();
 
-<p>
-    <a asp-action="Create" >Ajouter un nouvel adhérent</a>
-</p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(item => item.Id)
-        </th>
-        <th>
-            @Html.DisplayNameFor(item => item.Avatar)
-        </th>
-        <th>
-            @Html.DisplayNameFor(item => item.Name)
-        </th>
-        <th>
-            @Html.DisplayNameFor(item => item.Surname)
-        </th>
-        <th>
-            @Html.DisplayNameFor(item => item.PhoneNumber)
-        </th>
-        <th>
-            @Html.DisplayNameFor(item => item.Cotisation)
-        </th>
-        <th>
-            @Html.DisplayNameFor(item => item.Enable)
-        </th>
-        <th></th>
-    </tr>
-    @foreach (var item in Model)
-    {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td class="tdAvatarList">
-                <div class="userListAvatar" >
-                    <img src="@Html.DisplayFor(modelItem => item.Avatar)" class="responsiveImage circleAvatarDiv"  />
-                </div>
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Surname)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PhoneNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Cotisation)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Enable)
-            </td>
-            <td>
-                <a asp-action="ShowBills" asp-route-id="@item.Id">Factures</a> |
-                <a asp-action="Edit" asp-route-id="@item.Id">Modifier</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Fiche</a> |
-                @if (User.IsInRole(Configurations.Role.Administrator.ToString()))
+            // Change/remove current tab to active
+            jQuery(this).parent('li').addClass('active').siblings().removeClass('active');
+
+            e.preventDefault();
+        });
+    });
+</script>
+
+<div class="tabs">
+    <ul class="tab-links">
+        <li class="active"><a href="#tab1">Adhérents</a></li>
+        <li><a href="#tab2">Sympatisants</a></li>
+        <li><a href="#tab3">Consomateurs</a></li>
+        <li><a href="#tab4">Producteurs</a></li>
+    </ul>
+
+    <div class="tab-content">
+        <div id="tab1" class="tab active">
+            <h2>Liste de tous les adhérents</h2>
+            <table class="table">
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(item => item.Id)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(item => item.Name)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(item => item.Surname)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(item => item.PhoneNumber)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(item => item.Cotisation)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(item => item.Enable)
+                    </th>
+                </tr>
+                @foreach (var item in Model)
                 {
-                    <a asp-action="Delete" asp-route-id="@item.Id">Supprimer</a>
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Id)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Surname)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PhoneNumber)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Cotisation)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Enable)
+                        </td>
+                    </tr>
                 }
-            </td>
-        </tr>
-    }
-</table>
+            </table>
+       </div>
+
+        <div id="tab2" class="tab">
+            @{
+                var sympathizer = Model.OfType<Sympathizer>();
+                Html.RenderPartial("~/Views/Sympathizer/Index.cshtml", sympathizer);
+            }
+       </div>
+
+        <div id="tab3" class="tab">
+            @{ 
+                var consumers = Model.OfType<Consumer>();
+                Html.RenderPartial("~/Views/Consumers/Index.cshtml", consumers);
+            }
+        </div>
+
+        <div id="tab4" class="tab">
+            @{
+                var producers = Model.OfType<Producer>();
+                Html.RenderPartial("~/Views/Producers/Index.cshtml", producers);
+            }
+        </div>
+    </div>
+</div>
