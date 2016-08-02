@@ -42,6 +42,7 @@ namespace Stolons.Migrations
                 {
                     Id = table.Column<Guid>(nullable: false),
                     Comission = table.Column<int>(nullable: false),
+                    ConsumerSubscription = table.Column<int>(nullable: false),
                     ContactMailAddress = table.Column<string>(nullable: true),
                     DeliveryAndStockUpdateDayStartDate = table.Column<int>(nullable: false),
                     DeliveryAndStockUpdateDayStartDateHourStartDate = table.Column<int>(nullable: false),
@@ -55,11 +56,14 @@ namespace Stolons.Migrations
                     OrderDeliveryMessage = table.Column<string>(nullable: true),
                     OrderHourStartDate = table.Column<int>(nullable: false),
                     OrderMinuteStartDate = table.Column<int>(nullable: false),
+                    ProducerSubscription = table.Column<int>(nullable: false),
                     SimulationMode = table.Column<int>(nullable: false),
                     StolonsAboutPageText = table.Column<string>(nullable: true),
                     StolonsAddress = table.Column<string>(nullable: true),
                     StolonsLabel = table.Column<string>(nullable: true),
-                    StolonsPhoneNumber = table.Column<string>(nullable: true)
+                    StolonsPhoneNumber = table.Column<string>(nullable: true),
+                    SubscriptionStartMonth = table.Column<int>(nullable: false),
+                    SympathizerSubscription = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -76,6 +80,22 @@ namespace Stolons.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ProductTypes", x => x.Name);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Transactions",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    Amount = table.Column<int>(nullable: false),
+                    Category = table.Column<int>(nullable: false),
+                    Date = table.Column<DateTime>(nullable: false),
+                    Description = table.Column<string>(nullable: true),
+                    Type = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Transactions", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -553,6 +573,9 @@ namespace Stolons.Migrations
 
             migrationBuilder.DropTable(
                 name: "ProducerBills");
+
+            migrationBuilder.DropTable(
+                name: "Transactions");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

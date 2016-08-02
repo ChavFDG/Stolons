@@ -3,7 +3,14 @@
 Priorité 0 pour 1er Octobre :
 - Gestion des adhérent sympatisant
 - Gestion des cotisations
-- Virer "éngagé dans le bio"
+
+
+UTILISATEUR
+- Ajouter un bouton cotisation payé => affiche le prix à payer (à la demi année) et ajoute automatiquement une entré dans la table COMPTABILITE
+- Ajouter un code couleur pour les cotisation payé, non payé
+- Ajouter un commentaire de blocage pour les User
+- Quand un utilisateur est bloqué, afficher le commentaire de blocage
+- Regrouper les utilisateurs dans un meme onglet et les répartir en trois groupe => Producteurs, Utilisateur, Sympatisant
 
 Priorité 1 : retour producteur
 DAMIEN
@@ -44,7 +51,20 @@ BESOIN EN IMAGE ( Marion )
 - Logo de Stolons
 
 
-FAIT :
+
+MISE à jour post core :
+- Virer "éngagé dans le bio"
+- Dans la table ApplicationConfig
+-- Ajout de la cotisation sympathisant / consomateur / producteur 
+-- Ajout du mois de début de cotisation
+- Création de la table Transaction pour la gestion de la comptabilité de la structure
+
+
+
+
+
+
+MISE à jour JUILLET :
 - Pouvoir rendre un produit disponible lors de la période commande (mais pas l'inverse)
 - Pouvoir editer un produit seulement si il est indisponible ou si on est en stock update.
 - Sur la factures globals pour Stolons afficher les totals aux kg.

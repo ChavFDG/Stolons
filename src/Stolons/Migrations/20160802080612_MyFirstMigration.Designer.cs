@@ -8,7 +8,7 @@ using Stolons.Models;
 namespace Stolons.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20160724135030_MyFirstMigration")]
+    [Migration("20160802080612_MyFirstMigration")]
     partial class MyFirstMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -130,6 +130,8 @@ namespace Stolons.Migrations
 
                     b.Property<int>("Comission");
 
+                    b.Property<int>("ConsumerSubscription");
+
                     b.Property<string>("ContactMailAddress");
 
                     b.Property<int>("DeliveryAndStockUpdateDayStartDate");
@@ -156,6 +158,8 @@ namespace Stolons.Migrations
 
                     b.Property<int>("OrderMinuteStartDate");
 
+                    b.Property<int>("ProducerSubscription");
+
                     b.Property<int>("SimulationMode");
 
                     b.Property<string>("StolonsAboutPageText");
@@ -165,6 +169,10 @@ namespace Stolons.Migrations
                     b.Property<string>("StolonsLabel");
 
                     b.Property<string>("StolonsPhoneNumber");
+
+                    b.Property<int>("SubscriptionStartMonth");
+
+                    b.Property<int>("SympathizerSubscription");
 
                     b.HasKey("Id");
 
@@ -393,6 +401,26 @@ namespace Stolons.Migrations
                     b.HasIndex("ConsumerId");
 
                     b.ToTable("TempsWeekBaskets");
+                });
+
+            modelBuilder.Entity("Stolons.Models.Transaction", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("Amount");
+
+                    b.Property<int>("Category");
+
+                    b.Property<DateTime>("Date");
+
+                    b.Property<string>("Description");
+
+                    b.Property<int>("Type");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Transactions");
                 });
 
             modelBuilder.Entity("Stolons.Models.User", b =>

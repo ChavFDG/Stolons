@@ -24,8 +24,17 @@ namespace Stolons.Models
 
         [Display(Name = "Texte de la page \"qui somme nous\"")]
         public string StolonsAboutPageText { get; set; } = @"Stolons est une association à visé social, étique et solidaire.";
+        //Cotisation
+        [Display(Name = "Cotisation sympathisant (€)")]
+        public int SympathizerSubscription { get; set; } = 2;
+        [Display(Name = "Cotisation consomateur (€)")]
+        public int ConsumerSubscription { get; set; } = 16;
+        [Display(Name = "Cotisation producteur (€)")]
+        public int ProducerSubscription { get; set; } = 20;
+        [Display(Name = "Mois de départ des cotisations")]
+        public Month SubscriptionStartMonth { get; set; } = Month.September;
+
         //Mails
-        
         [Display(Name = "Courriel de contact")]
         public string ContactMailAddress { get; set; } = "contact@stolons.org";
         [Display(Name = "Courriel d'envoie des mails")]
@@ -62,7 +71,7 @@ namespace Stolons.Models
         public bool IsModeSimulated { get; set; } = false;
 
         [Display(Name = "Choix du mode à simuler")]
-        public Modes SimulationMode { get; set; } = Modes.Order;
+        public Modes SimulationMode { get; set; } = Modes.Order; 
 
         public enum Modes
         {
@@ -70,6 +79,34 @@ namespace Stolons.Models
             Order = 0,
             [Display(Name = "Livraison et mise à jour des stocks")]
             DeliveryAndStockUpdate = 1
+        }
+    
+        public enum Month
+        {
+            [Display(Name ="Janvier")]
+            January = 1,
+            [Display(Name = "Février")]
+            February = 2,
+            [Display(Name = "Mars")]
+            March = 3,
+            [Display(Name = "Avril")]
+            April = 4,
+            [Display(Name = "Mai")]
+            May = 5,
+            [Display(Name = "Juin")]
+            June = 6,
+            [Display(Name = "Juillet")]
+            July = 7,
+            [Display(Name = "Aout")]
+            August = 8,
+            [Display(Name = "Septembre")]
+            September = 9,
+            [Display(Name = "Octobre")]
+            October = 10,
+            [Display(Name = "Novembre")]
+            November = 11,
+            [Display(Name = "Decembre")]
+            December = 12
         }
 
     }

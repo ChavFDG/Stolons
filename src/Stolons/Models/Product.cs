@@ -237,9 +237,7 @@ namespace Stolons.Models
             [Display(Name = "Fairtrade")]
             Fairtrade = 3,
             [Display(Name = "Max Havelaar ")]
-            MaxHavelaar = 4,
-            [Display(Name = "Engagé dans le bio")]
-            BioEngaged = 5
+            MaxHavelaar = 4
         }
 
     }
