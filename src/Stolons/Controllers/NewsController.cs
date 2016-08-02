@@ -84,7 +84,7 @@ namespace Stolons.Controllers
                 news.ImageLink = Path.Combine(Configurations.NewsImageStockagePath,fileName);
                 //TODO Get logged in User and add it to the news
                 var appUser = await GetCurrentUserAsync(_userManager);
-                SympathizerUser user;
+                Sympathizer user;
                 user = _context.Consumers.FirstOrDefault(x => x.Email == appUser.Email);
                 if(user == null)
                 {
@@ -135,7 +135,7 @@ namespace Stolons.Controllers
                     news.ImageLink = Path.Combine(Configurations.NewsImageStockagePath, fileName);
                 }
                 var appUser = await GetCurrentUserAsync(_userManager);
-                SympathizerUser user;
+                Sympathizer user;
                 user = _context.Consumers.FirstOrDefault(x => x.Email == appUser.Email);
 		if (user == null)
                 {

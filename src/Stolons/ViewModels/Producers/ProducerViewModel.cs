@@ -25,7 +25,7 @@ namespace Stolons.ViewModels.Producers
         public string OriginalEmail { get; set; }
         public Producer Producer { get; set; }
 
-        public SympathizerUser User
+        public Sympathizer User
         {
             get
             {

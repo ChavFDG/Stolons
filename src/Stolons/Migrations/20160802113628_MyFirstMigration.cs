@@ -83,22 +83,6 @@ namespace Stolons.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Transactions",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false),
-                    Amount = table.Column<int>(nullable: false),
-                    Category = table.Column<int>(nullable: false),
-                    Date = table.Column<DateTime>(nullable: false),
-                    Description = table.Column<string>(nullable: true),
-                    Type = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Transactions", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "StolonsUsers",
                 columns: table => new
                 {
@@ -130,6 +114,22 @@ namespace Stolons.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_StolonsUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Transactions",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    Amount = table.Column<int>(nullable: false),
+                    Category = table.Column<int>(nullable: false),
+                    Date = table.Column<DateTime>(nullable: false),
+                    Description = table.Column<string>(nullable: true),
+                    Type = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Transactions", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(

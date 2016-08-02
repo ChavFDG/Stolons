@@ -53,7 +53,7 @@ namespace Stolons.Controllers
             if (ModelState.IsValid)
             {
                 //D'abord on regarde si il existe bien un User avec ce mail
-                SympathizerUser stolonsUser = _context.StolonsUsers.FirstOrDefault(x => x.Email.Equals(model.Email, StringComparison.CurrentCultureIgnoreCase));
+                Sympathizer stolonsUser = _context.StolonsUsers.FirstOrDefault(x => x.Email.Equals(model.Email, StringComparison.CurrentCultureIgnoreCase));
                 if(stolonsUser == null)
                 {
                     ModelState.AddModelError(string.Empty, "L'adresse email saisie n'existe pas");
@@ -64,7 +64,7 @@ namespace Stolons.Controllers
                     //On regarde si le compte de l'utilisateur est actif
                     if (!stolonsUser.Enable)
                     {
-                        ModelState.AddModelError(string.Empty, "Votre compte a été bloqué. Veuillez contacter l'association pour connaitre la raison.");
+                        ModelState.AddModelError(string.Empty, "Votre compte a été bloqué pour la raison suivante : " + stolonsUser.DisableReason);
                         return View(model);
                     }
                     // Il a un mot de passe, on le log si il est bon

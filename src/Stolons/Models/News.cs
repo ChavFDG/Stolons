@@ -16,7 +16,7 @@ namespace Stolons.Models
         public int UserForeignKey { get; set; }
 
         [ForeignKey("UserForeignKey")]
-        public SympathizerUser User { get; set; }
+        public Sympathizer User { get; set; }
 
         [Required]
         [Display(Name = "Titre")]

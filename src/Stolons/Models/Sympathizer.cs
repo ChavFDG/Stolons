@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Stolons.Models
 {
-    public class SympathizerUser
+    public class Sympathizer
     {
         [Key]
         [Display(Name = "Identifiant")]

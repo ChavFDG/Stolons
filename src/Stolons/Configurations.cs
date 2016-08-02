@@ -90,9 +90,6 @@ namespace Stolons
 
         #endregion Configuration
 
-
-
-
         #region UserManagement
 
         public const string Role_User = "User";
@@ -109,14 +106,14 @@ namespace Stolons
             Administrator = 3
         }
 
-        public const string UserType_SimpleUser = "SimpleUser";
+        public const string UserType_SympathizerUser = "Sympathizer";
         public const string UserType_Consumer = "Consumer";
         public const string UserType_Producer  = "Producer";
 
         public enum UserType
         {
-            [Display(Name = "Simple adhérent")]
-            SimpleUser,
+            [Display(Name = "Adhérent Sympathisant")]
+            Sympathizer,
             [Display(Name = "Adhérent consomateur")]
             Consumer,
             [Display(Name = "Adhérent producteur")]
@@ -132,7 +129,7 @@ namespace Stolons
         {
             return Enum.GetNames(typeof(UserType));
         }
-        public static string GetAlias(this SympathizerUser user)
+        public static string GetAlias(this Sympathizer user)
         {
             if (user is Producer)
             {
@@ -140,7 +137,7 @@ namespace Stolons
             }
             else
             {
-                return "Les Stolons de Privas";
+                return ApplicationConfig.StolonsLabel ;
             }
         }
         #endregion UserManagement
@@ -186,11 +183,6 @@ namespace Stolons
         }
 
         #endregion FIleManagement
-
-
-
-
-
 
     }
 }

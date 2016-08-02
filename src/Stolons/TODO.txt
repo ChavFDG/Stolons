@@ -26,6 +26,7 @@ NICO
 - Ajouter des transactions pour les modifs sur le stock
 - Ajouter validation lors de la modif producteur du stock en cours
 - Bug du Temps week basket
+- Quand on se log et qu'il y a des erreus, les erreus ne s'affichent pas coté client (exemple, mauvais mot de passe, ou compte bloqué ...)
 
 NOUS
 - Revoir la gestion des roles ( supprimer, éditer, changement de mail ...)

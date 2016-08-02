@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Stolons.Models
 {
-    public class Producer : Consumer
+    public class Producer : Sympathizer
     {
         [Display(Name = "Raison sociale")]
         public string CompanyName { get; set; }
