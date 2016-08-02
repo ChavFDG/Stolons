@@ -386,7 +386,7 @@ namespace Stolons.Migrations
                     b.ToTable("ProductTypes");
                 });
 
-            modelBuilder.Entity("Stolons.Models.SympathizerUser", b =>
+            modelBuilder.Entity("Stolons.Models.Sympathizer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
@@ -422,9 +422,9 @@ namespace Stolons.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("StolonsUsers");
+                    b.ToTable("Sympathizers");
 
-                    b.HasDiscriminator<string>("Discriminator").HasValue("SympathizerUser");
+                    b.HasDiscriminator<string>("Discriminator").HasValue("Sympathizer");
                 });
 
             modelBuilder.Entity("Stolons.Models.TempWeekBasket", b =>
@@ -479,7 +479,7 @@ namespace Stolons.Migrations
 
             modelBuilder.Entity("Stolons.Models.Consumer", b =>
                 {
-                    b.HasBaseType("Stolons.Models.SympathizerUser");
+                    b.HasBaseType("Stolons.Models.Sympathizer");
 
 
                     b.ToTable("Consumer");
@@ -489,7 +489,7 @@ namespace Stolons.Migrations
 
             modelBuilder.Entity("Stolons.Models.Producer", b =>
                 {
-                    b.HasBaseType("Stolons.Models.SympathizerUser");
+                    b.HasBaseType("Stolons.Models.Sympathizer");
 
                     b.Property<int>("Area");
 
@@ -553,7 +553,7 @@ namespace Stolons.Migrations
 
             modelBuilder.Entity("Stolons.Models.ApplicationUser", b =>
                 {
-                    b.HasOne("Stolons.Models.SympathizerUser", "User")
+                    b.HasOne("Stolons.Models.Sympathizer", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
                 });
@@ -583,7 +583,7 @@ namespace Stolons.Migrations
 
             modelBuilder.Entity("Stolons.Models.News", b =>
                 {
-                    b.HasOne("Stolons.Models.SympathizerUser", "User")
+                    b.HasOne("Stolons.Models.Sympathizer", "User")
                         .WithMany("News")
                         .HasForeignKey("UserForeignKey")
                         .OnDelete(DeleteBehavior.Cascade);

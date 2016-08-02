@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
-using Stolons.ViewModels.Users;
+using Stolons.ViewModels.Consumers;
 using Microsoft.AspNetCore.Authorization;
 using Stolons.Helpers;
 
@@ -40,7 +40,7 @@ namespace Stolons.Controllers
         [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_Administrator)]
         public IActionResult Index()
         {
-            return View(_context.StolonsUsers.ToList());
+            return View(_context.Sympathizers.ToList());
         }        
     }
 }

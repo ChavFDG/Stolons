@@ -8,9 +8,9 @@ Priorité 0 pour 1er Octobre :
 UTILISATEUR
 - Ajouter un bouton cotisation payé => affiche le prix à payer (à la demi année) et ajoute automatiquement une entré dans la table COMPTABILITE
 - Ajouter un code couleur pour les cotisation payé, non payé
-- Ajouter un commentaire de blocage pour les User
 - Quand un utilisateur est bloqué, afficher le commentaire de blocage
 - Regrouper les utilisateurs dans un meme onglet et les répartir en trois groupe => Producteurs, Utilisateur, Sympatisant
+- Ajotuer un bouton desactiver le compte / activer le compte pour les admins avec ajout du commentaire de blocage
 
 Priorité 1 : retour producteur
 DAMIEN
@@ -20,6 +20,7 @@ DAMIEN
 - Quand on envoie un mail si ça plante faire sorte que tout ne plante pas ! Si c'est bien ça le bug
 
 NICO
+- Revoir la partie d'édition utilisateurs par soit même ( quand on clique sur l'avatar et qu'on veut s'auto éditer)
 - On peut ajouter un produit sans Type, sans catégorie, c'est mal
 - Ajouter la chat box
 - Ajouter des transactions pour les modifs sur le stock

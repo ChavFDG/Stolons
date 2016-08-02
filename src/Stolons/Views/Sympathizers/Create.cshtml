@@ -1,22 +1,22 @@
-@model Stolons.ViewModels.Consumers.ConsumerViewModel
+﻿@model Stolons.ViewModels.Sympathizers.SympathizerViewModel
 
 @{
-    ViewData["Title"] = "Edition de " + Model.Consumer.Surname + " " + Model.Consumer.Name;
+    ViewData["Title"] = "Ajouter un nouveau sympathisant";
 }
 
 <h2>@ViewData["Title"]</h2>
 
-<form asp-action="Edit" enctype="multipart/form-data">
-    @Html.Partial("Templates/EditConsumer")
+<form asp-action="Create" enctype="multipart/form-data">
+    @Html.Partial("Templates/EditSympathizer")
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
-            <input type="submit" value="Editer" class="btn btn-default" />
+            <input type="submit" value="Créer" class="btn btn-default" />
         </div>
     </div>
 </form>
 
 <div>
-    <a asp-action="Index">Retourner aux consomateurs</a>
+    <a asp-action="Index">Retourner aux sympathisants</a>
 </div>
 
 @section Scripts {

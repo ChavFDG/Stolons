@@ -47,12 +47,20 @@
                 @Html.DisplayFor(modelItem => item.Enable)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Modifier</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Fiche</a> |
-                @if (User.IsInRole(Configurations.Role.Administrator.ToString()))
-                {
-                    <a asp-action="Delete" asp-route-id="@item.Id">Supprimer</a>
-                }
+                <div class="dropdown">
+                    <a class="dropdown-toggle btn btn-small btn-default" data-toggle="dropdown" href="#">
+                        Actions
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a asp-action="Edit" asp-route-id="@item.Id" >Modifier</a></li>
+                        <li><a asp-action="Details" asp-route-id="@item.Id" >Voir détail</a></li>
+                        @if (User.IsInRole(Configurations.Role.Administrator.ToString()))
+                        {
+                            <li><a asp-action="Delete" asp-route-id="@item.Id">Supprimer</a></li>
+                        }
+                    </ul>
+                </div>
             </td>
         </tr>
     }

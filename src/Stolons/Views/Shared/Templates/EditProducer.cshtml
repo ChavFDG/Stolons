@@ -4,6 +4,9 @@
   <hr />
   <input asp-for="Producer.Id" hidden="hidden" />
   <input asp-for="OriginalEmail" hidden="hidden" />
+    <input asp-for="Producer.Cotisation" hidden="hidden" />
+    <input asp-for="Producer.Enable" hidden="hidden" />
+    <input asp-for="Producer.RegistrationDate" hidden="hidden" />
   <div class="form-group">
     <label asp-for="Producer.Name" class="col-md-2 control-label"></label>
     <div class="col-md-10">
@@ -118,24 +121,7 @@
       <span asp-validation-for="Producer.Longitude" class="text-danger" />
     </div>
   </div>
-
-  @if (User.IsInRole(Configurations.Role.Volunteer.ToString()) || User.IsInRole(Configurations.Role.Administrator.ToString()))
-  {
-  <hr />
-  <div class="form-group">
-    <div class="col-md-offset-2 col-md-10">
-      <div class="checkbox">
-        <input asp-for="Producer.Cotisation" />
-        <label asp-for="Producer.Cotisation"></label>
-      </div>
-    </div>
-  </div>
-  }
-  else
-  {
-  <input asp-for="Producer.Cotisation" hidden="hidden" />
-  }
-  
+      
   <div class="form-group">
     <label asp-for="UserRole" class="col-md-2 control-label"></label>
     <div class="col-md-10">
@@ -175,22 +161,5 @@
       </select>
       <span asp-validation-for="UserRole" class="text-danger"></span>
     </div>
-  </div>
-  @if (User.IsInRole(Configurations.Role.Administrator.ToString()))
-  {
-  <div class="form-group">
-    <div class="col-md-offset-2 col-md-10">
-      <div class="checkbox">
-        <input asp-for="Producer.Enable" />
-        <label asp-for="Producer.Enable"></label>
-      </div>
-    </div>
-  </div>
-  }
-  else
-  {
-  <input asp-for="Producer.Enable" hidden="hidden" />
-  <input asp-for="UserRole" hidden="hidden" />
-  }
-  <input asp-for="Producer.RegistrationDate" hidden="hidden" />
+  </div>  
 </div>

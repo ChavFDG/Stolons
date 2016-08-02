@@ -1,13 +1,13 @@
-﻿@model Stolons.ViewModels.Consumers.ConsumerViewModel
+@model Stolons.ViewModels.Users.UserStolonViewModel
 
 @{
-    ViewData["Title"] = "Suppresion de : " + Model.Consumer.Surname +" " + Model.Consumer.Name;
+    ViewData["Title"] = "Details de " + Model.Consumer.Surname + " "+ Model.Consumer.Name;
 }
 
 <h2>@ViewData["Title"]</h2>
 
-<h3>Etes vous sur de vouloir supprimer @Model.Consumer.Surname @Model.Consumer.Name</h3>
 <div>
+    <hr />
     <dl class="dl-horizontal">
         <dt>
             @Html.DisplayNameFor(model => model.Consumer.Id)
@@ -38,6 +38,12 @@
         </dt>
         <dd>
             @Html.DisplayFor(model => model.Consumer.RegistrationDate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.UserRole)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.UserRole)
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.Consumer.PhoneNumber)
@@ -82,11 +88,8 @@
             @Html.DisplayFor(model => model.UserRole)
         </dd>
     </dl>
-    
-    <form asp-action="Delete">
-        <div class="form-actions no-color">
-            <a asp-action="Index">Retourner aux adhérents</a> | 
-            <input type="submit" value="Supprimer" class="btn btn-default" />
-        </div>
-    </form>
 </div>
+<p>
+    <a asp-action="Edit" asp-route-id="@Model.Consumer.Id">Editer @Model.Consumer.Surname @Model.Consumer.Name</a> |
+    <a asp-action="Index">Retourner aux adhérents</a>
+</p>

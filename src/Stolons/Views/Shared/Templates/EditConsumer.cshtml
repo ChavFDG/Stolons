@@ -1,4 +1,4 @@
-@model Stolons.ViewModels.Users.ConsumerViewModel
+@model Stolons.ViewModels.Consumers.ConsumerViewModel
 
 <div class="form-horizontal">
     <div class="form-horizontal">
@@ -6,6 +6,9 @@
         <input asp-for="Consumer.Id" hidden="hidden" />
         <input asp-for="OriginalEmail" hidden="hidden" />
         <input asp-for="Consumer.Avatar" hidden="hidden" />
+        <input asp-for="Consumer.Cotisation" hidden="hidden" />
+        <input asp-for="Consumer.Enable" hidden="hidden" />
+        <input asp-for="Consumer.RegistrationDate" hidden="hidden" />
         <div asp-validation-summary="All" class="text-danger"></div>
         <div class="form-group">
             <label asp-for="Consumer.Name" class="col-md-2 control-label"></label>
@@ -62,24 +65,6 @@
                 <span asp-validation-for="Consumer.City" class="text-danger" />
             </div>
         </div>
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <div class="checkbox">
-                    <input asp-for="Consumer.Cotisation" />
-                    <label asp-for="Consumer.Cotisation"></label>
-                </div>
-            </div>
-        </div>
-        @if (User.IsInRole(Configurations.Role.Administrator.ToString()))
-        {
-            <div class="form-group">
-                <div class="col-md-offset-2 col-md-10">
-                    <div class="checkbox">
-                        <input asp-for="Consumer.Enable" />
-                        <label asp-for="Consumer.Enable"></label>
-                    </div>
-                </div>
-            </div>}
         <div class="form-group">
             <label asp-for="UserRole" class="col-md-2 control-label"></label>
             <div class="col-md-10">

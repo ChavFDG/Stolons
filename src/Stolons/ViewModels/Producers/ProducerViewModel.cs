@@ -1,5 +1,5 @@
 ﻿using Stolons.Models;
-using Stolons.ViewModels.Users;
+using Stolons.ViewModels.Consumers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

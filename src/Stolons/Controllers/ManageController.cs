@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 using Stolons.Models;
 using Stolons.Services;
 using Stolons.ViewModels.Manage;
-using Stolons.ViewModels.Users;
+using Stolons.ViewModels.Consumers;
 using Microsoft.AspNetCore.Http;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
