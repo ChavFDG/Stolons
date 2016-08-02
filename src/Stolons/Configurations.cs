@@ -132,7 +132,7 @@ namespace Stolons
         {
             return Enum.GetNames(typeof(UserType));
         }
-        public static string GetAlias(this User user)
+        public static string GetAlias(this SympathizerUser user)
         {
             if (user is Producer)
             {

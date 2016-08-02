@@ -53,7 +53,7 @@ namespace Stolons.Controllers
             if (ModelState.IsValid)
             {
                 //D'abord on regarde si il existe bien un User avec ce mail
-                User stolonsUser = _context.StolonsUsers.FirstOrDefault(x => x.Email.Equals(model.Email, StringComparison.CurrentCultureIgnoreCase));
+                SympathizerUser stolonsUser = _context.StolonsUsers.FirstOrDefault(x => x.Email.Equals(model.Email, StringComparison.CurrentCultureIgnoreCase));
                 if(stolonsUser == null)
                 {
                     ModelState.AddModelError(string.Empty, "L'adresse email saisie n'existe pas");

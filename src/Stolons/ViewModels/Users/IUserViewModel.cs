@@ -8,6 +8,6 @@ namespace Stolons.ViewModels.Users
 {
     public interface IUserViewModel
     {
-        User User { get; }
+        SympathizerUser User { get; }
     }
 }

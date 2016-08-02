@@ -13,7 +13,7 @@ namespace Stolons.Models
         [Display(Name = "Numéro de facture")] //Year_WeekNumber_UserId
         string BillNumber { get; set; }
         [Display(Name = "Utilisateur")]
-        User User { get; set; }
+        SympathizerUser User { get; set; }
         [Display(Name = "Etat")]
         BillState State { get; set; }
 
@@ -36,7 +36,7 @@ namespace Stolons.Models
         public BillState State { get; set; }
 
         [NotMapped]
-        public User User
+        public SympathizerUser User
         {
             get
             {
@@ -66,7 +66,7 @@ namespace Stolons.Models
         public BillState State { get; set; }
 
         [NotMapped]
-        public User User
+        public SympathizerUser User
         {
             get
             {

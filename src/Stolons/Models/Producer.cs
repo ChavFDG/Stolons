@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Stolons.Models
 {
-    public class Producer : User
+    public class Producer : Consumer
     {
         [Display(Name = "Raison sociale")]
         public string CompanyName { get; set; }
@@ -59,7 +59,7 @@ namespace Stolons.Models
         [Url]
         public string WebSiteLink { get; set; }
         [Display(Name = "Factures")]
-        public List<ProducerBill> Bills { get; set; }
+        public List<ProducerBill> ProducerBills { get; set; }
 	    [Display(Name = "Latitude")]
         public double Latitude { get; set; }
 	    [Display(Name = "Longitude")]

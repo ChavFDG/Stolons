@@ -58,7 +58,7 @@ namespace Stolons.Controllers
                 : "";
 
             var user = await GetCurrentUserAsync(_userManager);
-            User stolonsUser = _context.Consumers.FirstOrDefault(m => m.Email == user.Email);
+            SympathizerUser stolonsUser = _context.Consumers.FirstOrDefault(m => m.Email == user.Email);
             if(stolonsUser == null)
             {
                 //It's a producer

@@ -27,7 +27,7 @@ namespace Stolons.ViewModels.Users
         [Display(Name = "Droit utilisateur ")]
         public Configurations.Role UserRole { get; set; }
 
-        public User User
+        public SympathizerUser User
         {
             get
             {

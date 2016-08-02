@@ -367,7 +367,7 @@ namespace Stolons
 
             if (context.Consumers.Any(x => x.Email == email) || context.Producers.Any(x => x.Email == email))
                 return;
-            User user;
+            SympathizerUser user;
             switch (userType)
             {
                 case Configurations.UserType.Producer:

@@ -16,7 +16,7 @@ namespace Stolons.Models
     //dotnet ef database update
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
-        public DbSet<User> StolonsUsers { get; set; }
+        public DbSet<SympathizerUser> StolonsUsers { get; set; }
         public DbSet<Producer> Producers { get; set; }
         public DbSet<Consumer> Consumers { get; set; }
         public DbSet<News> News { get; set; }
