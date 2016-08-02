@@ -5,15 +5,15 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Stolons.ViewModels.Users
+namespace Stolons.ViewModels.Consumers
 {
-    public class UserStolonViewModel : IUserViewModel
+    public class ConsumerViewModel : IUserViewModel
     {
-        public UserStolonViewModel()
+        public ConsumerViewModel()
         {
 
         }
-        public UserStolonViewModel(Consumer consumer, Configurations.Role userRole)
+        public ConsumerViewModel(Consumer consumer, Configurations.Role userRole)
         {
             Consumer = consumer;
             UserRole = userRole;

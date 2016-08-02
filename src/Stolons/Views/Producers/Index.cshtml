@@ -7,7 +7,7 @@
 <h2>@ViewData["Title"]</h2>
 
 <p>
-    <a asp-action="Create">Ajouter un nouveau producteur</a>
+    <a asp-action="Create" class="btn btn-small btn-default">Ajouter un nouveau producteur</a>
 </p>
 <table class="table">
     <tr>
@@ -67,12 +67,12 @@
             @Html.DisplayFor(modelItem => item.Enable)
         </td>
         <td>
-            <a asp-action="ShowBills" asp-route-id="@item.Id">Factures</a> |
-            <a asp-action="Edit" asp-route-id="@item.Id">Modifier</a> |
-            <a asp-action="Details" asp-route-id="@item.Id">Fiche</a> |
+            <a asp-action="ShowBills" asp-route-id="@item.Id" class="btn btn-small btn-default">Factures</a>
+            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-small btn-default">Modifier</a>
+            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-small btn-default">Fiche</a>
             @if (User.IsInRole(Configurations.Role.Administrator.ToString()))
             {
-                <a asp-action="Delete" asp-route-id="@item.Id">Supprimer</a>
+                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-small btn-default">Supprimer</a>
             }
         </td>
     </tr>

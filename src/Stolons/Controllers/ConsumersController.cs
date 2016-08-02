@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
-using Stolons.ViewModels.Users;
+using Stolons.ViewModels.Consumers;
 using Microsoft.AspNetCore.Authorization;
 using Stolons.Helpers;
 
@@ -60,21 +60,21 @@ namespace Stolons.Controllers
             ApplicationUser appUser = _context.Users.First(x => x.Email == consumer.Email);
             IList<string> roles = await _userManager.GetRolesAsync(appUser);
             string role = roles.FirstOrDefault(x => Configurations.GetRoles().Contains(x));
-            return View(new UserStolonViewModel(consumer, (Configurations.Role)Enum.Parse(typeof(Configurations.Role), role)));
+            return View(new ConsumerViewModel(consumer, (Configurations.Role)Enum.Parse(typeof(Configurations.Role), role)));
         }
 
         // GET: Consumers/Create
         [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_Administrator)]
         public IActionResult Create()
         {
-            return View(new UserStolonViewModel(new Consumer(),Configurations.Role.User));
+            return View(new ConsumerViewModel(new Consumer(),Configurations.Role.User));
         }
 
         // POST: Consumers/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_Administrator)]
-        public async Task<IActionResult> Create(UserStolonViewModel vmConsumer, IFormFile uploadFile)
+        public async Task<IActionResult> Create(ConsumerViewModel vmConsumer, IFormFile uploadFile)
         {
             if (ModelState.IsValid)
             {
@@ -134,14 +134,14 @@ namespace Stolons.Controllers
             ApplicationUser appUser = _context.Users.First(x => x.Email == consumer.Email);
             IList<string> roles = await _userManager.GetRolesAsync(appUser);
             string role = roles.FirstOrDefault(x => Configurations.GetRoles().Contains(x));
-            return View(new UserStolonViewModel(consumer, (Configurations.Role)Enum.Parse(typeof(Configurations.Role), role)));
+            return View(new ConsumerViewModel(consumer, (Configurations.Role)Enum.Parse(typeof(Configurations.Role), role)));
         }
 
         // POST: Consumers/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_Administrator)]
-        public async Task<IActionResult> Edit(UserStolonViewModel consumerVm, IFormFile uploadFile, Configurations.Role UserRole)
+        public async Task<IActionResult> Edit(ConsumerViewModel consumerVm, IFormFile uploadFile, Configurations.Role UserRole)
         {
             if (ModelState.IsValid)
             {
@@ -196,7 +196,7 @@ namespace Stolons.Controllers
             ApplicationUser appUser = _context.Users.First(x => x.Email == consumer.Email);
             IList<string> roles = await _userManager.GetRolesAsync(appUser);
             string role = roles.FirstOrDefault(x => Configurations.GetRoles().Contains(x));
-            return View(new UserStolonViewModel(consumer, (Configurations.Role)Enum.Parse(typeof(Configurations.Role), role)));
+            return View(new ConsumerViewModel(consumer, (Configurations.Role)Enum.Parse(typeof(Configurations.Role), role)));
         }
 
         // POST: Consumers/Delete/5

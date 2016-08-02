@@ -6,112 +6,17 @@
 
 <h2>@ViewData["Title"]</h2>
 
-<form asp-action="Create"  enctype="multipart/form-data">
-    <div class="form-horizontal">
-        <hr />
-        <div asp-validation-summary="All" class="text-danger"></div>
-        <div class="form-group">
-            <label asp-for="Consumer.Name" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Consumer.Name" class="form-control" />
-                <span asp-validation-for="Consumer.Name" class="text-danger" />
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Consumer.Surname" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Consumer.Surname" class="form-control" />
-                <span asp-validation-for="Consumer.Surname" class="text-danger" />
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Consumer.Email" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Consumer.Email" class="form-control" />
-                <span asp-validation-for="Consumer.Email" class="text-danger" />
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Consumer.Avatar" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input type="file" accept="image/*" name="uploadFile" class="form-control" />
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Consumer.PhoneNumber" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Consumer.PhoneNumber" class="form-control" />
-                <span asp-validation-for="Consumer.PhoneNumber" class="text-danger" />
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Consumer.Address" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Consumer.Address" class="form-control" />
-                <span asp-validation-for="Consumer.Address" class="text-danger" />
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Consumer.PostCode" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Consumer.PostCode" class="form-control" />
-                <span asp-validation-for="Consumer.PostCode" class="text-danger" />
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Consumer.City" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Consumer.City" class="form-control" />
-                <span asp-validation-for="Consumer.City" class="text-danger" />
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <div class="checkbox">
-                    <input asp-for="Consumer.Cotisation" />
-                    <label asp-for="Consumer.Cotisation"></label>
-                </div>
-            </div>
-        </div>
-	@if (User.IsInRole(Configurations.Role.Administrator.ToString()))
-	{
-        <div class="form-group">
-          <div class="col-md-offset-2 col-md-10">
-            <div class="checkbox">
-              <input asp-for="Consumer.Enable" />
-              <label asp-for="Consumer.Enable"></label>
-            </div>
-          </div>
-        </div>
-	}
-        <div class="form-group">
-          <label asp-for="UserRole" class="col-md-2 control-label"></label>
-          <div class="col-md-10">
-	    <select id="UserRole" class="form-control valid" name="UserRole" data-val-required="The Droit utilisateur field is required." data-val="true" aria-required="true" aria-invalid="false" aria-describedby="UserRole-error">
-	      <option value="1"> Adhérent </option>
-            @if (User.IsInRole(Configurations.Role.Volunteer.ToString()) ||User.IsInRole(Configurations.Role.Administrator.ToString()))
-            {
-                <option value="2">Bénévole</option>
-            }
-	        @if (User.IsInRole(Configurations.Role.Administrator.ToString()))
-	        {
-	            <option value="3">Administrateur</option>
-	        }
-	    </select>
-            <!-- <select asp-for="UserRole" asp-items="Html.GetEnumSelectList<Configurations.Role>()" class="form-control"></select> -->
-            <span asp-validation-for="UserRole" class="text-danger"></span>
-          </div>
-        </div>
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-              <input type="submit" value="Ajouter" class="btn btn-default" />
-            </div>
+<form asp-action="Create" enctype="multipart/form-data">
+    @Html.Partial("Templates/EditConsumer")
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Créer" class="btn btn-default" />
         </div>
     </div>
 </form>
 
 <div>
-    <a asp-action="Index">Revenir aux adhérents</a>
+    <a asp-action="Index">Retourner aux producteurs</a>
 </div>
 
 @section Scripts {

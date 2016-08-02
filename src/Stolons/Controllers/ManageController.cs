@@ -124,14 +124,14 @@ namespace Stolons.Controllers
             }
             IList<string> roles = await _userManager.GetRolesAsync(user);
             string role = roles.FirstOrDefault(x => Configurations.GetRoles().Contains(x));
-            return View(new UserStolonViewModel(consumer, (Configurations.Role)Enum.Parse(typeof(Configurations.Role), role)));
+            return View(new ConsumerViewModel(consumer, (Configurations.Role)Enum.Parse(typeof(Configurations.Role), role)));
         }
 
         // POST: Consumers/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize()]
-        public async Task<IActionResult> ChangeUserInformations(UserStolonViewModel userStolonVm, IFormFile uploadFile, Configurations.Role UserRole)
+        public async Task<IActionResult> ChangeUserInformations(ConsumerViewModel userStolonVm, IFormFile uploadFile, Configurations.Role UserRole)
         {
             if (ModelState.IsValid)
             {

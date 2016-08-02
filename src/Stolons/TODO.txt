@@ -20,7 +20,6 @@ DAMIEN
 - Quand on envoie un mail si ça plante faire sorte que tout ne plante pas ! Si c'est bien ça le bug
 
 NICO
-- Mutualisé la l'ajout / édition des adhérents ( comme pour les producteurs )
 - On peut ajouter un produit sans Type, sans catégorie, c'est mal
 - Ajouter la chat box
 - Ajouter des transactions pour les modifs sur le stock
@@ -59,6 +58,7 @@ MISE à jour post core :
 -- Ajout de la cotisation sympathisant / consomateur / producteur 
 -- Ajout du mois de début de cotisation
 - Création de la table Transaction pour la gestion de la comptabilité de la structure
+- Mutualisé la l'ajout / édition des adhérents ( comme pour les producteurs )
 
 
 

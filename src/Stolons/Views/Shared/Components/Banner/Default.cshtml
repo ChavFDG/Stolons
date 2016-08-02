@@ -52,8 +52,8 @@
                     </ul>
                 </li>
                 //<li><a asp-controller="Users" asp-action="Index">Tous les adhérents</a></li>
-                //<li><a asp-controller="Consumers" asp-action="Index">Consomateurs</a></li>
-                //<li><a asp-controller="Producers" asp-action="Index">Producteurs</a></li>
+                <li><a asp-controller="Consumers" asp-action="Index">Consomateurs</a></li>
+                <li><a asp-controller="Producers" asp-action="Index">Producteurs</a></li>
               }
               @if (User.IsInRole(Configurations.Role.Administrator.ToString()))
               {
