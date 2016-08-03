@@ -19,8 +19,8 @@ namespace Stolons.Models
         [Display(Name = "Numéro de téléphone de la structure")]
         public string StolonsPhoneNumber { get; set; } = "06 64 86 66 93";
 
-        [Display(Name = "Comission de la structure en % ")]
-        public int Comission { get; set; } = 5;
+        [Display(Name = "Commission de la structure en % ")]
+        public int Fee { get; set; } = 5;
 
         [Display(Name = "Texte de la page \"qui somme nous\"")]
         public string StolonsAboutPageText { get; set; } = @"Stolons est une association à visé social, étique et solidaire.";

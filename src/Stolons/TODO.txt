@@ -1,25 +1,19 @@
 ﻿A faire :
 
 Priorité 0 pour 1er Octobre :
-- Gestion des adhérent sympatisant
-- Gestion des cotisations
 
-
-UTILISATEUR
-- Ajouter un bouton cotisation payé => affiche le prix à payer (à la demi année) et ajoute automatiquement une entré dans la table COMPTABILITE
-- Ajouter un code couleur pour les cotisation payé, non payé
-- Quand un utilisateur est bloqué, afficher le commentaire de blocage
-- Regrouper les utilisateurs dans un meme onglet et les répartir en trois groupe => Producteurs, Utilisateur, Sympatisant
-- Ajotuer un bouton desactiver le compte / activer le compte pour les admins avec ajout du commentaire de blocage
 
 Priorité 1 : retour producteur
 DAMIEN
+- Ajouter dans le mail aux producteurs un résumé de la facture
+- Ajouter dans le excel un résumé des commande avec juste Nom du produit / Quantité total 
 - Pouvoir reseter les mot de passe des adhérents => envoie d'un mail à l'adhérent
 - Réduire automatiquement la taille des images importés
 - Voir pour envoyer les fichier en PDF !!! Voir XLS déjà
 - Quand on envoie un mail si ça plante faire sorte que tout ne plante pas ! Si c'est bien ça le bug
 
 NICO
+- Ajouter le fait d'entrer le commentaire de blocage lors de la désactivatio nd'un compte
 - Revoir la partie d'édition utilisateurs par soit même ( quand on clique sur l'avatar et qu'on veut s'auto éditer)
 - On peut ajouter un produit sans Type, sans catégorie, c'est mal
 - Ajouter la chat box
@@ -60,6 +54,13 @@ MISE à jour post core :
 -- Ajout du mois de début de cotisation
 - Création de la table Transaction pour la gestion de la comptabilité de la structure
 - Mutualisé la l'ajout / édition des adhérents ( comme pour les producteurs )
+- Ajotuer un bouton desactiver le compte / activer le compte pour les admins 
+- Gestion des adhérent sympatisant
+- Gestion des cotisations
+- Gestion des frais généraux de l'asso
+- Ajouter un bouton cotisation payé => affiche le prix à payer (à la demi année) et ajoute automatiquement une entré dans la table COMPTABILITE
+- Ajouter un code couleur pour les cotisation payé, non payé
+- Quand un utilisateur est bloqué, afficher le commentaire de blocage
 
 
 

@@ -20,6 +20,11 @@ namespace Stolons.Models
 
         [Display(Name = "Date d'édition")]
         DateTime EditionDate { get; set; }
+        
+        [Display(Name = "Montant")]
+        double Amount { get; set; }
+
+
     }
     public class ConsumerBill : IBill
     {
@@ -49,6 +54,9 @@ namespace Stolons.Models
 
         [Display(Name = "Adhérant")]
         public User User { get; set; }
+
+        [Display(Name = "Montant")]
+        public double Amount { get; set; }
     }
 
     public class ProducerBill : IBill
@@ -77,6 +85,30 @@ namespace Stolons.Models
             set
             {
                 Producer = value as Producer;
+            }
+        }
+
+        [Display(Name = "Montant")]
+        public double Amount { get; set; }
+
+        [Display(Name = "Commission")]
+        public int Fee { get; set; }
+
+        [NotMapped]
+        public double FeeAmount
+        {
+            get
+            {
+                return Amount / 100 * Fee;
+            }
+        }
+
+        [NotMapped]
+        public double ProducerAmount
+        {
+            get
+            {
+                return Amount - (Amount / 100 * Fee);
             }
         }
     }

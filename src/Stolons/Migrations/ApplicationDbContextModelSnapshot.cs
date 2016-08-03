@@ -127,9 +127,7 @@ namespace Stolons.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("Comission");
-
-                    b.Property<int>("ConsumerSubscription");
+                    b.Property<double>("ConsumerSubscription");
 
                     b.Property<string>("ContactMailAddress");
 
@@ -138,6 +136,8 @@ namespace Stolons.Migrations
                     b.Property<int>("DeliveryAndStockUpdateDayStartDateHourStartDate");
 
                     b.Property<int>("DeliveryAndStockUpdateDayStartDateMinuteStartDate");
+
+                    b.Property<int>("Fee");
 
                     b.Property<bool>("IsModeSimulated");
 
@@ -157,7 +157,7 @@ namespace Stolons.Migrations
 
                     b.Property<int>("OrderMinuteStartDate");
 
-                    b.Property<int>("ProducerSubscription");
+                    b.Property<double>("ProducerSubscription");
 
                     b.Property<int>("SimulationMode");
 
@@ -171,7 +171,7 @@ namespace Stolons.Migrations
 
                     b.Property<int>("SubscriptionStartMonth");
 
-                    b.Property<int>("SympathizerSubscription");
+                    b.Property<double>("SympathizerSubscription");
 
                     b.HasKey("Id");
 
@@ -259,6 +259,8 @@ namespace Stolons.Migrations
                 {
                     b.Property<string>("BillNumber");
 
+                    b.Property<double>("Amount");
+
                     b.Property<int?>("ConsumerId");
 
                     b.Property<DateTime>("EditionDate");
@@ -308,7 +310,11 @@ namespace Stolons.Migrations
                 {
                     b.Property<string>("BillNumber");
 
+                    b.Property<double>("Amount");
+
                     b.Property<DateTime>("EditionDate");
+
+                    b.Property<int>("Fee");
 
                     b.Property<int?>("ProducerId");
 
@@ -415,7 +421,9 @@ namespace Stolons.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("Amount");
+                    b.Property<bool>("AddedAutomaticly");
+
+                    b.Property<double>("Amount");
 
                     b.Property<int>("Category");
 
@@ -457,7 +465,8 @@ namespace Stolons.Migrations
 
                     b.Property<string>("PhoneNumber");
 
-                    b.Property<string>("PostCode");
+                    b.Property<string>("PostCode")
+                        .IsRequired();
 
                     b.Property<DateTime>("RegistrationDate");
 
@@ -501,7 +510,8 @@ namespace Stolons.Migrations
 
                     b.Property<int>("Area");
 
-                    b.Property<string>("CompanyName");
+                    b.Property<string>("CompanyName")
+                        .IsRequired();
 
                     b.Property<string>("ExploitationPicuresSerialized");
 

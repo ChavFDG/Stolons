@@ -45,6 +45,7 @@ namespace Stolons.Controllers
             user.Cotisation = true;
             //Add a transaction
             Transaction transaction = new Transaction();
+            transaction.AddedAutomaticly = true;
             transaction.Date = DateTime.Now;
             transaction.Type = Transaction.TransactionType.Inbound;
             transaction.Category = Transaction.TransactionCategory.Subscription;

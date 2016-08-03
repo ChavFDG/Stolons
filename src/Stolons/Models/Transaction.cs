@@ -8,6 +8,28 @@ namespace Stolons.Models
 {
     public class Transaction
     {
+        public Transaction()
+        {
+
+        }
+        /// <summary>
+        /// Add a new transaction at current date
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="category"></param>
+        /// <param name="amount"></param>
+        /// <param name="description"></param>
+        /// <param name="addedAutomaticly"></param>
+        public Transaction(TransactionType type, TransactionCategory category, double amount, string description, bool addedAutomaticly = true)
+        {
+            AddedAutomaticly = addedAutomaticly;
+            Date = DateTime.Now;
+            Type = type;
+            Category = category;
+            Amount = amount;
+            Description = description;
+        }
+
         [Key]
         public Guid Id { get; set; }
 
@@ -28,7 +50,10 @@ namespace Stolons.Models
         public double Amount { get; set; } = 0;
 
         [Display(Name = "Description")]
-        public string Description { get; set; }        
+        public string Description { get; set; }
+
+        [Display(Name = "Ajouter automatiquement")]
+        public bool AddedAutomaticly { get; set; } = false;
 
         public enum TransactionType
         {
@@ -40,18 +65,22 @@ namespace Stolons.Models
 
         public enum TransactionCategory
         {
-            [Display(Name = "Cotisation")]
-            Subscription = 0,
+            [Display(Name = "Don")]
+            Donation = 0,
             [Display(Name = "Loyer")]
             Rent = 1,
             [Display(Name = "Site web")]
             WebSite = 2,
             [Display(Name = "Vente")]
             Sell = 3,
-            [Display(Name = "Don")]
-            Donation = 4,
-            [Display(Name = "Pourcentage")]
-            Percentage = 5,
+            [Display(Name = "Cotisation")]
+            Subscription = 4,
+            [Display(Name = "Pourcentage producteur")]
+            Fee = 5,
+            [Display(Name = "Remboursement producteur")]
+            ProducerRefound = 6,
+            [Display(Name = "Paiement panier")]
+            BillPayement = 7,
             [Display(Name = "Autre")]
             Other = 99
         }

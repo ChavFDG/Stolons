@@ -41,15 +41,40 @@ namespace Stolons.Controllers
             IBill bill = _context.ConsumerBills.Include(x => x.User).First(x => x.BillNumber == billNumber);
             bill.State = BillState.Paid;
             _context.Update(bill);
+            //Transaction
+            Transaction transaction = new Transaction(
+                Transaction.TransactionType.Inbound, 
+                Transaction.TransactionCategory.BillPayement, 
+                bill.Amount,
+                "Paiement de la facture " + bill.BillNumber + " par " + bill.User.Name);
+            _context.Add(transaction);
+            //Save
             _context.SaveChanges();
             return RedirectToAction("Index");
         }
         // GET: UpdateProducerBill
         public IActionResult UpdateProducerBill(string billNumber)
         {
-            IBill bill = _context.ProducerBills.Include(x=>x.Producer).First(x => x.BillNumber == billNumber);
+            ProducerBill bill = _context.ProducerBills.Include(x=>x.Producer).First(x => x.BillNumber == billNumber);
             bill.State++;
             _context.Update(bill);
+            if(bill.State == BillState.Paid)
+            {
+                //Transaction
+                Transaction prodRefound = new Transaction(
+                    Transaction.TransactionType.Outbound,
+                    Transaction.TransactionCategory.ProducerRefound,
+                    bill.ProducerAmount,
+                    "Paiement de la facture " + bill.BillNumber + " à " + bill.Producer.CompanyName);
+                _context.Add(prodRefound);
+                Transaction comitionInbound = new Transaction(
+                    Transaction.TransactionType.Inbound,
+                    Transaction.TransactionCategory.Fee,
+                    bill.FeeAmount,
+                    "Encaissement de la commission de la facture " + bill.BillNumber + " de " + bill.Producer.CompanyName);
+                _context.Add(comitionInbound);
+            }
+            //Save
             _context.SaveChanges();
             return RedirectToAction("Index");
         }

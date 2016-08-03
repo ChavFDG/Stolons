@@ -41,12 +41,12 @@ namespace Stolons.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    Comission = table.Column<int>(nullable: false),
-                    ConsumerSubscription = table.Column<int>(nullable: false),
+                    ConsumerSubscription = table.Column<double>(nullable: false),
                     ContactMailAddress = table.Column<string>(nullable: true),
                     DeliveryAndStockUpdateDayStartDate = table.Column<int>(nullable: false),
                     DeliveryAndStockUpdateDayStartDateHourStartDate = table.Column<int>(nullable: false),
                     DeliveryAndStockUpdateDayStartDateMinuteStartDate = table.Column<int>(nullable: false),
+                    Fee = table.Column<int>(nullable: false),
                     IsModeSimulated = table.Column<bool>(nullable: false),
                     MailAddress = table.Column<string>(nullable: true),
                     MailPassword = table.Column<string>(nullable: true),
@@ -56,14 +56,14 @@ namespace Stolons.Migrations
                     OrderDeliveryMessage = table.Column<string>(nullable: true),
                     OrderHourStartDate = table.Column<int>(nullable: false),
                     OrderMinuteStartDate = table.Column<int>(nullable: false),
-                    ProducerSubscription = table.Column<int>(nullable: false),
+                    ProducerSubscription = table.Column<double>(nullable: false),
                     SimulationMode = table.Column<int>(nullable: false),
                     StolonsAboutPageText = table.Column<string>(nullable: true),
                     StolonsAddress = table.Column<string>(nullable: true),
                     StolonsLabel = table.Column<string>(nullable: true),
                     StolonsPhoneNumber = table.Column<string>(nullable: true),
                     SubscriptionStartMonth = table.Column<int>(nullable: false),
-                    SympathizerSubscription = table.Column<int>(nullable: false)
+                    SympathizerSubscription = table.Column<double>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -87,7 +87,8 @@ namespace Stolons.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    Amount = table.Column<int>(nullable: false),
+                    AddedAutomaticly = table.Column<bool>(nullable: false),
+                    Amount = table.Column<double>(nullable: false),
                     Category = table.Column<int>(nullable: false),
                     Date = table.Column<DateTime>(nullable: false),
                     Description = table.Column<string>(nullable: true),
@@ -114,7 +115,7 @@ namespace Stolons.Migrations
                     Enable = table.Column<bool>(nullable: false),
                     Name = table.Column<string>(nullable: false),
                     PhoneNumber = table.Column<string>(nullable: true),
-                    PostCode = table.Column<string>(nullable: true),
+                    PostCode = table.Column<string>(nullable: false),
                     RegistrationDate = table.Column<DateTime>(nullable: false),
                     Surname = table.Column<string>(nullable: false),
                     Area = table.Column<int>(nullable: true),
@@ -209,6 +210,7 @@ namespace Stolons.Migrations
                 columns: table => new
                 {
                     BillNumber = table.Column<string>(nullable: false),
+                    Amount = table.Column<double>(nullable: false),
                     ConsumerId = table.Column<int>(nullable: true),
                     EditionDate = table.Column<DateTime>(nullable: false),
                     ProducerId = table.Column<int>(nullable: true),
@@ -265,7 +267,9 @@ namespace Stolons.Migrations
                 columns: table => new
                 {
                     BillNumber = table.Column<string>(nullable: false),
+                    Amount = table.Column<double>(nullable: false),
                     EditionDate = table.Column<DateTime>(nullable: false),
+                    Fee = table.Column<int>(nullable: false),
                     ProducerId = table.Column<int>(nullable: true),
                     State = table.Column<int>(nullable: false)
                 },
