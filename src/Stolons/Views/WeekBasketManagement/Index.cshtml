@@ -12,11 +12,11 @@
 @if (Configurations.Mode == ApplicationConfig.Modes.DeliveryAndStockUpdate)
 {
     <h4>Les paniers de la semaine </h4>
-        
+
     string fileName = DateTime.Now.Year + "_" + DateTime.Now.GetIso8601WeekOfYear();
-    string downloadPath = Configurations.GetUrl(Configurations.StolonsBillsStockagePath) +"/"+ fileName + ".xlsx";
+    string downloadPath = Configurations.GetUrl(Configurations.StolonsBillsStockagePath) + "/" + fileName + ".xlsx";
     <a href=@downloadPath>Télécharger les factures utilisateur de la semaine</a>
-    
+
 }
 
 
@@ -54,18 +54,19 @@
                     @Html.DisplayFor(modelItem => item.Producer.PhoneNumber)
                 </td>
                 <td>
-                    @Html.ActionLink("Valider la payement de la facture",
-                      "UpdateProducerBill",
-                      new { billNumber = item.BillNumber },
-                      new { onclick = " return UpdateBillConfirm(\"" + ("Confirmation de changement d'état de la facture de "  + item.Producer.CompanyName) + "\")" })
-                </td>                
+                    @Html.ActionLink(
+                                   "Valider paiement de la facture",
+                                  "UpdateProducerBill",
+                                    new { billNumber = item.BillNumber },
+                                    new { onclick = "return confirm('Confirmation de changement d'état de la facture de " + item.Producer.CompanyName + "');" })
+                 </td>
                 <td>
                     @{
                         <a href="@Configurations.GetUrl(item)">@item.BillNumber</a>
                     }
                 </td>
             </tr>
-            }
+    }
     </table>
 }
 else
@@ -78,54 +79,55 @@ else
 <h4>Producteur ayant une commande à livrer cette semaine </h4>
 @if (Model.ProducerBills.Any(x => x.State == BillState.Pending))
 {
-<table class="table">
-    <tr>
-        <th>
-            Numéro
-        </th>
-        <th>
-            Raison social
-        </th>
-        <th>
-            Téléphone
-        </th>
-        <th>
-            Etat
-        </th>
-        <th>
-            Facture
-        </th>
-    </tr>
-    @foreach (var item in Model.ProducerBills.Where(x => x.State == BillState.Pending))
-    {
+    <table class="table">
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Producer.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Producer.CompanyName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Producer.PhoneNumber)
-            </td>
-            <td>
-                @Html.ActionLink("Valider la livraison",
-                      "UpdateProducerBill",
-                      new { billNumber = item.BillNumber },
-                      new { onclick = " return UpdateBillConfirm(\"" + ("Confirmation de changement d'état de la facture de " + item.Producer.CompanyName) + "\")" })
-            </td>
-            <td>
-                @{
-                    <a href="@Configurations.GetUrl(item)">@item.BillNumber</a>
-                }
-            </td>
+            <th>
+                Numéro
+            </th>
+            <th>
+                Raison social
+            </th>
+            <th>
+                Téléphone
+            </th>
+            <th>
+                Etat
+            </th>
+            <th>
+                Facture
+            </th>
         </tr>
+        @foreach (var item in Model.ProducerBills.Where(x => x.State == BillState.Pending))
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Producer.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Producer.CompanyName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Producer.PhoneNumber)
+                </td>
+                <td>
+                    @Html.ActionLink(
+                                   "Valider la livraison",
+                                  "UpdateProducerBill",
+                                    new { billNumber = item.BillNumber },
+                                    new { onclick = "return confirm('Confirmation de changement d'état de la facture de " + item.Producer.CompanyName + "');" })
+                </td>
+                <td>
+                    @{
+                        <a href="@Configurations.GetUrl(item)">@item.BillNumber</a>
+                    }
+                </td>
+            </tr>
     }
-</table>
+    </table>
 }
 else
 {
-<p>Plus de command à livrer ou payer par / aux producteurs</p>
+    <p>Plus de command à livrer ou payer par / aux producteurs</p>
 }
 
 <h4>Adhérents ayant commandé un panier cette semaine</h4>
@@ -168,10 +170,11 @@ else
                     @Html.DisplayFor(modelItem => item.Consumer.PhoneNumber)
                 </td>
                 <td>
-                    @Html.ActionLink("Valider la récupération et le payement",
-                                 "UpdateConsumerBill",
-                                 new { billNumber = item.BillNumber },
-                      new { onclick = " return UpdateBillConfirm(\"" + ("Confirmation de changement d'état de la facture de " + item.Consumer.Name) + "\")" })
+                    @Html.ActionLink(
+                                   "Valider la récupération et le payement",
+                                  "UpdateConsumerBill",
+                                    new { billNumber = item.BillNumber },
+                                    new { onclick = "return confirm('Confirmation de changement d'état de la facture de " + item.Consumer.Name + "');" })
                 </td>
                 <td>
                     @{
@@ -179,20 +182,10 @@ else
                     }
                 </td>
             </tr>
-}
+        }
     </table>
-
 }
 else
 {
-    <p>Plus de panier cette semaine</p>
+<p>Plus de panier cette semaine</p>
 }
-
-
-<script src="/js/confirmationDialog.js"></script>
-
-
-
-
-
-

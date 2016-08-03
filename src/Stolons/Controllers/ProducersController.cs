@@ -20,22 +20,15 @@ using Stolons.Models.Users;
 
 namespace Stolons.Controllers
 {
-    public class ProducersController : BaseController
+    public class ProducersController : UsersBaseController
     {
-        private ApplicationDbContext _context;
-        private IHostingEnvironment _environment;
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
 
         public ProducersController(ApplicationDbContext context, IHostingEnvironment environment,
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            IServiceProvider serviceProvider) : base(serviceProvider)
+            IServiceProvider serviceProvider) : base(context,environment,userManager,signInManager,serviceProvider)
         {
-            _environment = environment;
-            _context = context;
-            _userManager = userManager;
-            _signInManager = signInManager;
+
         }
 
         [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_Administrator)]

@@ -19,14 +19,14 @@ using Stolons.Models.Users;
 
 namespace Stolons.Controllers
 {
-    public abstract class BaseUsersController : BaseController
+    public abstract class UsersBaseController : BaseController
     {
-        private ApplicationDbContext _context;
-        private IHostingEnvironment _environment;
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
+        protected ApplicationDbContext _context;
+        protected IHostingEnvironment _environment;
+        protected readonly UserManager<ApplicationUser> _userManager;
+        protected readonly SignInManager<ApplicationUser> _signInManager;
 
-        public BaseUsersController(ApplicationDbContext context, IHostingEnvironment environment,
+        public UsersBaseController(ApplicationDbContext context, IHostingEnvironment environment,
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             IServiceProvider serviceProvider) : base(serviceProvider)
@@ -36,12 +36,9 @@ namespace Stolons.Controllers
             _userManager = userManager;
             _signInManager = signInManager;
         }
-
-        // POST: Consumers/Delete/5
-        [HttpPost, ActionName("PayCotisation")]
-        [ValidateAntiForgeryToken]
+        
         [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_Administrator)]
-        public IActionResult PayCotisation(int id, double amount)
+        public IActionResult PaySubscription(int id)
         {
             User user = _context.StolonsUsers.Single(m => m.Id == id);
             //
@@ -51,9 +48,38 @@ namespace Stolons.Controllers
             transaction.Date = DateTime.Now;
             transaction.Type = Transaction.TransactionType.Inbound;
             transaction.Category = Transaction.TransactionCategory.Subscription;
-            transaction.Amount = amount;
+            transaction.Amount = Configurations.GetSubscriptionAmount(user);
             transaction.Description = "Payement de la cotisation de : "+  user.Name + " " + user.Surname;
             _context.Transactions.Add(transaction);
+            //Update
+            _context.StolonsUsers.Update(user);
+            //Save
+            _context.SaveChanges();
+            return RedirectToAction("Index");
+        }
+        
+        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_Administrator)]
+        public IActionResult Enable(int id)
+        {
+            User user = _context.StolonsUsers.Single(m => m.Id == id);
+            //
+            user.DisableReason = "";
+            user.Enable = true;
+            //Update
+            _context.StolonsUsers.Update(user);
+            //Save
+            _context.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+
+        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_Administrator)]
+        public IActionResult Disable(int id, string comment)
+        {
+            User user = _context.StolonsUsers.Single(m => m.Id == id);
+            //
+            user.DisableReason = comment;
+            user.Enable = false;
             //Update
             _context.StolonsUsers.Update(user);
             //Save

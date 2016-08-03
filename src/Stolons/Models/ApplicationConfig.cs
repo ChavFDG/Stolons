@@ -26,11 +26,11 @@ namespace Stolons.Models
         public string StolonsAboutPageText { get; set; } = @"Stolons est une association à visé social, étique et solidaire.";
         //Cotisation
         [Display(Name = "Cotisation sympathisant (€)")]
-        public int SympathizerSubscription { get; set; } = 2;
+        public double SympathizerSubscription { get; set; } = 2;
         [Display(Name = "Cotisation consomateur (€)")]
-        public int ConsumerSubscription { get; set; } = 16;
+        public double ConsumerSubscription { get; set; } = 16;
         [Display(Name = "Cotisation producteur (€)")]
-        public int ProducerSubscription { get; set; } = 20;
+        public double ProducerSubscription { get; set; } = 20;
         [Display(Name = "Mois de départ des cotisations")]
         public Month SubscriptionStartMonth { get; set; } = Month.September;
 

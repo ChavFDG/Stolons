@@ -18,22 +18,15 @@ using Stolons.Helpers;
 
 namespace Stolons.Controllers
 {
-    public class UsersController : BaseController
+    public class UsersController : UsersBaseController
     {
-        private ApplicationDbContext _context;
-        private IHostingEnvironment _environment;
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
 
         public UsersController(ApplicationDbContext context, IHostingEnvironment environment,
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            IServiceProvider serviceProvider) : base(serviceProvider)
+            IServiceProvider serviceProvider) : base(context,environment,userManager,signInManager,serviceProvider)
         {
-            _environment = environment;
-            _context = context;
-            _userManager = userManager;
-            _signInManager = signInManager;
+
         }
 
         // GET: Consumers

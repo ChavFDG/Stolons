@@ -20,7 +20,7 @@
     || User.IsInRole(Configurations.UserType.Producer.ToString()))
     {
         <p>
-            <a asp-action="Create">Ajouter une nouvelle</a>
+            <a asp-action="Create" class="btn btn-small btn-default">Ajouter une nouvelle</a>
         </p>
     }
 }
@@ -58,11 +58,11 @@
                         || User.IsInRole(Configurations.UserType.Producer.ToString())
                         || UserManager.GetUserId(User) == item.User.Email)
                     {
-                        <a asp-action="Edit" asp-route-id="@item.Id">Modifier</a>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-small btn-default">Modifier</a>
                     }
                     @if (User.IsInRole(Configurations.Role.Administrator.ToString()) || UserManager.GetUserId(User) == item.User.Email)
                     {
-                        <a asp-action="Delete" asp-route-id="@item.Id">| Supprimer</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-small btn-default">Supprimer</a>
                     }
                 </div>
             </td>

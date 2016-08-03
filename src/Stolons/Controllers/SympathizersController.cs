@@ -21,22 +21,15 @@ using Stolons.Models.Users;
 
 namespace Stolons.Controllers
 {
-    public class SympathizersController : BaseController
+    public class SympathizersController : UsersBaseController
     {
-        private ApplicationDbContext _context;
-        private IHostingEnvironment _environment;
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
 
         public SympathizersController(ApplicationDbContext context, IHostingEnvironment environment,
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            IServiceProvider serviceProvider) : base(serviceProvider)
+            IServiceProvider serviceProvider) : base(context,environment,userManager,signInManager,serviceProvider)
         {
-            _environment = environment;
-            _context = context;
-            _userManager = userManager;
-            _signInManager = signInManager;
+
         }
 
         [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_Administrator)]
@@ -92,7 +85,7 @@ namespace Stolons.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_Administrator)]
-        public async Task<IActionResult> Create(SympathizerViewModel vmSympathizer)
+        public IActionResult Create(SympathizerViewModel vmSympathizer)
         {
             if (ModelState.IsValid)
             {

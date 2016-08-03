@@ -185,5 +185,51 @@ namespace Stolons
 
         #endregion FIleManagement
 
+        #region Subscription
+
+        public static double GetSubscriptionAmount(User user)
+        {
+            if(user is Sympathizer)
+                return GetSubscriptionAmount(UserType.Sympathizer);
+            if (user is Consumer)
+                return GetSubscriptionAmount(UserType.Consumer);
+            if (user is Producer)
+                return GetSubscriptionAmount(UserType.Producer);
+            return -1;
+        }
+
+        public static double GetSubscriptionAmount(UserType userType)
+        {
+            int currentMonth = DateTime.Now.Month;
+            int subscriptionMonth = (int)ApplicationConfig.SubscriptionStartMonth;
+            if (currentMonth < subscriptionMonth)
+                currentMonth += 12;
+            bool isHalfSubscription = currentMonth < (subscriptionMonth + 6);
+
+            switch (userType)
+            {
+                case UserType.Sympathizer:
+                    return ApplicationConfig.SympathizerSubscription;
+                case UserType.Consumer:
+                    return isHalfSubscription ? ApplicationConfig.ConsumerSubscription /2 : ApplicationConfig.ConsumerSubscription;
+                case UserType.Producer:
+                    return isHalfSubscription ? ApplicationConfig.ProducerSubscription / 2 : ApplicationConfig.ProducerSubscription;
+            }
+
+            return -1;
+
+        }
+        public static string GetStringSubscriptionAmount(User user)
+        {
+            return GetSubscriptionAmount(user) + "€";
+        }
+
+        public static string GetStringSubscriptionAmount(UserType userType)
+        {
+            return GetSubscriptionAmount(userType) + "€";
+        }
+
+        #endregion Subscription
+
     }
 }

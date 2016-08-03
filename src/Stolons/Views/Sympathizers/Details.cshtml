@@ -1,7 +1,7 @@
 @model Stolons.ViewModels.Sympathizers.SympathizerViewModel
 
 @{
-    ViewData["Title"] = "Details de " + Model.Sympathizers.Surname + " "+ Model.Sympathizers.Name;
+    ViewData["Title"] = "Details de " + Model.Sympathizer.Surname + " "+ Model.Sympathizer.Name;
 }
 
 <h2>@ViewData["Title"]</h2>
@@ -10,38 +10,38 @@
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.Sympathizers.Id)
+            @Html.DisplayNameFor(model => model.Sympathizer.Id)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Sympathizers.Id)
+            @Html.DisplayFor(model => model.Sympathizer.Id)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Sympathizers.Name)
+            @Html.DisplayNameFor(model => model.Sympathizer.Name)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Sympathizers.Name)
+            @Html.DisplayFor(model => model.Sympathizer.Name)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Sympathizers.Surname)
+            @Html.DisplayNameFor(model => model.Sympathizer.Surname)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Sympathizers.Surname)
+            @Html.DisplayFor(model => model.Sympathizer.Surname)
         </dd>        
         <dt>
-            @Html.DisplayNameFor(model => model.Sympathizers.RegistrationDate)
+            @Html.DisplayNameFor(model => model.Sympathizer.RegistrationDate)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Sympathizers.RegistrationDate)
+            @Html.DisplayFor(model => model.Sympathizer.RegistrationDate)
         </dd>        
         <dt>
-            @Html.DisplayNameFor(model => model.Sympathizers.PostCode)
+            @Html.DisplayNameFor(model => model.Sympathizer.PostCode)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Sympathizers.PostCode)
+            @Html.DisplayFor(model => model.Sympathizer.PostCode)
         </dd>        
     </dl>
 </div>
 <p>
-    <a asp-action="Edit" asp-route-id="@Model.Sympathizers.Id" class="btn btn-small btn-default">Modifier @Model.Sympathizers.Surname @Model.Sympathizers.Name</a>
+    <a asp-action="Edit" asp-route-id="@Model.Sympathizer.Id" class="btn btn-small btn-default">Modifier @Model.Sympathizer.Surname @Model.Sympathizer.Name</a>
     <a asp-action="Index" class="btn btn-small btn-default">Retourner aux adhérents</a>
 </p>

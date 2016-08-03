@@ -40,12 +40,30 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Surname)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Cotisation)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Enable)
-            </td>
+            @if (item.Cotisation)
+            {
+                <td>
+                    @Html.DisplayFor(modelItem => item.Cotisation)
+                </td>
+            }
+            else
+            {
+                <td bgcolor="#ff8000">
+                    @Html.DisplayFor(modelItem => item.Cotisation)
+                </td>
+            }
+            @if (item.Enable)
+            {
+                <td>
+                    @Html.DisplayFor(modelItem => item.Enable)
+                </td>
+            }
+            else
+            {
+                <td bgcolor="#ff0000">
+                    @Html.DisplayFor(modelItem => item.Enable)
+                </td>
+            }
             <td>
                 <div class="dropdown">
                     <a class="dropdown-toggle btn btn-small btn-default" data-toggle="dropdown" href="#">
@@ -54,22 +72,39 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li><a asp-action="Edit" asp-route-id="@item.Id" >Modifier</a></li>
-                        <li><a asp-action="Details" asp-route-id="@item.Id" >Voir détail</a></li>
-                        <asp:Button ID="btnPopup" runat="server" Text="Show Popup" />
+                        <li><a asp-action="Details" asp-route-id="@item.Id" >Voir détail</a></li>                       
                         @if (item.Cotisation == false)
                         {
-                            <li><a asp-action="PayCotisation" asp-route-id="@item.Id">Payer la cotisation</a></li>
-                        }
-                        @if (item.Enable == true)
-                        {
-                            <li><a asp-action="Disable" asp-route-id="@item.Id">Désactiver le compte</a></li>
-                        }
-                        else
-                        {
-                            <li><a asp-action="Enable" asp-route-id="@item.Id">Activer le compte</a></li>
+                            <li>
+                                @Html.ActionLink(
+                                   "Payer cotisation de : " + Configurations.GetStringSubscriptionAmount(item),
+                                   "PaySubscription",
+                                    new { id = item.Id },
+                                    new { onclick = "return confirm('Valider le paiement de la cotisation de " + item.Name + " pour un montant de : " + Configurations.GetStringSubscriptionAmount(item) + "');" })
+                            </li>
                         }
                         @if (User.IsInRole(Configurations.Role.Administrator.ToString()))
                         {
+                            @if (item.Enable == true)
+                            {
+                                <li>
+                                    @Html.ActionLink(
+                                   "Désactiver le compte",
+                                   "Disable",
+                                    new { id = item.Id },
+                                    new { onclick = "return confirm('Entrer la raison de la désactivation du compte pour " + item.Name + "');" })
+                                </li>
+                            }
+                            else
+                            {
+                                <li>
+                                    @Html.ActionLink(
+                                   "Activer le compte",
+                                   "Enable",
+                                    new { id = item.Id },
+                                    new { onclick = "return confirm('Confirmation de l'activation du compte de " + item.Name + " ?');" })
+                                </li>
+                            }
                             <li><a asp-action="Delete" asp-route-id="@item.Id">Supprimer</a></li>
                         }
                     </ul>
@@ -78,20 +113,3 @@
         </tr>
     }
 </table>
-
-<script type="text/javascript">
-    $("[id*=btnPopup]").live("click", function () {
-        $("#dialog").dialog({
-            title: "jQuery Dialog Popup",
-            buttons: {
-                Close: function () {
-                    $(this).dialog('close');
-                }
-            }
-        });
-        return false;
-    });
-</script>
-<div id="dialog" style="display: none">
-    This is a simple popup
-</div>

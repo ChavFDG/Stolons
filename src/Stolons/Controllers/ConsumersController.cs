@@ -19,22 +19,15 @@ using Stolons.Models.Users;
 
 namespace Stolons.Controllers
 {
-    public class ConsumersController : BaseController
+    public class ConsumersController : UsersBaseController
     {
-        private ApplicationDbContext _context;
-        private IHostingEnvironment _environment;
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
 
         public ConsumersController(ApplicationDbContext context, IHostingEnvironment environment,
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            IServiceProvider serviceProvider) : base(serviceProvider)
+            IServiceProvider serviceProvider) : base(context,environment,userManager,signInManager,serviceProvider)
         {
-            _environment = environment;
-            _context = context;
-            _userManager = userManager;
-            _signInManager = signInManager;
+
         }
 
         // GET: Consumers
