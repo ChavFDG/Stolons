@@ -298,11 +298,11 @@ else
                 <% if (!tmpBasket.Validated) { %>
                 <% if (tmpBasketModel.isEmpty()) { %>
                 <% if (validatedBasketModel.exists()) { %>
-                <input type="submit" value="Annuler mon panier" class="btn btn-default" />
+                <input type="submit" value="Annuler mon panier" class="btn btn-small btn-default" />
                 <%  } %>
                 <!-- Si il n'y a rien a valider/annuler, on affichir rien -->
                 <% } else { %>
-                <input type="submit" value="Valider mon panier" class="btn btn-default" />
+                <input type="submit" value="Valider mon panier" class="btn btn-small btn-default" />
                 <% } %>
                 <% } %>
             </form>

@@ -76,6 +76,18 @@
                     <li><a asp-action="ShowBills" asp-route-id="@item.Id" >Voir factures</a></li>
                     <li><a asp-action="Details" asp-route-id="@item.Id">Voir détail</a></li>
                     <li><a asp-action="Edit" asp-route-id="@item.Id" >Modifier</a></li>
+                    @if (item.Cotisation == false)
+                    {
+                        <li><a asp-action="PayCotisation" asp-route-id="@item.Id">Payer la cotisation</a></li>
+                    }
+                    @if (item.Enable == true)
+                    {
+                        <li><a asp-action="Disable" asp-route-id="@item.Id">Désactiver le compte</a></li>
+                    }
+                    else
+                    {
+                        <li><a asp-action="Enable" asp-route-id="@item.Id">Activer le compte</a></li>
+                    }
                     @if (User.IsInRole(Configurations.Role.Administrator.ToString()))
                     {
                         <li><a asp-action="Delete" asp-route-id="@item.Id" >Supprimer</a></li>

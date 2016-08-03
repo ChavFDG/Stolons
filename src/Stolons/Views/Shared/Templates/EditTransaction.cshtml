@@ -1,0 +1,40 @@
+@model Stolons.Models.Transaction
+
+<div class="form-horizontal">
+    <div class="form-group">
+        <label asp-for="Type" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <select asp-for="Type" asp-items="Html.GetEnumSelectList<Transaction.TransactionType>()" class="form-control"></select>
+            <span asp-validation-for="Type" class="text-danger" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="Category" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <select asp-for="Category" asp-items="Html.GetEnumSelectList<Transaction.TransactionCategory>()" class="form-control"></select>
+            <span asp-validation-for="Category" class="text-danger" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="Date" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            @Html.TextBoxFor(model => model.Date, new { type = "time" })
+            <span asp-validation-for="Date" class="text-danger" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="Description" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <textarea rows="5" asp-for="Description" class="form-control"></textarea>
+            <span asp-validation-for="Description" class="text-danger" />
+        </div>
+    </div>
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="Amount" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="Amount" class="form-control" />
+            <span asp-validation-for="Amount" class="text-danger" />
+        </div>
+    </div>
+</div>

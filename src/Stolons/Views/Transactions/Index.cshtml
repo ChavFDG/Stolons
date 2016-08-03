@@ -1,0 +1,77 @@
+﻿@model IEnumerable<Stolons.Models.Transaction>
+@using Stolons.Helpers
+
+<h2>Transactions</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-small btn-default">Ajouter une transaction</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Date)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Type)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Category)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Amount)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.OrderBy(x=>x.Date)) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Date)
+            </td>
+            <td>
+                @(EnumHelper<Transaction.TransactionType>.GetDisplayValue(item.Type))
+            </td>
+            <td>
+                @(EnumHelper<Transaction.TransactionCategory>.GetDisplayValue(item.Category))
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            @switch (item.Type)
+            {
+                case Transaction.TransactionType.Outbound:
+                    <td bgcolor="#ff0000">
+                        @Html.DisplayFor(modelItem => item.Amount)
+                    </td>
+                    break;
+                case Transaction.TransactionType.Inbound:
+                    <td bgcolor="#00ff00">
+                        @Html.DisplayFor(modelItem => item.Amount)
+                    </td>
+                    break;
+            }
+            <td>
+                <div class="dropdown">
+                    <a class="dropdown-toggle btn btn-small btn-default" data-toggle="dropdown" href="#">
+                        Actions
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a asp-action="Details" asp-route-id="@item.Id">Voir détail</a></li>
+                        @if (User.IsInRole(Configurations.Role.Administrator.ToString()))
+                        {
+                            <li><a asp-action="Edit" asp-route-id="@item.Id">Modifier</a></li>
+                            <li><a asp-action="Delete" asp-route-id="@item.Id">Supprimer</a></li>
+                        }
+                    </ul>
+                </div>          
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

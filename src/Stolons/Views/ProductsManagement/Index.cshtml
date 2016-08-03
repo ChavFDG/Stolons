@@ -2,220 +2,228 @@
 @using Stolons.Helpers
 @using Stolons.Models
 
-  @{
-  ViewData["Title"] = "Gestion de mes produits et de mes stocks";
-  }
+@{
+    ViewData["Title"] = "Gestion de mes produits et de mes stocks";
+}
 
-  <h2>@ViewData["Title"]</h2>
+<h2>@ViewData["Title"]</h2>
 
-  <p>
-    <a asp-action="Manage">Ajouter un produit</a>
+<p>
+    <a asp-action="Manage" class="btn btn-small btn-default">Ajouter un produit</a>
     @if (Configurations.Mode == ApplicationConfig.Modes.DeliveryAndStockUpdate)
     {
-    if (Model.Any(x => x.State == Product.ProductState.Stock))
-    {
-  <p>
-    <a asp-action="EnableAllStockProduct">Rendre disponible tout les produits en attente de stock</a>
-  </p>
-  }
-  }
-  <table class="table productsMgtTable">
-    <tr>
-      <th>
-	Image
-      </th>
-      <th>
-        @Html.DisplayNameFor(model => model.Name)
-      </th>
-      <th>
-        @Html.DisplayNameFor(model => model.UnitPrice)
-      </th>
-      <th>
-        @Html.DisplayNameFor(model => model.Price)
-      </th>
-      <th>
-        @Html.DisplayNameFor(model => model.Type)
-      </th>
-      <th>
-	Stocks
-      </th>
-      <th>
-        @Html.DisplayNameFor(model => model.State)
-      </th>
-      <th>
-        @if (Configurations.Mode == ApplicationConfig.Modes.DeliveryAndStockUpdate)
+        if (Model.Any(x => x.State == Product.ProductState.Stock))
         {
-        <a asp-action="DisableAllProduct">Désactiver tout les produits</a>
+        <p>
+            <a asp-action="EnableAllStockProduct" class="btn btn-small btn-default">Rendre disponible tout les produits en attente de stock</a>
+        </p>
         }
-      </th>
-    </tr>
-    
-    @foreach (var item in Model) {
-    <tr>
-      <td class="productMgtImage">
-	<div>
-	  @{
-          if (item.Pictures.Any())
-          {
-	        <img src="@item.Pictures[0]" />
-          }
-          else
-          {
-	        <img alt="Pas d'image" />
-	     }
-	  }
-	</div>
-      </td>
-      <td>
-	@Html.DisplayFor(modelItem => item.Name)
-      </td>
-      <td>
-	@Html.DisplayFor(model => item.UnitPrice) @("€")
-	@{
-	@if (item.QuantityStep != 0)
-	{
-	<br />
-	@(" par ")
-	@Html.DisplayFor(model => item.QuantityStepString)
-	}
-	}
-      </td>
-      <td>
-	@if (item.QuantityStep != 0)
-	{
-	@Html.DisplayFor(model => item.Price)@("€/")
-	@Html.DisplayFor(model => item.ProductUnit)
-	}
-      </td>
-      <td>
-	@(EnumHelper<Product.SellType>.GetDisplayValue(@item.Type))
-      </td>
-      <td>
-	@if (Configurations.Mode == ApplicationConfig.Modes.Order)
-	{
-	@Html.DisplayNameFor(model => item.RemainingStock)
-	@(" : ")
-	@Html.DisplayFor(model => item.RemainingStock)
-	@item.GetStockUnit()
-	}
-	else
-	{
-	@Html.DisplayNameFor(model => item.WeekStock)
-	@(" : ")
-	@Html.DisplayFor(model => item.WeekStock)
-	@item.GetStockUnit()
-	}
-	<br />
-	<input class="btn-small btn-default" type="submit" value="Gérer les stocks" onclick="StockMgtViewModal.open('@item.Id')" />
-      </td>
-      @switch (@item.State)
-      {
-      case Product.ProductState.Disabled:
-      <td bgcolor="#ff0000">
-	@(EnumHelper<Product.ProductState>.GetDisplayValue(@item.State))
-      </td>
-      break;
-      case Product.ProductState.Enabled:
-      <td bgcolor="#00ff00">
-	@(EnumHelper<Product.ProductState>.GetDisplayValue(@item.State))
-      </td>
-      break;
-      case Product.ProductState.Stock:
-      <td bgcolor="#ff8000">
-	@(EnumHelper<Product.ProductState>.GetDisplayValue(@item.State))
-      </td>
-      break;
-      }
-      <td>
-	<ul class="noLiStyle">
-          @if (Configurations.Mode == ApplicationConfig.Modes.DeliveryAndStockUpdate)
-          {
-          if (@item.State == Product.ProductState.Enabled)
-          {
-	  <li>
-            <a asp-action="Disable" asp-route-id="@item.Id" class="btn btn-small btn-default">Rendre indisponible</a>
-	  </li>
-          }
-          }
-	  @if (@item.State != Product.ProductState.Enabled)
-          {
-	  <li>
-            <a asp-action="Enable" asp-route-id="@item.Id" class="btn btn-small btn-default">Rendre disponible</a>
-	  </li>
-          }
-          @if (Configurations.Mode == ApplicationConfig.Modes.DeliveryAndStockUpdate)
-          {
-	  <li>
-            <a asp-action="Manage" asp-route-id="@item.Id" class="btn btn-small btn-default"> Editer</a>
-          </li>
-	  <li>
-            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-small btn-default"> Supprimer</a>
-	  </li>
-          }
-      </td>
-    </tr>
     }
-  </table>
+    <table class="table productsMgtTable">
+        <tr>
+            <th>
+                Image
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UnitPrice)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Type)
+            </th>
+            <th>
+                Stocks
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.State)
+            </th>
+            <th>
+                @if (Configurations.Mode == ApplicationConfig.Modes.DeliveryAndStockUpdate)
+                {
+                    <a asp-action="DisableAllProduct">Désactiver tout les produits</a>
+                }
+            </th>
+        </tr>
 
-  <div id="stockMgt" class="modals">    
-  </div>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td class="productMgtImage">
+                    <div>
+                        @{
+                            if (item.Pictures.Any())
+                            {
+                                <img src="@item.Pictures[0]" />
+                            }
+                            else
+                            {
+                                <img alt="Pas d'image" />
+                            }
+                        }
+                    </div>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.UnitPrice) @("€")
+                    @{
+                        @if (item.QuantityStep != 0)
+                        {
+                            <br />
+                            @(" par ")
+                            @Html.DisplayFor(model => item.QuantityStepString)
+                        }
+                    }
+                </td>
+                <td>
+                    @if (item.QuantityStep != 0)
+                    {
+                        @Html.DisplayFor(model => item.Price)@("€/")
+                        @Html.DisplayFor(model => item.ProductUnit)
+                    }
+                </td>
+                <td>
+                    @(EnumHelper<Product.SellType>.GetDisplayValue(@item.Type))
+                </td>
+                <td>
+                    @if (Configurations.Mode == ApplicationConfig.Modes.Order)
+                    {
+                        @Html.DisplayNameFor(model => item.RemainingStock)
+                        @(" : ")
+                        @Html.DisplayFor(model => item.RemainingStock)
+                        @item.GetStockUnit()
+                    }
+                    else
+                    {
+                        @Html.DisplayNameFor(model => item.WeekStock)
+                        @(" : ")
+                        @Html.DisplayFor(model => item.WeekStock)
+                        @item.GetStockUnit()
+                    }
+                    <br />
+                    <input class="btn-small btn-default" type="submit" value="Gérer les stocks" onclick="StockMgtViewModal.open('@item.Id')" />
+                </td>
+                @switch (@item.State)
+                {
+                    case Product.ProductState.Disabled:
+                        <td bgcolor="#ff0000">
+                            @(EnumHelper<Product.ProductState>.GetDisplayValue(@item.State))
+                        </td>
+                        break;
+                    case Product.ProductState.Enabled:
+                        <td bgcolor="#00ff00">
+                            @(EnumHelper<Product.ProductState>.GetDisplayValue(@item.State))
+                        </td>
+                        break;
+                    case Product.ProductState.Stock:
+                        <td bgcolor="#ff8000">
+                            @(EnumHelper<Product.ProductState>.GetDisplayValue(@item.State))
+                        </td>
+                        break;
+                }
+                <td>
+                    <div class="dropdown">
+                        <a class="dropdown-toggle btn btn-small btn-default" data-toggle="dropdown" href="#">
+                            Actions
+                            <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            @if (Configurations.Mode == ApplicationConfig.Modes.DeliveryAndStockUpdate)
+                            {
+                                if (@item.State == Product.ProductState.Enabled)
+                                {
+                                    <li>
+                                        <a asp-action="Disable" asp-route-id="@item.Id" >Rendre indisponible</a>
+                                    </li>
+                                }
+                            }
+                            @if (@item.State != Product.ProductState.Enabled)
+                            {
+                                <li>
+                                    <a asp-action="Enable" asp-route-id="@item.Id">Rendre disponible</a>
+                                </li>
+                            }
+                            @if (Configurations.Mode == ApplicationConfig.Modes.DeliveryAndStockUpdate)
+                            {
+                                <li>
+                                    <a asp-action="Manage" asp-route-id="@item.Id"> Modifier</a>
+                                </li>
+                                <li>
+                                    <a asp-action="Delete" asp-route-id="@item.Id"> Supprimer</a>
+                                </li>
+                            }
+                        </ul>
+                    </div>                             
+                </td>
+            </tr>
+        }
+    </table>
 
-  <script id="stockMgtTemplate" type="text/template">
-    <div class="modals modal in">
-      <div class="modal-dialog">
-	<div class="modal-content">
-	  <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
-	  </div>
-        <div class="modal-body">
-            <div>
-                <span><b>Gestion des stocks pour le produit : "<%= product.Name %>"</b></span>
-            </div>
-            <br />
-            <div><label>Vente : </label> <%= productModel.getSellTypeString() %></div>
-            <% if (product.Type != 1) { %>
-            <div><label>Palier de vente : </label> <%= product.QuantityStepString %></div>
-            <% } %>
-            <br />
-            <% if (currentMode.mode == 1) { %> <!-- Livraisons/stocks -->
-            <div class="form-horizontal">
-              <div class="form-group">
-                <label for="WeekStock" class="col-md-4 control-label">Je propose cette semaine : </label>
-                <div class="col-md-4">
-                  <input id="WeekStock" name="WeekStock" class="form-control" min="0" type="number" step="<%= product.QuantityStep / 1000 || 1 %>" value="<%= product.WeekStock %>" />
-                  <span id="WeekStockError" class="text-danger"><%= validation.weekStockError %></span>
-                </div>
-                <div class="col-md-4">
-                  <label class="control-label"><%= productModel.getStockUnitString() %></label>
-                </div>
-              </div>
-            </div>
-	    <% } else { %> <!-- Commandes -->
-            <div class="form-horizontal">
-              <div class="form-group">
-                <label for="RemainingStock" class="col-md-4 control-label">Il reste en stock : </label>
-                <div class="col-md-4">
-                  <input id="RemainingStock" name="RemainingStock" class="form-control" min="0" type="number" step="<%= product.QuantityStep / 1000 || 1 %>" value="<%= product.RemainingStock %>" />
-                  <span id="RemainingStockError" class="text-danger"><%= validation.remainingStockError %></span>
-                </div>
-                <div class="col-md-4">
-                  <label class="control-label"><%= productModel.getStockUnitString() %></label>
-                </div>
-              </div>
-	      <div>
-		<span><%= product.OrderedQuantityString %> ont déjà été commandé(e)s. </span>
-		<span>Attention: modifications possibles jusqu'à la cloture des commandes.</span>
-	      </div>
-            </div>
-            <% } %>
-            <div class="row">
-                <a id="saveStocks" href="javascript:;" class="btn btn-default" <% if (!_.isEmpty(validation.weekStockError) || !_.isEmpty(validation.remainingStockError)) { %> disabled="disabled" <% } %> >Enregistrer les modifications</a>
-                <div class="col-md-4">
-                </div>
-            </div>
-        </div>
-  </script>
+    <div id="stockMgt" class="modals">
+    </div>
 
-  <script src="/js/productModel.js"></script>
-  <script src="/js/productsManagement.js"></script>
+    <script id="stockMgtTemplate" type="text/template">
+        <div class="modals modal in">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+                    </div>
+                    <div class="modal-body">
+                        <div>
+                            <span><b>Gestion des stocks pour le produit : "<%= product.Name %>"</b></span>
+                        </div>
+                        <br />
+                        <div><label>Vente : </label> <%= productModel.getSellTypeString() %></div>
+                        <% if (product.Type != 1) { %>
+                        <div><label>Palier de vente : </label> <%= product.QuantityStepString %></div>
+                        <% } %>
+                        <br />
+                        <% if (currentMode.mode == 1) { %> <!-- Livraisons/stocks -->
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                <label for="WeekStock" class="col-md-4 control-label">Je propose cette semaine : </label>
+                                <div class="col-md-4">
+                                    <input id="WeekStock" name="WeekStock" class="form-control" min="0" type="number" step="<%= product.QuantityStep / 1000 || 1 %>" value="<%= product.WeekStock %>" />
+                                    <span id="WeekStockError" class="text-danger"><%= validation.weekStockError %></span>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="control-label"><%= productModel.getStockUnitString() %></label>
+                                </div>
+                            </div>
+                        </div>
+                        <% } else { %> <!-- Commandes -->
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                <label for="RemainingStock" class="col-md-4 control-label">Il reste en stock : </label>
+                                <div class="col-md-4">
+                                    <input id="RemainingStock" name="RemainingStock" class="form-control" min="0" type="number" step="<%= product.QuantityStep / 1000 || 1 %>" value="<%= product.RemainingStock %>" />
+                                    <span id="RemainingStockError" class="text-danger"><%= validation.remainingStockError %></span>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="control-label"><%= productModel.getStockUnitString() %></label>
+                                </div>
+                            </div>
+                            <div>
+                                <span><%= product.OrderedQuantityString %> ont déjà été commandé(e)s. </span>
+                                <span>Attention: modifications possibles jusqu'à la cloture des commandes.</span>
+                            </div>
+                        </div>
+                        <% } %>
+                        <div class="row">
+                            <a id="saveStocks" href="javascript:;" class="btn btn-small btn-default" <% if (!_.isEmpty(validation.weekStockError) || !_.isEmpty(validation.remainingStockError)) { %> disabled="disabled" <% } %> >Enregistrer les modifications</a>
+                            <div class="col-md-4">
+                            </div>
+                        </div>
+                    </div>
+    </script>
+
+    <script src="/js/productModel.js"></script>
+    <script src="/js/productsManagement.js"></script>
 

@@ -1,0 +1,20 @@
+﻿@model Stolons.Models.Transaction
+
+<h2>Créer une nouvelle transaction</h2>
+
+<form asp-action="Create">
+    <div class="form-group">
+        @Html.Partial("Templates/EditTransaction")
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Créer" class="btn btn-small btn-default" />
+        </div>
+    </div>
+</form>
+
+<div>
+    <a asp-action="Index" class="btn btn-small btn-default">Retourner aux transactions</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

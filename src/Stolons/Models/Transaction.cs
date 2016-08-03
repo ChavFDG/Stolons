@@ -25,7 +25,7 @@ namespace Stolons.Models
 
         [Required]
         [Display(Name = "Montant")]
-        public int Amount { get; set; } = 0;
+        public double Amount { get; set; } = 0;
 
         [Display(Name = "Description")]
         public string Description { get; set; }        

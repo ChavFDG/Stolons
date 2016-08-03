@@ -1,7 +1,7 @@
-@model Stolons.ViewModels.Users.UserStolonViewModel
+@model Stolons.ViewModels.Sympathizers.SympathizerViewModel
 
 @{
-    ViewData["Title"] = "Details de " + Model.Consumer.Surname + " "+ Model.Consumer.Name;
+    ViewData["Title"] = "Details de " + Model.Sympathizers.Surname + " "+ Model.Sympathizers.Name;
 }
 
 <h2>@ViewData["Title"]</h2>
@@ -10,86 +10,38 @@
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.Consumer.Id)
+            @Html.DisplayNameFor(model => model.Sympathizers.Id)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Consumer.Id)
+            @Html.DisplayFor(model => model.Sympathizers.Id)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Consumer.Name)
+            @Html.DisplayNameFor(model => model.Sympathizers.Name)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Consumer.Name)
+            @Html.DisplayFor(model => model.Sympathizers.Name)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Consumer.Surname)
+            @Html.DisplayNameFor(model => model.Sympathizers.Surname)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Consumer.Surname)
-        </dd>
+            @Html.DisplayFor(model => model.Sympathizers.Surname)
+        </dd>        
         <dt>
-            @Html.DisplayNameFor(model => model.Consumer.Email)
+            @Html.DisplayNameFor(model => model.Sympathizers.RegistrationDate)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Consumer.Email)
-        </dd>
+            @Html.DisplayFor(model => model.Sympathizers.RegistrationDate)
+        </dd>        
         <dt>
-            @Html.DisplayNameFor(model => model.Consumer.RegistrationDate)
+            @Html.DisplayNameFor(model => model.Sympathizers.PostCode)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Consumer.RegistrationDate)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.UserRole)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.UserRole)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Consumer.PhoneNumber)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Consumer.PhoneNumber)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Consumer.Address)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Consumer.Address)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Consumer.PostCode)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Consumer.PostCode)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Consumer.City)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Consumer.City)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Consumer.Cotisation)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Consumer.Cotisation)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Consumer.Enable)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Consumer.Enable)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.UserRole)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.UserRole)
-        </dd>
+            @Html.DisplayFor(model => model.Sympathizers.PostCode)
+        </dd>        
     </dl>
 </div>
 <p>
-    <a asp-action="Edit" asp-route-id="@Model.Consumer.Id" class="btn btn-default">Modifier @Model.Consumer.Surname @Model.Consumer.Name</a> |
-    <a asp-action="Index" class="btn btn-default">Retourner aux adhérents</a>
+    <a asp-action="Edit" asp-route-id="@Model.Sympathizers.Id" class="btn btn-small btn-default">Modifier @Model.Sympathizers.Surname @Model.Sympathizers.Name</a>
+    <a asp-action="Index" class="btn btn-small btn-default">Retourner aux adhérents</a>
 </p>

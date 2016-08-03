@@ -1,17 +1,13 @@
-﻿@model Stolons.ViewModels.Sympathizers.SympathizerViewModel
+﻿@model Stolons.Models.Transaction
 
-@{
-    ViewData["Title"] = "Ajouter un nouveau sympathisant";
-}
+<h2>Edition de la transaction du @Model.Date</h2>
 
-<h2>@ViewData["Title"]</h2>
-
-<form asp-action="Create" enctype="multipart/form-data">
+<form asp-action="Edit">
     <div class="form-horizontal">
-        @Html.Partial("Templates/EditSympathizer")
+        @Html.Partial("Templates/EditTransaction")      
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Créer" class="btn btn-small btn-default" />
+                <input type="submit" value="Sauvegarder les modifications" class="btn btn-small btn-default" />
             </div>
         </div>
     </div>

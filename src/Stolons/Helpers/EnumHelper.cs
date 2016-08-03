@@ -61,8 +61,8 @@ namespace Stolons.Helpers
     {
         public static string ToFrench(this DayOfWeek dayOfWeekValue)
         {
-	    var culture = new System.Globalization.CultureInfo("fr-FR");
-	    return culture.DateTimeFormat.GetDayName(dayOfWeekValue).ToUpper();
+	        var culture = new System.Globalization.CultureInfo("fr-FR");
+	        return culture.DateTimeFormat.GetDayName(dayOfWeekValue).ToUpper();
         }
     }
 

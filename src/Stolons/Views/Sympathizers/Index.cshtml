@@ -7,7 +7,7 @@
 <h2>@ViewData["Title"]</h2>
 
 <p>
-    <a asp-action="Create" class="btn btn-default" >Ajouter un nouveau sympathisants</a>
+    <a asp-action="Create" class="btn btn-small btn-default" >Ajouter un nouveau sympathisants</a>
 </p>
 <table class="table">
     <tr>
@@ -55,6 +55,18 @@
                     <ul class="dropdown-menu">
                         <li><a asp-action="Edit" asp-route-id="@item.Id" >Modifier</a></li>
                         <li><a asp-action="Details" asp-route-id="@item.Id" >Voir détail</a></li>
+                        @if (item.Cotisation == false)
+                        {
+                            <li><a asp-action="PayCotisation" asp-route-id="@item.Id">Payer la cotisation</a></li>
+                        }
+                        @if (item.Enable == true)
+                        {
+                            <li><a asp-action="Disable" asp-route-id="@item.Id">Désactiver le compte</a></li>
+                        }
+                        else
+                        {
+                            <li><a asp-action="Enable" asp-route-id="@item.Id">Activer le compte</a></li>
+                        }
                         @if (User.IsInRole(Configurations.Role.Administrator.ToString()))
                         {
                             <li><a asp-action="Delete" asp-route-id="@item.Id">Supprimer</a></li>
