@@ -1,6 +1,8 @@
 @model Stolons.Models.Transaction
 
 <div class="form-horizontal">
+    <input asp-for="Id" hidden="hidden" />
+    <input asp-for="AddedAutomaticly" hidden="hidden" />
     <div class="form-group">
         <label asp-for="Type" class="col-md-2 control-label"></label>
         <div class="col-md-10">

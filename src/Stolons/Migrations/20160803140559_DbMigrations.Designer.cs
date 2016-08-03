@@ -8,7 +8,7 @@ using Stolons.Models;
 namespace Stolons.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20160803135804_DbMigrations")]
+    [Migration("20160803140559_DbMigrations")]
     partial class DbMigrations
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

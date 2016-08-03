@@ -363,7 +363,7 @@ namespace Stolons
                     Configurations.UserType.Producer);
         }
 
-        private async Task CreateAcount(ApplicationDbContext context, UserManager<ApplicationUser> userManager, string name, string surname, string email, string password, Configurations.Role role, Configurations.UserType userType)
+        private async Task CreateAcount(ApplicationDbContext context, UserManager<ApplicationUser> userManager, string name, string surname, string email, string password, Configurations.Role role, Configurations.UserType userType, string postCode = "07000")
         {
 
             if (context.Consumers.Any(x => x.Email == email) || context.Producers.Any(x => x.Email == email))
@@ -387,6 +387,7 @@ namespace Stolons
             user.Avatar = Path.Combine(Configurations.UserAvatarStockagePath, Configurations.DefaultFileName);
             user.RegistrationDate = DateTime.Now;
             user.Enable = true;
+            user.PostCode = postCode;
 
             switch (userType)
             {

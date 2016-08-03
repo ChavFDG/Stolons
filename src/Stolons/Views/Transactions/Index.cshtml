@@ -24,6 +24,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.Amount)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AddedAutomaticly)
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -56,6 +59,9 @@
                     break;
             }
             <td>
+                @Html.DisplayFor(modelItem => item.AddedAutomaticly)
+            </td>
+            <td>
                 <div class="dropdown">
                     <a class="dropdown-toggle btn btn-small btn-default" data-toggle="dropdown" href="#">
                         Actions
@@ -63,7 +69,7 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li><a asp-action="Details" asp-route-id="@item.Id">Voir détail</a></li>
-                        @if (User.IsInRole(Configurations.Role.Administrator.ToString()))
+                        @if (User.IsInRole(Configurations.Role.Administrator.ToString()) && item.AddedAutomaticly == false)
                         {
                             <li><a asp-action="Edit" asp-route-id="@item.Id">Modifier</a></li>
                             <li><a asp-action="Delete" asp-route-id="@item.Id">Supprimer</a></li>
