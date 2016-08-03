@@ -30,7 +30,7 @@ namespace Stolons.Controllers
         public IActionResult Index()
         {
             VmWeekBasketManagement vm = new VmWeekBasketManagement();
-            vm.ConsumerBills = _context.ConsumerBills.Include(x=>x.Consumer).Where(x => x.State == BillState.Pending).OrderBy(x=>x.Consumer.Id).ToList();
+            vm.ConsumerBills = _context.ConsumerBills.Include(x=>x.User).Where(x => x.State == BillState.Pending).OrderBy(x=>x.Consumer.Id).ToList();
             vm.ProducerBills = _context.ProducerBills.Include(x => x.Producer).Where(x => x.State != BillState.Paid).OrderBy(x => x.Producer.Id).ToList();
             return View(vm);
         }
@@ -38,7 +38,7 @@ namespace Stolons.Controllers
         // GET: UpdateConsumerBill
         public IActionResult UpdateConsumerBill(string billNumber)
         {
-            IBill bill = _context.ConsumerBills.Include(x => x.Consumer).First(x => x.BillNumber == billNumber);
+            IBill bill = _context.ConsumerBills.Include(x => x.User).First(x => x.BillNumber == billNumber);
             bill.State = BillState.Paid;
             _context.Update(bill);
             _context.SaveChanges();

@@ -16,6 +16,7 @@ using Stolons.ViewModels.Producers;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using Stolons.Helpers;
+using Stolons.Models.Users;
 
 namespace Stolons.Controllers
 {
@@ -85,7 +86,7 @@ namespace Stolons.Controllers
         // GET: Producer/Create
         public IActionResult Create()
         {
-            return View(new ProducerViewModel());
+            return View(new ProducerViewModel(new Producer(),Configurations.Role.User));
         }
 
         // POST: Producer/Create

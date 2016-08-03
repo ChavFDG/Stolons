@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Stolons.Models.Users;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -13,7 +14,7 @@ namespace Stolons.Models
         [Display(Name = "Numéro de facture")] //Year_WeekNumber_UserId
         string BillNumber { get; set; }
         [Display(Name = "Utilisateur")]
-        Sympathizer User { get; set; }
+        User User { get; set; }
         [Display(Name = "Etat")]
         BillState State { get; set; }
 
@@ -26,8 +27,19 @@ namespace Stolons.Models
         [Display(Name = "Numéro de facture")] //Year_WeekNumber_UserId
         public string BillNumber { get; set; }
 
-        [Display(Name = "Adhérant")]
-        public Consumer Consumer { get; set; }
+        [NotMapped]
+        public IConsumer Consumer
+        {
+            get
+            {
+                return User as IConsumer;
+            }
+
+            set
+            {
+                User = value as User;
+            }
+        }
 
         [Display(Name = "Date d'édition de la facture")]
         public DateTime EditionDate { get; set; }
@@ -35,19 +47,8 @@ namespace Stolons.Models
         [Display(Name = "Etat")]
         public BillState State { get; set; }
 
-        [NotMapped]
-        public Sympathizer User
-        {
-            get
-            {
-                return Consumer;
-            }
-
-            set
-            {
-                Consumer = value as Consumer;
-            }
-        }
+        [Display(Name = "Adhérant")]
+        public User User { get; set; }
     }
 
     public class ProducerBill : IBill
@@ -66,7 +67,7 @@ namespace Stolons.Models
         public BillState State { get; set; }
 
         [NotMapped]
-        public Sympathizer User
+        public User User
         {
             get
             {

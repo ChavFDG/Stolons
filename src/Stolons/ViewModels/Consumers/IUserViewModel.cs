@@ -1,4 +1,5 @@
 ﻿using Stolons.Models;
+using Stolons.Models.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,6 @@ namespace Stolons.ViewModels.Consumers
 {
     public interface IUserViewModel
     {
-        Sympathizer User { get; }
+        User User { get; }
     }
 }

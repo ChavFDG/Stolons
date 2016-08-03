@@ -10,6 +10,7 @@ using System.Drawing;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Stolons.Helpers;
+using Stolons.Models.Users;
 
 namespace Stolons
 {
@@ -129,7 +130,7 @@ namespace Stolons
         {
             return Enum.GetNames(typeof(UserType));
         }
-        public static string GetAlias(this Sympathizer user)
+        public static string GetAlias(this User user)
         {
             if (user is Producer)
             {

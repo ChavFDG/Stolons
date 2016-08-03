@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Stolons.Models.Users;
 
 namespace Stolons.Models
 {
@@ -16,6 +17,7 @@ namespace Stolons.Models
     //dotnet ef database update
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
+        public DbSet<User> StolonsUsers { get; set; }
         public DbSet<Sympathizer> Sympathizers { get; set; }
         public DbSet<Producer> Producers { get; set; }
         public DbSet<Consumer> Consumers { get; set; }
@@ -35,9 +37,10 @@ namespace Stolons.Models
             : base(options)
         { }
 
-        protected override void OnModelCreating(ModelBuilder builder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(builder);
+            //modelBuilder.Entity<ConsumerBill>().HasOne(x => x.Consumer).WithMany(x => x.ConsumerBills);
+            base.OnModelCreating(modelBuilder);
         }
     }
 

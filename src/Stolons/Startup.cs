@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using System.Threading;
 using Stolons.Tools;
+using Stolons.Models.Users;
 
 namespace Stolons
 {
@@ -367,7 +368,7 @@ namespace Stolons
 
             if (context.Consumers.Any(x => x.Email == email) || context.Producers.Any(x => x.Email == email))
                 return;
-            Sympathizer user;
+            User user;
             switch (userType)
             {
                 case Configurations.UserType.Producer:

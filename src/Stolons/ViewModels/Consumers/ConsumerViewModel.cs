@@ -1,4 +1,5 @@
 ﻿using Stolons.Models;
+using Stolons.Models.Users;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -27,7 +28,7 @@ namespace Stolons.ViewModels.Consumers
         [Display(Name = "Droit utilisateur ")]
         public Configurations.Role UserRole { get; set; }
 
-        public Sympathizer User
+        public User User
         {
             get
             {

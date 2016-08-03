@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Stolons.Helpers;
+using Stolons.Models.Users;
 
 namespace Stolons.Controllers
 {
@@ -84,7 +85,7 @@ namespace Stolons.Controllers
                 news.ImageLink = Path.Combine(Configurations.NewsImageStockagePath,fileName);
                 //TODO Get logged in User and add it to the news
                 var appUser = await GetCurrentUserAsync(_userManager);
-                Sympathizer user;
+                User user;
                 user = _context.Consumers.FirstOrDefault(x => x.Email == appUser.Email);
                 if(user == null)
                 {
@@ -135,7 +136,7 @@ namespace Stolons.Controllers
                     news.ImageLink = Path.Combine(Configurations.NewsImageStockagePath, fileName);
                 }
                 var appUser = await GetCurrentUserAsync(_userManager);
-                Sympathizer user;
+                User user;
                 user = _context.Consumers.FirstOrDefault(x => x.Email == appUser.Email);
 		if (user == null)
                 {

@@ -5,9 +5,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Stolons.Models
+namespace Stolons.Models.Users
 {
-    public class Sympathizer
+    public abstract class User : IUser
     {
         [Key]
         [Display(Name = "Identifiant")]

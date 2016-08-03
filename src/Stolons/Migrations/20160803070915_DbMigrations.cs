@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Stolons.Migrations
 {
-    public partial class MyFirstMigration : Migration
+    public partial class DbMigrations : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -83,7 +83,23 @@ namespace Stolons.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Sympathizers",
+                name: "Transactions",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    Amount = table.Column<int>(nullable: false),
+                    Category = table.Column<int>(nullable: false),
+                    Date = table.Column<DateTime>(nullable: false),
+                    Description = table.Column<string>(nullable: true),
+                    Type = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Transactions", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "StolonsUsers",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -113,23 +129,7 @@ namespace Stolons.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Sympathizers", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Transactions",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false),
-                    Amount = table.Column<int>(nullable: false),
-                    Category = table.Column<int>(nullable: false),
-                    Date = table.Column<DateTime>(nullable: false),
-                    Description = table.Column<string>(nullable: true),
-                    Type = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Transactions", x => x.Id);
+                    table.PrimaryKey("PK_StolonsUsers", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -197,9 +197,9 @@ namespace Stolons.Migrations
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AspNetUsers_Sympathizers_UserId",
+                        name: "FK_AspNetUsers_StolonsUsers_UserId",
                         column: x => x.UserId,
-                        principalTable: "Sympathizers",
+                        principalTable: "StolonsUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -211,15 +211,29 @@ namespace Stolons.Migrations
                     BillNumber = table.Column<string>(nullable: false),
                     ConsumerId = table.Column<int>(nullable: true),
                     EditionDate = table.Column<DateTime>(nullable: false),
-                    State = table.Column<int>(nullable: false)
+                    ProducerId = table.Column<int>(nullable: true),
+                    State = table.Column<int>(nullable: false),
+                    UserId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ConsumerBills", x => x.BillNumber);
                     table.ForeignKey(
-                        name: "FK_ConsumerBills_Sympathizers_ConsumerId",
+                        name: "FK_ConsumerBills_StolonsUsers_ConsumerId",
                         column: x => x.ConsumerId,
-                        principalTable: "Sympathizers",
+                        principalTable: "StolonsUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ConsumerBills_StolonsUsers_ProducerId",
+                        column: x => x.ProducerId,
+                        principalTable: "StolonsUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ConsumerBills_StolonsUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "StolonsUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -239,9 +253,9 @@ namespace Stolons.Migrations
                 {
                     table.PrimaryKey("PK_News", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_News_Sympathizers_UserForeignKey",
+                        name: "FK_News_StolonsUsers_UserForeignKey",
                         column: x => x.UserForeignKey,
-                        principalTable: "Sympathizers",
+                        principalTable: "StolonsUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -259,9 +273,9 @@ namespace Stolons.Migrations
                 {
                     table.PrimaryKey("PK_ProducerBills", x => x.BillNumber);
                     table.ForeignKey(
-                        name: "FK_ProducerBills_Sympathizers_ProducerId",
+                        name: "FK_ProducerBills_StolonsUsers_ProducerId",
                         column: x => x.ProducerId,
-                        principalTable: "Sympathizers",
+                        principalTable: "StolonsUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -278,9 +292,9 @@ namespace Stolons.Migrations
                 {
                     table.PrimaryKey("PK_TempsWeekBaskets", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_TempsWeekBaskets_Sympathizers_ConsumerId",
+                        name: "FK_TempsWeekBaskets_StolonsUsers_ConsumerId",
                         column: x => x.ConsumerId,
-                        principalTable: "Sympathizers",
+                        principalTable: "StolonsUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -296,9 +310,9 @@ namespace Stolons.Migrations
                 {
                     table.PrimaryKey("PK_ValidatedWeekBaskets", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ValidatedWeekBaskets_Sympathizers_ConsumerId",
+                        name: "FK_ValidatedWeekBaskets_StolonsUsers_ConsumerId",
                         column: x => x.ConsumerId,
-                        principalTable: "Sympathizers",
+                        principalTable: "StolonsUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -335,9 +349,9 @@ namespace Stolons.Migrations
                         principalColumn: "FamillyName",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Products_Sympathizers_ProducerId",
+                        name: "FK_Products_StolonsUsers_ProducerId",
                         column: x => x.ProducerId,
-                        principalTable: "Sympathizers",
+                        principalTable: "StolonsUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -507,6 +521,16 @@ namespace Stolons.Migrations
                 column: "ConsumerId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ConsumerBills_ProducerId",
+                table: "ConsumerBills",
+                column: "ProducerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ConsumerBills_UserId",
+                table: "ConsumerBills",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_News_UserForeignKey",
                 table: "News",
                 column: "UserForeignKey");
@@ -596,7 +620,7 @@ namespace Stolons.Migrations
                 name: "ProductFamillys");
 
             migrationBuilder.DropTable(
-                name: "Sympathizers");
+                name: "StolonsUsers");
 
             migrationBuilder.DropTable(
                 name: "ProductTypes");

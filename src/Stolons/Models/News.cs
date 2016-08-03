@@ -1,4 +1,5 @@
 ﻿using Stolons.Models;
+using Stolons.Models.Users;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -16,7 +17,7 @@ namespace Stolons.Models
         public int UserForeignKey { get; set; }
 
         [ForeignKey("UserForeignKey")]
-        public Sympathizer User { get; set; }
+        public User User { get; set; }
 
         [Required]
         [Display(Name = "Titre")]

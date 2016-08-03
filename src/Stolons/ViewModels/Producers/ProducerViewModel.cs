@@ -1,4 +1,5 @@
 ﻿using Stolons.Models;
+using Stolons.Models.Users;
 using Stolons.ViewModels.Consumers;
 using System;
 using System.Collections.Generic;
@@ -25,7 +26,7 @@ namespace Stolons.ViewModels.Producers
         public string OriginalEmail { get; set; }
         public Producer Producer { get; set; }
 
-        public Sympathizer User
+        public User User
         {
             get
             {

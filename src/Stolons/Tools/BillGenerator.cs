@@ -11,6 +11,7 @@ using OfficeOpenXml.Style;
 using Stolons.Helpers;
 using Stolons.Services;
 using Microsoft.EntityFrameworkCore;
+using Stolons.Models.Users;
 
 namespace Stolons.Tools
 {
@@ -786,7 +787,7 @@ namespace Stolons.Tools
             return bill;
         }
 
-        private static T CreateBill<T>(Sympathizer user) where T : class, IBill , new()
+        private static T CreateBill<T>(User user) where T : class, IBill , new()
         {
             IBill bill = new T();
             bill.BillNumber = DateTime.Now.Year + "_" + DateTime.Now.GetIso8601WeekOfYear() +"_" + user.Id;

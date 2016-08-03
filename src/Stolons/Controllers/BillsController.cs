@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Hosting;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using System;
+using Stolons.Models.Users;
 
 namespace Stolons.Controllers
 {
@@ -31,7 +32,7 @@ namespace Stolons.Controllers
         public async Task<IActionResult> Index()
         {
             var appUser = await GetCurrentUserAsync(_userManager);
-            var stolonsUser = _context.Sympathizers.First(x => x.Email == appUser.Email);
+            var stolonsUser = _context.StolonsUsers.First(x => x.Email == appUser.Email);
             if(stolonsUser is Producer)
             {
                 return View(_context.ProducerBills.Where(x=>x.Producer.Email == stolonsUser.Email).OrderBy(x=>x.EditionDate).ToList<IBill>());

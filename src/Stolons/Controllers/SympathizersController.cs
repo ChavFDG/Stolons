@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using Stolons.Helpers;
 using Stolons.ViewModels.Sympathizers;
+using Stolons.Models.Users;
 
 namespace Stolons.Controllers
 {

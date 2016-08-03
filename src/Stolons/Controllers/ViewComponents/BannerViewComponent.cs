@@ -8,6 +8,7 @@ using System.Security.Claims;
 using Microsoft.Extensions.Logging;
 using Stolons.ViewModels.Banner;
 using Stolons.Models;
+using Stolons.Models.Users;
 
 namespace Stolons.Controllers
 {
@@ -28,7 +29,7 @@ namespace Stolons.Controllers
             if (User.Identity.IsAuthenticated)
             {
                 ApplicationUser appUser = await _userManager.FindByIdAsync(_userManager.GetUserId(HttpContext.User));
-                Sympathizer user = _dbContext.Sympathizers.FirstOrDefault(x => x.Email.Equals(appUser.Email, StringComparison.CurrentCultureIgnoreCase));
+                User user = _dbContext.StolonsUsers.FirstOrDefault(x => x.Email.Equals(appUser.Email, StringComparison.CurrentCultureIgnoreCase));
                 return View(new BannerViewModel(user));
             } else
             {

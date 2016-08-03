@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using Stolons.Models;
 using Stolons.Services;
 using Stolons.ViewModels.Account;
+using Stolons.Models.Users;
 
 namespace Stolons.Controllers
 {
@@ -53,7 +54,7 @@ namespace Stolons.Controllers
             if (ModelState.IsValid)
             {
                 //D'abord on regarde si il existe bien un User avec ce mail
-                Sympathizer stolonsUser = _context.Sympathizers.FirstOrDefault(x => x.Email.Equals(model.Email, StringComparison.CurrentCultureIgnoreCase));
+                User stolonsUser = _context.StolonsUsers.FirstOrDefault(x => x.Email.Equals(model.Email, StringComparison.CurrentCultureIgnoreCase));
                 if(stolonsUser == null)
                 {
                     ModelState.AddModelError(string.Empty, "L'adresse email saisie n'existe pas");

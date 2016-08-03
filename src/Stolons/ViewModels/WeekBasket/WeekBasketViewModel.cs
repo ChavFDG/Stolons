@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Stolons.Models;
+using Stolons.Models.Users;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

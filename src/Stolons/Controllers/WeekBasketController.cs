@@ -14,6 +14,7 @@ using Newtonsoft.Json;
 using Stolons.Models;
 using Stolons.ViewModels.WeekBasket;
 using System;
+using Stolons.Models.Users;
 
 namespace Stolons.Controllers
 {

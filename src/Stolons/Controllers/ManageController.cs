@@ -16,6 +16,7 @@ using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Net.Http.Headers;
 using Stolons.ViewModels.Producers;
+using Stolons.Models.Users;
 
 namespace Stolons.Controllers
 {
@@ -58,7 +59,7 @@ namespace Stolons.Controllers
                 : "";
 
             var user = await GetCurrentUserAsync(_userManager);
-            Sympathizer stolonsUser = _context.Consumers.FirstOrDefault(m => m.Email == user.Email);
+            User stolonsUser = _context.Consumers.FirstOrDefault(m => m.Email == user.Email);
             if(stolonsUser == null)
             {
                 //It's a producer

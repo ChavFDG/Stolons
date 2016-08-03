@@ -8,8 +8,8 @@ using Stolons.Models;
 namespace Stolons.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20160802142350_MyFirstMigration")]
-    partial class MyFirstMigration
+    [Migration("20160803070915_DbMigrations")]
+    partial class DbMigrations
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -264,11 +264,19 @@ namespace Stolons.Migrations
 
                     b.Property<DateTime>("EditionDate");
 
+                    b.Property<int?>("ProducerId");
+
                     b.Property<int>("State");
+
+                    b.Property<int?>("UserId");
 
                     b.HasKey("BillNumber");
 
                     b.HasIndex("ConsumerId");
+
+                    b.HasIndex("ProducerId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("ConsumerBills");
                 });
@@ -387,47 +395,6 @@ namespace Stolons.Migrations
                     b.ToTable("ProductTypes");
                 });
 
-            modelBuilder.Entity("Stolons.Models.Sympathizer", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Address");
-
-                    b.Property<string>("Avatar");
-
-                    b.Property<string>("City");
-
-                    b.Property<bool>("Cotisation");
-
-                    b.Property<string>("DisableReason");
-
-                    b.Property<string>("Discriminator")
-                        .IsRequired();
-
-                    b.Property<string>("Email");
-
-                    b.Property<bool>("Enable");
-
-                    b.Property<string>("Name")
-                        .IsRequired();
-
-                    b.Property<string>("PhoneNumber");
-
-                    b.Property<string>("PostCode");
-
-                    b.Property<DateTime>("RegistrationDate");
-
-                    b.Property<string>("Surname")
-                        .IsRequired();
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Sympathizers");
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("Sympathizer");
-                });
-
             modelBuilder.Entity("Stolons.Models.TempWeekBasket", b =>
                 {
                     b.Property<Guid>("Id")
@@ -464,6 +431,47 @@ namespace Stolons.Migrations
                     b.ToTable("Transactions");
                 });
 
+            modelBuilder.Entity("Stolons.Models.Users.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Address");
+
+                    b.Property<string>("Avatar");
+
+                    b.Property<string>("City");
+
+                    b.Property<bool>("Cotisation");
+
+                    b.Property<string>("DisableReason");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired();
+
+                    b.Property<string>("Email");
+
+                    b.Property<bool>("Enable");
+
+                    b.Property<string>("Name")
+                        .IsRequired();
+
+                    b.Property<string>("PhoneNumber");
+
+                    b.Property<string>("PostCode");
+
+                    b.Property<DateTime>("RegistrationDate");
+
+                    b.Property<string>("Surname")
+                        .IsRequired();
+
+                    b.HasKey("Id");
+
+                    b.ToTable("StolonsUsers");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("User");
+                });
+
             modelBuilder.Entity("Stolons.Models.ValidatedWeekBasket", b =>
                 {
                     b.Property<Guid>("Id")
@@ -478,9 +486,9 @@ namespace Stolons.Migrations
                     b.ToTable("ValidatedWeekBaskets");
                 });
 
-            modelBuilder.Entity("Stolons.Models.Consumer", b =>
+            modelBuilder.Entity("Stolons.Models.Users.Consumer", b =>
                 {
-                    b.HasBaseType("Stolons.Models.Sympathizer");
+                    b.HasBaseType("Stolons.Models.Users.User");
 
 
                     b.ToTable("Consumer");
@@ -488,9 +496,9 @@ namespace Stolons.Migrations
                     b.HasDiscriminator().HasValue("Consumer");
                 });
 
-            modelBuilder.Entity("Stolons.Models.Producer", b =>
+            modelBuilder.Entity("Stolons.Models.Users.Producer", b =>
                 {
-                    b.HasBaseType("Stolons.Models.Sympathizer");
+                    b.HasBaseType("Stolons.Models.Users.User");
 
                     b.Property<int>("Area");
 
@@ -513,6 +521,16 @@ namespace Stolons.Migrations
                     b.ToTable("Producer");
 
                     b.HasDiscriminator().HasValue("Producer");
+                });
+
+            modelBuilder.Entity("Stolons.Models.Users.Sympathizer", b =>
+                {
+                    b.HasBaseType("Stolons.Models.Users.User");
+
+
+                    b.ToTable("Sympathizer");
+
+                    b.HasDiscriminator().HasValue("Sympathizer");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRoleClaim<string>", b =>
@@ -554,7 +572,7 @@ namespace Stolons.Migrations
 
             modelBuilder.Entity("Stolons.Models.ApplicationUser", b =>
                 {
-                    b.HasOne("Stolons.Models.Sympathizer", "User")
+                    b.HasOne("Stolons.Models.Users.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
                 });
@@ -577,14 +595,22 @@ namespace Stolons.Migrations
 
             modelBuilder.Entity("Stolons.Models.ConsumerBill", b =>
                 {
-                    b.HasOne("Stolons.Models.Consumer", "Consumer")
+                    b.HasOne("Stolons.Models.Users.Consumer")
                         .WithMany("ConsumerBills")
                         .HasForeignKey("ConsumerId");
+
+                    b.HasOne("Stolons.Models.Users.Producer")
+                        .WithMany("ConsumerBills")
+                        .HasForeignKey("ProducerId");
+
+                    b.HasOne("Stolons.Models.Users.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("Stolons.Models.News", b =>
                 {
-                    b.HasOne("Stolons.Models.Sympathizer", "User")
+                    b.HasOne("Stolons.Models.Users.User", "User")
                         .WithMany("News")
                         .HasForeignKey("UserForeignKey")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -592,7 +618,7 @@ namespace Stolons.Migrations
 
             modelBuilder.Entity("Stolons.Models.ProducerBill", b =>
                 {
-                    b.HasOne("Stolons.Models.Producer", "Producer")
+                    b.HasOne("Stolons.Models.Users.Producer", "Producer")
                         .WithMany("ProducerBills")
                         .HasForeignKey("ProducerId");
                 });
@@ -603,7 +629,7 @@ namespace Stolons.Migrations
                         .WithMany()
                         .HasForeignKey("FamillyName");
 
-                    b.HasOne("Stolons.Models.Producer", "Producer")
+                    b.HasOne("Stolons.Models.Users.Producer", "Producer")
                         .WithMany()
                         .HasForeignKey("ProducerId");
                 });
@@ -617,14 +643,14 @@ namespace Stolons.Migrations
 
             modelBuilder.Entity("Stolons.Models.TempWeekBasket", b =>
                 {
-                    b.HasOne("Stolons.Models.Consumer", "Consumer")
+                    b.HasOne("Stolons.Models.Users.Consumer", "Consumer")
                         .WithMany()
                         .HasForeignKey("ConsumerId");
                 });
 
             modelBuilder.Entity("Stolons.Models.ValidatedWeekBasket", b =>
                 {
-                    b.HasOne("Stolons.Models.Consumer", "Consumer")
+                    b.HasOne("Stolons.Models.Users.Consumer", "Consumer")
                         .WithMany()
                         .HasForeignKey("ConsumerId");
                 });

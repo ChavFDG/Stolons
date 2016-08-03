@@ -40,7 +40,7 @@ namespace Stolons.Controllers
         [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_Administrator)]
         public IActionResult Index()
         {
-            return View(_context.Sympathizers.ToList());
+            return View(_context.StolonsUsers.ToList());
         }        
     }
 }

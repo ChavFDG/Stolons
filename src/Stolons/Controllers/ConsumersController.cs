@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using Stolons.ViewModels.Consumers;
 using Microsoft.AspNetCore.Authorization;
 using Stolons.Helpers;
+using Stolons.Models.Users;
 
 namespace Stolons.Controllers
 {
@@ -220,7 +221,7 @@ namespace Stolons.Controllers
             _context.News.RemoveRange(_context.News.Include(x => x.User).Where(x => x.User.Id == consumer.Id));
             _context.TempsWeekBaskets.RemoveRange(_context.TempsWeekBaskets.Include(x => x.Consumer).Where(x => x.Consumer.Id == consumer.Id));
             _context.ValidatedWeekBaskets.RemoveRange(_context.ValidatedWeekBaskets.Include(x => x.Consumer).Where(x => x.Consumer.Id == consumer.Id));
-            _context.ConsumerBills.RemoveRange(_context.ConsumerBills.Include(x => x.Consumer).Where(x => x.Consumer.Id == consumer.Id));
+            _context.ConsumerBills.RemoveRange(_context.ConsumerBills.Include(x => x.User).Where(x => x.Consumer.Id == consumer.Id));
             _context.Consumers.Remove(consumer);
             //Save
             _context.SaveChanges();

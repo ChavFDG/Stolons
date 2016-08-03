@@ -5,10 +5,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Stolons.Models
+namespace Stolons.Models.Users
 {
-    public class Producer : Sympathizer
+    public class Producer : User , IConsumer
     {
+        [Required]
         [Display(Name = "Raison sociale")]
         public string CompanyName { get; set; }
         [Display(Name = "Superficie en m²")]
@@ -64,5 +65,8 @@ namespace Stolons.Models
         public double Latitude { get; set; }
 	    [Display(Name = "Longitude")]
         public double Longitude { get; set; }
+
+        [Display(Name = "Factures")]
+        public List<ConsumerBill> ConsumerBills { get; set; }
     }
 }
