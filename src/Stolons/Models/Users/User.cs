@@ -28,6 +28,7 @@ namespace Stolons.Models.Users
         public string Address { get; set; }
 
         [Display(Name = "Code postal")]
+        [Required]
         public string PostCode { get; set; }
 
         [Display(Name = "Ville")]

@@ -81,20 +81,19 @@ namespace Stolons.Controllers
             return PartialView(new SympathizerViewModel(Sympathizer));
         }
 
-        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_Administrator)]
         // GET: Sympathizer/Create
+        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_Administrator)]
         public IActionResult Create()
         {
-            return View(new SympathizerViewModel());
+            return View(new SympathizerViewModel(new Sympathizer()));
         }
 
         // POST: Sympathizer/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_Administrator)]
-        public IActionResult Create(SympathizerViewModel vmSympathizer)
+        public async Task<IActionResult> Create(SympathizerViewModel vmSympathizer)
         {
-
             if (ModelState.IsValid)
             {
                 #region Creating Sympathizer

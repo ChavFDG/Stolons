@@ -55,6 +55,7 @@
                     <ul class="dropdown-menu">
                         <li><a asp-action="Edit" asp-route-id="@item.Id" >Modifier</a></li>
                         <li><a asp-action="Details" asp-route-id="@item.Id" >Voir détail</a></li>
+                        <asp:Button ID="btnPopup" runat="server" Text="Show Popup" />
                         @if (item.Cotisation == false)
                         {
                             <li><a asp-action="PayCotisation" asp-route-id="@item.Id">Payer la cotisation</a></li>
@@ -77,3 +78,20 @@
         </tr>
     }
 </table>
+
+<script type="text/javascript">
+    $("[id*=btnPopup]").live("click", function () {
+        $("#dialog").dialog({
+            title: "jQuery Dialog Popup",
+            buttons: {
+                Close: function () {
+                    $(this).dialog('close');
+                }
+            }
+        });
+        return false;
+    });
+</script>
+<div id="dialog" style="display: none">
+    This is a simple popup
+</div>

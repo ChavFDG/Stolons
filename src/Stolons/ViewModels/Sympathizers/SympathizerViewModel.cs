@@ -16,20 +16,10 @@ namespace Stolons.ViewModels.Sympathizers
         }
         public SympathizerViewModel(Sympathizer sympathizers)
         {
-            Sympathizers = sympathizers;
-            OriginalEmail = sympathizers.Email;
+            Sympathizer = sympathizers;
         }
+        
 
-        public string OriginalEmail { get; set; }
-
-        public Sympathizer Sympathizers { get; set; }
-
-        public Sympathizer Sympathizer
-        {
-            get
-            {
-                return Sympathizers;
-            }
-        }
+        public Sympathizer Sympathizer { get; set; }
     }
 }
