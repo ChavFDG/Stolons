@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using Stolons.Models;
 using Stolons.Services;
 using Stolons.ViewModels.Account;
+using Stolons.ViewModels.Manage;
 using Stolons.Models.Users;
 
 namespace Stolons.Controllers
@@ -54,10 +55,10 @@ namespace Stolons.Controllers
             if (ModelState.IsValid)
             {
                 //D'abord on regarde si il existe bien un User avec ce mail
-                User stolonsUser = _context.StolonsUsers.FirstOrDefault(x => x.Email.Equals(model.Email, StringComparison.CurrentCultureIgnoreCase));
-                if(stolonsUser == null)
+                User stolonsUser = _context.StolonsUsers.FirstOrDefault(x => model.Email.Equals(x.Email, StringComparison.CurrentCultureIgnoreCase));
+                if (stolonsUser == null)
                 {
-                    ModelState.AddModelError(string.Empty, "L'adresse email saisie n'existe pas");
+                    ModelState.AddModelError("LoginFailed", "Utilisateur inconnu");
                     return View(model);
                 }
                 else
@@ -65,14 +66,14 @@ namespace Stolons.Controllers
                     //On regarde si le compte de l'utilisateur est actif
                     if (!stolonsUser.Enable)
                     {
-                        ModelState.AddModelError(string.Empty, "Votre compte a été bloqué pour la raison suivante : " + stolonsUser.DisableReason);
+                        ModelState.AddModelError("LoginFailed", "Votre compte a été bloqué pour la raison suivante : " + stolonsUser.DisableReason);
                         return View(model);
                     }
                     // Il a un mot de passe, on le log si il est bon
                     // This doesn't count login failures towards account lockout
                     // To enable password failures to trigger account lockout, set lockoutOnFailure: true
                     var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
-                    
+
                     if (result.Succeeded)
                     {
                         return RedirectToLocal(returnUrl);
@@ -83,13 +84,12 @@ namespace Stolons.Controllers
                     }
                     else
                     {
-                        ModelState.AddModelError(string.Empty, "Erreur dans la saisie du mot de passe pour le compte : " + model.Email);
+                        ModelState.AddModelError("LoginFailed", "Erreur dans la saisie du mot de passe");
                         return View(model);
                     }
                 }
                 
             }
-
             // If we got this far, something failed, redisplay form
             return View(model);
         }
@@ -103,22 +103,67 @@ namespace Stolons.Controllers
             await _signInManager.SignOutAsync();
             return RedirectToAction(nameof(HomeController.Index), "Home");
         }
-        // GET: /Account/ConfirmEmail
-        [HttpGet]
+
+	[HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> ConfirmEmail(string userId, string code)
+	public IActionResult ForgotPassword()
+	{
+	    return View();
+	}
+
+	// POST /Account/ForgotPassword
+	[HttpPost]
+        [AllowAnonymous]
+	public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
         {
-            if (userId == null || code == null)
+	    if (!ModelState.IsValid)
+	    {
+		return View(model);
+	    }
+	    User stolonsUser = _context.StolonsUsers.FirstOrDefault(x => model.Email.Equals(x.Email, StringComparison.CurrentCultureIgnoreCase));
+	    if (stolonsUser == null)
+	    {
+		return View("ForgotPasswordConfirmation");
+	    }
+	    ApplicationUser appUser = await _userManager.FindByEmailAsync(stolonsUser.Email.ToString());
+	    string resetPasswordToken = await _userManager.GeneratePasswordResetTokenAsync(appUser);
+	    resetPasswordToken = System.Net.WebUtility.UrlEncode(resetPasswordToken);
+	    string link = "http://" + Configurations.SITE_URL + "/Account/ResetPassword?token=" + resetPasswordToken + "&mail=" + stolonsUser.Email;
+
+	    //Send mail
+	    ForgotPasswordEmailViewModel vmodel = new ForgotPasswordEmailViewModel(stolonsUser, link);
+	    AuthMessageSender.SendEmail(stolonsUser.Email, "", "Stolons: Oubli de votre mot de passe", base.RenderPartialViewToString("ResetPasswordEmailTemplate", vmodel), null, null);
+	    return View("ForgotPasswordConfirmation");
+	}
+
+	[HttpGet]
+        [AllowAnonymous]
+	public IActionResult ResetPassword([FromQuery] string token, [FromQuery] string mail)
+	{
+	    var model = new ResetPasswordViewModel(token, mail);
+	    return View("ResetPassword", model);
+	}
+
+	[HttpPost]
+        [AllowAnonymous]
+	public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
             {
-                return View("Error");
+                return View(model);
             }
-            var user = await _userManager.FindByIdAsync(userId);
-            if (user == null)
-            {
-                return View("Error");
-            }
-            var result = await _userManager.ConfirmEmailAsync(user, code);
-            return View(result.Succeeded ? "ConfirmEmail" : "Error");
+	    User stolonsUser = _context.StolonsUsers.FirstOrDefault(x => model.Email.Equals(x.Email, StringComparison.CurrentCultureIgnoreCase));
+	    if (stolonsUser == null)
+	    {
+		return View(model);
+	    }
+	    ApplicationUser appUser = await _userManager.FindByEmailAsync(stolonsUser.Email);
+	    var result = await _userManager.ResetPasswordAsync(appUser, model.Token, model.Password);
+	    if (result.Succeeded)
+	    {
+		return View("ResetPasswordSuccess");
+	    }
+	    return View(model);
         }
 
         [HttpGet]
@@ -127,9 +172,8 @@ namespace Stolons.Controllers
         {
             return View();
         }
-        
 
-        #region Helpers
+	#region Helpers
 
         private void AddErrors(IdentityResult result)
         {
@@ -154,3 +198,22 @@ namespace Stolons.Controllers
         #endregion
     }
 }
+
+        // // GET: /Account/ConfirmEmail
+        // [HttpGet]
+        // [AllowAnonymous]
+        // public async Task<IActionResult> ConfirmEmail(string userId, string code)
+        // {
+        //     if (userId == null || code == null)
+        //     {
+        //         return View("Error");
+        //     }
+        //     var user = await _userManager.FindByIdAsync(userId);
+        //     if (user == null)
+        //     {
+        //         return View("Error");
+        //     }
+        //     var result = await _userManager.ConfirmEmailAsync(user, code);
+        //     return View(result.Succeeded ? "ConfirmEmail" : "Error");
+        // }
+

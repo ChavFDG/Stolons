@@ -27,12 +27,10 @@ namespace Stolons.Controllers
         private IHostingEnvironment _environment;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly ILogger _logger;
 
         public ManageController(ApplicationDbContext context,
         UserManager<ApplicationUser> userManager,
         SignInManager<ApplicationUser> signInManager,
-        ILoggerFactory loggerFactory,
         IHostingEnvironment environment,
             IServiceProvider serviceProvider) : base(serviceProvider)
         { 
@@ -40,7 +38,6 @@ namespace Stolons.Controllers
             _environment = environment;
             _userManager = userManager;
             _signInManager = signInManager;
-            _logger = loggerFactory.CreateLogger<ManageController>();
         }
 
         //
@@ -105,7 +102,6 @@ namespace Stolons.Controllers
                 if (result.Succeeded)
                 {
                     await _signInManager.SignInAsync(user, isPersistent: false);
-                    _logger.LogInformation(3, "User changed their password successfully.");
                     return RedirectToAction(nameof(Index), new { Message = ManageMessageId.ChangePasswordSuccess });
                 }
                 AddErrors(result);

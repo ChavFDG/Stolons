@@ -56,7 +56,7 @@ namespace Stolons
                 DateTime deliveryAndStockUpdateStartDate = DateTime.Today;
                 deliveryAndStockUpdateStartDate = deliveryAndStockUpdateStartDate.AddDays(GetDaysDiff(currentTime.DayOfWeek, ApplicationConfig.DeliveryAndStockUpdateDayStartDate ));
                 deliveryAndStockUpdateStartDate = deliveryAndStockUpdateStartDate.AddHours(ApplicationConfig.DeliveryAndStockUpdateDayStartDateHourStartDate).AddMinutes(ApplicationConfig.DeliveryAndStockUpdateDayStartDateMinuteStartDate);
-		
+
                 DateTime orderStartDate = DateTime.Today;
                 orderStartDate = orderStartDate.AddDays(GetDaysDiff(currentTime.DayOfWeek, ApplicationConfig.OrderDayStartDate));
                 orderStartDate = orderStartDate.AddHours(ApplicationConfig.OrderHourStartDate).AddMinutes(ApplicationConfig.OrderMinuteStartDate);
@@ -87,7 +87,7 @@ namespace Stolons
             }
         }
 
-
+	public const string SITE_URL = "localhost:5000";//"www.stolons.org";
 
         #endregion Configuration
 

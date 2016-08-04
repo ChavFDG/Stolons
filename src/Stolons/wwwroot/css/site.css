@@ -501,6 +501,10 @@ input[type="file"] {
     height: 50px;   
 }
 
+.text-danger {
+    font-size: medium;
+}
+
 /*----- Tabs -----*/
 /* http://inspirationalpixels.com/tutorials/creating-tabs-with-html-css-and-jquery */
 .tabs {
@@ -558,3 +562,4 @@ input[type="file"] {
         .tab.active {
             display:block;
         }
+	

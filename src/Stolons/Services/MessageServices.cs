@@ -35,15 +35,14 @@ namespace Stolons.Services
                 {
                     client.Connect(Configurations.ApplicationConfig.MailSmtp, Configurations.ApplicationConfig.MailPort, false);
                     client.AuthenticationMechanisms.Remove("XOAUTH2");
-                    // Note: since we don't have an OAuth2 token, disable 	
-                    // the XOAUTH2 authentication mechanism.     
+                    // Note: since we don't have an OAuth2 token, disable
+                    // the XOAUTH2 authentication mechanism.
                     client.Authenticate(Configurations.ApplicationConfig.MailAddress, Configurations.ApplicationConfig.MailPassword);
                     client.Send(mimeMessage);
                     client.Disconnect(true);
                 }
-
             }
-            catch(Exception except)
+	    catch (Exception except)
             {
                 Console.WriteLine("Error on sending mail : " + except.Message);
             }

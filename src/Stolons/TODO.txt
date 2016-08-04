@@ -2,25 +2,22 @@
 
 Priorité 0 pour 1er Octobre :
 
-
 Priorité 1 : retour producteur
 DAMIEN
 - Ajouter dans le mail aux producteurs un résumé de la facture
 - Ajouter dans le excel un résumé des commande avec juste Nom du produit / Quantité total 
-- Pouvoir reseter les mot de passe des adhérents => envoie d'un mail à l'adhérent
 - Réduire automatiquement la taille des images importés
 - Voir pour envoyer les fichier en PDF !!! Voir XLS déjà
 - Quand on envoie un mail si ça plante faire sorte que tout ne plante pas ! Si c'est bien ça le bug
 
 NICO
-- Ajouter le fait d'entrer le commentaire de blocage lors de la désactivatio nd'un compte
+- Ajouter le fait d'entrer le commentaire de blocage lors de la désactivation d'un compte
 - Revoir la partie d'édition utilisateurs par soit même ( quand on clique sur l'avatar et qu'on veut s'auto éditer)
 - On peut ajouter un produit sans Type, sans catégorie, c'est mal
 - Ajouter la chat box
 - Ajouter des transactions pour les modifs sur le stock
 - Ajouter validation lors de la modif producteur du stock en cours
-- Bug du Temps week basket
-- Quand on se log et qu'il y a des erreus, les erreus ne s'affichent pas coté client (exemple, mauvais mot de passe, ou compte bloqué ...)
+- Bug du Temps week basket => quel bug ?
 
 NOUS
 - Revoir la gestion des roles ( supprimer, éditer, changement de mail ...)
@@ -28,8 +25,7 @@ NOUS
 Priorité 2 
 - Rendre le panier flottant ( qu'il suive tout le temps la page quand on scroll)
 - Pas de lien pour revenir sur la page d'accueil, voir quand on aura mis le logo
-- La page d'acceuil devrait être les news ( Vérifier si c'est pas déjà fait)
-- Possibilité d'ajouter des catégorie et type
+- Possibilité d'ajouter des catégories et types
 - Changer l'image par défaut des news par autre chose que l'image de starwars
 - Changer le système de blocage : quand on bloque un adhérent, devoir renseigner la raison, et quand il se log faire apparaitre la raison, pouvoir consulter cette raison
 - Re voir IE
@@ -91,3 +87,6 @@ MISE à jour JUILLET :
   	- Seul les admins peuvent rendre les utilisateurs et producteur actif / inactif => OK
 	- Les bénévoles peuvent choisir entre bénévoles et utilisateur pour les producteurs et les utilisateurs => ok
 	- Les admins peuvent choisir Administrateur en plus de bénévoles et utilisateurs pour les producteurs et les utilisateurs
+- La page d'acceuil devrait être les news
+- Quand on se log et qu'il y a des erreus, les erreus ne s'affichent pas coté client (exemple, mauvais mot de passe, ou compte bloqué ...)
+- Pouvoir reseter les mot de passe des adhérents => envoie d'un mail à l'adhérent
