@@ -12,17 +12,16 @@ DAMIEN
 
 NICO
 - Ajouter le fait d'entrer le commentaire de blocage lors de la désactivation d'un compte
-- Revoir la partie d'édition utilisateurs par soit même ( quand on clique sur l'avatar et qu'on veut s'auto éditer)
 - On peut ajouter un produit sans Type, sans catégorie, c'est mal
 - Ajouter la chat box
 - Ajouter des transactions pour les modifs sur le stock
-- Ajouter validation lors de la modif producteur du stock en cours
-- Bug du Temps week basket => quel bug ?
+- Ajouter validation lors de la modif producteur du stock en cours -> Pour être précis il faudrait vérifier qu'il n'y a pas eu de commandes entre le moment ou on a affiché la page et le moment du changement de stock, et si oui, valider sur cette différence = assez chiant à faire :%^)
+- Quand on modifie ou supprime une news faire apparaitre l'image ( à la manière des produits)
 
 NOUS
 - Revoir la gestion des roles ( supprimer, éditer, changement de mail ...)
 
-Priorité 2 
+Priorité 2
 - Rendre le panier flottant ( qu'il suive tout le temps la page quand on scroll)
 - Pas de lien pour revenir sur la page d'accueil, voir quand on aura mis le logo
 - Possibilité d'ajouter des catégories et types
@@ -30,9 +29,7 @@ Priorité 2
 - Changer le système de blocage : quand on bloque un adhérent, devoir renseigner la raison, et quand il se log faire apparaitre la raison, pouvoir consulter cette raison
 - Re voir IE
 - Ajouter les photos 2 et 3 sur les produits => caroussel
-- Quand on écrit une news entant que bénévole faire apparaitre le logo de Stolons à la place de l'avatar de la personne ayant mis la news. 
-Et faire apparaitre l'avatar stolons dans les news => quand on aura le logo
-- Quand on modifie ou supprime une news faire apparaitre l'image ( à la manière des produits)
+- Quand on écrit une news en tant que bénévole faire apparaitre le logo de Stolons à la place de l'avatar de la personne ayant mis la news. Et faire apparaitre l'avatar stolons dans les news => quand on aura le logo
 - Page produits publiques: separer les produits de la semaine de tous ceux enregistres
 - Quand on édite son profil, voir l'avatar qu'on a ( commme pour les produits)
 
@@ -42,12 +39,11 @@ BESOIN EN IMAGE ( Marion )
 - Logo de Stolons
 
 
-
 MISE à jour post core :
 - Virer "éngagé dans le bio"
 - Dans la table ApplicationConfig
--- Ajout de la cotisation sympathisant / consomateur / producteur 
--- Ajout du mois de début de cotisation
+- Ajout de la cotisation sympathisant / consomateur / producteur 
+- Ajout du mois de début de cotisation
 - Création de la table Transaction pour la gestion de la comptabilité de la structure
 - Mutualisé la l'ajout / édition des adhérents ( comme pour les producteurs )
 - Ajotuer un bouton desactiver le compte / activer le compte pour les admins 
@@ -57,9 +53,6 @@ MISE à jour post core :
 - Ajouter un bouton cotisation payé => affiche le prix à payer (à la demi année) et ajoute automatiquement une entré dans la table COMPTABILITE
 - Ajouter un code couleur pour les cotisation payé, non payé
 - Quand un utilisateur est bloqué, afficher le commentaire de blocage
-
-
-
 
 
 
@@ -90,3 +83,6 @@ MISE à jour JUILLET :
 - La page d'acceuil devrait être les news
 - Quand on se log et qu'il y a des erreus, les erreus ne s'affichent pas coté client (exemple, mauvais mot de passe, ou compte bloqué ...)
 - Pouvoir reseter les mot de passe des adhérents => envoie d'un mail à l'adhérent
+
+DONE during AUGUST:
+- Revoir la partie d'édition utilisateurs par soit même ( quand on clique sur l'avatar et qu'on veut s'auto éditer)
