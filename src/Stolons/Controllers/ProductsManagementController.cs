@@ -42,28 +42,28 @@ namespace Stolons.Controllers
             return View(products);
         }
 
-	    [Authorize(Roles = Configurations.UserType_Producer)]
-	    [HttpGet, ActionName("ProducerProducts"), Route("api/producerProducts")]
-	    public string JsonProducerProducts()
+	[Authorize(Roles = Configurations.UserType_Producer)]
+	[HttpGet, ActionName("ProducerProducts"), Route("api/producerProducts")]
+	public string JsonProducerProducts()
         {
-	        var appUser = GetCurrentUserSync(_userManager);
-	        List<ProductViewModel> vmProducts = new List<ProductViewModel>();
-	        var products = _context.Products.Include(m => m.Familly).Include(m=>m.Familly.Type).Where(x => x.Producer.Email == appUser.Email).ToList();
-	        foreach (var product in products)
-	        {
-		        int orderedQty = 0;
+	    var appUser = GetCurrentUserSync(_userManager);
+	    List<ProductViewModel> vmProducts = new List<ProductViewModel>();
+	    var products = _context.Products.Include(m => m.Familly).Include(m=>m.Familly.Type).Where(x => x.Producer.Email == appUser.Email).ToList();
+	    foreach (var product in products)
+	    {
+		int orderedQty = 0;
                 List<BillEntry> billEntries = new List<BillEntry>();
-                foreach(var validateWeekBasket in _context.ValidatedWeekBaskets.Include(x => x.Products))
+                foreach (var validateWeekBasket in _context.ValidatedWeekBaskets.Include(x => x.Products))
                 {
                     validateWeekBasket.Products.Where(x => x.ProductId == product.Id).ToList().ForEach(x=> orderedQty +=x.Quantity);
                 }
-		        vmProducts.Add(new ProductViewModel(product, orderedQty));
-	        }
-	        return JsonConvert.SerializeObject(vmProducts, Formatting.Indented, new JsonSerializerSettings() {
-		        ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-		    });
+		vmProducts.Add(new ProductViewModel(product, orderedQty));
 	    }
-
+	    return JsonConvert.SerializeObject(vmProducts, Formatting.Indented, new JsonSerializerSettings() {
+		    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+			});
+	}
+	
         // GET: ProductsManagement/Details/5
         [Authorize(Roles = Configurations.UserType_Producer)]
         public IActionResult Details(Guid? id)
@@ -217,22 +217,46 @@ namespace Stolons.Controllers
 
         [Authorize(Roles = Configurations.UserType_Producer)]
         [HttpPost, ActionName("ChangeStock")]
-        public IActionResult ChangeStock(Guid id, int newStock)
+        public IActionResult ChangeStock(Guid id, decimal newStock)
         {
-            _context.Products.First(x => x.Id == id).WeekStock = newStock;
-            _context.Products.First(x => x.Id == id).RemainingStock = newStock;
+            _context.Products.First(x => x.Id == id).WeekStock = (decimal)newStock;
+            _context.Products.First(x => x.Id == id).RemainingStock = (decimal)newStock;
             _context.SaveChanges();
 	    return Ok();
         }
 
-	    [Authorize(Roles = Configurations.UserType_Producer)]
+	[Authorize(Roles = Configurations.UserType_Producer)]
         [HttpPost, ActionName("ChangeCurrentStock")]
-        public IActionResult ChangeCurrentStock(Guid id, int newStock)
+        public string ChangeCurrentStock(Guid id, decimal newStock)
         {
-            _context.Products.First(x => x.Id == id).RemainingStock = newStock;
-            _context.SaveChanges();
-            return Ok();
+	    var product = _context.Products.First(x => x.Id == id);
+	    // int orderedQty = 0;
+	    // List<BillEntry> billEntries = new List<BillEntry>();
+	    // foreach (var validateWeekBasket in _context.ValidatedWeekBaskets.Include(x => x.Products))
+	    // {
+	    // 	validateWeekBasket.Products.Where(x => x.ProductId == product.Id).ToList().ForEach(x=> orderedQty +=x.Quantity);
+	    // }
+	    // decimal orderedQuantity;
+	    // if (product.Type == Product.SellType.Piece)
+	    // {
+	    // 	orderedQuantity = orderedQty;
+	    // }
+	    // else
+	    // {
+	    // 	orderedQuantity = (orderedQty * product.QuantityStep) / 1000.0M;
+	    // }
+	    // if (orderedQuantity < newStock)
+	    // {
+	    product.RemainingStock = newStock;
+	    _context.SaveChanges();
+	    return "ok";
+	    // }
+	    // else
+	    // {
+	    // 	return JsonConvert.SerializeObject(new {error = "INVALID_STOCK"}, Formatting.Indented, new JsonSerializerSettings() {
+	    // 		ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+	    // 		    });
+	    // }
         }
-
     }
 }

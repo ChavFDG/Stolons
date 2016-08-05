@@ -97,52 +97,51 @@ namespace Stolons.Models
         [Display(Name = "Prix (kg ou l)")]
         [Required]
         public float Price { get; set; }
-	    [Display(Name = "Prix unitaire")]
-	    [Required]
-	    public float UnitPrice { get; set; }
+	[Display(Name = "Prix unitaire")]
+	[Required]
+	public float UnitPrice { get; set; }
         [Display(Name = "Stock de la semaine")]
-        public float WeekStock { get; set; }
+        public decimal WeekStock { get; set; }
         [Display(Name = "Stock restant")]
-        public float RemainingStock { get; set; }
+        public decimal RemainingStock { get; set; }
         [Display(Name = "Palier de poids (g ou ml)")]
-	    [Required]
+	[Required]
         public int QuantityStep { get; set; }
-	    [NotMapped]
-	    public string QuantityStepString
+	[NotMapped]
+	public string QuantityStepString
+	{
+	    get
 	    {
-	        get
-	        {
-		        if (QuantityStep == 0)
-		        {
-		            return " rien";
-		        }
-		        if (ProductUnit == Unit.Kg)
-		        {
-		            if (QuantityStep >= 1000)
-		            {
-			        return QuantityStep / 1000 + " kg";
-		            }
-		            else
-		            {
-			        return QuantityStep  + " g";
-		            }
-		        }
-		        else
-		        {
-		            if (QuantityStep >= 1000)
-		            {
-			        return QuantityStep / 1000 + " l";
-		            }
-		            else
-		            {
-			        return QuantityStep  + " ml";
-		            }
-		        }
-	        }
+		if (QuantityStep == 0)
+		{
+		    return " rien";
+		}
+		if (ProductUnit == Unit.Kg)
+		{
+		    if (QuantityStep >= 1000)
+		    {
+			return QuantityStep / 1000 + " kg";
+		    }
+		    else
+		    {
+			return QuantityStep  + " g";
+		    }
+		}
+		else
+		{
+		    if (QuantityStep >= 1000)
+		    {
+			return QuantityStep / 1000 + " l";
+		    }
+		    else
+		    {
+			return QuantityStep  + " ml";
+		    }
+		}
 	    }
+	}
 
-
-        public string GetQuantityString(int quantity)
+	public string GetQuantityString(int quantity)
         {
             if (Type == Product.SellType.Piece)
             {
@@ -187,7 +186,6 @@ namespace Stolons.Models
         public Unit ProductUnit { get; set; }
         [Display(Name = "Etat")]
         public ProductState State { get; set; }
-	
 
         public string GetFirstImage()
         {

@@ -193,10 +193,10 @@ namespace Stolons.Controllers
             BillEntry billEntry = tempWeekBasket.Products.FirstOrDefault(x => x.ProductId.ToString() == productId);
             Product product = _context.Products.FirstOrDefault(x => x.Id.ToString() == productId);
 
-            float stepStock = product.RemainingStock;
+            decimal stepStock = product.RemainingStock;
             if (product.Type != Product.SellType.Piece)
             {
-                stepStock = (product.RemainingStock * 1000) / product.QuantityStep;
+                stepStock = (product.RemainingStock * 1000.0M) / product.QuantityStep;
             }
             if (!(quantity > 0 && stepStock < (billEntry.Quantity - validatedQuantity) + quantity))
             {
@@ -270,7 +270,7 @@ namespace Stolons.Controllers
             }
             else
             {
-                product.RemainingStock += ((float)qty * product.QuantityStep) / 1000;
+                product.RemainingStock += ((decimal)((decimal) qty * (decimal) product.QuantityStep)) / 1000.0M;
             }
         }
 
@@ -319,15 +319,14 @@ namespace Stolons.Controllers
                     {
                         //produit supprimé du panier
                         updateProductStock(product, prevEntry.Quantity);
-                        //product.RemainingStock += prevEntry.Quantity;
                     }
                     else
                     {
                         int qtyDiff = newEntry.Quantity - prevEntry.Quantity;
-                        float stepStock = product.RemainingStock;
+                        decimal stepStock = product.RemainingStock;
                         if (product.Type != Product.SellType.Piece)
                         {
-                            stepStock = (product.RemainingStock / product.QuantityStep) * 1000;
+                            stepStock = (product.RemainingStock / product.QuantityStep) * 1000.0M;
                         }
                         if (stepStock < qtyDiff)
                         {
@@ -339,7 +338,6 @@ namespace Stolons.Controllers
                         else
                         {
                             updateProductStock(product, -qtyDiff);
-                            //product.RemainingStock -= qtyDiff;
                         }
                     }
                 }
@@ -353,10 +351,10 @@ namespace Stolons.Controllers
                     {
                         //Nouveau produit
                         Product product = _context.Products.First(x => x.Id == newEntry.ProductId);
-                        float stepStock = product.RemainingStock;
+                        decimal stepStock = product.RemainingStock;
                         if (product.Type != Product.SellType.Piece)
                         {
-                            stepStock = (product.RemainingStock / product.QuantityStep) * 1000;
+                            stepStock = (product.RemainingStock / product.QuantityStep) * 1000.0M;
                         }
                         if (newEntry.Quantity <= stepStock)
                         {

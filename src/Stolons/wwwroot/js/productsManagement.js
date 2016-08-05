@@ -130,10 +130,15 @@ var StockMgtViewModal = Backbone.View.extend({
 	    return false;
 	}
 	var self = this;
-	var responseHandler = function(xhr) {
+	var responseHandler = function(responseText) {
+	    // var data = JSON.parse(responseText);
+	    // if (data.error == "INVALID_STOCK") {
+	    // 	self.validation.remainingStockError = "TODO for error";
+	    // 	self.render();
+	    // } else {
 	    location.reload();
+	    //}
 	};
-
 	var promise;
 	if (window.CurrentModeModel.get("mode") == 0) {
 	    promise = $.ajax({
