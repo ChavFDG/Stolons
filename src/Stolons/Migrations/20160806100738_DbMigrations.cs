@@ -337,11 +337,11 @@ namespace Stolons.Migrations
                     ProducerId = table.Column<int>(nullable: true),
                     ProductUnit = table.Column<int>(nullable: false),
                     QuantityStep = table.Column<int>(nullable: false),
-                    RemainingStock = table.Column<float>(nullable: false),
+                    RemainingStock = table.Column<decimal>(nullable: false),
                     State = table.Column<int>(nullable: false),
                     Type = table.Column<int>(nullable: false),
                     UnitPrice = table.Column<float>(nullable: false),
-                    WeekStock = table.Column<float>(nullable: false)
+                    WeekStock = table.Column<decimal>(nullable: false)
                 },
                 constraints: table =>
                 {

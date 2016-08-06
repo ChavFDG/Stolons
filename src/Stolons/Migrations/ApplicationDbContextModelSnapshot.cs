@@ -355,7 +355,7 @@ namespace Stolons.Migrations
 
                     b.Property<int>("QuantityStep");
 
-                    b.Property<float>("RemainingStock");
+                    b.Property<decimal>("RemainingStock");
 
                     b.Property<int>("State");
 
@@ -363,7 +363,7 @@ namespace Stolons.Migrations
 
                     b.Property<float>("UnitPrice");
 
-                    b.Property<float>("WeekStock");
+                    b.Property<decimal>("WeekStock");
 
                     b.HasKey("Id");
 

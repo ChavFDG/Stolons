@@ -12,6 +12,8 @@ using Stolons.Helpers;
 using Stolons.Services;
 using Microsoft.EntityFrameworkCore;
 using Stolons.Models.Users;
+using System.Text;
+using Microsoft.AspNetCore.Http;
 
 namespace Stolons.Tools
 {
@@ -311,6 +313,75 @@ namespace Stolons.Tools
 
         private static ProducerBill GenerateBill(Producer producer, List<BillEntryConsumer> billEntries, ApplicationDbContext dbContext)
         {
+            //DEBUT FIX
+            StringBuilder builder = new StringBuilder();
+
+            #region Par produit
+            //Create list of bill entry by product
+            Dictionary<Product, List<BillEntryConsumer>> products = new Dictionary<Product, List<BillEntryConsumer>>();
+            foreach (var billEntryConsumer in billEntries)
+            {
+                if (!products.ContainsKey(billEntryConsumer.BillEntry.Product))
+                {
+                    products.Add(billEntryConsumer.BillEntry.Product, new List<BillEntryConsumer>());
+                }
+                products[billEntryConsumer.BillEntry.Product].Add(billEntryConsumer);
+            }
+
+            builder.AppendLine("<h2>Commande par produit</h2>");
+
+            builder.AppendLine("<table class=\"table\">");
+            builder.AppendLine("<tr>");
+            builder.AppendLine("<th>Produit</th>");
+            builder.AppendLine("<th>Quantité</th>");
+            builder.AppendLine("</tr>");
+            foreach(var product in products)
+            {
+                int quantity = 0;
+                product.Value.ForEach(x => quantity += x.BillEntry.Quantity);
+                builder.AppendLine("<tr>");
+                builder.AppendLine("<td>"+ product.Key.Name+ "</td>");       
+                builder.AppendLine("<td>" + product.Key.GetQuantityString(quantity)+ "</td>");
+                builder.AppendLine("</tr>");
+            }
+            builder.AppendLine("</table>");
+
+            #endregion Par produit
+
+            #region Par client
+            builder.AppendLine("<h2>Commande par client</h2>");
+
+            var billEntriesByConsumer = billEntries.GroupBy(x => x.Consumer);
+            builder.AppendLine("<table class=\"table\">");
+            builder.AppendLine("<tr>");
+            builder.AppendLine("<th>Client</th>");
+            builder.AppendLine("<th>Produit</th>");
+            builder.AppendLine("<th>Quantité</th>");
+            builder.AppendLine("</tr>");
+            foreach (var group in billEntriesByConsumer.OrderBy(x => x.Key.Id))
+            {
+                builder.AppendLine("<tr>");
+                builder.AppendLine("<td colspan=\"3\" style=\"border-top:1px solid;\">" + "<b>"+ group.Key.Id + "</b>" + "</td>");
+                builder.AppendLine("</tr>");
+                foreach (var entries in group.OrderBy(x => x.BillEntry.Product.Name))
+                {
+                    builder.AppendLine("<tr>");
+                    builder.AppendLine("<td></td>");
+                    builder.AppendLine("<td>" + entries.BillEntry.Product.Name + "</td>");
+                    builder.AppendLine("<td>" + entries.BillEntry.QuantityString + "</td>");
+                    builder.AppendLine("</tr>");
+                }
+            }
+            builder.AppendLine("</table>");
+
+            #endregion Par client
+
+
+            AuthMessageSender.SendEmail(producer.Email, "", "Stolons: résumé de votre livraison de la semaine", builder.ToString(), null, null);
+
+
+            //FIN FIX
+
             ProducerBill bill = CreateBill<ProducerBill>(producer);
             //Generate exel file with bill number for user
             string producerBillsPath = Path.Combine(Configurations.Environment.WebRootPath, Configurations.ProducersBillsStockagePath, bill.User.Id.ToString());
@@ -353,16 +424,7 @@ namespace Stolons.Tools
                 //Add product informations
                 row++;
                 row++;
-                //Create list of bill entry by product
-                Dictionary<Product, List<BillEntryConsumer>> products = new Dictionary<Product, List<BillEntryConsumer>>();
-                foreach (var billEntryConsumer in billEntries)
-                {
-                    if(!products.ContainsKey(billEntryConsumer.BillEntry.Product))
-                    {
-                        products.Add(billEntryConsumer.BillEntry.Product, new List<BillEntryConsumer>());
-                    }
-                    products[billEntryConsumer.BillEntry.Product].Add(billEntryConsumer);
-                }
+              
                 List<int> rowsTotal = new List<int>();
                 // - Add products
                 foreach (var prod in products)
@@ -521,7 +583,6 @@ namespace Stolons.Tools
                 row++;
                 row++;
                 rowsTotal = new List<int>();
-                var billEntriesByConsumer = billEntries.GroupBy(x => x.Consumer);
                 foreach (var group in billEntriesByConsumer.OrderBy(x=>x.Key.Id))
                 {
                     var clientId = worksheetByClient.Cells[row, 1, row, 5];
@@ -824,5 +885,6 @@ namespace Stolons.Tools
             // Return the week of our adjusted day
             return CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(time, CalendarWeekRule.FirstFullWeek, DayOfWeek.Monday);
         }
+        
     }
 }

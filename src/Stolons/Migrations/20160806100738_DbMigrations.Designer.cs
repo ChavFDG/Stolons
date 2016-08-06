@@ -8,7 +8,7 @@ using Stolons.Models;
 namespace Stolons.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20160803140559_DbMigrations")]
+    [Migration("20160806100738_DbMigrations")]
     partial class DbMigrations
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -356,7 +356,7 @@ namespace Stolons.Migrations
 
                     b.Property<int>("QuantityStep");
 
-                    b.Property<float>("RemainingStock");
+                    b.Property<decimal>("RemainingStock");
 
                     b.Property<int>("State");
 
@@ -364,7 +364,7 @@ namespace Stolons.Migrations
 
                     b.Property<float>("UnitPrice");
 
-                    b.Property<float>("WeekStock");
+                    b.Property<decimal>("WeekStock");
 
                     b.HasKey("Id");
 

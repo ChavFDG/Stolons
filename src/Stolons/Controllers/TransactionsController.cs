@@ -48,7 +48,7 @@ namespace Stolons.Controllers
         [Authorize(Roles = Configurations.Role_Administrator + "," + Configurations.Role_Volunteer)]
         public IActionResult Create()
         {
-            return View();
+            return View(new Transaction());
         }
 
         // POST: Transactions/Create
