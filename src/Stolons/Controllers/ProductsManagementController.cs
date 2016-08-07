@@ -15,7 +15,6 @@ using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
 using Stolons.ViewModels.ProductsManagement;
 using Microsoft.AspNetCore.Authorization;
-using System.Drawing;
 
 namespace Stolons.Controllers
 {

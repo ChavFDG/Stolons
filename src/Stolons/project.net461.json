@@ -39,7 +39,7 @@
     "MailKit": "1.4.1",
     "Shaman.EPPlus": "1.0.0-beta-3689",
     "BundlerMinifier.Core": "2.1.258",
-    "Microsoft.EntityFrameworkCore.Sqlite": "1.0.0" },
+    "Microsoft.EntityFrameworkCore.Sqlite": "1.0.0"  },
 
   "tools": {
     "Microsoft.AspNetCore.Razor.Tools": "1.0.0-preview2-final",
@@ -58,19 +58,7 @@
     },
 
     "frameworks": {
-	"netcoreapp1.0": {
-	    "imports": [
-		"dotnet5.6",
-		"dnxcore50",
-		"portable-net45+win8"
-	    ],
-	    "dependencies": {
-		"Microsoft.NETCore.App": {
-		    "version": "1.0.0",
-		    "type": "platform"
-		},
-	    }
-	}
+	"net461" : {}
     },
 
   "buildOptions": {
