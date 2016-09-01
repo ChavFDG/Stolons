@@ -22,7 +22,9 @@ namespace Stolons.Models
         DateTime EditionDate { get; set; }
         
         [Display(Name = "Montant")]
-        double Amount { get; set; }
+        decimal Amount { get; set; }
+
+        string HtmlContent { get; set; }
 
 
     }
@@ -56,7 +58,9 @@ namespace Stolons.Models
         public User User { get; set; }
 
         [Display(Name = "Montant")]
-        public double Amount { get; set; }
+        public decimal Amount { get; set; }
+
+        public string HtmlContent { get; set; }
     }
 
     public class ProducerBill : IBill
@@ -89,13 +93,13 @@ namespace Stolons.Models
         }
 
         [Display(Name = "Montant")]
-        public double Amount { get; set; }
+        public decimal Amount { get; set; }
 
         [Display(Name = "Commission")]
         public int Fee { get; set; }
 
         [NotMapped]
-        public double FeeAmount
+        public decimal FeeAmount
         {
             get
             {
@@ -104,13 +108,14 @@ namespace Stolons.Models
         }
 
         [NotMapped]
-        public double ProducerAmount
+        public decimal ProducerAmount
         {
             get
             {
                 return Amount - (Amount / 100 * Fee);
             }
         }
+        public string HtmlContent { get; set; }
     }
 
     public enum BillState

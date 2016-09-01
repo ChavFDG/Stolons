@@ -345,8 +345,8 @@ namespace Stolons
                     userManager,
                     "Maurice",
                     "Robert",
-                    "producer@gmail.com",
-                    "producer@gmail.com",
+                    "chavrouxfdg@hotmail.com",
+                    "chavrouxfdg@hotmail.com",
                     Configurations.Role.User,
                     Configurations.UserType.Producer);
         }
@@ -357,8 +357,8 @@ namespace Stolons
                     userManager,
                     "Maurice",
                     "Robert",
-                    "producer@gmail.com",
-                    "producer@gmail.com",
+                    "chavrouxfdg@hotmail.com",
+                    "chavrouxfdg@hotmail.com",
                     Configurations.Role.User,
                     Configurations.UserType.Producer);
         }

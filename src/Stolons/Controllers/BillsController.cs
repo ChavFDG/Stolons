@@ -43,5 +43,19 @@ namespace Stolons.Controllers
             }
             return View();//ERROR
         }
+
+        // GET: ShowBill
+        public IActionResult ShowBill(string billNumber)
+        {
+            IBill bill = _context.ConsumerBills.FirstOrDefault(x => x.BillNumber == billNumber);
+            if(bill != null)
+                return View(bill);
+            bill = _context.ProducerBills.FirstOrDefault(x => x.BillNumber == billNumber);
+            if (bill != null)
+                return View(bill);
+            //Bill not found
+            return View(null);
+
+        }
     }
 }

@@ -76,8 +76,8 @@ namespace Stolons.Tools
                                                         bill.Producer.CompanyName,
                                                         "Votre commande de la semaine (Facture "+ bill.BillNumber +")",
                                                         "<h3>En pièce jointe votre commande de la semaine (Facture " + bill.BillNumber + ")</h3>", 
-                                                        File.ReadAllBytes(bill.GetFilePath()),
-                                                        "Facture "+ bill.BillNumber + ".xlsx");
+                                                        File.ReadAllBytes(bill.GetFilePath())/*,
+                                                        "Facture "+ bill.BillNumber + ".pdf"*/);
                     }
                     // => Producer, send mails
                     foreach (var producer in dbContext.Producers.Where(x=> !brutProducerBills.Keys.Contains(x)))
@@ -98,8 +98,8 @@ namespace Stolons.Tools
                                                         bill.User.Name,
                                                         "Votre commande de la semaine (Facture " + bill.BillNumber + ")", 
                                                         message,
-                                                        File.ReadAllBytes(bill.GetFilePath()),
-                                                        "Facture " + bill.BillNumber + ".xlsx");
+                                                        File.ReadAllBytes(bill.GetFilePath())/*,
+                                                        "Facture " + bill.BillNumber + ".pdf"*/);
                     }
                     //Remove week basket
                     dbContext.TempsWeekBaskets.Clear();
@@ -137,14 +137,16 @@ namespace Stolons.Tools
             return Path.Combine(Configurations.Environment.WebRootPath,
                                             bill.User is Producer ? Configurations.ProducersBillsStockagePath : Configurations.ConsumersBillsStockagePath,
                                             bill.User.Id.ToString(),
-                                            bill.BillNumber + ".xlsx");
+                                            bill.BillNumber + ".pdf");
         }
 
         private static void GenerateBill(List<ValidatedWeekBasket> consumerWeekBaskets, ApplicationDbContext dbContext)
         {
+
+            #region EXEL TO REMOVE 
             //Generate exel file with bill number for user
-	        #region File creation
-	        string billNumber = DateTime.Now.Year + "_" + DateTime.Now.GetIso8601WeekOfYear();
+            #region File creation
+            string billNumber = DateTime.Now.Year + "_" + DateTime.Now.GetIso8601WeekOfYear();
             string consumerBillsPath = Path.Combine(Configurations.Environment.WebRootPath, Configurations.StolonsBillsStockagePath);
 	        string newBillPath = Path.Combine(consumerBillsPath, billNumber + ".xlsx");
 	        FileInfo newFile = new FileInfo(newBillPath);
@@ -160,6 +162,7 @@ namespace Stolons.Tools
             }
             #endregion File creation
             //
+
             using (ExcelPackage package = new ExcelPackage(newFile))
             {
                 if(!consumerWeekBaskets.Any())
@@ -301,8 +304,10 @@ namespace Stolons.Tools
                 // Extended property values
                 package.Workbook.Properties.Company = "Association Stolons";
                 // save our new workbook and we are done!
-                package.Save();
+                //package.Save();
+
             }
+            #endregion EXEL TO REMOVE 
         }
 
         /*
@@ -313,7 +318,7 @@ namespace Stolons.Tools
 
         private static ProducerBill GenerateBill(Producer producer, List<BillEntryConsumer> billEntries, ApplicationDbContext dbContext)
         {
-            //DEBUT FIX
+
             StringBuilder builder = new StringBuilder();
 
             #region Par produit
@@ -376,13 +381,24 @@ namespace Stolons.Tools
 
             #endregion Par client
 
+            ProducerBill bill = CreateBill<ProducerBill>(producer, builder.ToString());
 
-            AuthMessageSender.SendEmail(producer.Email, "", "Stolons: résumé de votre livraison de la semaine", builder.ToString(), null, null);
+
+            //Add bill amount
+            decimal totalAmount = 0;
+            foreach (var billEntry in billEntries)
+            {
+                totalAmount += Convert.ToDecimal(billEntry.BillEntry.Price * billEntry.BillEntry.Quantity);
+            }
+            bill.Amount = totalAmount;
+            bill.Fee = Configurations.ApplicationConfig.Fee;
+            //
+            return bill;
 
 
-            //FIN FIX
 
-            ProducerBill bill = CreateBill<ProducerBill>(producer);
+            #region EXEL TO REMOVE
+
             //Generate exel file with bill number for user
             string producerBillsPath = Path.Combine(Configurations.Environment.WebRootPath, Configurations.ProducersBillsStockagePath, bill.User.Id.ToString());
 	        string newBillPath = Path.Combine(producerBillsPath, bill.BillNumber + ".xlsx");
@@ -711,24 +727,31 @@ namespace Stolons.Tools
                 package.Workbook.Properties.Company = "Association Stolons";
 
                 // save our new workbook and we are done!
-                package.Save();
+                //package.Save();
 
             }
-            //Add bill amount
-            double totalAmount = 0;
-            foreach (var billEntry in billEntries)
-            {
-                totalAmount += billEntry.BillEntry.Price * billEntry.BillEntry.Quantity;
-            }
-            bill.Amount = totalAmount;
-            bill.Fee = Configurations.ApplicationConfig.Fee;
-            //
-            return bill;
+            #endregion EXEL TO REMOVE
+
+
+
         }
 
         private static ConsumerBill GenerateBill(ValidatedWeekBasket weekBasket, ApplicationDbContext dbContext)
         {
-            ConsumerBill bill = CreateBill<ConsumerBill>(weekBasket.Consumer);
+            ConsumerBill bill = CreateBill<ConsumerBill>(weekBasket.Consumer,"");
+            
+
+            //Add bill amount
+            decimal total = 0;
+            foreach (var billEntry in weekBasket.Products)
+            {
+                total += Convert.ToDecimal(billEntry.Price * billEntry.Quantity);
+            }
+            bill.Amount = total;
+            //
+            return bill;
+
+            #region EXEL TO REMOVE
             //Generate exel file with bill number for user
             string consumerBillsPath = Path.Combine(Configurations.Environment.WebRootPath, Configurations.ConsumersBillsStockagePath, bill.User.Id.ToString());
 	        string newBillPath = Path.Combine(consumerBillsPath,  bill.BillNumber + ".xlsx");
@@ -848,26 +871,19 @@ namespace Stolons.Tools
                 worksheet.Column(5).Width = (80 - 12 + 5) / 7d + 1;
                 worksheet.Column(6).Width = (80 - 12 + 5) / 7d + 1;
                 // save our new workbook and we are done!
-                package.Save();
+                //package.Save();
             }
-            //Add bill amount
-            double total = 0;
-            foreach(var billEntry in weekBasket.Products)
-            {
-                total += billEntry.Price * billEntry.Quantity;
-            }
-            bill.Amount = total;
-            //
-            return bill;
+            #endregion EXEL TO REMOVE
         }
 
-        private static T CreateBill<T>(User user) where T : class, IBill , new()
+        private static T CreateBill<T>(User user, string rawHtml) where T : class, IBill , new()
         {
             IBill bill = new T();
             bill.BillNumber = DateTime.Now.Year + "_" + DateTime.Now.GetIso8601WeekOfYear() +"_" + user.Id;
             bill.User = user;
             bill.State = BillState.Pending;
             bill.EditionDate = DateTime.Now;
+            bill.HtmlContent = rawHtml;
             return bill as T;
         }
 
