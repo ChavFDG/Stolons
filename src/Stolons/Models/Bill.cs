@@ -33,19 +33,9 @@ namespace Stolons.Models
         [Display(Name = "Numéro de facture")] //Year_WeekNumber_UserId
         public string BillNumber { get; set; }
 
-        [NotMapped]
-        public IConsumer Consumer
-        {
-            get
-            {
-                return User as IConsumer;
-            }
 
-            set
-            {
-                User = value as User;
-            }
-        }
+        [Display(Name = "Consomateur")] //Year_WeekNumber_UserId
+        public Consumer Consumer { get; set; }
 
         [Display(Name = "Date d'édition de la facture")]
         public DateTime EditionDate { get; set; }
@@ -54,7 +44,19 @@ namespace Stolons.Models
         public BillState State { get; set; }
 
         [Display(Name = "Adhérant")]
-        public User User { get; set; }
+        [NotMapped]
+        public User User
+        {
+            get
+            {
+                return Consumer;
+            }
+
+            set
+            {
+                Consumer = value as Consumer;
+            }
+        }
 
         [Display(Name = "Montant")]
         public decimal Amount { get; set; }
@@ -140,6 +142,7 @@ namespace Stolons.Models
         }
         public string HtmlContent { get; set; }
 
+        [Key]
         [Display(Name = "Numéro de facture")] //Year_WeekNumber
         public string BillNumber { get; set; }
 

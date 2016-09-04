@@ -180,7 +180,7 @@ namespace Stolons
         public static string GetUrl(IBill bill)
         {
             string url = GetUrl(bill.User is Consumer ? Configurations.ConsumersBillsStockagePath : Configurations.ProducersBillsStockagePath);
-            url += "/" + bill.User.Id + "/" + bill.BillNumber + ".xlsx";
+            url += "/" + bill.User.Id + "/" + bill.BillNumber + ".pdf";
             return url;
         }
 

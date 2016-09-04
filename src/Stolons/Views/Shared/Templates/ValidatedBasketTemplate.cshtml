@@ -73,7 +73,7 @@ else
                     @Html.DisplayFor(modelItem => item.Product.UnitPrice) €
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Quantity)
+                    @Html.DisplayFor(modelItem => item.QuantityString)
                 </td>
                 <td>
                     @(item.Quantity * item.Product.UnitPrice) €
@@ -107,10 +107,10 @@ else
                         @Html.DisplayFor(modelItem => item.Product.Name)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Product.Price) €
+                        @Html.DisplayFor(modelItem => item.Product.UnitPrice) €
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Quantity)
+                        @Html.DisplayFor(modelItem => item.QuantityString)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Product.RemainingStock)

@@ -39,12 +39,15 @@ namespace Stolons.Tools
                 if (lastMode == ApplicationConfig.Modes.Order && currentMode == ApplicationConfig.Modes.DeliveryAndStockUpdate)
                 {
                     //We moved form Order to Preparation, create and send bills
-                    List<IBill> consumerBills = new List<IBill>();
-                    List<IBill> producerBills = new List<IBill>();
+                    List<ConsumerBill> consumerBills = new List<ConsumerBill>();
+                    List<ProducerBill> producerBills = new List<ProducerBill>();
                     Dictionary<Producer, List<BillEntryConsumer>> brutProducerBills = new Dictionary<Producer, List<BillEntryConsumer>>();
+
+                    #region Create bills
                     //Consumer (create bills)
                     List<ValidatedWeekBasket> consumerWeekBaskets = dbContext.ValidatedWeekBaskets.Include(x => x.Products).Include(x => x.Consumer).ToList();
-                    dbContext.Add(GenerateBill(consumerWeekBaskets,dbContext));
+                    StolonsBill stolonsBill = GenerateBill(consumerWeekBaskets, dbContext);
+                    dbContext.Add(stolonsBill);
                     foreach (var weekBasket in consumerWeekBaskets)
                     {
                         //Generate bill for consumer
@@ -70,55 +73,51 @@ namespace Stolons.Tools
                         ProducerBill bill = GenerateBill(producerBill.Key, producerBill.Value, dbContext);
                         producerBills.Add(bill);
                         dbContext.Add(bill);
-                        //Send mail to producer
-                        AuthMessageSender.SendEmail(bill.Producer.Email, 
-                                                        bill.Producer.CompanyName,
-                                                        "Votre commande de la semaine (Facture "+ bill.BillNumber +")",
-                                                        "<h3>En pièce jointe votre commande de la semaine (Facture " + bill.BillNumber + ")</h3>", 
-                                                        File.ReadAllBytes(bill.GetFilePath()),
-                                                        "Facture "+ bill.GetFileName());
                     }
-                    // => Producer, send mails
-                    foreach (var producer in dbContext.Producers.Where(x=> !brutProducerBills.Keys.Contains(x)))
-                    {
-                        //Un mail à tout les producteurs n'ayant pas de commande
-                        AuthMessageSender.SendEmail(producer.Email, producer.CompanyName, "Aucune commande cette semaine", "<h3>Vous n'avez pas de commande cette semaine</h3>");
-                    }
-                    //Bills (save bills and send mails to user)
-                    foreach(var bill in consumerBills)
-                    {
-                        dbContext.Add(bill);
-                        //Send mail to user with bill
-                        string message = "<h3>"+Configurations.ApplicationConfig.OrderDeliveryMessage+"</h3>";
-                        message += "<br/>";
-                        message += "<h4>En pièce jointe votre commande de la semaine (Facture " + bill.BillNumber + ")</h4>";
+                    #endregion Create bills
 
-                        AuthMessageSender.SendEmail(bill.User.Email,
-                                                        bill.User.Name,
-                                                        "Votre commande de la semaine (Facture " + bill.BillNumber + ")",
-                                                        message,
-                                                        File.ReadAllBytes(bill.GetFilePath()),
-                                                        "Facture " + bill.GetFileName());
-                    }
+                    #region Save bills
                     //Remove week basket
                     dbContext.TempsWeekBaskets.Clear();
                     dbContext.ValidatedWeekBaskets.Clear();
                     dbContext.BillEntrys.Clear();
-                    //Move product to, to validate
+                    //Move product to validate
                     dbContext.Products.ToList().ForEach(x => x.State = Product.ProductState.Stock);
 
                     #if (DEBUG)
                         //For test, remove existing consumer bill and producer bill => That will never exit in normal mode cause they can only have one bill by week per user
-                        dbContext.RemoveRange(dbContext.ConsumerBills.Where(x=> consumerBills.Any(y=>y.BillNumber == x.BillNumber)));
+                        dbContext.RemoveRange(dbContext.ConsumerBills.Where(x => consumerBills.Any(y => y.BillNumber == x.BillNumber)));
                         dbContext.RemoveRange(dbContext.ProducerBills.Where(x => producerBills.Any(y => y.BillNumber == x.BillNumber)));
-                    #endif
+                        dbContext.RemoveRange(dbContext.StolonsBills.Where(x => x.BillNumber == stolonsBill.BillNumber));
+                     #endif
                     //
                     dbContext.SaveChanges();
                     //Set product remaining stock to week stock value
                     dbContext.Products.ToList().ForEach(x => x.RemainingStock = x.WeekStock);
                     dbContext.SaveChanges();
+                    #endregion Save bills
+
+                    #region Create PDF and send mail
+                    //For stolons
+                    string billWebAddress = Path.Combine("http://", Configurations.SiteUrl, "WeekBasketManagement", "ShowStolonsBill", stolonsBill.BillNumber).Replace("\\", "/");
+                    GeneratePDF(billWebAddress, stolonsBill.FilePath);
+                    // => Producer, send mails
+                    foreach (var bill in producerBills)
+                    {
+                        Thread thread = new Thread(() => GeneratePdfAndSendEmail(bill));
+                        thread.Start();
+                    }
+
+                    //Bills (save bills and send mails to user)
+                    foreach (var bill in consumerBills)
+                    {
+                        Thread thread = new Thread(() => GeneratePdfAndSendEmail(bill));
+                        thread.Start();
+                    }
+
+                    #endregion  Create PDF and send mail
                 }
-                if(lastMode == ApplicationConfig.Modes.DeliveryAndStockUpdate && currentMode == ApplicationConfig.Modes.Order)
+                if (lastMode == ApplicationConfig.Modes.DeliveryAndStockUpdate && currentMode == ApplicationConfig.Modes.Order)
                 {
                     foreach( var product in dbContext.Products.Where(x => x.State == Product.ProductState.Stock))
                     {
@@ -129,6 +128,53 @@ namespace Stolons.Tools
                 lastMode = currentMode;
                 Thread.Sleep(5000);
             } while (true);
+        }
+
+        private static void GeneratePdfAndSendEmail(ProducerBill bill)
+        {
+            //Generate pdf file
+            GeneratePDF(bill);
+            int cpt = 0;
+            while(!File.Exists(bill.GetFilePath()))
+            {
+                cpt++;
+                System.Threading.Thread.Sleep(500);
+                if (cpt == 20)
+                    return;
+            }
+            //Send mail to producer
+            AuthMessageSender.SendEmail(bill.Producer.Email,
+                                            bill.Producer.CompanyName,
+                                            "Votre commande de la semaine (Facture " + bill.BillNumber + ")",
+                                            "<h3>En pièce jointe votre commande de la semaine (Facture " + bill.BillNumber + ")</h3>",
+                                            File.ReadAllBytes(bill.GetFilePath()),
+                                            "Facture " + bill.GetFileName());
+
+        }
+        private static void GeneratePdfAndSendEmail(ConsumerBill bill)
+        {
+            //Generate pdf file
+            GeneratePDF(bill);
+            int cpt = 0;
+            while (!File.Exists(bill.GetFilePath()))
+            {
+                cpt++;
+                System.Threading.Thread.Sleep(500);
+                if (cpt == 20)
+                    return;
+            }
+            //Send mail to user with bill
+            string message = "<h3>" + Configurations.ApplicationConfig.OrderDeliveryMessage + "</h3>";
+            message += "<br/>";
+            message += "<h4>En pièce jointe votre commande de la semaine (Facture " + bill.BillNumber + ")</h4>";
+
+            AuthMessageSender.SendEmail(bill.User.Email,
+                                            bill.User.Name,
+                                            "Votre commande de la semaine (Facture " + bill.BillNumber + ")",
+                                            message,
+                                            File.ReadAllBytes(bill.GetFilePath()),
+                                            "Facture " + bill.GetFileName());
+
         }
 
         private static string GetFilePath(this IBill bill)
@@ -157,8 +203,10 @@ namespace Stolons.Tools
             }
             else
             {
-                foreach (ValidatedWeekBasket weekBasket in consumerWeekBaskets.OrderBy(x => x.Consumer.Id))
+                foreach (ValidatedWeekBasket tempWeekBasket in consumerWeekBaskets.OrderBy(x => x.Consumer.Id))
                 {
+                    ValidatedWeekBasket weekBasket = dbContext.ValidatedWeekBaskets.Include(x => x.Products).First(x => x.Id == tempWeekBasket.Id);
+                    weekBasket.Products.ForEach(x => x = dbContext.BillEntrys.Include(b=>b.Product).First(b => b.Id == x.Id));
                     bill.Amount += weekBasket.TotalPrice;
                     //
                     builder.AppendLine("<h2>Adhérent : "+weekBasket.Consumer.Id+ " / " + weekBasket.Consumer.Surname + " / " + weekBasket.Consumer.Name);
@@ -209,8 +257,6 @@ namespace Stolons.Tools
                 }
             }
             bill.HtmlContent = builder.ToString();
-            string billWebAddress = Path.Combine("http://", Configurations.SiteUrl, "WeekBasketManagement", "ShowStolonsBill", billNumber).Replace("\\", "/");
-            GeneratePDF(billWebAddress, bill.FilePath);
             return bill;
         }
 
@@ -275,8 +321,8 @@ namespace Stolons.Tools
             }
             builder.AppendLine("</table>");
             builder.AppendLine("<p>Total sans comission : " + totalAmount + " €</p>");
-            builder.AppendLine("<p>Comission (" + Configurations.ApplicationConfig.Fee + "%) : " + bill.FeeAmount + " €</p>");
-            builder.AppendLine("<p>Total avec comission : " + bill.ProducerAmount + " €</p>");
+            builder.AppendLine("<p>Comission (" + Configurations.ApplicationConfig.Fee + "%) : " + String.Format("{0:0.00}", bill.FeeAmount) + " €</p>");
+            builder.AppendLine("<p>Total avec comission : " + String.Format("{0:0.00}", bill.ProducerAmount) + " €</p>");
 
             #endregion Par produit
 
@@ -307,10 +353,7 @@ namespace Stolons.Tools
             builder.AppendLine("</table>");
 
             #endregion Par client
-
-            //
-            GeneratePDF(bill);
-            //
+            bill.HtmlContent = builder.ToString();
             return bill;            
         }
 
@@ -357,10 +400,7 @@ namespace Stolons.Tools
             }
             builder.AppendLine("</table>");
             builder.AppendLine("<p>Montant total : " + bill.Amount + " €</p>");
-
-            //
-            GeneratePDF(bill);
-            //
+            bill.HtmlContent = builder.ToString();
             return bill;
         }
 
