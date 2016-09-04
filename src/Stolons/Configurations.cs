@@ -18,6 +18,21 @@ namespace Stolons
     public static class Configurations
     {
         #region Configuration
+
+
+        public static string SiteUrl
+        {
+            get
+            {
+                #if DEBUG
+                    return @"localhost:5000";
+                #endif
+                #if REALEASE
+                     return siteWebAddress = @"www.stolons.org";
+                #endif
+            }
+        }
+
         private static IHostingEnvironment _environment;
         public static IHostingEnvironment Environment
         {
@@ -85,8 +100,6 @@ namespace Stolons
                 }
             }
         }
-
-	public const string SITE_URL = "localhost:5000";//"www.stolons.org";
 
         #endregion Configuration
 
@@ -171,6 +184,7 @@ namespace Stolons
             return url;
         }
 
+
         public static async Task<string> UploadAndResizeImageFile(IHostingEnvironment environment, IFormFile uploadFile, string path)
         {
             string uploads = Path.Combine(environment.WebRootPath, path);
@@ -186,7 +200,7 @@ namespace Stolons
 
         #region Subscription
 
-        public static double GetSubscriptionAmount(User user)
+        public static decimal GetSubscriptionAmount(User user)
         {
             if(user is Sympathizer)
                 return GetSubscriptionAmount(UserType.Sympathizer);
@@ -197,7 +211,7 @@ namespace Stolons
             return -1;
         }
 
-        public static double GetSubscriptionAmount(UserType userType)
+        public static decimal GetSubscriptionAmount(UserType userType)
         {
             int currentMonth = DateTime.Now.Month;
             int subscriptionMonth = (int)ApplicationConfig.SubscriptionStartMonth;

@@ -128,7 +128,7 @@ namespace Stolons.Controllers
 	    ApplicationUser appUser = await _userManager.FindByEmailAsync(stolonsUser.Email.ToString());
 	    string resetPasswordToken = await _userManager.GeneratePasswordResetTokenAsync(appUser);
 	    resetPasswordToken = System.Net.WebUtility.UrlEncode(resetPasswordToken);
-	    string link = "http://" + Configurations.SITE_URL + "/Account/ResetPassword?token=" + resetPasswordToken + "&mail=" + stolonsUser.Email;
+	    string link = "http://" + Configurations.SiteUrl + "/Account/ResetPassword?token=" + resetPasswordToken + "&mail=" + stolonsUser.Email;
 
 	    //Send mail
 	    ForgotPasswordEmailViewModel vmodel = new ForgotPasswordEmailViewModel(stolonsUser, link);

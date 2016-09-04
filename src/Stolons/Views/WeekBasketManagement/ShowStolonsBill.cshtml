@@ -1,0 +1,14 @@
+﻿@model Stolons.Models.StolonsBill
+@using Stolons.Helpers
+@using Stolons.Models
+
+
+@if (Model == null)
+{
+    <h2>Erreur</h2>
+    <p>Impossible de trouver la facture</p>
+}
+else
+{
+    @Html.Raw(Model.HtmlContent)
+}

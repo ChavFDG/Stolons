@@ -20,7 +20,7 @@ namespace Stolons.Models
         /// <param name="amount"></param>
         /// <param name="description"></param>
         /// <param name="addedAutomaticly"></param>
-        public Transaction(TransactionType type, TransactionCategory category, double amount, string description, bool addedAutomaticly = true)
+        public Transaction(TransactionType type, TransactionCategory category, decimal amount, string description, bool addedAutomaticly = true)
         {
             AddedAutomaticly = addedAutomaticly;
             Date = DateTime.Now;
@@ -47,7 +47,7 @@ namespace Stolons.Models
 
         [Required]
         [Display(Name = "Montant")]
-        public double Amount { get; set; } = 0;
+        public decimal Amount { get; set; } = 0;
 
         [Display(Name = "Description")]
         public string Description { get; set; }

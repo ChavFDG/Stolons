@@ -31,7 +31,7 @@
             </th>
         </tr>
         @{
-            double total = 0;
+            decimal total = 0;
             foreach (var item in Model)
             {
                 total += item.Amount;
@@ -49,7 +49,7 @@
                         @Html.DisplayFor(modelItem => item.Amount) €
                     </td>
                     <td>
-                        <a asp-action="ShowBill" asp-controller="Bills"  asp-route-id="@item.BillNumber" class="btn btn-small btn-default" >Afficher</a>
+                        <a asp-action="ShowBill" asp-route-id="@item.BillNumber" class="btn btn-small btn-default" >Afficher</a>
                     </td>
                     <td>
                         @{
@@ -60,7 +60,7 @@
             }
         }
     </table>
-    <h3>Total des factures : @total</h3>
+    <h3>Total des factures : @total €</h3>
 }
 else
 {

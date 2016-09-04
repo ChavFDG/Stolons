@@ -23,16 +23,16 @@ namespace Stolons.Models
         public bool Validated { get; set; }
 	
 	    [NotMapped]
-	    public float TotalPrice
+	    public Decimal TotalPrice
 	    {
 	        get
 	        {
-		    float price = 0.0F;
-		    foreach (BillEntry entry in Products)
-		    {
-		        price += entry.Price;
-		    }
-		    return (float) Math.Round(price, 2);
+                Decimal price = 0;
+		        foreach (BillEntry entry in Products)
+		        {
+		            price += entry.Price;
+		        }
+		        return price;
 	        }
 	    }
     }

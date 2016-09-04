@@ -11,7 +11,7 @@ namespace Stolons.ViewModels.WeekBasket
         public ValidatedWeekBasket ValidatedWeekBasket { get; set; }
         public List<BillEntry> UnValidBillEntry { get; set; }
 
-        public float Total { get; set; }
+        public Decimal Total { get; set; }
 
         public bool IsFullValid
         {

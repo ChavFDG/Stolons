@@ -419,13 +419,13 @@ namespace Stolons.Controllers
         }
 
         //Calcul du prix total d'un panier
-        private float GetBasketPrice(IWeekBasket basket)
+        private Decimal GetBasketPrice(IWeekBasket basket)
         {
             if (basket == null)
             {
                 return 0;
             }
-            float price = 0;
+            Decimal price = 0;
             foreach (BillEntry entry in basket.Products)
             {
                 Product product = _context.Products.First(x => x.Id == entry.ProductId);

@@ -26,11 +26,11 @@ namespace Stolons.Models
         public string StolonsAboutPageText { get; set; } = @"Stolons est une association à visé social, étique et solidaire.";
         //Cotisation
         [Display(Name = "Cotisation sympathisant (€)")]
-        public double SympathizerSubscription { get; set; } = 2;
+        public decimal SympathizerSubscription { get; set; } = 2;
         [Display(Name = "Cotisation consomateur (€)")]
-        public double ConsumerSubscription { get; set; } = 16;
+        public decimal ConsumerSubscription { get; set; } = 20;
         [Display(Name = "Cotisation producteur (€)")]
-        public double ProducerSubscription { get; set; } = 20;
+        public decimal ProducerSubscription { get; set; } = 35;
         [Display(Name = "Mois de départ des cotisations")]
         public Month SubscriptionStartMonth { get; set; } = Month.September;
 
@@ -45,7 +45,7 @@ namespace Stolons.Models
         public string MailSmtp { get; set; } = "mail.gandi.net";
         [Display(Name = "Port")]
         public int MailPort{ get; set; } = 587;
-
+        
 
         //Site page text
         [Display(Name = "Message de récupération du panier (jour, lieu, plage horraire)")]

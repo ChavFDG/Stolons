@@ -18,18 +18,18 @@ namespace Stolons.Models
 
         public List<BillEntry> Products { get; set; }
 
-	[NotMapped]
-	public float TotalPrice
-	{
-	    get
+	    [NotMapped]
+	    public Decimal TotalPrice
 	    {
-		float price = 0.0F;
-		foreach (BillEntry entry in Products)
-		{
-		    price += entry.Price;
-		}
-		return (float) Math.Round(price, 2);
+	        get
+	        {
+                Decimal price = 0;
+		        foreach (BillEntry entry in Products)
+		        {
+		            price += entry.Price;
+		        }
+		        return price;
+	        }
 	    }
-	}
     }
 }

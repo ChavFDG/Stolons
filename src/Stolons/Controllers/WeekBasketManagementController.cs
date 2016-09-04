@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Hosting;
 using System.Security.Claims;
 using Stolons.ViewModels.WeekBasketManagement;
 using System;
+using Stolons.Tools;
 
 namespace Stolons.Controllers
 {
@@ -32,6 +33,8 @@ namespace Stolons.Controllers
             VmWeekBasketManagement vm = new VmWeekBasketManagement();
             vm.ConsumerBills = _context.ConsumerBills.Include(x=>x.User).Where(x => x.State == BillState.Pending).OrderBy(x=>x.Consumer.Id).ToList();
             vm.ProducerBills = _context.ProducerBills.Include(x => x.Producer).Where(x => x.State != BillState.Paid).OrderBy(x => x.Producer.Id).ToList();
+            vm.StolonsBills = _context.StolonsBills.ToList();
+            vm.WeekStolonsBill = vm.StolonsBills.FirstOrDefault(x => x.BillNumber == DateTime.Now.Year + "_" + DateTime.Now.GetIso8601WeekOfYear());
             return View(vm);
         }
 
@@ -77,6 +80,16 @@ namespace Stolons.Controllers
             //Save
             _context.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+        // GET: ShowBill
+        public IActionResult ShowStolonsBill(string id)
+        {
+            StolonsBill bill = _context.StolonsBills.FirstOrDefault(x=>x.BillNumber == id);
+            if (bill != null)
+                return View(bill);
+            //Bill not found
+            return View(null);
         }
     }
 }

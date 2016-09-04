@@ -226,7 +226,7 @@ namespace Stolons
             pain.Description = "Pain farine complete T80";
             pain.Labels.Add(Product.Label.Ab);
             pain.PicturesSerialized = Path.Combine(Configurations.ProductsStockagePath, "pain.png");
-            pain.Price = 15.5F;
+            pain.Price = Convert.ToDecimal(15.5);
             pain.UnitPrice = 4;
             pain.Producer = context.Producers.First();
             pain.ProductUnit = Product.Unit.Kg;
@@ -242,7 +242,7 @@ namespace Stolons
             tomate.Labels.Add(Product.Label.Ab);
             tomate.PicturesSerialized = Path.Combine(Configurations.ProductsStockagePath, "tomate.jpg");
             tomate.Price = 3;
-            tomate.UnitPrice = 1.5F;
+            tomate.UnitPrice = Convert.ToDecimal(1.5);
             tomate.QuantityStep = 500;
             tomate.Producer = context.Producers.First();
             tomate.ProductUnit = Product.Unit.Kg;
@@ -257,8 +257,8 @@ namespace Stolons
             pommedeterre.Description = "Pataaaaaaaaaaaaaaaates!!";
             pommedeterre.Labels.Add(Product.Label.Ab);
             pommedeterre.PicturesSerialized = Path.Combine(Configurations.ProductsStockagePath, "pommedeterre.jpg");
-            pommedeterre.Price = 1.99F;
-            pommedeterre.UnitPrice = 1.99F;
+            pommedeterre.Price = Convert.ToDecimal(1.99);
+            pommedeterre.UnitPrice = Convert.ToDecimal(1.99);
             pommedeterre.QuantityStep = 1000;
             pommedeterre.Producer = context.Producers.First();
             pommedeterre.ProductUnit = Product.Unit.Kg;
@@ -288,7 +288,7 @@ namespace Stolons
             salade.Description = "Une bonne salade pour aller avec les bonnes tomates!";
             salade.Labels.Add(Product.Label.Ab);
             salade.PicturesSerialized = Path.Combine(Configurations.ProductsStockagePath, "salade.jpg");
-            salade.UnitPrice = 0.80F;
+            salade.UnitPrice = Convert.ToDecimal(0.80);
             salade.Price = 0;
             salade.Producer = context.Producers.First();
             salade.ProductUnit = Product.Unit.Kg;

@@ -96,52 +96,52 @@ namespace Stolons.Models
         public SellType Type { get; set; }
         [Display(Name = "Prix (kg ou l)")]
         [Required]
-        public float Price { get; set; }
-	[Display(Name = "Prix unitaire")]
-	[Required]
-	public float UnitPrice { get; set; }
+        public decimal Price { get; set; }
+	    [Display(Name = "Prix unitaire")]
+	    [Required]
+	    public decimal UnitPrice { get; set; }
         [Display(Name = "Stock de la semaine")]
         public decimal WeekStock { get; set; }
         [Display(Name = "Stock restant")]
         public decimal RemainingStock { get; set; }
         [Display(Name = "Palier de poids (g ou ml)")]
-	[Required]
-        public int QuantityStep { get; set; }
-	[NotMapped]
-	public string QuantityStepString
-	{
-	    get
+	    [Required]
+            public int QuantityStep { get; set; }
+	    [NotMapped]
+	    public string QuantityStepString
 	    {
-		if (QuantityStep == 0)
-		{
-		    return " rien";
-		}
-		if (ProductUnit == Unit.Kg)
-		{
-		    if (QuantityStep >= 1000)
+	        get
+	        {
+		    if (QuantityStep == 0)
 		    {
-			return QuantityStep / 1000 + " kg";
+		        return " rien";
+		    }
+		    if (ProductUnit == Unit.Kg)
+		    {
+		        if (QuantityStep >= 1000)
+		        {
+			    return QuantityStep / 1000 + " kg";
+		        }
+		        else
+		        {
+			    return QuantityStep  + " g";
+		        }
 		    }
 		    else
 		    {
-			return QuantityStep  + " g";
+		        if (QuantityStep >= 1000)
+		        {
+			    return QuantityStep / 1000 + " l";
+		        }
+		        else
+		        {
+			    return QuantityStep  + " ml";
+		        }
 		    }
-		}
-		else
-		{
-		    if (QuantityStep >= 1000)
-		    {
-			return QuantityStep / 1000 + " l";
-		    }
-		    else
-		    {
-			return QuantityStep  + " ml";
-		    }
-		}
+	        }
 	    }
-	}
 
-	public string GetQuantityString(int quantity)
+	    public string GetQuantityString(int quantity)
         {
             if (Type == Product.SellType.Piece)
             {

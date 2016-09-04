@@ -31,11 +31,12 @@ namespace Stolons.Models
         }
 
         [NotMapped]
-	    public float Price
+	    public Decimal Price
 	    {
 	        get
 	        {
-		    return (float) Math.Round(Quantity * Product.UnitPrice, 2);
+                
+		        return Quantity * Product.UnitPrice;
 	        }
 	    }
 

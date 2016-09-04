@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -25,8 +26,6 @@ namespace Stolons.Models
         decimal Amount { get; set; }
 
         string HtmlContent { get; set; }
-
-
     }
     public class ConsumerBill : IBill
     {
@@ -127,4 +126,60 @@ namespace Stolons.Models
         [Display(Name = "Payé")]
         Paid = 2
     }
+
+    public class StolonsBill
+    {
+        public StolonsBill()
+        {
+            EditionDate = DateTime.Now;
+        }
+
+        public StolonsBill(string billNumber) : this()
+        {
+            this.BillNumber = billNumber;
+        }
+        public string HtmlContent { get; set; }
+
+        [Display(Name = "Numéro de facture")] //Year_WeekNumber
+        public string BillNumber { get; set; }
+
+        [Display(Name = "Date d'édition")]
+        public DateTime EditionDate { get; set; }
+
+        [Display(Name = "Montant")]
+        public decimal Amount { get; set; }
+
+        [Display(Name = "Commission")]
+        public int Fee { get; set; }
+
+        [NotMapped]
+        public decimal FeeAmount
+        {
+            get
+            {
+                return Amount / 100 * Fee;
+            }
+        }
+
+        [NotMapped]
+        public decimal ProducersAmount
+        {
+            get
+            {
+                return Amount - (Amount / 100 * Fee);
+            }
+        }
+        
+        [NotMapped]
+        public string FilePath
+        {
+            get
+            {
+                string stolonsBillsPath = Path.Combine(Configurations.Environment.WebRootPath, Configurations.StolonsBillsStockagePath);
+                string stolonsBillsFullPath = Path.Combine(stolonsBillsPath, BillNumber + ".pdf");
+                return stolonsBillsFullPath;
+            }
+        }
+    }
+
 }

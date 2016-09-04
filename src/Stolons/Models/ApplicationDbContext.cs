@@ -32,6 +32,7 @@ namespace Stolons.Models
         public DbSet<ValidatedWeekBasket> ValidatedWeekBaskets { get; set; }
         public DbSet<ApplicationConfig> ApplicationConfig { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<StolonsBill> StolonsBills { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
