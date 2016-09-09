@@ -41,7 +41,7 @@ namespace Stolons.Controllers
         // GET: UpdateConsumerBill
         public IActionResult UpdateConsumerBill(string billNumber)
         {
-            IBill bill = _context.ConsumerBills.Include(x => x.User).First(x => x.BillNumber == billNumber);
+            ConsumerBill bill = _context.ConsumerBills.Include(x => x.Consumer).First(x => x.BillNumber == billNumber);
             bill.State = BillState.Paid;
             _context.Update(bill);
             //Transaction
@@ -49,7 +49,7 @@ namespace Stolons.Controllers
                 Transaction.TransactionType.Inbound, 
                 Transaction.TransactionCategory.BillPayement, 
                 bill.Amount,
-                "Paiement de la facture " + bill.BillNumber + " par " + bill.User.Name);
+                "Paiement de la facture " + bill.BillNumber + " par " + bill.Consumer.Name);
             _context.Add(transaction);
             //Save
             _context.SaveChanges();
