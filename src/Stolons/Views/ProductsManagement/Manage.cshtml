@@ -55,22 +55,22 @@
         <div class="form-group">
             <label class="col-md-2 control-label">Photo principale</label>
             <div class="col-md-4">
-              <input id="UploadFile1" type="file" accept="image/*" name="UploadFile1" class="form-control" value="toto.png" />
+              <input id="UploadFile1" type="file" accept="image/*" name="UploadFile1" class="form-control" value="" />
             </div>
 	    <div class="col-md-4">
 	      @{
               if (!Model.IsNew)
               {
 
-                {  if (Model.Product.Pictures.Any())
-                    {
-                        <img id="image1Preview" src="/@Model.Product.Pictures[0]" class="imgPreview" />
-                    }
-                    else
-                    {
-                        <img alt="Pas d'image" />
-                    }
-                }
+              if (Model.Product.Pictures.Any())
+              {
+              <img id="image1Preview" src="/@Model.Product.Pictures[0]" class="imgPreview" />
+              }
+              else
+              {
+              <img alt="Pas d'image" />
+              }
+
 	      }
 	      else
 	      {

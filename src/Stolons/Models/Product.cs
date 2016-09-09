@@ -15,8 +15,8 @@ namespace Stolons.Models
         public Guid Id { get; set; }
         [Display(Name = "Producteur")]
         public Producer Producer { get; set; }
-        [Display(Name = "Famille de produit")]
-        public ProductFamilly Familly { get; set; }
+	[Display(Name = "Famille de produit")]
+        public virtual ProductFamilly Familly { get; set; }
         [Display(Name = "Nom")]
         [Required]
         public string Name { get; set; }

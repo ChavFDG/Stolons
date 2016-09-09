@@ -11,37 +11,26 @@
 
 }
 else
-{
-    <h2>Mon panier</h2>
-
-
+    {
     <div class="weekBasketContainer">
 
+      <div class="row">
+	<h2></h2>
+      </div>
         <div class="row">
-            <div class="row">
-                <div class="col-lg-4">
-                </div>
-                <div class="col-lg-8">
-                    <div id="filters">
-                    </div>
-                </div>
+	  <div class="col-lg-2">
+            <div id="filters">
             </div>
-            <div class="row">
-                <div class="col-lg-4">
-                    <div id="baskets">
-                        <div id="tmpBasket">
-                        </div>
-                        <div id="validatedBasket">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="products col-lg-8">
-                    <div id="products">
-                    </div>
-                </div>
-            </div>
-        </div>
+          </div>
+          <div id="products" class="col-lg-9 col-md-9 col-sm-12">
+          </div>
+	</div>
+    </div>
+    <div id="baskets">
+      <div id="tmpBasket">
+      </div>
+      <div id="validatedBasket">
+      </div>
     </div>
 
     <div id="productModal" class="modal fade"></div>
@@ -53,30 +42,33 @@ else
 
         <fieldset>
 
-            <label class="control-label" for="familiesDropDown">Famille : </label>
-            <select id="familiesDropDown" name="familiesDropDown">
+            <!-- <label class="control-label" for="familiesDropDown">Famille : </label> -->
+            <!-- <select id="familiesDropDown" name="familiesDropDown"> -->
 
-                <option value="Tous">Tous</option>
+            <!--     <option value="Tous">Tous</option> -->
 
-                <% _.forEach(productTypes, function(productType) { %>
+            <!--     <% _.forEach(productTypes, function(productType) { %> -->
 
-                <optgroup label="<%= productType.Name %>">
+            <!--     <optgroup label="<%= productType.Name %>"> -->
 
-                    <% _.forEach(productType.ProductFamilly, function (productFamily) { %>
+            <!--         <% _.forEach(productType.ProductFamilly, function (productFamily) { %> -->
 
-                    <option id="<%= productFamily.FamillyName %>" value="<%= productFamily.FamillyName %>" data-image="<%= productFamily.Image %>"> <%= productFamily.FamillyName %> </option>
+            <!--         <option id="<%= productFamily.FamillyName %>" value="<%= productFamily.FamillyName %>" data-image="<%= productFamily.Image %>"> <%= productFamily.FamillyName %> </option> -->
 
-                    <% }); %>
+            <!--         <% }); %> -->
 
-                </optgroup>
+            <!--     </optgroup> -->
 
-                <% }); %>
-            </select>
+            <!--     <% }); %> -->
+            <!-- </select> -->
 
-            <div class="searchFilter">
-                <label>Recherche :</label>
-                <input id="search" type="text">
+	    <div class="searchFilter">
+              <!-- <label>Recherche :</label> -->
+              <!-- <input id="search" type="text" class="productsTextFilter"> -->
             </div>
+
+	    <div id="tree">
+	    </div>
 
         </fieldset>
 
@@ -142,7 +134,7 @@ else
         <% if (validatedBasketModel.exists() && !tmpBasket.Validated) { %>
 
         <div class="basketTitle">
-            <a class="validatedBasketCollapse" href="#">
+            <a class="validatedBasketCollapse">
                 <span class="glyphicon glyphicon-collapse-up hidden">
                 </span>
                 <span class="glyphicon glyphicon-collapse-down">
@@ -192,10 +184,10 @@ else
                 </tr>
                 <% } %>
                 <tr>
-                    <td colspan="2">
+                    <td colspan="1">
                         <b>Total : </b>
                     </td>
-                    <td>
+                    <td colspan="2">
                         <b>
                             <%= validatedBasket.TotalPrice %>
                             <span class="glyphicon glyphicon-euro" data-toggle="tooltip" title="Prix en euros">
@@ -264,10 +256,10 @@ else
             </tr>
             <% } %>
             <tr>
-                <td colspan="2">
+                <td colspan="1">
                     <b>Total : </b>
                 </td>
-                <td>
+                <td colspan="2">
                     <b>
                         <%= tmpBasket.TotalPrice %>
                         <span class="glyphicon glyphicon-euro" data-toggle="tooltip" title="Prix en euros">
@@ -310,6 +302,11 @@ else
     </script>
 
     <script src="/js/productModel.js"></script>
-    <script src="/js/weekbasket.js"></script>
 
+    <script src="/lib/jstree.min.js"></script>
+
+    <script src="/js/weekbasket.js"></script>
+	
+    <link rel="stylesheet" href="/css/jstree/custom.css" />
+    
 }

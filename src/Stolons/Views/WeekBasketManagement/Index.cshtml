@@ -17,7 +17,7 @@
     <a asp-action="ShowStolonsBill" asp-route-id="@Model.WeekStolonsBill.BillNumber" class="btn btn-small btn-default">Afficher les factures utilisateur de la semaine</a>
 }
 
-
+<div class="boxContainer">
 <h4>Facture à régler aux producteurs </h4>
 @if (Model.ProducerBills.Any(x => x.State == BillState.Delivered))
 {
@@ -72,8 +72,9 @@ else
     <p>Aucune facture à régler</p>
 }
 
+</div>
 
-
+<div class="boxContainer">
 <h4>Producteur ayant une commande à livrer cette semaine </h4>
 @if (Model.ProducerBills.Any(x => x.State == BillState.Pending))
 {
@@ -127,7 +128,9 @@ else
 {
     <p>Plus de command à livrer ou payer par / aux producteurs</p>
 }
+</div>
 
+<div class="boxContainer">
 <h4>Adhérents ayant commandé un panier cette semaine</h4>
 @if (Model.ConsumerBills.Any())
 {
@@ -187,3 +190,4 @@ else
 {
 <p>Plus de panier cette semaine</p>
 }
+</div>

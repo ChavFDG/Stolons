@@ -3,8 +3,19 @@ window.WeekBasket = {};
 
 WeekBasket = window.WeekBasket;
 
+ProductTypeModel = Backbone.Model.extend({
+
+    defaults: {},
+
+    idAttribute: "Id"
+
+});
+
 ProductTypesModel = Backbone.Collection.extend({
+
     url: "/api/ProductTypes",
+
+    model: ProductTypeModel,
 
     initialize: function() {
 	this.fetch();
@@ -205,17 +216,53 @@ FiltersView = Backbone.View.extend({
     initialize: function(args) {
 	this.model = args.model;
 	this.productsModel = args.productsModel;
-	this.listenTo(this.model, 'sync change', this.render);
+	this.model.on('sync', this.initTreeData, this);
 	this.selectedFamily = "Tous";
     },
 
-    onOptionSelected: function(selectedData) {
-	this.selectedFamily = selectedData.params.data.id || "Tous";
-	this.filterProducts();
+    initTreeData: function() {
+	this.treeData = this.model.toJSON();
+	data = this.treeData;
+	_.forEach(data, function(category, idx) {
+	    data[idx].id = category.Id;
+	    data[idx].text = category.Name;
+	    data[idx].icon = category.Image ? "/" + category.Image : "/images/productFamilies/default.jpg";
+	    data[idx].children = category.ProductFamilly;
+	    data[idx].category = true;
+	    _.forEach(data[idx].children, function(family, fIdx) {
+		data[idx].children[fIdx].id = family.Id;
+		data[idx].children[fIdx].text = family.FamillyName;
+		data[idx].children[fIdx].icon = family.Image ? "/" + family.Image : "/images/productFamilies/default.jpg";
+		data[idx].children[fIdx].category = false;
+	    });
+	});
+	this.treeData = [{
+	    id: "Tous",
+	    text: "Tous",
+	    icon: false,
+	    children: this.treeData,
+	    category: true,
+	    state: {
+		opened: true,
+		selected: false
+	    }
+	}];
+	this.render();
     },
 
     famillyMatch: function(product) {
-	return this.selectedFamily == "Tous" || (product.Familly && product.Familly.FamillyName == this.selectedFamily);
+	if (!this.selectedNode) {
+	    return true;
+	} else {
+	    if (this.selectedNode.category) {
+		if (this.selectedNode.id === "Tous") {
+		    return true
+		}
+		return product.Familly && product.Familly.Type && product.Familly.Type.Name == this.selectedNode.Name;
+	    } else {
+		return product.Familly && product.Familly.FamillyName == this.selectedNode.Name;
+	    }
+	}
     },
 
     productNameMatch: function(product, searchTerm) {
@@ -223,11 +270,14 @@ FiltersView = Backbone.View.extend({
     },
 
     productDescMatch: function(product, searchTerm) {
+	if (_.isEmpty(product.Description)) {
+	    return false;
+	}
 	return _.isEmpty(searchTerm) || product.Description.toLowerCase().indexOf(searchTerm) != -1;
     },
 
     filterProducts: function() {
-	var searchTerm = this.$("#search").val();
+	var searchTerm = this.$("#search").val() || "";
 	searchTerm = searchTerm.toLowerCase();
 	var nbMatch = 0;
 	this.productsModel.forEach(function(productModel) {
@@ -247,29 +297,31 @@ FiltersView = Backbone.View.extend({
 	}
     },
 
-    selectElemTemplate: function(elem) {
-	if (!elem.id) {
-	    return elem.text;
-	}
-	var dataImage = $(elem.element).data("image");
-	if (!dataImage) {
-	    return elem.text;
-	} else {
-	    return $('<span class="select-option"><img src="' + dataImage +'" />' + $(elem.element).text() + '</span>');
-	}
-    },
-
     render: function() {
 	this.$el.html(this.template({ productTypes: this.model.toJSON() }));
-	this.$('#familiesDropDown').select2({
-	    minimumResultsForSearch: Infinity,
-	    templateResult: this.selectElemTemplate,
-	    templateSelection: this.selectElemTemplate
+	$("#tree").jstree({
+	    "core": {
+		"data": this.treeData,
+		"themes" : {
+		    "variant" : "responsive"
+		}
+	    }
 	});
-	this.$('#familiesDropDown').on("select2:select", _.bind(this.onOptionSelected, this));
+	this.instance = $("#tree").jstree(true);
+	this.registerEventsHandlers();
 	this.$('#search').on("input", _.bind(function() {
 	    this.filterProducts();
 	}, this));
+    },
+
+    registerEventsHandlers: function() {
+	$("#tree").on('changed.jstree', _.bind(this.nodeSelected, this));
+    },
+
+    nodeSelected: function(event, data) {
+	this.selectedNode = data.node && data.node.original;
+	console.log("node selected", arguments);
+	this.filterProducts();
     }
 });
 
@@ -484,7 +536,16 @@ TmpWeekBasketView = Backbone.View.extend(
 
 	render: function () {
 	    this.$el.html(this.template({tmpBasketModel: this.model, tmpBasket: this.model.toJSON(), validatedBasketModel: this.validatedBasketModel}));
+	    this.followScrolling();
+	},
+
+	followScrolling: function() {
+	    $("#baskets").on('affix.bs.affix', function() {
+		console.log("ON AFFIX", arguments);
+		//$("#baskets").addClass("col-lg-3");
+	    });
 	}
+	
     }
 );
 

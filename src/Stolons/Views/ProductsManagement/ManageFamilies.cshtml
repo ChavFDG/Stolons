@@ -1,0 +1,176 @@
+@using Stolons.Helpers
+@using Stolons.Models
+
+@{
+ViewData["Title"] = "Gestion des types de produits";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div class="row">
+  <div class="col-lg-9 col-md-9">
+    <div id="manageCategories" class="boxContainer">
+      <div class="manageFamiliesButtons">
+	
+	<button id="addCategory" href="#" class="btn btn-small btn-success">
+	  <i class="glyphicon glyphicon-plus"></i>
+	  Ajouter une catégorie
+	</button>
+	<button id="addFamily" href="#" class="btn btn-small btn-success" disabled>
+	  <i class="glyphicon glyphicon-plus"></i>
+	  Ajouter une famille
+	</button>
+	<button id="rename" href="#" class="btn btn-small btn-warning" disabled>
+	  <i class="glyphicon glyphicon-pencil"></i>
+	  Renommer
+	</button>
+	<button id="updatePicture" href="#" class="btn btn-small btn-warning" disabled>
+	  <i class="glyphicon glyphicon-picture"></i>
+	  Image
+	</button>
+	<button id="delete" href="#" class="btn btn-small btn-danger" disabled>
+	  <i class="glyphicon glyphicon-remove"></i>
+	  Supprimer
+	</button>
+      </div>
+
+      <div id="deleteConfirmation" class="manageFamiliesButtons hidden">
+	<p class="isa_warning"><i class="glyphicon glyphicon-warning-sign"></i> Les produits actuellement associés n'auront plus de catégories. Les familles d'une catégorie seront aussi supprimées. Continuer ? </p>
+	<button id="cancelDelete" href="#" class="btn btn-small btn-cancel">
+	  Annuler
+	</button>
+	<button id="confirmDelete" href="#" class="btn btn-small btn-danger">
+	  Confirmer
+	</button>
+      </div>
+
+      <form id="pictureForm" enctype="multipart/form-data">
+	<input id="picture" name="picture" type="file" accept="image/*" class="hidden" />
+      </form>
+
+      <div id="tree">
+      </div>
+    </div>
+  </div>
+</div>
+
+<link rel="stylesheet" href="/css/jstree/custom.css" />
+
+<script src="/lib/jstree.min.js"></script>
+<script src="/js/manageFamilies.js"></script>
+
+
+<script id="categoriesTemplate" type="text/template">
+  <label class="control-label" for="categoriesDropDown">Catégories : </label>
+  <select id="categoriesDropDown" name="categoriesDropDown">
+
+    <% _.forEach(productCategories, function(productCategory) { %>
+
+    <option id="<%= productCategory.Name %>" value="<%= productCategory.Name %>" data-image="/<%= productCategory.Image %>"> <%= productCategory.Name %> </option>
+
+    <% }); %>
+  </select>
+
+  <div class="row">
+    <hr />
+    <div id="category">
+    </div>
+  </div>
+
+
+  <a id="addCategory" href="#" class="btn btn-small btn-default">Ajouter une catégorie</a>
+
+</script>
+
+<script id="familiesTemplate" type="text/template">
+  <label class="control-label" for="familiesDropDown">Familles : </label>
+  <select id="familiesDropDown" name="familiesDropDown">
+
+    <% _.forEach(productTypes, function(productType) { %>
+
+    <% if (selectedCategory == productType.Name) { %>
+
+    <% _.forEach(productType.ProductFamilly, function (productFamily) { %>
+
+    <option id="<%= productFamily.FamillyName %>" value="<%= productFamily.FamillyName %>" data-image="<%= productFamily.Image %>"> <%= productFamily.FamillyName %> </option>
+
+    <% }); } %>
+
+    <% }); %>
+
+  </select>
+
+  <a id="addFamily" href="#" class="btn btn-small btn-default">Ajouter une famille pour la catégorie <b> <% selectedCategory %> </b></a>
+
+  <div class="row">
+    <hr />
+    <div id="family">
+    </div>
+  </div>
+
+</script>
+
+<!-- <script id="categoryTemplate" type="text/template"> -->
+
+<!--   <div class="form-horizontal"> -->
+<!--     <div class="form-group"> -->
+<!--       <label class="col-md-3 control-label" for="categoryName">Nom : </label> -->
+<!--       <div class="col-md-9"> -->
+<!-- 	<input id="categoryName" name="categoryName" type="text" value="<%= category && category.Name %>" /> -->
+<!--       </div> -->
+<!--     </div> -->
+
+<!--     <div class="form-group"> -->
+<!--       <label class="col-md-3 control-label" for="uploadCategoryImage">Image : </label> -->
+<!--       <div class="col-md-4"> -->
+<!-- 	<input id="uploadCategoryImage" type="file" accept="image/*" name="uploadCategoryImage" class="form-control" value="" /> -->
+<!--       </div> -->
+<!--       <div class="col-md-5"> -->
+<!-- 	<% if (category) { %> -->
+<!-- 	<img id="categoryImagePreview" src="/<%= category.Image %>" class="imgPreview" /> -->
+<!-- 	<% } %> -->
+<!--       </div> -->
+<!--     </div> -->
+<!--   </div> -->
+
+<!--   <hr /> -->
+
+<!--   <a id="saveCategory" href="#" class="btn btn-small btn-default">Enregistrer</a> -->
+
+<!--   <% if (!category) { %> -->
+
+<!--   <a id="cancelCategory" href="#" class="btn btn-small btn-default">Annuler</a> -->
+
+<!--   <% } %> -->
+
+<!-- </script> -->
+
+<!-- <script id="familyTemplate" type="text/template"> -->
+
+<!--   <div class="form-group"> -->
+<!--     <label class="col-md-2 control-label" for="familyName">Nom : </label> -->
+<!--     <div class="col-md-10"> -->
+<!--       <input id="familyName" name="familyName" type="text" value="<%= selectedFamily && selectedFamily.FamillyName %>" /> -->
+<!--     </div> -->
+<!--   </div> -->
+
+<!--   <div class="form-group"> -->
+<!--     <label class="col-md-2 control-label" for="uploadFamilyImage">Image : </label> -->
+<!--     <input id="uploadFamilyImage" type="file" accept="image/*" name="uploadFamilyImage" class="form-control" value="" /> -->
+<!--   </div> -->
+
+<!--   <% if (selectedFamily) { %> -->
+<!--   <img id="familyImagePreview" src="<%= selectedFamily.Image %>" class="imgPreview" /> -->
+<!--   <% } else { %> -->
+<!--   <img id="familyImagePreview" src="" alt="Choisir une image" class="imgPreview" /> -->
+<!--   <% } %> -->
+
+<!--   <a id="saveCategory" href="#" class="btn btn-small btn-default">Enregistrer</a> -->
+
+<!--   <% if (!selectedFamily) { %> -->
+
+<!--   <a id="cancelCategory" href="#" class="btn btn-small btn-default">Annuler</a> -->
+
+<!--   <% } %> -->
+  
+<!-- </script> -->

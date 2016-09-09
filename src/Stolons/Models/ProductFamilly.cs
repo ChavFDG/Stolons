@@ -9,11 +9,12 @@ namespace Stolons.Models
     public class ProductFamilly
     {
         [Key]
+	public Guid Id { get; set; }
         [Display(Name = "Nom")]
         public string FamillyName { get; set; }
         [Display(Name = "Type de produit")]
         public ProductType Type { get; set; }
-        
+
         [Display(Name = "Image")] //Lien vers l'image du label
         public string Image { get; set; }
 

@@ -52,7 +52,7 @@ namespace Stolons.Models
         [Display(Name = "Description")]
         public string Description { get; set; }
 
-        [Display(Name = "Ajouter automatiquement")]
+        [Display(Name = "Ajouté automatiquement")]
         public bool AddedAutomaticly { get; set; } = false;
 
         public enum TransactionType
