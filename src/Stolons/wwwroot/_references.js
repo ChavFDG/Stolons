@@ -1,4 +1,5 @@
 ﻿/// <autosync enabled="true" />
+/// <reference path="js/managefamilies.js" />
 /// <reference path="js/manageproduct.js" />
 /// <reference path="js/productmodel.js" />
 /// <reference path="js/productsmanagement.js" />

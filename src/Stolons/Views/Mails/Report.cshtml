@@ -1,0 +1,25 @@
+﻿@using System.Security.Claims
+@using Stolons.Services
+@using Stolons.ViewModels.Mails
+
+@model MailsSendedReport
+
+@{
+    ViewData["Title"] = "Rapport d'envoie";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+@if(Model.MailsNotSended == 0)
+{
+    <p style="color:green;">SUCCES : Les courriels aux @Model.MailsSended utilisateurs ont été envoyé avec succès</p>
+}
+else
+{
+    @if (Model.MailsNotSended == 0)
+    {
+        <p style="color:red;">ERREUR : @Model.MailsSended courriel ont été envoyé avec succès mais @Model.MailsNotSended n'ont pas réussie à être envoyé</p>
+    }
+}
+
+

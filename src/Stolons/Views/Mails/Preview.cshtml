@@ -1,0 +1,42 @@
+﻿@using System.Security.Claims
+@using Stolons.Services
+@using Stolons.ViewModels.Mails
+
+@model MailMessage
+
+@{
+    ViewData["Title"] = "Aperçue";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<dl class="dl-horizontal">
+    <dt>
+        @Html.DisplayNameFor(model => model.Title)
+    </dt>
+    <dd>
+        @Html.DisplayFor(model => model.Title)
+    </dd>
+    <dt>
+        @Html.DisplayNameFor(model => model.Message)
+    </dt>
+    <dd>
+        @Html.Raw(Model.Message)
+    </dd>
+</dl>
+
+<a asp-action="Index" id="@Model" class="btn btn-small btn-default">Modifier</a>
+<div class="dropdown">
+    <a class="dropdown-toggle btn btn-small btn-default" data-toggle="dropdown" href="#">
+        Envoyer ...
+        <span class="caret"></span>
+    </a>
+    <ul class="dropdown-menu">
+        <li>@Html.ActionLink("... aux sympathisants", "SendToSympathizers", Model)</li>
+        <li>@Html.ActionLink("... aux consomateurs", "SendToConsumers", Model)</li>
+        <li>@Html.ActionLink("... aux producteurs", "SendToProducers", Model)</li>
+        <li>@Html.ActionLink("... à tous les adhérents","SendToAllUser",Model)</li>
+    </ul>
+</div>
+
+
