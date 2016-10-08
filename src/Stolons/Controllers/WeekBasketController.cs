@@ -60,7 +60,7 @@ namespace Stolons.Controllers
         [HttpGet, ActionName("Products"), Route("api/products")]
         public string JsonProducts()
         {
-            var Products = _context.Products.Include(x => x.Producer).Include(x => x.Familly).Where(x => x.State == Product.ProductState.Enabled).ToList();
+            var Products = _context.Products.Include(x => x.Producer).Include(x => x.Familly).Include(x => x.Familly.Type).Where(x => x.State == Product.ProductState.Enabled).ToList();
             return JsonConvert.SerializeObject(Products, Formatting.Indented, new JsonSerializerSettings()
             {
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore
@@ -71,7 +71,7 @@ namespace Stolons.Controllers
         [HttpGet, ActionName("PublicProducts"), Route("api/publicProducts")]
         public string JsonPublicProducts()
         {
-            var Products = _context.Products.Include(x => x.Producer).Include(x => x.Familly).ToList();
+            var Products = _context.Products.Include(x => x.Producer).Include(x => x.Familly).Include(x => x.Familly.Type).ToList();
             return JsonConvert.SerializeObject(Products, Formatting.Indented, new JsonSerializerSettings()
             {
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore

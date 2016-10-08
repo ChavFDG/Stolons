@@ -52,10 +52,19 @@
                     </ul>
                 </li>
                 <li><a asp-controller="Transactions" asp-action="Index">Transactions</a></li>
-              }
-              @if (User.IsInRole(Configurations.Role.Administrator.ToString()))
-              {
-              <li><a asp-controller="ApplicationConfig" asp-action="Index">Administrer le site</a></li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        Administration
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a asp-controller="Mails" asp-action="Index">Courriels</a></li>
+                        @if (User.IsInRole(Configurations.Role.Administrator.ToString()))
+                        {
+                            <li><a asp-controller="ApplicationConfig" asp-action="Index">Site</a></li>
+                        }
+                    </ul>
+                </li>
               }
           }
         </ul>

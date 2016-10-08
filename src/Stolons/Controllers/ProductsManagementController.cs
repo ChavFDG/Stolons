@@ -317,6 +317,141 @@ namespace Stolons.Controllers
 	    // 		ReferenceLoopHandling = ReferenceLoopHandling.Ignore
 	    // 		    });
 	    // }
-        }        
+        }
+
+	[Authorize(Roles = Configurations.Role_Administrator + "," + Configurations.UserType_Producer)]
+        [HttpGet, ActionName("ManageFamilies")]
+        public IActionResult ManageFamilies()
+        {
+	    return View();
+        }
+
+	[Authorize(Roles = Configurations.Role_Administrator + "," + Configurations.UserType_Producer)]
+        [HttpPost, ActionName("CreateCategory")]
+        public IActionResult CreateCategory(string categoryName)
+        {
+	    var productCategory = new ProductType(categoryName);
+	    _context.ProductTypes.Add(productCategory);
+            _context.SaveChanges();
+	    return Ok();
+        }
+
+	[Authorize(Roles = Configurations.Role_Administrator + "," + Configurations.UserType_Producer)]
+        [HttpPost, ActionName("CreateFamily")]
+        public IActionResult CreateFamily(Guid categoryId, string familyName)
+        {
+	    var productCategory = _context.ProductTypes.FirstOrDefault(x => x.Id == categoryId);
+	    if (productCategory == null)
+	    {
+		return StatusCode(400);
+	    }
+	    var productFamily = new ProductFamilly(productCategory, familyName);
+	    _context.ProductFamillys.Add(productFamily);
+            _context.SaveChanges();
+	    return Ok();
+        }
+
+	[Authorize(Roles = Configurations.Role_Administrator + "," + Configurations.UserType_Producer)]
+        [HttpPost, ActionName("RenameCategory")]
+        public IActionResult RenameCategory(Guid categoryId, string newCategoryName)
+        {
+	    var category = _context.ProductTypes.FirstOrDefault(x => x.Id == categoryId);
+	    if (category == null)
+	    {
+		return StatusCode(400);
+	    }
+	    category.Name = newCategoryName;
+	    _context.SaveChanges();
+	    return Ok();
+	}
+
+
+	[Authorize(Roles = Configurations.Role_Administrator + "," + Configurations.UserType_Producer)]
+        [HttpPost, ActionName("RenameFamily")]
+        public IActionResult RenameFamily(Guid familyId, string newFamilyName)
+        {
+	    var family = _context.ProductFamillys.FirstOrDefault(x => x.Id == familyId);
+	    if (family == null)
+	    {
+		return StatusCode(400);
+	    }
+	    family.FamillyName = newFamilyName;
+	    _context.SaveChanges();
+	    return Ok();
+	}
+
+	[Authorize(Roles = Configurations.Role_Administrator + "," + Configurations.UserType_Producer)]
+        [HttpPost, ActionName("UpdateCategoryPicture")]
+        public async Task<IActionResult> UpdateCategoryPicture(Guid categoryId, IFormFile picture)
+        {
+	    var category = _context.ProductTypes.FirstOrDefault(x => x.Id == categoryId);
+	    if (category == null)
+	    {
+		return StatusCode(400);
+	    }
+	    string fileName = await Configurations.UploadAndResizeImageFile(_environment, picture, Configurations.ProductsTypeAndFamillyIconsStockagesPath);
+	    category.Image = fileName;
+	    _context.SaveChanges();
+	    return Ok();
+	}
+
+	[Authorize(Roles = Configurations.Role_Administrator + "," + Configurations.UserType_Producer)]
+        [HttpPost, ActionName("UpdateFamilyPicture")]
+        public async Task<IActionResult> UpdateFamilyPicture(Guid familyId, IFormFile picture)
+        {
+	    var family = _context.ProductFamillys.FirstOrDefault(x => x.Id == familyId);
+	    if (family == null)
+	    {
+		return StatusCode(403);
+	    }
+	    string fileName = await Configurations.UploadAndResizeImageFile(_environment, picture, Configurations.ProductsTypeAndFamillyIconsStockagesPath);
+	    family.Image = fileName;
+	    _context.SaveChanges();
+	    return Ok();
+	}
+
+	[Authorize(Roles = Configurations.Role_Administrator + "," + Configurations.UserType_Producer)]
+        [HttpPost, ActionName("DeleteCategory")]
+        public IActionResult DeleteCategory(Guid categoryId)
+        {
+	    var category = _context.ProductTypes.Include(x => x.ProductFamilly).FirstOrDefault(x => x.Id == categoryId);
+	    if (category == null)
+	    {
+		return StatusCode(400);
+	    }
+	    var products = _context.Products.Where(x => x.Familly.Type.Id == categoryId);
+	    foreach (Product product in products)
+	    {
+		product.Familly = null;
+	    }
+	    foreach (ProductFamilly family in category.ProductFamilly)
+	    {
+		_context.ProductFamillys.Remove(family);
+	    }
+	    _context.ProductTypes.Remove(category);
+	    _context.SaveChanges();
+	    return Ok();
+	}
+
+	[Authorize(Roles = Configurations.Role_Administrator + "," + Configurations.UserType_Producer)]
+        [HttpPost, ActionName("DeleteFamily")]
+        public IActionResult DeleteFamily(Guid familyId)
+        {
+	    var family = _context.ProductFamillys.FirstOrDefault(x => x.Id == familyId);
+	    if (family == null)
+	    {
+		return StatusCode(400);
+	    }
+	    var products = _context.Products.Where(x => x.Familly.Id == familyId);
+	    foreach (Product product in products)
+	    {
+		product.Familly = null;
+	    }
+	    _context.ProductFamillys.Remove(family);
+	    _context.SaveChanges();
+	    return Ok();
+	}
+	
+	
     }
 }

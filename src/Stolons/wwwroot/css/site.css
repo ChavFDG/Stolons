@@ -174,6 +174,47 @@ input[type="file"] {
     padding-top: 5px;
 }
 
+@media (min-width: 768px) {
+    #baskets {
+    }
+    #filters {
+    }
+}
+
+@media (max-width: 800px) {
+    #products {
+	padding-left: 0px !important;
+    }
+}
+
+@media (max-width: 1280px) {
+    #products {
+	padding-left: 35px;
+    }
+}
+
+@media (min-width: 1450px) {
+    #baskets {
+	padding: 15px 0;
+	position: fixed;
+	left: 73%;
+	top: 60px;
+	width: auto; /* same as .content left */
+	z-index: 1020;
+    }
+    #products {
+	margin-left: 15px;
+    }
+    #filters {
+	position: fixed;
+	padding-right: 25px;
+	/* left: 18%; */
+	top: 60px;
+	width: auto; /* same as .content left */
+	z-index: 1020;
+    }
+}
+
 .isa_success {
     color: #4F8A10;
     background-color: #DFF2BF;
@@ -398,10 +439,6 @@ input[type="file"] {
     to { -moz-transform: rotate(360deg);}
 }
 
-#filters {
-    margin-bottom: 17px;
-}
-
 .searchFilter {
     padding-left: 50px;
 }
@@ -443,6 +480,12 @@ input[type="file"] {
 
 .deleteEntry {
     color: #f00;
+}
+
+.fixedBasket {
+    position: fixed;
+    top: 30%;
+    left: 5%;
 }
 
 .dl-horizontal > dt {
@@ -500,6 +543,24 @@ input[type="file"] {
 
 .text-danger {
     font-size: medium;
+}
+
+.boxContainer {
+    border-radius: 5px;
+    box-shadow: 0 0 5px #ccc;
+    max-width: 100%;
+    overflow: auto;
+    padding: 10px;
+    margin-top: 25px;
+}
+
+.manageFamiliesButtons {
+    margin: 15px;
+}
+
+.weekBasketContainer {
+    width: 115%;
+    max-width: 115%;
 }
 
 /*----- Tabs -----*/
