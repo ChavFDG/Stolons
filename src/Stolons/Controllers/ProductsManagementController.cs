@@ -29,7 +29,7 @@ namespace Stolons.Controllers
         {
             _userManager = userManager;
             _environment = environment;
-            _context = context;    
+            _context = context;
         }
 
         // GET: ProductsManagement
@@ -37,32 +37,33 @@ namespace Stolons.Controllers
         public async Task<IActionResult> Index()
         {
             var appUser = await GetCurrentUserAsync(_userManager);
-            var products = _context.Products.Include(m => m.Familly).Include(m=>m.Familly.Type).Where(x => x.Producer.Email == appUser.Email).ToList();
+            var products = _context.Products.Include(m => m.Familly).Include(m => m.Familly.Type).Where(x => x.Producer.Email == appUser.Email).ToList();
             return View(products);
         }
 
-	[Authorize(Roles = Configurations.UserType_Producer)]
-	[HttpGet, ActionName("ProducerProducts"), Route("api/producerProducts")]
-	public string JsonProducerProducts()
+        [Authorize(Roles = Configurations.UserType_Producer)]
+        [HttpGet, ActionName("ProducerProducts"), Route("api/producerProducts")]
+        public string JsonProducerProducts()
         {
-	    var appUser = GetCurrentUserSync(_userManager);
-	    List<ProductViewModel> vmProducts = new List<ProductViewModel>();
-	    var products = _context.Products.Include(m => m.Familly).Include(m=>m.Familly.Type).Where(x => x.Producer.Email == appUser.Email).ToList();
-	    foreach (var product in products)
-	    {
-		int orderedQty = 0;
+            var appUser = GetCurrentUserSync(_userManager);
+            List<ProductViewModel> vmProducts = new List<ProductViewModel>();
+            var products = _context.Products.Include(m => m.Familly).Include(m => m.Familly.Type).Where(x => x.Producer.Email == appUser.Email).ToList();
+            foreach (var product in products)
+            {
+                int orderedQty = 0;
                 List<BillEntry> billEntries = new List<BillEntry>();
                 foreach (var validateWeekBasket in _context.ValidatedWeekBaskets.Include(x => x.Products))
                 {
-                    validateWeekBasket.Products.Where(x => x.ProductId == product.Id).ToList().ForEach(x=> orderedQty +=x.Quantity);
+                    validateWeekBasket.Products.Where(x => x.ProductId == product.Id).ToList().ForEach(x => orderedQty += x.Quantity);
                 }
-		vmProducts.Add(new ProductViewModel(product, orderedQty));
-	    }
-	    return JsonConvert.SerializeObject(vmProducts, Formatting.Indented, new JsonSerializerSettings() {
-		    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-			});
-	}
-	
+                vmProducts.Add(new ProductViewModel(product, orderedQty));
+            }
+            return JsonConvert.SerializeObject(vmProducts, Formatting.Indented, new JsonSerializerSettings()
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            });
+        }
+
         // GET: ProductsManagement/Details/5
         [Authorize(Roles = Configurations.UserType_Producer)]
         public IActionResult Details(Guid? id)
@@ -85,8 +86,8 @@ namespace Stolons.Controllers
         [Authorize(Roles = Configurations.UserType_Producer)]
         public IActionResult Manage(Guid? id)
         {
-            Product product = id == null ? new Product() : _context.Products.Include(x=>x.Familly).First(x => x.Id == id);
-            return View(new ProductEditionViewModel(product, _context,id == null));
+            Product product = id == null ? new Product() : _context.Products.Include(x => x.Familly).First(x => x.Id == id);
+            return View(new ProductEditionViewModel(product, _context, id == null));
 
         }
 
@@ -106,7 +107,7 @@ namespace Stolons.Controllers
                 var appUser = await GetCurrentUserAsync(_userManager);
                 vmProduct.Product.Producer = _context.Producers.FirstOrDefault(x => x.Email == appUser.Email);
                 //On s'occupe des images du produit
-                if(!String.IsNullOrWhiteSpace(vmProduct.MainPictureLight))
+                if (!String.IsNullOrWhiteSpace(vmProduct.MainPictureLight))
                 {
                     string pictureName = Guid.NewGuid().ToString() + ".png";
                     Configurations.UploadImageFile(_environment, vmProduct.MainPictureLight, Configurations.ProductsStockagePathLight, pictureName);
@@ -114,8 +115,8 @@ namespace Stolons.Controllers
                     if (!vmProduct.IsNew)
                     {
                         //Replace
-                        System.IO.File.Delete(Path.Combine(Configurations.ProductsStockagePathLight, vmProduct.Product.Pictures[0]));
-                        System.IO.File.Delete(Path.Combine(Configurations.ProductsStockagePathHeavy, vmProduct.Product.Pictures[0]));
+                        System.IO.File.Delete(Path.Combine(_environment.WebRootPath, Configurations.ProductsStockagePathLight, vmProduct.Product.Pictures[0]));
+                        System.IO.File.Delete(Path.Combine(_environment.WebRootPath, Configurations.ProductsStockagePathHeavy, vmProduct.Product.Pictures[0]));
                         vmProduct.Product.Pictures[0] = pictureName;
                     }
                     else
@@ -133,8 +134,8 @@ namespace Stolons.Controllers
                     {
                         //Replace 
                         //Dessous code foireux
-                        System.IO.File.Delete(Path.Combine(Configurations.ProductsStockagePathLight, vmProduct.Product.Pictures[1]));
-                        System.IO.File.Delete(Path.Combine(Configurations.ProductsStockagePathHeavy, vmProduct.Product.Pictures[1]));
+                        System.IO.File.Delete(Path.Combine(_environment.WebRootPath, Configurations.ProductsStockagePathLight, vmProduct.Product.Pictures[1]));
+                        System.IO.File.Delete(Path.Combine(_environment.WebRootPath, Configurations.ProductsStockagePathHeavy, vmProduct.Product.Pictures[1]));
                         vmProduct.Product.Pictures[1] = pictureName;
                     }
                     else
@@ -152,8 +153,8 @@ namespace Stolons.Controllers
                     {
                         //Replace
                         //Dessous code foireux
-                        System.IO.File.Delete(Path.Combine(Configurations.ProductsStockagePathLight, vmProduct.Product.Pictures[2]));
-                        System.IO.File.Delete(Path.Combine(Configurations.ProductsStockagePathHeavy, vmProduct.Product.Pictures[2]));
+                        System.IO.File.Delete(Path.Combine(_environment.WebRootPath, Configurations.ProductsStockagePathLight, vmProduct.Product.Pictures[2]));
+                        System.IO.File.Delete(Path.Combine(_environment.WebRootPath, Configurations.ProductsStockagePathHeavy, vmProduct.Product.Pictures[2]));
                         vmProduct.Product.Pictures[2] = pictureName;
                     }
                     else
@@ -202,7 +203,7 @@ namespace Stolons.Controllers
             vmProduct.RefreshTypes(_context);
             return View(vmProduct);
         }
-        
+
         // GET: ProductsManagement/Delete/5
         [ActionName("Delete")]
         [Authorize(Roles = Configurations.UserType_Producer)]
@@ -247,7 +248,7 @@ namespace Stolons.Controllers
         [Authorize(Roles = Configurations.UserType_Producer)]
         public IActionResult EnableAllStockProduct()
         {
-            foreach(var product in _context.Products.Where(x => x.State == Product.ProductState.Stock))
+            foreach (var product in _context.Products.Where(x => x.State == Product.ProductState.Stock))
             {
                 product.State = Product.ProductState.Enabled;
             }
@@ -282,176 +283,176 @@ namespace Stolons.Controllers
             _context.Products.First(x => x.Id == id).WeekStock = (decimal)newStock;
             _context.Products.First(x => x.Id == id).RemainingStock = (decimal)newStock;
             _context.SaveChanges();
-	    return Ok();
+            return Ok();
         }
 
-	[Authorize(Roles = Configurations.UserType_Producer)]
+        [Authorize(Roles = Configurations.UserType_Producer)]
         [HttpPost, ActionName("ChangeCurrentStock")]
         public string ChangeCurrentStock(Guid id, decimal newStock)
         {
-	    var product = _context.Products.First(x => x.Id == id);
-	    // int orderedQty = 0;
-	    // List<BillEntry> billEntries = new List<BillEntry>();
-	    // foreach (var validateWeekBasket in _context.ValidatedWeekBaskets.Include(x => x.Products))
-	    // {
-	    // 	validateWeekBasket.Products.Where(x => x.ProductId == product.Id).ToList().ForEach(x=> orderedQty +=x.Quantity);
-	    // }
-	    // decimal orderedQuantity;
-	    // if (product.Type == Product.SellType.Piece)
-	    // {
-	    // 	orderedQuantity = orderedQty;
-	    // }
-	    // else
-	    // {
-	    // 	orderedQuantity = (orderedQty * product.QuantityStep) / 1000.0M;
-	    // }
-	    // if (orderedQuantity < newStock)
-	    // {
-	    product.RemainingStock = newStock;
-	    _context.SaveChanges();
-	    return "ok";
-	    // }
-	    // else
-	    // {
-	    // 	return JsonConvert.SerializeObject(new {error = "INVALID_STOCK"}, Formatting.Indented, new JsonSerializerSettings() {
-	    // 		ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-	    // 		    });
-	    // }
+            var product = _context.Products.First(x => x.Id == id);
+            // int orderedQty = 0;
+            // List<BillEntry> billEntries = new List<BillEntry>();
+            // foreach (var validateWeekBasket in _context.ValidatedWeekBaskets.Include(x => x.Products))
+            // {
+            // 	validateWeekBasket.Products.Where(x => x.ProductId == product.Id).ToList().ForEach(x=> orderedQty +=x.Quantity);
+            // }
+            // decimal orderedQuantity;
+            // if (product.Type == Product.SellType.Piece)
+            // {
+            // 	orderedQuantity = orderedQty;
+            // }
+            // else
+            // {
+            // 	orderedQuantity = (orderedQty * product.QuantityStep) / 1000.0M;
+            // }
+            // if (orderedQuantity < newStock)
+            // {
+            product.RemainingStock = newStock;
+            _context.SaveChanges();
+            return "ok";
+            // }
+            // else
+            // {
+            // 	return JsonConvert.SerializeObject(new {error = "INVALID_STOCK"}, Formatting.Indented, new JsonSerializerSettings() {
+            // 		ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            // 		    });
+            // }
         }
 
-	[Authorize(Roles = Configurations.Role_Administrator + "," + Configurations.UserType_Producer)]
+        [Authorize(Roles = Configurations.Role_Administrator + "," + Configurations.UserType_Producer)]
         [HttpGet, ActionName("ManageFamilies")]
         public IActionResult ManageFamilies()
         {
-	    return View();
+            return View();
         }
 
-	[Authorize(Roles = Configurations.Role_Administrator + "," + Configurations.UserType_Producer)]
+        [Authorize(Roles = Configurations.Role_Administrator + "," + Configurations.UserType_Producer)]
         [HttpPost, ActionName("CreateCategory")]
         public IActionResult CreateCategory(string categoryName)
         {
-	    var productCategory = new ProductType(categoryName);
-	    _context.ProductTypes.Add(productCategory);
+            var productCategory = new ProductType(categoryName);
+            _context.ProductTypes.Add(productCategory);
             _context.SaveChanges();
-	    return Ok();
+            return Ok();
         }
 
-	[Authorize(Roles = Configurations.Role_Administrator + "," + Configurations.UserType_Producer)]
+        [Authorize(Roles = Configurations.Role_Administrator + "," + Configurations.UserType_Producer)]
         [HttpPost, ActionName("CreateFamily")]
         public IActionResult CreateFamily(Guid categoryId, string familyName)
         {
-	    var productCategory = _context.ProductTypes.FirstOrDefault(x => x.Id == categoryId);
-	    if (productCategory == null)
-	    {
-		return StatusCode(400);
-	    }
-	    var productFamily = new ProductFamilly(productCategory, familyName);
-	    _context.ProductFamillys.Add(productFamily);
+            var productCategory = _context.ProductTypes.FirstOrDefault(x => x.Id == categoryId);
+            if (productCategory == null)
+            {
+                return StatusCode(400);
+            }
+            var productFamily = new ProductFamilly(productCategory, familyName);
+            _context.ProductFamillys.Add(productFamily);
             _context.SaveChanges();
-	    return Ok();
+            return Ok();
         }
 
-	[Authorize(Roles = Configurations.Role_Administrator + "," + Configurations.UserType_Producer)]
+        [Authorize(Roles = Configurations.Role_Administrator + "," + Configurations.UserType_Producer)]
         [HttpPost, ActionName("RenameCategory")]
         public IActionResult RenameCategory(Guid categoryId, string newCategoryName)
         {
-	    var category = _context.ProductTypes.FirstOrDefault(x => x.Id == categoryId);
-	    if (category == null)
-	    {
-		return StatusCode(400);
-	    }
-	    category.Name = newCategoryName;
-	    _context.SaveChanges();
-	    return Ok();
-	}
+            var category = _context.ProductTypes.FirstOrDefault(x => x.Id == categoryId);
+            if (category == null)
+            {
+                return StatusCode(400);
+            }
+            category.Name = newCategoryName;
+            _context.SaveChanges();
+            return Ok();
+        }
 
 
-	[Authorize(Roles = Configurations.Role_Administrator + "," + Configurations.UserType_Producer)]
+        [Authorize(Roles = Configurations.Role_Administrator + "," + Configurations.UserType_Producer)]
         [HttpPost, ActionName("RenameFamily")]
         public IActionResult RenameFamily(Guid familyId, string newFamilyName)
         {
-	    var family = _context.ProductFamillys.FirstOrDefault(x => x.Id == familyId);
-	    if (family == null)
-	    {
-		return StatusCode(400);
-	    }
-	    family.FamillyName = newFamilyName;
-	    _context.SaveChanges();
-	    return Ok();
-	}
+            var family = _context.ProductFamillys.FirstOrDefault(x => x.Id == familyId);
+            if (family == null)
+            {
+                return StatusCode(400);
+            }
+            family.FamillyName = newFamilyName;
+            _context.SaveChanges();
+            return Ok();
+        }
 
-	[Authorize(Roles = Configurations.Role_Administrator + "," + Configurations.UserType_Producer)]
+        [Authorize(Roles = Configurations.Role_Administrator + "," + Configurations.UserType_Producer)]
         [HttpPost, ActionName("UpdateCategoryPicture")]
         public async Task<IActionResult> UpdateCategoryPicture(Guid categoryId, IFormFile picture)
         {
-	    var category = _context.ProductTypes.FirstOrDefault(x => x.Id == categoryId);
-	    if (category == null)
-	    {
-		return StatusCode(400);
-	    }
-	    string fileName = await Configurations.UploadAndResizeImageFile(_environment, picture, Configurations.ProductsTypeAndFamillyIconsStockagesPath);
-	    category.Image = fileName;
-	    _context.SaveChanges();
-	    return Ok();
-	}
+            var category = _context.ProductTypes.FirstOrDefault(x => x.Id == categoryId);
+            if (category == null)
+            {
+                return StatusCode(400);
+            }
+            string fileName = await Configurations.UploadImageFile(_environment, picture, Configurations.ProductsTypeAndFamillyIconsStockagesPath);
+            category.Image = fileName;
+            _context.SaveChanges();
+            return Ok();
+        }
 
-	[Authorize(Roles = Configurations.Role_Administrator + "," + Configurations.UserType_Producer)]
+        [Authorize(Roles = Configurations.Role_Administrator + "," + Configurations.UserType_Producer)]
         [HttpPost, ActionName("UpdateFamilyPicture")]
         public async Task<IActionResult> UpdateFamilyPicture(Guid familyId, IFormFile picture)
         {
-	    var family = _context.ProductFamillys.FirstOrDefault(x => x.Id == familyId);
-	    if (family == null)
-	    {
-		return StatusCode(403);
-	    }
-	    string fileName = await Configurations.UploadAndResizeImageFile(_environment, picture, Configurations.ProductsTypeAndFamillyIconsStockagesPath);
-	    family.Image = fileName;
-	    _context.SaveChanges();
-	    return Ok();
-	}
+            var family = _context.ProductFamillys.FirstOrDefault(x => x.Id == familyId);
+            if (family == null)
+            {
+                return StatusCode(403);
+            }
+            string fileName = await Configurations.UploadImageFile(_environment, picture, Configurations.ProductsTypeAndFamillyIconsStockagesPath);
+            family.Image = fileName;
+            _context.SaveChanges();
+            return Ok();
+        }
 
-	[Authorize(Roles = Configurations.Role_Administrator + "," + Configurations.UserType_Producer)]
+        [Authorize(Roles = Configurations.Role_Administrator + "," + Configurations.UserType_Producer)]
         [HttpPost, ActionName("DeleteCategory")]
         public IActionResult DeleteCategory(Guid categoryId)
         {
-	    var category = _context.ProductTypes.Include(x => x.ProductFamilly).FirstOrDefault(x => x.Id == categoryId);
-	    if (category == null)
-	    {
-		return StatusCode(400);
-	    }
-	    var products = _context.Products.Where(x => x.Familly.Type.Id == categoryId);
-	    foreach (Product product in products)
-	    {
-		product.Familly = null;
-	    }
-	    foreach (ProductFamilly family in category.ProductFamilly)
-	    {
-		_context.ProductFamillys.Remove(family);
-	    }
-	    _context.ProductTypes.Remove(category);
-	    _context.SaveChanges();
-	    return Ok();
-	}
+            var category = _context.ProductTypes.Include(x => x.ProductFamilly).FirstOrDefault(x => x.Id == categoryId);
+            if (category == null)
+            {
+                return StatusCode(400);
+            }
+            var products = _context.Products.Where(x => x.Familly.Type.Id == categoryId);
+            foreach (Product product in products)
+            {
+                product.Familly = null;
+            }
+            foreach (ProductFamilly family in category.ProductFamilly)
+            {
+                _context.ProductFamillys.Remove(family);
+            }
+            _context.ProductTypes.Remove(category);
+            _context.SaveChanges();
+            return Ok();
+        }
 
-	[Authorize(Roles = Configurations.Role_Administrator + "," + Configurations.UserType_Producer)]
+        [Authorize(Roles = Configurations.Role_Administrator + "," + Configurations.UserType_Producer)]
         [HttpPost, ActionName("DeleteFamily")]
         public IActionResult DeleteFamily(Guid familyId)
         {
-	    var family = _context.ProductFamillys.FirstOrDefault(x => x.Id == familyId);
-	    if (family == null)
-	    {
-		return StatusCode(400);
-	    }
-	    var products = _context.Products.Where(x => x.Familly.Id == familyId);
-	    foreach (Product product in products)
-	    {
-		product.Familly = null;
-	    }
-	    _context.ProductFamillys.Remove(family);
-	    _context.SaveChanges();
-	    return Ok();
-	}
-	
-	
+            var family = _context.ProductFamillys.FirstOrDefault(x => x.Id == familyId);
+            if (family == null)
+            {
+                return StatusCode(400);
+            }
+            var products = _context.Products.Where(x => x.Familly.Id == familyId);
+            foreach (Product product in products)
+            {
+                product.Familly = null;
+            }
+            _context.ProductFamillys.Remove(family);
+            _context.SaveChanges();
+            return Ok();
+        }
+
+
     }
 }
