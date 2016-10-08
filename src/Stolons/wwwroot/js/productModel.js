@@ -8,12 +8,16 @@ ProductModel = Backbone.Model.extend({
 
     unitsEnum: ["Kg", "L"],
 
-    getPictureUrl: function() {
-	var pictures = this.get("Pictures");
-	if (_.isEmpty(pictures) || _.isEmpty(pictures[0])) {
-	    return "/images/panier.jpg";
-	}
-	return pictures[0];
+    getPictureUrl: function(type) {
+	    var pictures = this.get("Pictures");
+	    if (_.isEmpty(pictures) || _.isEmpty(pictures[0])) {
+	        return "/images/panier.jpg";
+	    }
+
+	    if (type == 'light') {
+	        return this.get("LightPath") + "\\" + pictures[0];
+	    }
+	    return this.get("HeavyPath")+ "\\" + pictures[0];
     },
 
     /*

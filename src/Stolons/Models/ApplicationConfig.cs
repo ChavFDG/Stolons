@@ -15,7 +15,7 @@ namespace Stolons.Models
         [Display(Name = "Libelle de la structure (Stolons)")]
         public string StolonsLabel { get; set; } = "Association Stolons";
         [Display(Name = "Adresse de la structure")]
-        public string StolonsAddress { get; set; } = "Chemin de Saint Clair, 07000 PRIVAS";
+        public string StolonsAddress { get; set; } = "10 place de l'hotel de ville, 07000 Privas";
         [Display(Name = "Numéro de téléphone de la structure")]
         public string StolonsPhoneNumber { get; set; } = "06 64 86 66 93";
 
@@ -28,9 +28,9 @@ namespace Stolons.Models
         [Display(Name = "Cotisation sympathisant (€)")]
         public decimal SympathizerSubscription { get; set; } = 2;
         [Display(Name = "Cotisation consomateur (€)")]
-        public decimal ConsumerSubscription { get; set; } = 20;
+        public decimal ConsumerSubscription { get; set; } = 10;
         [Display(Name = "Cotisation producteur (€)")]
-        public decimal ProducerSubscription { get; set; } = 35;
+        public decimal ProducerSubscription { get; set; } = 20;
         [Display(Name = "Mois de départ des cotisations")]
         public Month SubscriptionStartMonth { get; set; } = Month.September;
 
@@ -49,7 +49,7 @@ namespace Stolons.Models
 
         //Site page text
         [Display(Name = "Message de récupération du panier (jour, lieu, plage horraire)")]
-        public string OrderDeliveryMessage { get; set; } = "Votre panier est disponible jeudi de 16h à 20 au : chemin de Saint Clair 07000 PRIVAS";
+        public string OrderDeliveryMessage { get; set; } = "Votre panier est disponible jeudi de 17h30 à 19h au : 10 place de l'hotel de ville, 07000 Privas";
 
         //ORDER
         [Display(Name = "Jour")]

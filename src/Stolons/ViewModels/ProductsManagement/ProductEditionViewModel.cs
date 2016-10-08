@@ -12,6 +12,12 @@ namespace Stolons.ViewModels.ProductsManagement
     {
         public bool IsNew { get; set; }
 
+        public string MainPictureLight { get; set; }
+        public string MainPictureHeavy { get; set; }
+        public string Picture2Light { get; set; }
+        public string Picture2Heavy { get; set; }
+        public string Picture3Light { get; set; }
+        public string Picture3Heavy { get; set; }
 
         public string[] SelectedLabels { get; set; }
 
@@ -20,11 +26,6 @@ namespace Stolons.ViewModels.ProductsManagement
         public Product Product { get; set; }
 
         public List<ProductType> ProductTypes { get; set; }
-
-        public IFormFile UploadFile1 { get; set; }
-        public IFormFile UploadFile2 { get; set; }
-        public IFormFile UploadFile3 { get; set; }
-
         public ProductEditionViewModel()
         {
         }

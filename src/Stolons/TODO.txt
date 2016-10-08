@@ -4,16 +4,13 @@ Priorité 0 pour 1er Octobre :
 
 Priorité 1 : retour producteur
 DAMIEN
-- Ajouter dans le mail aux producteurs un résumé de la facture
-- Ajouter dans le excel un résumé des commande avec juste Nom du produit / Quantité total 
-- Réduire automatiquement la taille des images importés
-- Voir pour envoyer les fichier en PDF !!! Voir XLS déjà
 - Quand on envoie un mail si ça plante faire sorte que tout ne plante pas ! Si c'est bien ça le bug
+- Ajouter une fonction d'envoie de mail à tout le monde, aux producteurs, aux consomateurs
+- Bug cotisation, si septembre ça divise par 2
 
 NICO
 - Ajouter le fait d'entrer le commentaire de blocage lors de la désactivation d'un compte
 - On peut ajouter un produit sans Type, sans catégorie, c'est mal
-- Ajouter la chat box
 - Ajouter des transactions pour les modifs sur le stock
 - Ajouter validation lors de la modif producteur du stock en cours -> Pour être précis il faudrait vérifier qu'il n'y a pas eu de commandes entre le moment ou on a affiché la page et le moment du changement de stock, et si oui, valider sur cette différence = assez chiant à faire :%^)
 - Quand on modifie ou supprime une news faire apparaitre l'image ( à la manière des produits)
@@ -22,6 +19,7 @@ NOUS
 - Revoir la gestion des roles ( supprimer, éditer, changement de mail ...)
 
 Priorité 2
+- Ajouter le système de permance
 - Rendre le panier flottant ( qu'il suive tout le temps la page quand on scroll)
 - Pas de lien pour revenir sur la page d'accueil, voir quand on aura mis le logo
 - Possibilité d'ajouter des catégories et types
@@ -34,8 +32,7 @@ Priorité 2
 - Quand on édite son profil, voir l'avatar qu'on a ( commme pour les produits)
 
 BESOIN EN IMAGE ( Marion )
-- Image de news par défaut au format :375x216
-- Image de "Page not found, errer 404"
+- Image de "Page not found, error 404"
 - Logo de Stolons
 
 
@@ -86,3 +83,5 @@ MISE à jour JUILLET :
 
 DONE during AUGUST:
 - Revoir la partie d'édition utilisateurs par soit même ( quand on clique sur l'avatar et qu'on veut s'auto éditer)
+- Passage en PDF des factures
+- Réduire automatiquement la taille des images importés

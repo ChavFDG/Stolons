@@ -58,7 +58,7 @@
                         @{
                             if (item.Pictures.Any())
                             {
-                                <img src="@item.Pictures[0]" />
+                                <img src="@(Configurations.ProductsStockagePathLight + "\\" +item.Pictures[0])" />
                             }
                             else
                             {

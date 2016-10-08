@@ -3,7 +3,7 @@
     <div class="product-top">
       <div class="pr_img product-top" data-toggle="tooltip" title="Voir détails produit">
 	<a href="#" onclick="ProductModalView.open('<%= product.Id %>');return false;">
-          <img src="<%= productModel.getPictureUrl() %>" />
+          <img src="<%= productModel.getPictureUrl('ligth') %>" />
 	</a>
       </div>
       <div class="pr_avatar" data-toggle="tooltip" title="Voir détails producteur">

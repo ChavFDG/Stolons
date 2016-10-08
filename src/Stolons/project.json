@@ -38,7 +38,7 @@
     },
     "MailKit": "1.4.1",
     "BundlerMinifier.Core": "2.1.258",
-    "Microsoft.EntityFrameworkCore.Sqlite": "1.0.0" },
+    "Microsoft.EntityFrameworkCore.Sqlite": "1.0.0"},
 
   "tools": {
     "Microsoft.AspNetCore.Razor.Tools": "1.0.0-preview2-final",

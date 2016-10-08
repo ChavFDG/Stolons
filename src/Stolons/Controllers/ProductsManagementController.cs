@@ -106,13 +106,73 @@ namespace Stolons.Controllers
                 var appUser = await GetCurrentUserAsync(_userManager);
                 vmProduct.Product.Producer = _context.Producers.FirstOrDefault(x => x.Email == appUser.Email);
                 //On s'occupe des images du produit
+                if(!String.IsNullOrWhiteSpace(vmProduct.MainPictureLight))
+                {
+                    string pictureName = Guid.NewGuid().ToString() + ".png";
+                    Configurations.UploadImageFile(_environment, vmProduct.MainPictureLight, Configurations.ProductsStockagePathLight, pictureName);
+                    Configurations.UploadImageFile(_environment, vmProduct.MainPictureHeavy, Configurations.ProductsStockagePathHeavy, pictureName);
+                    if (!vmProduct.IsNew)
+                    {
+                        //Replace
+                        System.IO.File.Delete(Path.Combine(Configurations.ProductsStockagePathLight, vmProduct.Product.Pictures[0]));
+                        System.IO.File.Delete(Path.Combine(Configurations.ProductsStockagePathHeavy, vmProduct.Product.Pictures[0]));
+                        vmProduct.Product.Pictures[0] = pictureName;
+                    }
+                    else
+                    {
+                        //Add
+                        vmProduct.Product.Pictures.Add(pictureName);
+                    }
+                }
+                if (!String.IsNullOrWhiteSpace(vmProduct.Picture2Light))
+                {
+                    string pictureName = Guid.NewGuid().ToString() + ".png";
+                    Configurations.UploadImageFile(_environment, vmProduct.Picture2Light, Configurations.ProductsStockagePathLight, pictureName);
+                    Configurations.UploadImageFile(_environment, vmProduct.Picture2Heavy, Configurations.ProductsStockagePathHeavy, pictureName);
+                    if (!vmProduct.IsNew)
+                    {
+                        //Replace 
+                        //Dessous code foireux
+                        System.IO.File.Delete(Path.Combine(Configurations.ProductsStockagePathLight, vmProduct.Product.Pictures[1]));
+                        System.IO.File.Delete(Path.Combine(Configurations.ProductsStockagePathHeavy, vmProduct.Product.Pictures[1]));
+                        vmProduct.Product.Pictures[1] = pictureName;
+                    }
+                    else
+                    {
+                        //Add
+                        vmProduct.Product.Pictures.Add(pictureName);
+                    }
+                }
+                if (!String.IsNullOrWhiteSpace(vmProduct.Picture3Light))
+                {
+                    string pictureName = Guid.NewGuid().ToString() + ".png";
+                    Configurations.UploadImageFile(_environment, vmProduct.Picture3Light, Configurations.ProductsStockagePathLight, pictureName);
+                    Configurations.UploadImageFile(_environment, vmProduct.Picture3Heavy, Configurations.ProductsStockagePathHeavy, pictureName);
+                    if (!vmProduct.IsNew)
+                    {
+                        //Replace
+                        //Dessous code foireux
+                        System.IO.File.Delete(Path.Combine(Configurations.ProductsStockagePathLight, vmProduct.Product.Pictures[2]));
+                        System.IO.File.Delete(Path.Combine(Configurations.ProductsStockagePathHeavy, vmProduct.Product.Pictures[2]));
+                        vmProduct.Product.Pictures[2] = pictureName;
+                    }
+                    else
+                    {
+                        //Add
+                        vmProduct.Product.Pictures.Add(pictureName);
+                    }
+                }
+
+
+                /*
+                //OLD CODE
                 int cpt = 0;
                 foreach (IFormFile uploadFile in new List<IFormFile>() { vmProduct.UploadFile1, vmProduct.UploadFile2, vmProduct.UploadFile3 })
                 {
                     if (uploadFile != null)
                     {
                         //Image uploading
-                        string fileName = await Configurations.UploadAndResizeImageFile(_environment, uploadFile, Configurations.ProductsStockagePath);
+                        string fileName = await Configurations.UploadImageFile(_environment, uploadFile, Configurations.ProductsStockagePath);
                         if(!vmProduct.IsNew && vmProduct.Product.Pictures.Count > cpt)
                         {
                             //Replace
@@ -125,8 +185,9 @@ namespace Stolons.Controllers
                         }
                     }
                     cpt++;
-                }
-                if(vmProduct.IsNew)
+                }*/
+
+                if (vmProduct.IsNew)
                 {
                     vmProduct.Product.Id = Guid.NewGuid();
                     _context.Products.Add(vmProduct.Product);
@@ -256,6 +317,6 @@ namespace Stolons.Controllers
 	    // 		ReferenceLoopHandling = ReferenceLoopHandling.Ignore
 	    // 		    });
 	    // }
-        }
+        }        
     }
 }

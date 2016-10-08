@@ -199,6 +199,23 @@ namespace Stolons.Models
             }
         }
 
+        [NotMapped]
+        public string LightPath
+        {
+            get
+            {
+                return Configurations.ProductsStockagePathLight;
+            }
+        }
+        [NotMapped]
+        public string HeavyPath
+        {
+            get
+            {
+                return Configurations.ProductsStockagePathHeavy;
+            }
+        }
+
         public enum SellType
         {
             [Display(Name ="Au poids")]

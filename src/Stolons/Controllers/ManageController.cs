@@ -139,7 +139,7 @@ namespace Stolons.Controllers
                     if (System.IO.File.Exists(oldImage) && userStolonVm.Consumer.Avatar != Path.Combine(Configurations.UserAvatarStockagePath, Configurations.DefaultFileName))
                         System.IO.File.Delete(Path.Combine(_environment.WebRootPath, Configurations.UserAvatarStockagePath, userStolonVm.Consumer.Avatar));
                     //Image uploading
-                    string fileName = await Configurations.UploadAndResizeImageFile(_environment, uploadFile, Configurations.UserAvatarStockagePath);
+                    string fileName = await Configurations.UploadImageFile(_environment, uploadFile, Configurations.UserAvatarStockagePath);
                     //Setting new value, saving
                     userStolonVm.Consumer.Avatar =  fileName;
                 }
@@ -191,7 +191,7 @@ namespace Stolons.Controllers
                     if (System.IO.File.Exists(oldImage) && producerVm.Producer.Avatar != Path.Combine(Configurations.UserAvatarStockagePath, Configurations.DefaultFileName))
                         System.IO.File.Delete(Path.Combine(_environment.WebRootPath, Configurations.UserAvatarStockagePath, producerVm.Producer.Avatar));
                     //Image uploading
-                    string fileName = await Configurations.UploadAndResizeImageFile(_environment, uploadFile, Configurations.UserAvatarStockagePath);
+                    string fileName = await Configurations.UploadImageFile(_environment, uploadFile, Configurations.UserAvatarStockagePath);
                     //Setting new value, saving
                     producerVm.Producer.Avatar = Path.Combine( fileName);
                 }

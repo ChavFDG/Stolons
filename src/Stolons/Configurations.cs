@@ -163,7 +163,8 @@ namespace Stolons
         public static string NewsImageStockagePath = Path.Combine("uploads", "images", "news");
         public static string UserAvatarStockagePath = Path.Combine("uploads", "images", "avatars");
         public static string ProductsTypeAndFamillyIconsStockagesPath = Path.Combine("images", "productFamilies");
-        public static string ProductsStockagePath = Path.Combine("uploads", "images", "products");
+        public static string ProductsStockagePathLight = Path.Combine("uploads", "images", "products","light");
+        public static string ProductsStockagePathHeavy = Path.Combine("uploads", "images", "products","heavy");
         public static string DefaultProductImage = Path.Combine("uploads", "images", "products", "Default.png");
         public static string DefaultFileName = "Default.png";
         private static string _labelImagePath = Path.Combine("images", "labels");
@@ -185,7 +186,7 @@ namespace Stolons
         }
 
 
-        public static async Task<string> UploadAndResizeImageFile(IHostingEnvironment environment, IFormFile uploadFile, string path)
+        public static async Task<string> UploadImageFile(IHostingEnvironment environment, IFormFile uploadFile, string path)
         {
             string uploads = Path.Combine(environment.WebRootPath, path);
             string fileName = Guid.NewGuid().ToString() + "_" + ContentDispositionHeaderValue.Parse(uploadFile.ContentDisposition).FileName.Trim('"');
@@ -194,6 +195,21 @@ namespace Stolons
             await uploadFile.SaveAsAsync(filePath);
 
             return Path.Combine(path,fileName);
+        }
+
+        public static string UploadImageFile(IHostingEnvironment environment, string base64data ,string path, string fileName)
+        {
+            base64data = base64data.Remove(0, base64data.IndexOf(',') + 1);
+            byte[] data = Convert.FromBase64String(base64data);
+
+            string uploads = Path.Combine(environment.WebRootPath, path);
+
+            string filePath = Path.Combine(uploads, fileName);
+            using (var file = File.Create(filePath))
+            {
+                file.Write(data, 0, data.Count());
+            }
+            return Path.Combine(path, fileName);
         }
 
         #endregion FIleManagement

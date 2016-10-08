@@ -231,14 +231,12 @@ input[type="file"] {
     height: 100px;
 }
 .pr_img { 
+    text-align: center;
+    margin-top: 20px;
 }
 .pr_img img {
     max-height: 100%; 
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    padding-top: 10px;
-    max-width: 65%;
+    max-width: 100%;
 }
 .pr_avatar {
     position: absolute;
@@ -373,8 +371,8 @@ input[type="file"] {
 }
 
 #productModal-img img {
-    max-width: 150px;
-    max-height: 150px;
+    max-width: 550px;
+    max-height: 100%;
     display: inline-block;
 }
 
@@ -497,8 +495,7 @@ input[type="file"] {
 }
 
 .imgPreview {
-    width: 60px;
-    height: 50px;   
+    max-width: 200px;
 }
 
 .text-danger {

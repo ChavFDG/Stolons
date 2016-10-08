@@ -209,7 +209,7 @@ namespace Stolons.Tools
                     weekBasket.Products.ForEach(x => x = dbContext.BillEntrys.Include(b=>b.Product).First(b => b.Id == x.Id));
                     bill.Amount += weekBasket.TotalPrice;
                     //
-                    builder.AppendLine("<h2>Adhérent : "+weekBasket.Consumer.Id+ " / " + weekBasket.Consumer.Surname + " / " + weekBasket.Consumer.Name);
+                    builder.AppendLine("<h1>Adhérent : "+weekBasket.Consumer.Id+ " / " + weekBasket.Consumer.Surname + " / " + weekBasket.Consumer.Name +"</h1>");
                     builder.AppendLine("<p>Facture : " + billNumber+"_"+ weekBasket.Consumer.Id + "</p>");
                     builder.AppendLine("<p>Téléphone : " + weekBasket.Consumer.PhoneNumber + "</p>");
                     builder.AppendLine("<p>Total à régler : " + weekBasket.TotalPrice+ " €</p>");
@@ -321,7 +321,7 @@ namespace Stolons.Tools
             }
             builder.AppendLine("</table>");
             builder.AppendLine("<p>Total sans comission : " + totalAmount + " €</p>");
-            builder.AppendLine("<p>Comission (" + Configurations.ApplicationConfig.Fee + "%) : " + String.Format("{0:0.00}", bill.FeeAmount) + " €</p>");
+            builder.AppendLine("<p>Commission (" + Configurations.ApplicationConfig.Fee + "%) : " + String.Format("{0:0.00}", bill.FeeAmount) + " €</p>");
             builder.AppendLine("<p>Total avec comission : " + String.Format("{0:0.00}", bill.ProducerAmount) + " €</p>");
 
             #endregion Par produit

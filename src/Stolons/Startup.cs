@@ -225,7 +225,7 @@ namespace Stolons
             pain.Name = "Pain complet";
             pain.Description = "Pain farine complete T80";
             pain.Labels.Add(Product.Label.Ab);
-            pain.PicturesSerialized = Path.Combine(Configurations.ProductsStockagePath, "pain.png");
+            pain.PicturesSerialized = Path.Combine("pain.png");
             pain.Price = Convert.ToDecimal(15.5);
             pain.UnitPrice = 4;
             pain.Producer = context.Producers.First();
@@ -240,7 +240,7 @@ namespace Stolons
             tomate.Name = "Tomates grappe";
             tomate.Description = "Avec ces tomates, c'est nous qui rougissons même si elles ne sont pas toutes nues!";
             tomate.Labels.Add(Product.Label.Ab);
-            tomate.PicturesSerialized = Path.Combine(Configurations.ProductsStockagePath, "tomate.jpg");
+            tomate.PicturesSerialized = Path.Combine("tomate.jpg");
             tomate.Price = 3;
             tomate.UnitPrice = Convert.ToDecimal(1.5);
             tomate.QuantityStep = 500;
@@ -256,7 +256,7 @@ namespace Stolons
             pommedeterre.Name = "Pomme de terre";
             pommedeterre.Description = "Pataaaaaaaaaaaaaaaates!!";
             pommedeterre.Labels.Add(Product.Label.Ab);
-            pommedeterre.PicturesSerialized = Path.Combine(Configurations.ProductsStockagePath, "pommedeterre.jpg");
+            pommedeterre.PicturesSerialized = Path.Combine("pommedeterre.jpg");
             pommedeterre.Price = Convert.ToDecimal(1.99);
             pommedeterre.UnitPrice = Convert.ToDecimal(1.99);
             pommedeterre.QuantityStep = 1000;
@@ -272,7 +272,7 @@ namespace Stolons
             radis.Name = "Radis";
             radis.Description = "Des supers radis (pour ceux qui aiment)";
             radis.Labels.Add(Product.Label.Ab);
-            radis.PicturesSerialized = Path.Combine(Configurations.ProductsStockagePath, "radis.jpg");
+            radis.PicturesSerialized = Path.Combine("radis.jpg");
             radis.Price = 0;
             radis.UnitPrice = 4;
             radis.Producer = context.Producers.First();
@@ -287,7 +287,7 @@ namespace Stolons
             salade.Name = "Salade";
             salade.Description = "Une bonne salade pour aller avec les bonnes tomates!";
             salade.Labels.Add(Product.Label.Ab);
-            salade.PicturesSerialized = Path.Combine(Configurations.ProductsStockagePath, "salade.jpg");
+            salade.PicturesSerialized = Path.Combine("salade.jpg");
             salade.UnitPrice = Convert.ToDecimal(0.80);
             salade.Price = 0;
             salade.Producer = context.Producers.First();
