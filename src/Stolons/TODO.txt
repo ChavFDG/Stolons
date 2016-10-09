@@ -6,7 +6,6 @@ Priorité 1 : retour producteur
 DAMIEN
 - Quand on envoie un mail si ça plante faire sorte que tout ne plante pas ! Si c'est bien ça le bug
 - Ajouter une fonction d'envoie de mail à tout le monde, aux producteurs, aux consomateurs
-- Bug cotisation, si septembre ça divise par 2
 
 NICO
 - Ajouter le fait d'entrer le commentaire de blocage lors de la désactivation d'un compte
@@ -22,14 +21,17 @@ Priorité 2
 - Ajouter le système de permance
 - Rendre le panier flottant ( qu'il suive tout le temps la page quand on scroll)
 - Pas de lien pour revenir sur la page d'accueil, voir quand on aura mis le logo
-- Possibilité d'ajouter des catégories et types
-- Changer l'image par défaut des news par autre chose que l'image de starwars
 - Changer le système de blocage : quand on bloque un adhérent, devoir renseigner la raison, et quand il se log faire apparaitre la raison, pouvoir consulter cette raison
 - Re voir IE
 - Ajouter les photos 2 et 3 sur les produits => caroussel
 - Quand on écrit une news en tant que bénévole faire apparaitre le logo de Stolons à la place de l'avatar de la personne ayant mis la news. Et faire apparaitre l'avatar stolons dans les news => quand on aura le logo
-- Page produits publiques: separer les produits de la semaine de tous ceux enregistres
 - Quand on édite son profil, voir l'avatar qu'on a ( commme pour les produits)
+
+Grosse mise à jour :
+- Ajouter un agenda pour les permances ( voir si il doit être compatible avec les bons plans )
+- Ajouter les bons plans
+- Ajouter le système de "chat"
+- Ajouter les bogues
 
 BESOIN EN IMAGE ( Marion )
 - Image de "Page not found, error 404"
@@ -37,6 +39,10 @@ BESOIN EN IMAGE ( Marion )
 
 
 MISE à jour post core :
+- Possibilité d'ajouter des catégories et types
+- Bug cotisation, si septembre ça divise par 2
+- Page produits publiques: separer les produits de la semaine de tous ceux enregistres
+- Changer l'image par défaut des news par autre chose que l'image de starwars
 - Virer "éngagé dans le bio"
 - Dans la table ApplicationConfig
 - Ajout de la cotisation sympathisant / consomateur / producteur 

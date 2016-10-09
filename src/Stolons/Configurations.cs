@@ -229,11 +229,11 @@ namespace Stolons
 
         public static decimal GetSubscriptionAmount(UserType userType)
         {
-            int currentMonth = DateTime.Now.Month;
+            int currentMonth = DateTime.Now.Month -6;
             int subscriptionMonth = (int)ApplicationConfig.SubscriptionStartMonth;
             if (currentMonth < subscriptionMonth)
                 currentMonth += 12;
-            bool isHalfSubscription = currentMonth < (subscriptionMonth + 6);
+            bool isHalfSubscription = currentMonth > (subscriptionMonth + 6);
 
             switch (userType)
             {
