@@ -4,16 +4,21 @@
 
 @if (SignInManager.IsSignedIn(User))
 {
-<div class="bannerAccount">
-  <div class="bannerAvatar">
-    <a asp-controller="Manage" asp-action="Index" title="Manage">
-      <img class="avatar" src="/@Model.User.Avatar" />
-    </a>
-  </div>
-  <form asp-controller="Account" asp-action="LogOff" method="post" id="logoutForm">
-    <button type="submit" class="btn btn-link navbar-btn navbar-link">Déconnexion</button>
-  </form>
-</div>
+    <div class="bannerAccount">
+        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+            <div class="bannerAvatar">
+                <img class="avatar" src="/@Model.User.Avatar" />
+            </div>
+            <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu">
+            <li><a asp-controller="Manage" asp-action="Index" title="Manage">Mon compte</a></li>
+            <li>
+                <a href="#" onclick="document.forms['logoutForm'].submit();return false;">Déconnexion</a>
+                <form asp-controller="Account" asp-action="LogOff" method="post" id="logoutForm"></form>                
+            </li>
+        </ul>
+    </div>
 }
 else
 {

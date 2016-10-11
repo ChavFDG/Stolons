@@ -24,7 +24,7 @@ namespace Stolons.Models
         
         [Display(Name = "Montant")]
         decimal Amount { get; set; }
-
+        
         string HtmlContent { get; set; }
     }
     public class ConsumerBill : IBill
@@ -60,6 +60,9 @@ namespace Stolons.Models
 
         [Display(Name = "Montant")]
         public decimal Amount { get; set; }
+
+        [Display(Name = "Bogues")]
+        public decimal TokenUsed { get; set; } = 0;
 
         public string HtmlContent { get; set; }
     }

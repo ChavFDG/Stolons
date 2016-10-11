@@ -56,11 +56,11 @@
                                    "Valider paiement de la facture",
                                   "UpdateProducerBill",
                                     new { billNumber = item.BillNumber },
-                                    new { onclick = "return confirm('Confirmation de changement d'état de la facture de " + item.Producer.CompanyName + "');" })
+                                    new { onclick = "return confirm('Confirmation du paiement de " + +item.ProducerAmount + " à " + item.Producer.CompanyName + "');" })
                  </td>
                 <td>
                     @{
-                        <a href="@Configurations.GetUrl(item)">@item.BillNumber</a>
+                        <a href="@Configurations.GetUrl(item)">@(item.ProducerAmount + "€" + " (" + item.FeeAmount + "€) - " + item.BillNumber)</a>
                     }
                 </td>
             </tr>
@@ -113,11 +113,11 @@ else
                                    "Valider la livraison",
                                   "UpdateProducerBill",
                                     new { billNumber = item.BillNumber },
-                                    new { onclick = "return confirm('Confirmation de changement d'état de la facture de " + item.Producer.CompanyName + "');" })
+                                    new { onclick = "return confirm('Confirmation de la livraison de " + item.Producer.CompanyName + "');" })
                 </td>
                 <td>
                     @{
-                        <a href="@Configurations.GetUrl(item)">@item.BillNumber</a>
+                        <a href="@Configurations.GetUrl(item)">@(item.BillNumber)</a>
                     }
                 </td>
             </tr>
@@ -175,11 +175,11 @@ else
                                    "Valider la récupération et le payement",
                                   "UpdateConsumerBill",
                                     new { billNumber = item.BillNumber },
-                                    new { onclick = "return confirm('Confirmation de changement d'état de la facture de " + item.Consumer.Name + "');" })
+                                    new { onclick = "return confirm('Confirmation du paiement de la facture de " + item.Consumer.Name + " du "+ item.Amount +"€ ?');" })
                 </td>
                 <td>
                     @{
-                        <a href="@Configurations.GetUrl(item)">@item.BillNumber</a>
+                        <a href="@Configurations.GetUrl(item)">@(item.Amount +"€ - " + item.BillNumber)</a>
                     }
                 </td>
             </tr>

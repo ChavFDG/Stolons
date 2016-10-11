@@ -11,5 +11,8 @@ namespace Stolons.Models.Users
     {
         [Display(Name = "Factures")]
         public List<ConsumerBill> ConsumerBills { get; set; }
+
+        [Display(Name = "Bogues")]
+        public decimal Token { get; set; } = 0;
     }
 }
