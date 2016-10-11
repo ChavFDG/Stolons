@@ -126,7 +126,7 @@ namespace Stolons.Models
     {
         [Display(Name = "Edité (attente de livraison / récupération)")]
         Pending = 0,
-        [Display(Name = "Livré (attente de payement)")]
+        [Display(Name = "Livré (attente de paiement)")]
         Delivered = 1,
         [Display(Name = "Payé")]
         Paid = 2

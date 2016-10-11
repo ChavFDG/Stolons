@@ -172,7 +172,7 @@ else
                 </td>
                 <td>
                     @Html.ActionLink(
-                                   "Valider la récupération et le payement",
+                                   "Valider la récupération et le paiement",
                                   "UpdateConsumerBill",
                                     new { billNumber = item.BillNumber },
                                     new { onclick = "return confirm('Confirmation du paiement de la facture de " + item.Consumer.Name + " du "+ item.Amount +"€ ?');" })

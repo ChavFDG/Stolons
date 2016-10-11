@@ -1,0 +1,60 @@
+﻿@model Stolons.ViewModels.Token.CreditTokenViewModel
+
+
+<h2>Créditer des bogues à @Model.Consumer.Surname @Model.Consumer.Name</h2>
+<div id="dialog-confirm"></div>
+
+<script>
+    var currentForm;
+    var creditButton = "Confirmer le paiement de " + $(".creditedToken").value +"€";
+    $(function () {
+        $("#dialog-confirm").dialog({
+            resizable: false,
+            height: 140,
+            modal: true,
+            autoOpen: false,
+            buttons: {
+                creditButton: function () {
+                    $(this).dialog('close');
+                    currentForm.submit();
+                },
+                'Annuler': function () {
+                    $(this).dialog('close');
+                }
+            }
+        });
+        $(".credit").click(function () {
+            currentForm = $(this).closest('form');
+            $("#dialog-confirm").dialog('open');
+            return false;
+        });
+    });
+</script>
+<form asp-action="CreditToken">
+    <div class="form-horizontal">
+        <input asp-for="Consumer.Id" hidden="hidden" />
+        <div class="form-group">
+            <label asp-for="CreditedToken" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="CreditedToken" class="form-control creditedToken" min="0" max="1000"/>
+                <span asp-validation-for="CreditedToken" class="text-danger" />
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input class="credit btn btn-small btn-default" type="submit" value="Créditer"/>
+                <input type="submit" value="Old" class="btn btn-small btn-default" />
+            </div>
+        </div>
+    </div>
+</form>
+
+<div>
+    <a asp-action="Index" class="btn btn-small btn-default">Retourner aux consomateurs</a>
+</div>
+
+@section Scripts {
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+}

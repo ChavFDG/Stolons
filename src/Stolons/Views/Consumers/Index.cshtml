@@ -27,6 +27,9 @@
             @Html.DisplayNameFor(item => item.PhoneNumber)
         </th>
         <th>
+            @Html.DisplayNameFor(item => item.Token)
+        </th>
+        <th>
             @Html.DisplayNameFor(item => item.Cotisation)
         </th>
         <th>
@@ -53,6 +56,9 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.PhoneNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Token)𝞫
             </td>
             @if (item.Cotisation)
             {
@@ -88,6 +94,7 @@
                         <li><a asp-action="ShowBills" asp-route-id="@item.Id">Voir factures</a></li>
                         <li><a asp-action="Details" asp-route-id="@item.Id">Voir détail</a></li>
                         <li><a asp-action="Edit" asp-route-id="@item.Id">Modifier</a></li>
+                        <li><a asp-action="CreditToken" asp-route-id="@item.Id">Créditer des bogues</a></li>
                         @if (item.Cotisation == false)
                         {
                             <li>

@@ -1,6 +1,6 @@
-﻿Les "TOKEN" ("Bogues" ou "𝞫" pour les users) est la monnais virtuel du site.
-Chaque consommateur a des Tokens. 
+﻿Les "TOKEN" ("Bogues" ou "𝞫" pour les users) est la monnaie virtuel du site.
+Chaque consommateur a des Tokens.
 Les Tokens peuvent être crédité par les bénévoles.
-1 € = 1 Token, on ne peut pas transofrmer les Token en euro
-Les Tokens peuvent être utilisé pour régler les factures : les tokens sont automatiquement retirer pour les factures ou lors du paiement le consomateurs peut utiliser ces tokens 
-Les Tokens servent à payer les "Bon plan". C'est le seul moyen de payer un bon plan
+1 € = 1 Token, on ne peut pas transformer les Token en euro
+Les Tokens peuvent être utilisé pour régler les factures : les tokens sont automatiquement retirer pour les factures ou lors du paiement le consommateurs peut choisir d'utiliser ces tokens (sinon il règle autrement)
+Les Tokens servent à payer les "Événement" (bon plan ou autre). C'est le seul moyen de payer un Événement 

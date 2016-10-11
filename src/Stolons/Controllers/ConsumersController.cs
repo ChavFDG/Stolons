@@ -16,6 +16,7 @@ using Stolons.ViewModels.Consumers;
 using Microsoft.AspNetCore.Authorization;
 using Stolons.Helpers;
 using Stolons.Models.Users;
+using Stolons.ViewModels.Token;
 
 namespace Stolons.Controllers
 {
@@ -220,5 +221,38 @@ namespace Stolons.Controllers
             _context.SaveChanges();
             return RedirectToAction("Index");
         }
+
+        // GET: Consumers/CreditToken/5
+        [ActionName("CreditToken")]
+        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_Administrator)]
+        public IActionResult CreditToken(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            Consumer consumer = _context.Consumers.Single(m => m.Id == id);
+            if (consumer == null)
+            {
+                return NotFound();
+            }
+
+            return View(new CreditTokenViewModel(consumer));
+        }
+
+        // POST: Consumers/CreditToken
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_Administrator)]
+        public IActionResult CreditToken(CreditTokenViewModel vmCreditToken)
+        {
+            Consumer consumer = _context.Consumers.Single(m => m.Id == vmCreditToken.Consumer.Id);
+            consumer.Token += vmCreditToken.CreditedToken;
+            _context.Update(consumer);
+            _context.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
     }
 }

@@ -50,7 +50,7 @@ namespace Stolons.Controllers
             transaction.Type = Transaction.TransactionType.Inbound;
             transaction.Category = Transaction.TransactionCategory.Subscription;
             transaction.Amount = Configurations.GetSubscriptionAmount(user);
-            transaction.Description = "Payement de la cotisation de : "+  user.Name + " " + user.Surname;
+            transaction.Description = "Paiement de la cotisation de : "+  user.Name + " " + user.Surname;
             _context.Transactions.Add(transaction);
             //Update
             _context.StolonsUsers.Update(user);
