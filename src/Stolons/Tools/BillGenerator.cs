@@ -167,6 +167,8 @@ namespace Stolons.Tools
             string message = "<h3>" + Configurations.ApplicationConfig.OrderDeliveryMessage + "</h3>";
             message += "<br/>";
             message += "<h4>En pièce jointe votre commande de la semaine (Facture " + bill.BillNumber + ")</h4>";
+            if (bill.Consumer.Token > 0)
+                message += "<p>Vous avez "+bill.Consumer.Token+ "𝞫, pensez à payer vos bogues lors de la récupération de votre commande.</p>";
 
             AuthMessageSender.SendEmail(bill.User.Email,
                                             bill.User.Name,

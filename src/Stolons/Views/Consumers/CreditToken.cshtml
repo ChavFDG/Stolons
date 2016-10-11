@@ -4,6 +4,30 @@
 <h2>Créditer des bogues à @Model.Consumer.Surname @Model.Consumer.Name</h2>
 <div id="dialog-confirm"></div>
 
+
+<form asp-action="CreditToken">
+    <div class="form-horizontal">
+        <input asp-for="Consumer.Id" hidden="hidden" />
+        <div class="form-group">
+            <label asp-for="CreditedToken" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="CreditedToken" class="form-control creditedToken" min="0" max="1000" />
+                <span asp-validation-for="CreditedToken" class="text-danger" />
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input class="credit btn btn-small btn-default" type="submit" value="Créditer" />
+                <input type="submit" value="Old" class="btn btn-small btn-default" />
+            </div>
+        </div>
+    </div>
+</form>
+
+<div>
+    <a asp-action="Index" class="btn btn-small btn-default">Retourner aux consomateurs</a>
+</div>
+
 <script>
     var currentForm;
     var creditButton = "Confirmer le paiement de " + $(".creditedToken").value +"€";
@@ -25,36 +49,50 @@
         });
         $(".credit").click(function () {
             currentForm = $(this).closest('form');
-            $("#dialog-confirm").dialog('open');
+            $("#creditModal").openPopup();
             return false;
         });
     });
 </script>
-<form asp-action="CreditToken">
-    <div class="form-horizontal">
-        <input asp-for="Consumer.Id" hidden="hidden" />
-        <div class="form-group">
-            <label asp-for="CreditedToken" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="CreditedToken" class="form-control creditedToken" min="0" max="1000"/>
-                <span asp-validation-for="CreditedToken" class="text-danger" />
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input class="credit btn btn-small btn-default" type="submit" value="Créditer"/>
-                <input type="submit" value="Old" class="btn btn-small btn-default" />
+@section Scripts {
+
+
+    <script src="/lib/leaflet.js"></script>
+
+}
+<script id="modal" type="text/template">
+    <div id="creditModal" class="modals">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+                </div>
+                <div class="modal-body">
+                    <h1>Test</h1>
+                </div>
             </div>
         </div>
     </div>
-</form>
+</script>
 
-<div>
-    <a asp-action="Index" class="btn btn-small btn-default">Retourner aux consomateurs</a>
-</div>
-
-@section Scripts {
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
-    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
-}
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+  $( function() {
+    $( "#dialog-confirm" ).dialog({
+      resizable: false,
+      height: "auto",
+      width: 400,
+      modal: true,
+      buttons: {
+        "Delete all items": function() {
+          $( this ).dialog( "close" );
+        },
+        Cancel: function() {
+          $( this ).dialog( "close" );
+        }
+      }
+    });
+  } );
+    </script>

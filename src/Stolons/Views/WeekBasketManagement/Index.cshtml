@@ -149,6 +149,9 @@ else
                 Téléphone
             </th>
             <th>
+                Bogues
+            </th>
+            <th>
                 Etat
             </th>
             <th>
@@ -171,6 +174,9 @@ else
                     @Html.DisplayFor(modelItem => item.Consumer.PhoneNumber)
                 </td>
                 <td>
+                    @Html.DisplayFor(modelItem => item.Consumer.Token)𝞫
+                </td>
+                <td>
                     @Html.ActionLink(
                                    "Valider la récupération et le paiement",
                                   "UpdateConsumerBill",
@@ -188,6 +194,6 @@ else
 }
 else
 {
-<p>Plus de panier cette semaine</p>
+    <p>Plus de panier cette semaine</p>
 }
 </div>

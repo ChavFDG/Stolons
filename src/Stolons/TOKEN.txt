@@ -2,5 +2,9 @@
 Chaque consommateur a des Tokens.
 Les Tokens peuvent être crédité par les bénévoles.
 1 € = 1 Token, on ne peut pas transformer les Token en euro
-Les Tokens peuvent être utilisé pour régler les factures : les tokens sont automatiquement retirer pour les factures ou lors du paiement le consommateurs peut choisir d'utiliser ces tokens (sinon il règle autrement)
+Les Tokens peuvent être utilisé pour régler les factures : au paiement le consommateurs peut choisir d'utiliser ces tokens (sinon il un autre moyen de régler)
 Les Tokens servent à payer les "Événement" (bon plan ou autre). C'est le seul moyen de payer un Événement 
+
+Todo :
+- ajouter une fenetre de choix de moyen de paiement lors du payement d'une facture
+- ajouter dans la view CreditToken une confirmation du paiement

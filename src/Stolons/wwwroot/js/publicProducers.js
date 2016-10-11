@@ -90,13 +90,13 @@ function initMap(producersModel) {
     });
 
     PublicProducers.selectProducer = function(producerId) {
-	var producer = PublicProducers.ProducersModel.get(producerId);
+	    var producer = PublicProducers.ProducersModel.get(producerId);
 
-	if (producer.get("Latitude") != 0.0 && producer.get("Longitude") != 0.0) {
-	    //Center the producer on the map
-	    map.panTo([producer.get("Latitude"), producer.get("Longitude")]);
-	    markers[producerId].openPopup();
-	}
+	    if (producer.get("Latitude") != 0.0 && producer.get("Longitude") != 0.0) {
+	        //Center the producer on the map
+	        map.panTo([producer.get("Latitude"), producer.get("Longitude")]);
+	        markers[producerId].openPopup();
+	    }
     };
 
 }

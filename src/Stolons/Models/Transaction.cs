@@ -81,8 +81,20 @@ namespace Stolons.Models
             ProducerRefound = 6,
             [Display(Name = "Paiement panier")]
             BillPayement = 7,
+            [Display(Name = "Créditage de bogues")]
+            TokenCredit = 8,
             [Display(Name = "Autre")]
             Other = 99
+        }
+
+        public enum PaymentMode
+        {
+            [Display(Name = "Bogue")]
+            Token = 0,
+            [Display(Name = "Chéque")]
+            Check = 1,
+            [Display(Name = "Liquide")]
+            Cash = 2
         }
     }
 }

@@ -10,6 +10,8 @@ using System.Security.Claims;
 using Stolons.ViewModels.WeekBasketManagement;
 using System;
 using Stolons.Tools;
+using static Stolons.Models.Transaction;
+using Stolons.Helpers;
 
 namespace Stolons.Controllers
 {
@@ -39,17 +41,17 @@ namespace Stolons.Controllers
         }
 
         // GET: UpdateConsumerBill
-        public IActionResult UpdateConsumerBill(string billNumber)
+        public IActionResult UpdateConsumerBill(string billNumber, PaymentMode paymentMode)
         {
             ConsumerBill bill = _context.ConsumerBills.Include(x => x.Consumer).First(x => x.BillNumber == billNumber);
             bill.State = BillState.Paid;
             _context.Update(bill);
             //Transaction
             Transaction transaction = new Transaction(
-                Transaction.TransactionType.Inbound, 
-                Transaction.TransactionCategory.BillPayement, 
-                bill.Amount,
-                "Paiement de la facture " + bill.BillNumber + " par " + bill.Consumer.Name);
+                Transaction.TransactionType.Inbound,
+                Transaction.TransactionCategory.BillPayement,
+                paymentMode == PaymentMode.Token ? 0 : bill.Amount,
+                "Paiement de la facture " + bill.BillNumber + " par " + bill.Consumer.Name + "( " + bill.Consumer.Id + " ) en " + EnumHelper<PaymentMode>.GetDisplayValue(paymentMode));
             _context.Add(transaction);
             //Save
             _context.SaveChanges();
@@ -68,13 +70,13 @@ namespace Stolons.Controllers
                     Transaction.TransactionType.Outbound,
                     Transaction.TransactionCategory.ProducerRefound,
                     bill.ProducerAmount,
-                    "Paiement de la facture " + bill.BillNumber + " à " + bill.Producer.CompanyName);
+                    "Paiement de la facture " + bill.BillNumber + " à " + bill.Producer.CompanyName + " ( " + bill.Producer.Id + " )");
                 _context.Add(prodRefound);
                 Transaction comitionInbound = new Transaction(
                     Transaction.TransactionType.Inbound,
                     Transaction.TransactionCategory.Fee,
                     bill.FeeAmount,
-                    "Encaissement de la commission de la facture " + bill.BillNumber + " de " + bill.Producer.CompanyName);
+                    "Encaissement de la commission de la facture " + bill.BillNumber + " de " + bill.Producer.CompanyName+ " ( " + bill.Producer.Id + " )");
                 _context.Add(comitionInbound);
             }
             //Save

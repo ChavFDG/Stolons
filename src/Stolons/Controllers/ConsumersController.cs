@@ -249,6 +249,11 @@ namespace Stolons.Controllers
         {
             Consumer consumer = _context.Consumers.Single(m => m.Id == vmCreditToken.Consumer.Id);
             consumer.Token += vmCreditToken.CreditedToken;
+            _context.Add(new Transaction(
+                Transaction.TransactionType.Inbound,
+                Transaction.TransactionCategory.TokenCredit,
+                vmCreditToken.CreditedToken,
+                "Créditage du compte de "+ consumer.Name + "( " + consumer.Id + " ) de "  + vmCreditToken.CreditedToken + "??"));
             _context.Update(consumer);
             _context.SaveChanges();
             return RedirectToAction("Index");
