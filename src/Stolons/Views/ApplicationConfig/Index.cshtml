@@ -7,6 +7,11 @@
 
 <h2>@ViewData["Title"]</h2>
 <p>Mode actuel : <b>@(EnumHelper<ApplicationConfig.Modes>.GetDisplayValue(Configurations.Mode))</b></p>
+@if (Configurations.ApplicationConfig.IsModeSimulated)
+{
+    <a asp-action="SwitchMode" class="btn btn-small btn-default">@(Configurations.Mode == ApplicationConfig.Modes.DeliveryAndStockUpdate ? "Passer en mode Commande" : "Passer en mode Livraison et mise à jour des stocks")</a>
+}
+
 <div>
     <h4>Configuration de la structure</h4>
     <dl class="dl-horizontal">

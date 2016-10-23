@@ -11,88 +11,59 @@
         <div class="form-group">
             <label asp-for="CreditedToken" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <input asp-for="CreditedToken" class="form-control creditedToken" min="0" max="1000" />
+                <input asp-for="CreditedToken" class="form-control" id="creditedToken" min="0" max="1000" />
                 <span asp-validation-for="CreditedToken" class="text-danger" />
             </div>
         </div>
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input class="credit btn btn-small btn-default" type="submit" value="Créditer" />
-                <input type="submit" value="Old" class="btn btn-small btn-default" />
+                <input id="creditButton" class="credit btn btn-small btn-default" type="submit" value="Créditer" />
             </div>
         </div>
     </div>
+
+    <div id="creditModal" class="modal fade"></div>
+
 </form>
 
 <div>
     <a asp-action="Index" class="btn btn-small btn-default">Retourner aux consomateurs</a>
 </div>
 
-<script>
-    var currentForm;
-    var creditButton = "Confirmer le paiement de " + $(".creditedToken").value +"€";
-    $(function () {
-        $("#dialog-confirm").dialog({
-            resizable: false,
-            height: 140,
-            modal: true,
-            autoOpen: false,
-            buttons: {
-                creditButton: function () {
-                    $(this).dialog('close');
-                    currentForm.submit();
-                },
-                'Annuler': function () {
-                    $(this).dialog('close');
-                }
-            }
-        });
-        $(".credit").click(function () {
-            currentForm = $(this).closest('form');
-            $("#creditModal").openPopup();
-            return false;
-        });
-    });
-</script>
-@section Scripts {
-
-
-    <script src="/lib/leaflet.js"></script>
-
-}
-<script id="modal" type="text/template">
-    <div id="creditModal" class="modals">
-        <div class="modal-dialog">
+<script id="creditModalTemplate" type="text/template">
+    <div class="modals">
+        <div class="modal-dialog" style="width: 250px;">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                 </div>
                 <div class="modal-body">
-                    <h1>Test</h1>
+                    <p>Valider le paiement de <%= amount %> € et créditer de <%= amount %> bogues</p>
+                    <input class="credit btn btn-small btn-default" type="submit" id="validPaiement" value="Valider" />
                 </div>
             </div>
         </div>
     </div>
 </script>
 
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script>
-  $( function() {
-    $( "#dialog-confirm" ).dialog({
-      resizable: false,
-      height: "auto",
-      width: 400,
-      modal: true,
-      buttons: {
-        "Delete all items": function() {
-          $( this ).dialog( "close" );
+<script>
+    CreditModalView = Backbone.View.extend({
+        el: '#creditModal',
+        template: _.template($("#creditModalTemplate").html()),
+        open: function () {
+            this.render();
         },
-        Cancel: function() {
-          $( this ).dialog( "close" );
+        render: function () {
+            this.$el.html(this.template({ amount: $('input#creditedToken').val() }));
+            this.$el.modal('show');
         }
-      }
     });
-  } );
-    </script>
+
+    $( function() {
+        var creditModalView = new CreditModalView();
+        $('input#creditButton').click(function () {
+            creditModalView.open();
+            return false;
+        });
+    } );
+</script>

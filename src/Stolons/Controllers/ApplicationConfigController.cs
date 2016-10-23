@@ -34,12 +34,12 @@ namespace Stolons.Controllers
             return View(_context.ApplicationConfig.First());
         }
 
-	[HttpGet, ActionName("CurrentMode"), Route("api/currentMode")]
-	public string JsonCurrentMode() {
-	    return JsonConvert.SerializeObject(Configurations.Mode, Formatting.Indented, new JsonSerializerSettings() {
-		    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-			});
-	}
+	    [HttpGet, ActionName("CurrentMode"), Route("api/currentMode")]
+	    public string JsonCurrentMode() {
+	        return JsonConvert.SerializeObject(Configurations.Mode, Formatting.Indented, new JsonSerializerSettings() {
+		        ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+			    });
+	    }
 
         // POST: ApplicationConfig/Edit/5
         [HttpPost]
@@ -57,5 +57,14 @@ namespace Stolons.Controllers
             }
             return View(applicationConfig);
         }
+
+        [Authorize(Roles = Role_Administrator)]
+        public IActionResult SwitchMode()
+        {
+            Configurations.ApplicationConfig.SimulationMode = Configurations.ApplicationConfig.SimulationMode == Models.ApplicationConfig.Modes.DeliveryAndStockUpdate ? Models.ApplicationConfig.Modes.Order : Models.ApplicationConfig.Modes.DeliveryAndStockUpdate;
+            _context.Update(Configurations.ApplicationConfig);
+            _context.SaveChanges();
+            return RedirectToAction("Index");
+        }        
     }
 }

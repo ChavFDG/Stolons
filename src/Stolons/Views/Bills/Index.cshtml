@@ -12,57 +12,123 @@
 
 @if (Model.Any())
 {
-
-    <table class="table">
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.EditionDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.BillNumber)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.State)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Amount)
-            </th>
-            <th>
-            </th>
-            <th>
-            </th>
-        </tr>
-        @{
-            decimal total = 0;
-            foreach (var item in Model)
-            {
-                total += item.Amount;
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.EditionDate)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.BillNumber)
-                    </td>
-                    <td>
-                        @(EnumHelper<BillState>.GetDisplayValue(@item.State))
-                    </td>        
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Amount) €
-                    </td>
-                    <td>
-                        <a asp-action="ShowBill" asp-route-id="@item.BillNumber" class="btn btn-small btn-default" >Afficher</a>
-                    </td>
-                    <td>
-                        @{
-                            <a href="@Configurations.GetUrl(item)" class="btn btn-small btn-default">Télécharger</a>
-                        }
-                    </td>
-                </tr>
+    @if (Model.First() is ProducerBill)
+    {
+        <table class="table">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.EditionDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.BillNumber)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.State)
+                </th>
+                <th>
+                    Total TTC
+                </th>
+                <th>
+                    TVA
+                </th>
+                <th>
+                    Total HT
+                </th>
+                <th>
+                </th>
+                <th>
+                </th>
+            </tr>
+            @{
+                foreach (var item in Model.Cast<ProducerBill>())
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.EditionDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.BillNumber)
+                        </td>
+                        <td>
+                            @(EnumHelper<BillState>.GetDisplayValue(@item.State))
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.BillAmount) €
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.TaxAmount) €
+                        </td>
+                        <td>
+                            @(item.BillAmount - item.TaxAmount) €
+                        </td>
+                        <td>
+                            <a asp-action="ShowBill" asp-route-id="@item.BillNumber" class="btn btn-small btn-default">Afficher</a>
+                        </td>
+                        <td>
+                            @{
+                                <a href="@Configurations.GetUrl(item)" class="btn btn-small btn-default">Télécharger</a>
+                            }
+                        </td>
+                    </tr>
+                    }
             }
-        }
-    </table>
-    <h3>Total des factures : @total €</h3>
+        </table>
+    }
+    else
+    {
+        <table class="table">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.EditionDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.BillNumber)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.State)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.OrderAmount)
+                </th>
+                <th>
+                </th>
+                <th>
+                </th>
+            </tr>
+            @{
+                decimal total = 0;
+                foreach (var item in Model)
+                {
+                    total += item.OrderAmount;
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.EditionDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.BillNumber)
+                        </td>
+                        <td>
+                            @(EnumHelper<BillState>.GetDisplayValue(@item.State))
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.OrderAmount) €
+                        </td>
+                        <td>
+                            <a asp-action="ShowBill" asp-route-id="@item.BillNumber" class="btn btn-small btn-default">Afficher</a>
+                        </td>
+                        <td>
+                            @{
+                                <a href="@Configurations.GetUrl(item)" class="btn btn-small btn-default">Télécharger</a>
+                            }
+                        </td>
+                    </tr>
+                                }
+            }
+        </table>
+        <h3>Total des factures : @total €</h3>
+
+    }
+
 }
 else
 {

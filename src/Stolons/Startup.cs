@@ -228,6 +228,7 @@ namespace Stolons
             pain.PicturesSerialized = Path.Combine("pain.png");
             pain.Price = Convert.ToDecimal(15.5);
             pain.UnitPrice = 4;
+            pain.TaxEnum = Product.TAX.Ten;
             pain.Producer = context.Producers.First();
             pain.ProductUnit = Product.Unit.Kg;
             pain.RemainingStock = 10;
@@ -242,6 +243,7 @@ namespace Stolons
             tomate.Labels.Add(Product.Label.Ab);
             tomate.PicturesSerialized = Path.Combine("tomate.jpg");
             tomate.Price = 3;
+            tomate.TaxEnum = Product.TAX.FiveFive;
             tomate.UnitPrice = Convert.ToDecimal(1.5);
             tomate.QuantityStep = 500;
             tomate.Producer = context.Producers.First();
@@ -258,6 +260,7 @@ namespace Stolons
             pommedeterre.Labels.Add(Product.Label.Ab);
             pommedeterre.PicturesSerialized = Path.Combine("pommedeterre.jpg");
             pommedeterre.Price = Convert.ToDecimal(1.99);
+            pommedeterre.TaxEnum = Product.TAX.FiveFive;
             pommedeterre.UnitPrice = Convert.ToDecimal(1.99);
             pommedeterre.QuantityStep = 1000;
             pommedeterre.Producer = context.Producers.First();
@@ -275,6 +278,7 @@ namespace Stolons
             radis.PicturesSerialized = Path.Combine("radis.jpg");
             radis.Price = 0;
             radis.UnitPrice = 4;
+            radis.TaxEnum = Product.TAX.FiveFive;
             radis.Producer = context.Producers.First();
             radis.ProductUnit = Product.Unit.Kg;
             radis.RemainingStock = 10;
@@ -289,6 +293,7 @@ namespace Stolons
             salade.Labels.Add(Product.Label.Ab);
             salade.PicturesSerialized = Path.Combine("salade.jpg");
             salade.UnitPrice = Convert.ToDecimal(0.80);
+            salade.TaxEnum = Product.TAX.FiveFive;
             salade.Price = 0;
             salade.Producer = context.Producers.First();
             salade.ProductUnit = Product.Unit.Kg;

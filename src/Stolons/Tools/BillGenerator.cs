@@ -13,6 +13,7 @@ using Stolons.Models.Users;
 using System.Text;
 using Microsoft.AspNetCore.Http;
 using System.Diagnostics;
+using static Stolons.Models.Product;
 
 namespace Stolons.Tools
 {
@@ -100,7 +101,18 @@ namespace Stolons.Tools
                     #region Create PDF and send mail
                     //For stolons
                     string billWebAddress = Path.Combine("http://", Configurations.SiteUrl, "WeekBasketManagement", "ShowStolonsBill", stolonsBill.BillNumber).Replace("\\", "/");
-                    GeneratePDF(billWebAddress, stolonsBill.FilePath);
+                    try
+                    {
+                        GeneratePDF(billWebAddress, stolonsBill.FilePath);
+                    }
+                    catch(Exception exept)
+                    {
+                        AuthMessageSender.SendEmail(Configurations.ApplicationConfig.ContactMailAddress,
+                                                        "Stolons",
+                                                        "Erreur lors de la génération de la facture Stolons",
+                                                        "Message d'erreur : " + exept.Message);
+                    }
+
                     // => Producer, send mails
                     foreach (var bill in producerBills)
                     {
@@ -132,50 +144,72 @@ namespace Stolons.Tools
 
         private static void GeneratePdfAndSendEmail(ProducerBill bill)
         {
-            //Generate pdf file
-            GeneratePDF(bill);
-            int cpt = 0;
-            while(!File.Exists(bill.GetFilePath()))
+            try
             {
-                cpt++;
-                System.Threading.Thread.Sleep(500);
-                if (cpt == 20)
-                    return;
+                //Generate pdf file
+                GeneratePDF(bill);
+                int cpt = 0;
+                while (!File.Exists(bill.GetFilePath()))
+                {
+                    cpt++;
+                    System.Threading.Thread.Sleep(500);
+                    if (cpt == 20)
+                        return;
+                }
+                //Send mail to producer
+                AuthMessageSender.SendEmail(bill.Producer.Email,
+                                                bill.Producer.CompanyName,
+                                                "Votre commande de la semaine (Facture " + bill.BillNumber + ")",
+                                                bill.HtmlOrderContent
+                                                + "<h3>En pièce jointe votre facture de la semaine (Facture " + bill.BillNumber + ")</h3>",
+                                                File.ReadAllBytes(bill.GetFilePath()),
+                                                "Facture " + bill.GetFileName());
             }
-            //Send mail to producer
-            AuthMessageSender.SendEmail(bill.Producer.Email,
-                                            bill.Producer.CompanyName,
-                                            "Votre commande de la semaine (Facture " + bill.BillNumber + ")",
-                                            "<h3>En pièce jointe votre commande de la semaine (Facture " + bill.BillNumber + ")</h3>",
-                                            File.ReadAllBytes(bill.GetFilePath()),
-                                            "Facture " + bill.GetFileName());
+            catch (Exception exept)
+            {
+                AuthMessageSender.SendEmail(Configurations.ApplicationConfig.ContactMailAddress,
+                                                "Stolons",
+                                                "Erreur lors de la génération de la facture " + bill.BillNumber,
+                                                "Message d'erreur : " + exept.Message);
+            }
 
         }
         private static void GeneratePdfAndSendEmail(ConsumerBill bill)
         {
-            //Generate pdf file
-            GeneratePDF(bill);
-            int cpt = 0;
-            while (!File.Exists(bill.GetFilePath()))
-            {
-                cpt++;
-                System.Threading.Thread.Sleep(500);
-                if (cpt == 20)
-                    return;
-            }
-            //Send mail to user with bill
-            string message = "<h3>" + Configurations.ApplicationConfig.OrderDeliveryMessage + "</h3>";
-            message += "<br/>";
-            message += "<h4>En pièce jointe votre commande de la semaine (Facture " + bill.BillNumber + ")</h4>";
-            if (bill.Consumer.Token > 0)
-                message += "<p>Vous avez "+bill.Consumer.Token+ "𝞫, pensez à payer vos bogues lors de la récupération de votre commande.</p>";
 
-            AuthMessageSender.SendEmail(bill.User.Email,
-                                            bill.User.Name,
-                                            "Votre commande de la semaine (Facture " + bill.BillNumber + ")",
-                                            message,
-                                            File.ReadAllBytes(bill.GetFilePath()),
-                                            "Facture " + bill.GetFileName());
+            try
+            {
+                //Generate pdf file
+                GeneratePDF(bill);
+                int cpt = 0;
+                while (!File.Exists(bill.GetFilePath()))
+                {
+                    cpt++;
+                    System.Threading.Thread.Sleep(500);
+                    if (cpt == 20)
+                        return;
+                }
+                //Send mail to user with bill
+                string message = "<h3>" + Configurations.ApplicationConfig.OrderDeliveryMessage + "</h3>";
+                message += "<br/>";
+                message += "<h4>En pièce jointe votre commande de la semaine (Facture " + bill.BillNumber + ")</h4>";
+                if (bill.Consumer.Token > 0)
+                    message += "<p>Vous avez " + bill.Consumer.Token + "𝞫, pensez à payer vos bogues lors de la récupération de votre commande.</p>";
+
+                AuthMessageSender.SendEmail(bill.User.Email,
+                                                bill.User.Name,
+                                                "Votre commande de la semaine (Facture " + bill.BillNumber + ")",
+                                                message,
+                                                File.ReadAllBytes(bill.GetFilePath()),
+                                                "Facture " + bill.GetFileName());
+            }
+            catch (Exception exept)
+            {
+                AuthMessageSender.SendEmail(Configurations.ApplicationConfig.ContactMailAddress,
+                                                "Stolons",
+                                                "Erreur lors de la génération de la facture " + bill.BillNumber,
+                                                "Message d'erreur : " + exept.Message);
+            }
 
         }
 
@@ -258,7 +292,7 @@ namespace Stolons.Tools
                     builder.AppendLine("<divstyle=\"page-break-after:always;\">");
                 }
             }
-            bill.HtmlContent = builder.ToString();
+            bill.HtmlBillContent = builder.ToString();
             return bill;
         }
 
@@ -272,24 +306,14 @@ namespace Stolons.Tools
         {
             //Create bill
             ProducerBill bill = CreateBill<ProducerBill>(producer);
-            StringBuilder builder = new StringBuilder();
             //Calcul total amount
             decimal totalAmount = 0;
             foreach (var billEntry in billEntries)
             {
-                totalAmount += Convert.ToDecimal(billEntry.BillEntry.Price * billEntry.BillEntry.Quantity);
+                totalAmount += billEntry.BillEntry.Price;
             }
-            bill.HtmlContent = builder.ToString();
-            bill.Amount = totalAmount;
+            bill.OrderAmount = totalAmount;
             bill.Fee = Configurations.ApplicationConfig.Fee;
-
-            //Entete de facture
-            builder.AppendLine("<h2>Facture : " + bill.BillNumber + "</h2>");
-            builder.AppendLine("<p>Producteur : " + producer.CompanyName + "<p>");
-            builder.AppendLine("<p>Année : " + DateTime.Now.Year);
-            builder.AppendLine("<p>Semaine : " + DateTime.Now.GetIso8601WeekOfYear());
-
-            #region Par produit
             //Create list of bill entry by product
             Dictionary<Product, List<BillEntryConsumer>> products = new Dictionary<Product, List<BillEntryConsumer>>();
             foreach (var billEntryConsumer in billEntries)
@@ -301,61 +325,154 @@ namespace Stolons.Tools
                 products[billEntryConsumer.BillEntry.Product].Add(billEntryConsumer);
             }
 
-            builder.AppendLine("<h2>Commande par produit</h2>");
+            //GENERATION FACTURE
+            StringBuilder billBuilder = new StringBuilder();
+            //Entete de facture
+            //  Producteur
+            billBuilder.AppendLine("<p>"+producer.CompanyName + "<p>");
+            billBuilder.AppendLine("<p>" + producer.Surname?.ToUpper()+ " " + producer.Name?.ToUpper() +"<p>");
+            billBuilder.AppendLine("<p>" + producer.Address+"</p>");
+            billBuilder.AppendLine("<p>" + producer.PostCode +" " +producer.City?.ToUpper()+ "</p>");
+            billBuilder.AppendLine("<br>");
+            billBuilder.AppendLine("<p>Facture n° " + bill.BillNumber + "</p>");
+            billBuilder.AppendLine("<p>Année : " + DateTime.Now.Year);
+            billBuilder.AppendLine("<p>Semaine : " + DateTime.Now.GetIso8601WeekOfYear());
+            //  Destinataire
 
-            builder.AppendLine("<table class=\"table\">");
-            builder.AppendLine("<tr>");
-            builder.AppendLine("<th>Produit</th>");
-            builder.AppendLine("<th>Prix unitaire</th>");
-            builder.AppendLine("<th>Quantité</th>");
-            builder.AppendLine("<th>Prix total</th>");
-            builder.AppendLine("</tr>");
+            //
+            
+            billBuilder.AppendLine("<br>");
+            billBuilder.AppendLine("<table class=\"table\">");
+            billBuilder.AppendLine("<tr>");
+            billBuilder.AppendLine("<th>Produit</th>");
+            billBuilder.AppendLine("<th>Quantité</th>");
+            billBuilder.AppendLine("<th>TVA</th>");
+            billBuilder.AppendLine("<th>PU HT</th>");
+            billBuilder.AppendLine("<th>TOTAL HT</th>");
+            billBuilder.AppendLine("</tr>");
+            //Taux tax / Total HT
+            Dictionary<decimal, decimal> taxTotal = new Dictionary<decimal, decimal>();
+            decimal totalWithoutTax = 0;
             foreach (var product in products)
             {
                 int quantity = 0;
                 product.Value.ForEach(x => quantity += x.BillEntry.Quantity);
-                builder.AppendLine("<tr>");
-                builder.AppendLine("<td>" + product.Key.Name + "</td>");
-                builder.AppendLine("<td>" + product.Key.UnitPrice + " €" + "</td>");
-                builder.AppendLine("<td>" + product.Key.GetQuantityString(quantity) + "</td>");
-                builder.AppendLine("<td>" + Convert.ToDecimal(product.Key.UnitPrice * quantity) + " €" + "</td>");
-                builder.AppendLine("</tr>");
+                decimal productTotalWithoutTax = Convert.ToDecimal(product.Key.UnitPriceWithoutFeeAndTax * quantity);
+                billBuilder.AppendLine("<tr>");
+                billBuilder.AppendLine("<td>" + product.Key.Name + "</td>");
+                billBuilder.AppendLine("<td>" + product.Key.GetQuantityString(quantity) + "</td>");
+                billBuilder.AppendLine("<td>" + (product.Key.TaxEnum == Product.TAX.None ? "NA": product.Key.Tax.ToString()) + " %</td>");
+                billBuilder.AppendLine("<td>" + (product.Key.Type == SellType.Piece ? product.Key.UnitPriceWithoutFeeAndTax : product.Key.PriceWithoutFeeAndTax) + " €" + "</td>");
+                billBuilder.AppendLine("<td>" + productTotalWithoutTax + " €" + "</td>");
+                billBuilder.AppendLine("</tr>");
+                //Si tax, on ajoute au total du taux de la tva
+                if (product.Key.TaxEnum != Product.TAX.None)
+                {
+                    if (taxTotal.ContainsKey(product.Key.Tax))
+                        taxTotal[product.Key.Tax]+= productTotalWithoutTax;
+                    else
+                        taxTotal.Add(product.Key.Tax, productTotalWithoutTax);
+                }
+                totalWithoutTax += productTotalWithoutTax;
             }
-            builder.AppendLine("</table>");
-            builder.AppendLine("<p>Total sans comission : " + totalAmount + " €</p>");
-            builder.AppendLine("<p>Commission (" + Configurations.ApplicationConfig.Fee + "%) : " + String.Format("{0:0.00}", bill.FeeAmount) + " €</p>");
-            builder.AppendLine("<p>Total avec comission : " + String.Format("{0:0.00}", bill.ProducerAmount) + " €</p>");
+            billBuilder.AppendLine("<tr>");
+            billBuilder.AppendLine("<td></td>");
+            billBuilder.AppendLine("<td></td>");
+            billBuilder.AppendLine("<td></td>");
+            billBuilder.AppendLine("<td>Total HT</td>");
+            billBuilder.AppendLine("<td>"+ totalWithoutTax + " €</td>");
+            billBuilder.AppendLine("</tr>");
+            bill.TaxAmount = 0;
+            foreach(var tax in taxTotal)
+            {
+                decimal taxAmount = Math.Round(tax.Value / 100m * tax.Key,2);
+                billBuilder.AppendLine("<tr>");
+                billBuilder.AppendLine("<td></td>");
+                billBuilder.AppendLine("<td></td>");
+                billBuilder.AppendLine("<td></td>");
+                billBuilder.AppendLine("<td>TAV "+ tax.Key +"%</td>");
+                billBuilder.AppendLine("<td>" + taxAmount + " €</td>");
+                billBuilder.AppendLine("</tr>");
+                bill.TaxAmount += taxAmount;
+            }
+            billBuilder.AppendLine("<tr>");
+            billBuilder.AppendLine("<td></td>");
+            billBuilder.AppendLine("<td></td>");
+            billBuilder.AppendLine("<td></td>");
+            billBuilder.AppendLine("<td>Net à payer</td>");
+            billBuilder.AppendLine("<td>" + bill.BillAmount + " €</td>");
+            billBuilder.AppendLine("</tr>");
+            billBuilder.AppendLine("</table>");
+            
+            bill.HtmlBillContent = billBuilder.ToString();
+
+
+
+
+
+
+
+
+
+            //GENERATION COMMANDE
+            StringBuilder orderBuilder = new StringBuilder();
+            //Entete de facture
+            //  Producteur
+            orderBuilder.AppendLine("<h3> Commande n°" + bill.BillNumber + "</h3>");
+            orderBuilder.AppendLine("<p>" + producer.CompanyName + "<p>");
+            orderBuilder.AppendLine("<p>Année : " + DateTime.Now.Year);
+            orderBuilder.AppendLine("<p>Semaine : " + DateTime.Now.GetIso8601WeekOfYear());
+            orderBuilder.AppendLine("<br>");
+            #region Par produit
+
+            orderBuilder.AppendLine("<h3>Commande par produit</h3>");
+
+            orderBuilder.AppendLine("<table class=\"table\">");
+            orderBuilder.AppendLine("<tr>");
+            orderBuilder.AppendLine("<th>Produit</th>");
+            orderBuilder.AppendLine("<th>Quantité</th>");
+            orderBuilder.AppendLine("</tr>");
+            foreach (var product in products)
+            {
+                int quantity = 0;
+                product.Value.ForEach(x => quantity += x.BillEntry.Quantity);
+                orderBuilder.AppendLine("<tr>");
+                orderBuilder.AppendLine("<td>" + product.Key.Name + "</td>");
+                orderBuilder.AppendLine("<td>" + product.Key.GetQuantityString(quantity) + "</td>");
+                orderBuilder.AppendLine("</tr>");
+            }
+            orderBuilder.AppendLine("</table>");
 
             #endregion Par produit
 
             #region Par client
-            builder.AppendLine("<h2>Commande par client</h2>");
+            orderBuilder.AppendLine("<h3>Commande par client</h3>");
 
             var billEntriesByConsumer = billEntries.GroupBy(x => x.Consumer);
-            builder.AppendLine("<table class=\"table\">");
-            builder.AppendLine("<tr>");
-            builder.AppendLine("<th>Client</th>");
-            builder.AppendLine("<th>Produit</th>");
-            builder.AppendLine("<th>Quantité</th>");
-            builder.AppendLine("</tr>");
+            orderBuilder.AppendLine("<table class=\"table\">");
+            orderBuilder.AppendLine("<tr>");
+            orderBuilder.AppendLine("<th>Client</th>");
+            orderBuilder.AppendLine("<th>Produit</th>");
+            orderBuilder.AppendLine("<th>Quantité</th>");
+            orderBuilder.AppendLine("</tr>");
             foreach (var group in billEntriesByConsumer.OrderBy(x => x.Key.Id))
             {
-                builder.AppendLine("<tr>");
-                builder.AppendLine("<td colspan=\"3\" style=\"border-top:1px solid;\">" + "<b>" + group.Key.Id + "</b>" + "</td>");
-                builder.AppendLine("</tr>");
+                orderBuilder.AppendLine("<tr>");
+                orderBuilder.AppendLine("<td colspan=\"3\" style=\"border-top:1px solid;\">" + "<b>" + group.Key.Id + "</b>" + "</td>");
+                orderBuilder.AppendLine("</tr>");
                 foreach (var entries in group.OrderBy(x => x.BillEntry.Product.Name))
                 {
-                    builder.AppendLine("<tr>");
-                    builder.AppendLine("<td></td>");
-                    builder.AppendLine("<td>" + entries.BillEntry.Product.Name + "</td>");
-                    builder.AppendLine("<td>" + entries.BillEntry.QuantityString + "</td>");
-                    builder.AppendLine("</tr>");
+                    orderBuilder.AppendLine("<tr>");
+                    orderBuilder.AppendLine("<td></td>");
+                    orderBuilder.AppendLine("<td>" + entries.BillEntry.Product.Name + "</td>");
+                    orderBuilder.AppendLine("<td>" + entries.BillEntry.QuantityString + "</td>");
+                    orderBuilder.AppendLine("</tr>");
                 }
             }
-            builder.AppendLine("</table>");
+            orderBuilder.AppendLine("</table>");
 
             #endregion Par client
-            bill.HtmlContent = builder.ToString();
+            bill.HtmlOrderContent = orderBuilder.ToString();
             return bill;            
         }
 
@@ -364,14 +481,7 @@ namespace Stolons.Tools
         {
             ConsumerBill bill = CreateBill<ConsumerBill>(weekBasket.Consumer);
             StringBuilder builder = new StringBuilder();
-
-            //Calcul bill amount
-            decimal total = 0;
-            foreach (var billEntry in weekBasket.Products)
-            {
-                total += Convert.ToDecimal(billEntry.Price * billEntry.Quantity);
-            }
-            bill.Amount = total;
+            bill.OrderAmount = 0;
 
             //Entete de facture
             builder.AppendLine("<h2>Facture : " + bill.BillNumber + "</h2>");
@@ -393,16 +503,18 @@ namespace Stolons.Tools
             foreach (var tmpBillEntry in weekBasket.Products)
             {
                 var billEntry = dbContext.BillEntrys.Include(x => x.Product).ThenInclude(x => x.Familly).First(x => x.Id == tmpBillEntry.Id);
+                decimal total = Convert.ToDecimal(billEntry.Product.UnitPrice * billEntry.Quantity);
                 builder.AppendLine("<tr>");
                 builder.AppendLine("<td>" + billEntry.Product.Name + "</td>");
                 builder.AppendLine("<td>" + billEntry.Product.UnitPrice + " €" + "</td>");
                 builder.AppendLine("<td>" + billEntry.QuantityString + "</td>");
-                builder.AppendLine("<td>" + Convert.ToDecimal(billEntry.Product.UnitPrice * billEntry.Quantity) + " €" + "</td>");
+                builder.AppendLine("<td>" + total + " €" + "</td>");
                 builder.AppendLine("</tr>");
+                bill.OrderAmount += total;
             }
             builder.AppendLine("</table>");
-            builder.AppendLine("<p>Montant total : " + bill.Amount + " €</p>");
-            bill.HtmlContent = builder.ToString();
+            builder.AppendLine("<p>Montant total : " + bill.OrderAmount + " €</p>");
+            bill.HtmlBillContent = builder.ToString();
             return bill;
         }
 
@@ -429,6 +541,11 @@ namespace Stolons.Tools
         /// <param name="filePath"></param>
         public static void GeneratePDF(string webAddress, string filePath)
         {
+
+            while (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+            }
 
             string phantomFolder = Path.Combine(Configurations.Environment.WebRootPath, "phantomjs");
             string phantomjs = Path.Combine(phantomFolder, "phantomjs.exe");

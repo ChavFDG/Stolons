@@ -5,6 +5,19 @@
 @if (SignInManager.IsSignedIn(User))
 {
     <div class="bannerAccount">
+
+        @{
+            if (!Model.User.Cotisation)
+            {
+                <div id="warning-container">
+                    <img id="warning" src="/images/warning.png" />
+                    <div id="warning-informations"> 
+                        Cotisation non payé, penser à la régler à la prochaine commande
+                    </div>
+                </div>
+            }
+        }
+        <div id="bogues">@Model.User.Token 𝞫</div>
         <a class="dropdown-toggle" data-toggle="dropdown" href="#">
             <div class="bannerAvatar">
                 <img class="avatar" src="/@Model.User.Avatar" />
@@ -24,3 +37,13 @@ else
 {
    <a asp-controller="Account" asp-action="Login" class="btn btn-link navbar-btn navbar-link">Se connecter</a>
 }
+<script>
+    $( function() {
+        $('img#warning').hover(function () {
+            $('div#warning-informations').show();
+            $(this).mouseout(function () {
+                $('div#warning-informations').fadeOut('fast');
+            });
+        });
+    } );
+</script>

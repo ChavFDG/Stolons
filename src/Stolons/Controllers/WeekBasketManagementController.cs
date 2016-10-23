@@ -45,16 +45,16 @@ namespace Stolons.Controllers
         {
             ConsumerBill bill = _context.ConsumerBills.Include(x => x.Consumer).First(x => x.BillNumber == billNumber);
             bill.State = BillState.Paid;
-            _context.Update(bill);
+            //_context.Update(bill);
             //Transaction
             Transaction transaction = new Transaction(
                 Transaction.TransactionType.Inbound,
                 Transaction.TransactionCategory.BillPayement,
-                paymentMode == PaymentMode.Token ? 0 : bill.Amount,
+                paymentMode == PaymentMode.Token ? 0 : bill.OrderAmount,
                 "Paiement de la facture " + bill.BillNumber + " par " + bill.Consumer.Name + "( " + bill.Consumer.Id + " ) en " + EnumHelper<PaymentMode>.GetDisplayValue(paymentMode));
-            _context.Add(transaction);
+            //_context.Add(transaction);
             //Save
-            _context.SaveChanges();
+           // _context.SaveChanges();
             return RedirectToAction("Index");
         }
         // GET: UpdateProducerBill
@@ -69,7 +69,7 @@ namespace Stolons.Controllers
                 Transaction prodRefound = new Transaction(
                     Transaction.TransactionType.Outbound,
                     Transaction.TransactionCategory.ProducerRefound,
-                    bill.ProducerAmount,
+                    bill.BillAmount,
                     "Paiement de la facture " + bill.BillNumber + " à " + bill.Producer.CompanyName + " ( " + bill.Producer.Id + " )");
                 _context.Add(prodRefound);
                 Transaction comitionInbound = new Transaction(

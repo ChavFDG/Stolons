@@ -213,6 +213,12 @@
             <span asp-validation-for="Product.UnitPrice" class="text-danger" />
           </div>
         </div>
+        <div class="form-group">
+            <label asp-for="Product.TaxEnum" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <select asp-for="Product.TaxEnum" asp-items="Html.GetEnumSelectList<Product.TAX>()" class="form-control"></select>
+            </div>
+        </div>
         <!--HIDDEN-->
         <div class="form-group" hidden="hidden">
             <label asp-for="Product.Id" class="col-md-2 control-label"></label>

@@ -23,9 +23,9 @@ namespace Stolons.Models
         DateTime EditionDate { get; set; }
         
         [Display(Name = "Montant")]
-        decimal Amount { get; set; }
+        decimal OrderAmount { get; set; }
         
-        string HtmlContent { get; set; }
+        string HtmlBillContent { get; set; }
     }
     public class ConsumerBill : IBill
     {
@@ -59,12 +59,12 @@ namespace Stolons.Models
         }
 
         [Display(Name = "Montant")]
-        public decimal Amount { get; set; }
+        public decimal OrderAmount { get; set; }
 
         [Display(Name = "Bogues")]
         public decimal TokenUsed { get; set; } = 0;
 
-        public string HtmlContent { get; set; }
+        public string HtmlBillContent { get; set; }
     }
 
     public class ProducerBill : IBill
@@ -96,8 +96,8 @@ namespace Stolons.Models
             }
         }
 
-        [Display(Name = "Montant")]
-        public decimal Amount { get; set; }
+        [Display(Name = "Montant de la commande")]
+        public decimal OrderAmount { get; set; }
 
         [Display(Name = "Commission")]
         public int Fee { get; set; }
@@ -107,19 +107,23 @@ namespace Stolons.Models
         {
             get
             {
-                return Amount / 100 * Fee;
+                return OrderAmount / 100 * Fee;
             }
         }
 
+        [Display(Name = "Montant de la facture (TTC)")]
         [NotMapped]
-        public decimal ProducerAmount
+        public decimal BillAmount
         {
             get
             {
-                return Amount - (Amount / 100 * Fee);
+                return Math.Round(OrderAmount - (OrderAmount / 100m * Fee),2);
             }
         }
-        public string HtmlContent { get; set; }
+        [Display(Name = "Montant de la TVA")]
+        public decimal TaxAmount { get; set; }
+        public string HtmlBillContent { get; set; }
+        public string HtmlOrderContent { get; set; }
     }
 
     public enum BillState
@@ -143,7 +147,7 @@ namespace Stolons.Models
         {
             this.BillNumber = billNumber;
         }
-        public string HtmlContent { get; set; }
+        public string HtmlBillContent { get; set; }
 
         [Key]
         [Display(Name = "Numéro de facture")] //Year_WeekNumber
@@ -184,6 +188,17 @@ namespace Stolons.Models
                 string stolonsBillsPath = Path.Combine(Configurations.Environment.WebRootPath, Configurations.StolonsBillsStockagePath);
                 string stolonsBillsFullPath = Path.Combine(stolonsBillsPath, BillNumber + ".pdf");
                 return stolonsBillsFullPath;
+            }
+        }
+
+        [NotMapped]
+        public string UrlPath
+        {
+            get
+            {
+                string url = Configurations.GetUrl(Configurations.StolonsBillsStockagePath);
+                url += "/" + BillNumber + ".pdf";
+                return url;
             }
         }
     }

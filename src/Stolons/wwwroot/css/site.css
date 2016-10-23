@@ -59,6 +59,13 @@ input[type="file"] {
 
 /* Banner */
 .bannerAccount {
+    margin: 7px;
+    margin-right: 15px;
+    text-decoration: none;
+}
+
+.bannerAccount .caret {
+    margin-top: 15px;
 }
 
 .bannerAccount form {
@@ -66,7 +73,9 @@ input[type="file"] {
 }
 
 .bannerAvatar {
-    display: table-cell;
+    float:left;
+    margin-right: 10px;
+    display: table-cell;   
 }
 
 .bannerAvatar img {
@@ -74,6 +83,33 @@ input[type="file"] {
     max-width: 37px;
 }
 
+div#warning-container {
+    float: left;
+    margin-right: 10px;
+    margin-top: 5px;
+    position: relative;
+}
+
+img#warning {
+    max-width: 25px;
+}
+
+div#warning-informations{
+    position:absolute;
+    top:25px;
+    width: 300px;
+    left:-150px;
+    display: none;
+    border:1px solid rgba(0,0,0,.15);
+    padding: 5px;
+    background:#fff;
+}
+
+#bogues {
+    margin-right: 20px;
+    margin-top: 10px;
+    float:left;
+}
 /* Image */
 .responsiveImage {
     max-width: 100%;

@@ -12,7 +12,7 @@
 @if (Configurations.Mode == ApplicationConfig.Modes.DeliveryAndStockUpdate && Model.WeekStolonsBill != null)
 {
     <h4>Les paniers de la semaine </h4>
-    <a href="@Configurations.GetUrl(Model.WeekStolonsBill.FilePath)" class="btn btn-small btn-default">Télécharger les factures utilisateur de la semaine</a>
+    <a href="@Model.WeekStolonsBill.UrlPath" class="btn btn-small btn-default">Télécharger les factures utilisateur de la semaine</a>
     <p> </p>
     <a asp-action="ShowStolonsBill" asp-route-id="@Model.WeekStolonsBill.BillNumber" class="btn btn-small btn-default">Afficher les factures utilisateur de la semaine</a>
 }
@@ -56,11 +56,11 @@
                                    "Valider paiement de la facture",
                                   "UpdateProducerBill",
                                     new { billNumber = item.BillNumber },
-                                    new { onclick = "return confirm('Confirmation du paiement de " + +item.ProducerAmount + " à " + item.Producer.CompanyName + "');" })
+                                    new { onclick = "return confirm('Confirmation du paiement de " + +item.BillAmount + " à " + item.Producer.CompanyName + "');" })
                  </td>
                 <td>
                     @{
-                        <a href="@Configurations.GetUrl(item)">@(item.ProducerAmount + "€" + " (" + item.FeeAmount + "€) - " + item.BillNumber)</a>
+                        <a href="@Configurations.GetUrl(item)">@(item.BillAmount + "€" + " (" + item.FeeAmount + "€) - " + item.BillNumber)</a>
                     }
                 </td>
             </tr>
@@ -177,15 +177,11 @@ else
                     @Html.DisplayFor(modelItem => item.Consumer.Token)𝞫
                 </td>
                 <td>
-                    @Html.ActionLink(
-                                   "Valider la récupération et le paiement",
-                                  "UpdateConsumerBill",
-                                    new { billNumber = item.BillNumber },
-                                    new { onclick = "return confirm('Confirmation du paiement de la facture de " + item.Consumer.Name + " du "+ item.Amount +"€ ?');" })
+                    <a href="#" class="btn btn-small btn-default open-consumer-modal" billNumber="@item.BillNumber" canUseToken="@(Convert.ToInt32(item.Consumer.Token >= item.OrderAmount))">Valider la récupération et le paiement</a>
                 </td>
                 <td>
                     @{
-                        <a href="@Configurations.GetUrl(item)">@(item.Amount +"€ - " + item.BillNumber)</a>
+                        <a href="@Configurations.GetUrl(item)">@(item.OrderAmount +"€ - " + item.BillNumber)</a>
                     }
                 </td>
             </tr>
@@ -197,3 +193,48 @@ else
     <p>Plus de panier cette semaine</p>
 }
 </div>
+
+<div id="consumerBillModal" class="modal fade"></div>
+
+<script id="consumerBillModalTemplate" type="text/template">
+    <div class="modals">
+        <div class="modal-dialog" style="width: 250px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                </div>
+                <div class="modal-body">
+                    <% if (canUseToken == 1) { %>
+                        <a href="/WeekBasketManagement/UpdateConsumerBill?paymentMode=0&billNumber=<%= billNumber %>" class="credit btn btn-small btn-default">Bogues</a>
+                    <% } else {%>
+                        <a href="#" class="credit btn btn-small btn-default disabled">Bogues</a>
+                    <% }%>
+                    <a href="/WeekBasketManagement/UpdateConsumerBill?paymentMode=1&billNumber=<%= billNumber %>" class="credit btn btn-small btn-default">Chèque</a>
+                    <a href="/WeekBasketManagement/UpdateConsumerBill?paymentMode=2&billNumber=<%= billNumber %>" class="credit btn btn-small btn-default">Espèces</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script>
+    ConsumerBillModalView = Backbone.View.extend({
+        el: '#consumerBillModal',
+        template: _.template($("#consumerBillModalTemplate").html()),
+        open: function (bill, canUseToken) {
+            this.render(bill, canUseToken);
+        },
+        render: function (bill, canUseToken) {
+            this.$el.html(this.template({ billNumber: bill, canUseToken: canUseToken }));
+            this.$el.modal('show');
+        }
+    });
+
+    $( function() {
+        var consumerBillModalView = new ConsumerBillModalView();
+        $('a.open-consumer-modal').click(function () {
+            consumerBillModalView.open($(this).attr('billNumber'), $(this).attr('canUseToken')); 
+            return false;
+        });
+    } );
+</script>

@@ -97,16 +97,55 @@ namespace Stolons.Models
         [Display(Name = "Prix (kg ou l)")]
         [Required]
         public decimal Price { get; set; }
-	    [Display(Name = "Prix unitaire")]
+
+        [NotMapped]
+        public decimal PriceWithoutFee
+        {
+            get
+            {
+                return Price - (Price / 100 * Configurations.ApplicationConfig.Fee);
+            }
+        }
+
+        [Display(Name = "Prix unitaire")]
 	    [Required]
 	    public decimal UnitPrice { get; set; }
+        [NotMapped]
+        public decimal UnitPriceWithoutFee
+        {
+            get
+            {
+                return UnitPrice - (UnitPrice / 100 * Configurations.ApplicationConfig.Fee);
+            }
+        }
+        [NotMapped]
+        public decimal UnitPriceWithoutFeeAndTax
+        {
+            get
+            {
+                if (Tax == 0)
+                    return UnitPriceWithoutFee;
+                return Math.Round(UnitPriceWithoutFee /(1+Tax/100),2);
+            }
+        }
+        [NotMapped]
+        public decimal PriceWithoutFeeAndTax
+        {
+            get
+            {
+                if (Tax == 0)
+                    return PriceWithoutFee;
+                return Math.Round(PriceWithoutFee / (1 + Tax / 100), 2);
+            }
+        }
+
         [Display(Name = "Stock de la semaine")]
         public decimal WeekStock { get; set; }
         [Display(Name = "Stock restant")]
         public decimal RemainingStock { get; set; }
         [Display(Name = "Palier de poids (g ou ml)")]
 	    [Required]
-            public int QuantityStep { get; set; }
+        public int QuantityStep { get; set; }
 	    [NotMapped]
 	    public string QuantityStepString
 	    {
@@ -184,6 +223,48 @@ namespace Stolons.Models
         public int AverageQuantity { get; set; }
         [Display(Name = "Unité de mesure")]
         public Unit ProductUnit { get; set; }
+        
+        public decimal Tax { get; set; } = 5.5m;
+
+        [NotMapped]
+        [Display(Name = "TVA")]
+        public TAX TaxEnum
+        {
+            get
+            {
+                if (Tax == 5.5m)
+                    return TAX.FiveFive;
+                if (Tax == 8.5m)
+                    return TAX.EightFive;
+                if (Tax == 10m)
+                    return TAX.Ten;
+                if (Tax == 20m)
+                    return TAX.Twenty;
+                return TAX.None;
+            }
+            set
+            {
+                switch(value)
+                {
+                    case TAX.None:
+                        Tax = 0;
+                        break;
+                    case TAX.FiveFive:
+                        Tax = 5.5m;
+                        break;
+                    case TAX.EightFive:
+                        Tax = 8.5m;
+                        break;
+                    case TAX.Ten:
+                        Tax = 10m;
+                        break;
+                    case TAX.Twenty:
+                        Tax = 20m;
+                        break;
+                }
+            }
+        }
+
         [Display(Name = "Etat")]
         public ProductState State { get; set; }
 
@@ -254,6 +335,20 @@ namespace Stolons.Models
             Fairtrade = 3,
             [Display(Name = "Max Havelaar ")]
             MaxHavelaar = 4
+        }
+
+        public enum TAX
+        {
+            [Display(Name = "NA : non assujetti")]
+            None = 0,
+            [Display(Name = "5,5%")]
+            FiveFive = 5,
+            [Display(Name = "8,5%")]
+            EightFive = 8,
+            [Display(Name = "10%")]
+            Ten = 10,
+            [Display(Name = "20%")]
+            Twenty = 20
         }
 
     }
