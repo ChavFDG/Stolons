@@ -9,18 +9,19 @@ DAMIEN
 
 NICO
 - Ajouter le fait d'entrer le commentaire de blocage lors de la désactivation d'un compte
-- On peut ajouter un produit sans Type, sans catégorie, c'est mal
-- Ajouter des transactions pour les modifs sur le stock
+- Ajouter des transactions pour les modifs sur le stock => potentiellement inutile
+- Ajouter la chat box
 - Ajouter validation lors de la modif producteur du stock en cours -> Pour être précis il faudrait vérifier qu'il n'y a pas eu de commandes entre le moment ou on a affiché la page et le moment du changement de stock, et si oui, valider sur cette différence = assez chiant à faire :%^)
 - Quand on modifie ou supprime une news faire apparaitre l'image ( à la manière des produits)
+  en cours => - Rendre le panier flottant ( qu'il suive tout le temps la page quand on scroll)
 
 NOUS
 - Revoir la gestion des roles ( supprimer, éditer, changement de mail ...)
 
 Priorité 2
-- Ajouter le système de permance
-- Rendre le panier flottant ( qu'il suive tout le temps la page quand on scroll)
+- Ajouter le système de permanance
 - Pas de lien pour revenir sur la page d'accueil, voir quand on aura mis le logo
+- Changer l'image par défaut des news par autre chose que l'image de starwars
 - Changer le système de blocage : quand on bloque un adhérent, devoir renseigner la raison, et quand il se log faire apparaitre la raison, pouvoir consulter cette raison
 - Re voir IE
 - Ajouter les photos 2 et 3 sur les produits => caroussel
@@ -58,8 +59,6 @@ MISE à jour post core :
 - Ajouter un code couleur pour les cotisation payé, non payé
 - Quand un utilisateur est bloqué, afficher le commentaire de blocage
 
-
-
 MISE à jour JUILLET :
 - Pouvoir rendre un produit disponible lors de la période commande (mais pas l'inverse)
 - Pouvoir editer un produit seulement si il est indisponible ou si on est en stock update.
@@ -92,3 +91,7 @@ DONE during AUGUST:
 - Revoir la partie d'édition utilisateurs par soit même ( quand on clique sur l'avatar et qu'on veut s'auto éditer)
 - Passage en PDF des factures
 - Réduire automatiquement la taille des images importés
+
+DONE during SEPTEMBER:
+- Rendre le panier flottant ( qu'il suive tout le temps la page quand on scroll)
+- Possibilité d'ajouter des catégories et types

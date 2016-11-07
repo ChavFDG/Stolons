@@ -4,16 +4,15 @@
     ViewData["Title"] = "Nos produits";
 }
 
-<h2>@ViewData["Title"]</h2>
 
 <div class="publicProductsContainer">
-
   <div class="row">
-
-    <div class="products col-lg-12">
-      
-      <div id="filters">
-      </div>
+    <h2></h2>
+  </div>
+  <div class="row">
+    <div id="filters">
+    </div>
+    <div class="products">
       <div id="products">
       </div>
     </div>
@@ -25,34 +24,12 @@
 
 <script id="filtersTemplate" type="text/template">
 
-  <fieldset>
-
-    <label class="control-label" for="familiesDropDown">Famille : </label>
-    <select id="familiesDropDown" name="familiesDropDown">
-
-      <option value="Tous">Tous</option>
-
-      <% _.forEach(productTypes, function(productType) { %>
-
-      <optgroup label="<%= productType.Name %>">
-
-	<% _.forEach(productType.ProductFamilly, function (productFamily) { %>
-
-	<option id="<%= productFamily.FamillyName %>" value="<%= productFamily.FamillyName %>" data-image="<%= productFamily.Image %>"> <%= productFamily.FamillyName %> </option>
-
-	<% }); %>
-
-      </optgroup>
-	
-      <% }); %>
-    </select>
-
-    <div class="searchFilter">
-      <label>Recherche :</label>
-      <input id="search" type="text">
-    </div>
-
-  </fieldset>
+  <div class="searchFilter">
+    <dt><label>Recherche</label></dt>
+    <dt><input id="search" type="text"></dt>
+  </div>
+  <div id="tree">
+  </div>
 
 </script>
 
@@ -80,3 +57,5 @@
 
 <script src="/js/productModel.js"></script>
 <script src="/js/publicProducts.js"></script>
+<script src="/lib/jstree.min.js"></script>
+<link rel="stylesheet" href="/css/jstree/custom.css" />

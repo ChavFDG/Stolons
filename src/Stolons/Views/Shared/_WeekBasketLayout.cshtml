@@ -11,7 +11,6 @@
 
 	<link rel="stylesheet" href="~/css/select2.min.css" />
 	<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-	<link rel="stylesheet" href="~/css/site.css" />
 
         <script src="~/lib/jquery/dist/jquery.min.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
@@ -19,19 +18,24 @@
 	<script src="~/lib/backbone.js"></script>
 	<script src="~/lib/select2.full.min.js"></script>
 
+	<link rel="stylesheet" href="~/css/site.css" />
+	<link rel="stylesheet" media="screen and (min-device-width: 1850px)" href="~/css/weekbasket.lg.css" />
+	<link rel="stylesheet" media="screen and (min-device-width: 1440px) and (max-device-width: 1849px)" href="~/css/weekbasket.lg1.css" />
+	<link rel="stylesheet" media="screen and (max-device-width: 1439px)" href="~/css/weekbasket.md.css" />
+
     </head>
     <body>
       <div id="wrapper">
 
 	@await Component.InvokeAsync("Banner")
-	
-	<div class="container body-content">
+
+	<div class="weekBasketContainer body-content">
           @RenderBody()
 	</div>
 	<div id="footer">
 	  <footer>
 	    <hr />
-	    <p>&copy; 2016 - Association Stolons</p>
+	    <p>&copy; 2015 - Association Stolons</p>
 	  </footer>
 	</div>
       </div>

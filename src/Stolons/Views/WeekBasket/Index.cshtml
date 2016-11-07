@@ -2,6 +2,10 @@
 @using Stolons.ViewModels.WeekBasket;
 @model WeekBasketViewModel
 
+@{
+   Layout = "_WeekBasketLayout";
+}
+
 @if (Configurations.Mode == ApplicationConfig.Modes.DeliveryAndStockUpdate)
 {
     <h3>Commande indisponible</h3>
@@ -12,24 +16,16 @@
 }
 else
     {
-    <div class="weekBasketContainer">
-
-      <div class="row">
-	<h2></h2>
+    <div class="row weekBasketContent">
+      <div id="filters">
       </div>
-        <div class="row">
-	  <div class="col-lg-2">
-            <div id="filters">
-            </div>
-          </div>
-          <div id="products" class="col-lg-9 col-md-9 col-sm-12">
-          </div>
+      <div id="products" >
+      </div>
+      <div id="baskets">
+	<div id="tmpBasket">
 	</div>
-    </div>
-    <div id="baskets">
-      <div id="tmpBasket">
-      </div>
-      <div id="validatedBasket">
+	<div id="validatedBasket">
+	</div>
       </div>
     </div>
 
@@ -39,39 +35,12 @@ else
     <!-- below are templates definitions to be rendered under placeholders defined above -->
 
     <script id="filtersTemplate" type="text/template">
-
-        <fieldset>
-
-            <!-- <label class="control-label" for="familiesDropDown">Famille : </label> -->
-            <!-- <select id="familiesDropDown" name="familiesDropDown"> -->
-
-            <!--     <option value="Tous">Tous</option> -->
-
-            <!--     <% _.forEach(productTypes, function(productType) { %> -->
-
-            <!--     <optgroup label="<%= productType.Name %>"> -->
-
-            <!--         <% _.forEach(productType.ProductFamilly, function (productFamily) { %> -->
-
-            <!--         <option id="<%= productFamily.FamillyName %>" value="<%= productFamily.FamillyName %>" data-image="<%= productFamily.Image %>"> <%= productFamily.FamillyName %> </option> -->
-
-            <!--         <% }); %> -->
-
-            <!--     </optgroup> -->
-
-            <!--     <% }); %> -->
-            <!-- </select> -->
-
-	    <div class="searchFilter">
-              <!-- <label>Recherche :</label> -->
-              <!-- <input id="search" type="text" class="productsTextFilter"> -->
-            </div>
-
-	    <div id="tree">
-	    </div>
-
-        </fieldset>
-
+      <div class="searchFilter">
+	<dt><label>Recherche</label></dt>
+	<dt><input id="search" type="text"></dt>
+      </div>
+      <div id="tree">
+      </div>
     </script>
 
     <!-- Include the product template -->
@@ -124,7 +93,7 @@ else
         <% }); %>
 
 	<div id="emptyProducts" class="hidden">
-	  <span>Aucun produit disponible ou pas de produits correspondants à votre recherche</span>
+	  <span><b>Aucun produit disponible ou pas de produits correspondants à votre recherche</b></span>
 	</div>
 
     </script>
@@ -308,5 +277,4 @@ else
     <script src="/js/weekbasket.js"></script>
 	
     <link rel="stylesheet" href="/css/jstree/custom.css" />
-    
 }

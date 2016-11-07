@@ -258,9 +258,15 @@ FiltersView = Backbone.View.extend({
 		if (this.selectedNode.id === "Tous") {
 		    return true
 		}
-		return product.Familly && product.Familly.Type && product.Familly.Type.Name == this.selectedNode.Name;
+		if (!product.Familly || !product.Familly.Type) {
+		    return false;
+		}
+		return product.Familly.Type && product.Familly.Type.Name == this.selectedNode.text;
 	    } else {
-		return product.Familly && product.Familly.FamillyName == this.selectedNode.Name;
+		if (!product.Familly) {
+		    return false;
+		}
+		return product.Familly.FamillyName === this.selectedNode.text;
 	    }
 	}
     },
@@ -320,7 +326,6 @@ FiltersView = Backbone.View.extend({
 
     nodeSelected: function(event, data) {
 	this.selectedNode = data.node && data.node.original;
-	console.log("node selected", arguments);
 	this.filterProducts();
     }
 });
@@ -536,16 +541,7 @@ TmpWeekBasketView = Backbone.View.extend(
 
 	render: function () {
 	    this.$el.html(this.template({tmpBasketModel: this.model, tmpBasket: this.model.toJSON(), validatedBasketModel: this.validatedBasketModel}));
-	    this.followScrolling();
-	},
-
-	followScrolling: function() {
-	    $("#baskets").on('affix.bs.affix', function() {
-		console.log("ON AFFIX", arguments);
-		//$("#baskets").addClass("col-lg-3");
-	    });
 	}
-	
     }
 );
 

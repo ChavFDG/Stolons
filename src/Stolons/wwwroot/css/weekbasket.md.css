@@ -1,0 +1,65 @@
+
+
+/*-- WEEK BASKET @media max-width: 1849 --*/
+
+.weekBasketContent {
+    padding-top: 20px;
+}
+
+#validatedBasket {
+    padding-top: 35px;
+}
+
+#tmpBasket {
+    padding-top: 5px;
+}
+
+#emptyProducts {
+    min-height: 40%;
+    height: 40%;
+}
+
+#tree {
+    padding-top: 10px;
+}
+
+#baskets {
+    padding-top: 20px;
+    
+}
+
+/* #baskets { */
+/*     padding: 15px 0; */
+/*     position: fixed; */
+/*     right: 15%; */
+/*     top: 60px; */
+/*     width: auto; /\* same as .content left *\/ */
+/*     z-index: 1020; */
+/* } */
+
+#filters {
+    position: fixed;
+    top: 100px;
+    left: 15%;
+    z-index: 1020;
+    max-width: 100px;
+}
+
+#products {
+    margin-left: 32%;
+    max-width: 750px;
+}
+
+/* @media (max-width: 1560px) { */
+/*     #baskets { */
+/* 	position: relative; */
+/* 	margin: auto; */
+/* 	right: 0; */
+/* 	top: 0 !important; */
+/* 	padding-top: 20px; */
+/*     } */
+/*     #products { */
+/* 	margin-left: 30% !important; */
+/* 	max-width: 750px !important; */
+/*     } */
+/* } */
