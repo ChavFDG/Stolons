@@ -92,7 +92,7 @@
                     @(EnumHelper<Product.SellType>.GetDisplayValue(@item.Type))
                 </td>
                 <td>
-                    @if (Configurations.Mode == ApplicationConfig.Modes.Order)
+                    @if (Configurations.Mode == ApplicationConfig.Modes.Order || item.StockManagement == Product.StockType.Fixed)
                     {
                         @Html.DisplayNameFor(model => item.RemainingStock)
                         @(" : ")
@@ -185,7 +185,7 @@
                         <div><label>Palier de vente : </label> <%= product.QuantityStepString %></div>
                         <% } %>
                         <br />
-                        <% if (currentMode.mode == 1) { %> <!-- Livraisons/stocks -->
+                        <% if (currentMode.mode == 1 && product.StockManagement == 0) { %> <!-- Livraisons/stocks et gestion Hebdomadaire -->
                         <div class="form-horizontal">
                             <div class="form-group">
                                 <label for="WeekStock" class="col-md-4 control-label">Je propose cette semaine : </label>

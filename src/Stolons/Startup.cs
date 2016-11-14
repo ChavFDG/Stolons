@@ -231,6 +231,7 @@ namespace Stolons
             pain.TaxEnum = Product.TAX.Ten;
             pain.Producer = context.Producers.First();
             pain.ProductUnit = Product.Unit.Kg;
+            pain.StockManagement = Product.StockType.Week;
             pain.RemainingStock = 10;
             pain.State = Product.ProductState.Enabled;
             pain.Type = Product.SellType.Piece;
@@ -248,6 +249,7 @@ namespace Stolons
             tomate.QuantityStep = 500;
             tomate.Producer = context.Producers.First();
             tomate.ProductUnit = Product.Unit.Kg;
+            tomate.StockManagement = Product.StockType.Week;
             tomate.RemainingStock = 10;
             tomate.Familly = context.ProductFamillys.First(x => x.FamillyName == "Légumes");
             tomate.State = Product.ProductState.Enabled;
@@ -265,6 +267,7 @@ namespace Stolons
             pommedeterre.QuantityStep = 1000;
             pommedeterre.Producer = context.Producers.First();
             pommedeterre.ProductUnit = Product.Unit.Kg;
+            pommedeterre.StockManagement = Product.StockType.Week;
             pommedeterre.RemainingStock = 10;
             pommedeterre.Familly = context.ProductFamillys.First(x => x.FamillyName == "Légumes");
             pommedeterre.State = Product.ProductState.Enabled;
@@ -281,6 +284,7 @@ namespace Stolons
             radis.TaxEnum = Product.TAX.FiveFive;
             radis.Producer = context.Producers.First();
             radis.ProductUnit = Product.Unit.Kg;
+            radis.StockManagement = Product.StockType.Week;
             radis.RemainingStock = 10;
             radis.Familly = context.ProductFamillys.First(x => x.FamillyName == "Légumes");
             radis.State = Product.ProductState.Enabled;
@@ -297,12 +301,30 @@ namespace Stolons
             salade.Price = 0;
             salade.Producer = context.Producers.First();
             salade.ProductUnit = Product.Unit.Kg;
+            salade.StockManagement = Product.StockType.Week;
             salade.RemainingStock = 10;
             salade.Familly = context.ProductFamillys.First(x => x.FamillyName == "Légumes");
             salade.State = Product.ProductState.Enabled;
             salade.Type = Product.SellType.Piece;
             salade.WeekStock = 10;
             context.Add(salade);
+            Product conserveTomate = new Product();
+            conserveTomate.Name = "Bocaux de tomate 500ml";
+            conserveTomate.Description = "Bocaux de tomate du jardin, cuillie mur et transformé dans la semaine. Bocaux en verre d'une contenance de 500ml";
+            conserveTomate.PicturesSerialized = Path.Combine("ConserveTomate.jpg");
+            conserveTomate.UnitPrice = Convert.ToDecimal(4);
+            conserveTomate.TaxEnum = Product.TAX.None;
+            conserveTomate.Price = 0;
+            conserveTomate.Producer = context.Producers.First();
+            conserveTomate.ProductUnit = Product.Unit.L;
+            conserveTomate.StockManagement = Product.StockType.Fixed;
+            conserveTomate.RemainingStock = 10;
+            conserveTomate.Familly = context.ProductFamillys.First(x => x.FamillyName == "Légumes");
+            conserveTomate.State = Product.ProductState.Enabled;
+            conserveTomate.Type = Product.SellType.Piece;
+            conserveTomate.WeekStock = 0;
+            context.Add(conserveTomate);
+
 
             //
             context.SaveChanges();

@@ -262,7 +262,7 @@ namespace Stolons.Controllers
          * Updates product remaining stock with the given quantity (< 0 || > 0)
          * Manages the stock according to the sell type of the product.
          */
-        private void updateProductStock(Product product, int qty)
+        private void UpdateProductStock(Product product, int qty)
         {
             if (product.Type == Product.SellType.Piece)
             {
@@ -318,7 +318,7 @@ namespace Stolons.Controllers
                     if (newEntry == null)
                     {
                         //produit supprimé du panier
-                        updateProductStock(product, prevEntry.Quantity);
+                        UpdateProductStock(product, prevEntry.Quantity);
                     }
                     else
                     {
@@ -337,7 +337,7 @@ namespace Stolons.Controllers
                         }
                         else
                         {
-                            updateProductStock(product, -qtyDiff);
+                            UpdateProductStock(product, -qtyDiff);
                         }
                     }
                 }
@@ -359,7 +359,7 @@ namespace Stolons.Controllers
                         if (newEntry.Quantity <= stepStock)
                         {
                             //product.RemainingStock -= newEntry.Quantity;
-                            updateProductStock(product, -newEntry.Quantity);
+                            UpdateProductStock(product, -newEntry.Quantity);
                         }
                         else
                         {
@@ -404,7 +404,7 @@ namespace Stolons.Controllers
                 foreach (BillEntry entry in validatedWeekBasket.Products)
                 {
                     Product product = _context.Products.First(x => x.Id == entry.ProductId);
-                    updateProductStock(entry.Product, entry.Quantity);
+                    UpdateProductStock(entry.Product, entry.Quantity);
                     //entry.Product.RemainingStock += entry.Quantity;
                 }
                 _context.Remove(tempWeekBasket);

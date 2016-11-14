@@ -15,7 +15,7 @@ namespace Stolons.Models
         public Guid Id { get; set; }
         [Display(Name = "Producteur")]
         public Producer Producer { get; set; }
-	[Display(Name = "Famille de produit")]
+	    [Display(Name = "Famille de produit")]
         public virtual ProductFamilly Familly { get; set; }
         [Display(Name = "Nom")]
         [Required]
@@ -138,6 +138,9 @@ namespace Stolons.Models
                 return Math.Round(PriceWithoutFee / (1 + Tax / 100), 2);
             }
         }
+
+        [Display(Name = "Gestion du stock")]
+        public StockType StockManagement { get; set; } = StockType.Week;
 
         [Display(Name = "Stock de la semaine")]
         public decimal WeekStock { get; set; }
@@ -351,5 +354,12 @@ namespace Stolons.Models
             Twenty = 20
         }
 
+        public enum StockType
+        {
+            [Display(Name = "Hebdomadaire", Description ="Le stock est remis à jour chaque semaine au stock initial, il peut évoluer durant la période de commande")]
+            Week = 0,
+            [Display(Name = "Fixe", Description = "Le stock est fixe et correspond au stock réel présent dans les locaux de la structure")]
+            Fixed = 1
+        }
     }
 }

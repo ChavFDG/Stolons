@@ -280,8 +280,8 @@ namespace Stolons.Controllers
         [HttpPost, ActionName("ChangeStock")]
         public IActionResult ChangeStock(Guid id, decimal newStock)
         {
-            _context.Products.First(x => x.Id == id).WeekStock = (decimal)newStock;
-            _context.Products.First(x => x.Id == id).RemainingStock = (decimal)newStock;
+            _context.Products.First(x => x.Id == id).WeekStock = newStock;
+            _context.Products.First(x => x.Id == id).RemainingStock = newStock;
             _context.SaveChanges();
             return Ok();
         }

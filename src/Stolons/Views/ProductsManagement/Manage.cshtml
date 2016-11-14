@@ -238,6 +238,13 @@
                 <input asp-for="Product.RemainingStock" class="form-control" />
             </div>
         </div>
+        <div class="form-group">
+            <label asp-for="Product.StockManagement" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <select id="StockManagement" asp-for="Product.StockManagement" asp-items="Html.GetEnumSelectList<Product.StockType>()" class="form-control"></select>
+                <span asp-validation-for="Product.StockManagement" class="text-danger" />
+            </div>
+        </div>
         <div class="form-group" hidden="hidden">
             <label asp-for="Product.WeekStock" class="col-md-2 control-label"></label>
             <div class="col-md-10">

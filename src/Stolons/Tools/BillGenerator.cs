@@ -83,7 +83,7 @@ namespace Stolons.Tools
                     dbContext.ValidatedWeekBaskets.Clear();
                     dbContext.BillEntrys.Clear();
                     //Move product to validate
-                    dbContext.Products.ToList().ForEach(x => x.State = Product.ProductState.Stock);
+                    dbContext.Products.ToList().Where(x => x.StockManagement == StockType.Week).ToList().ForEach(x => x.State = Product.ProductState.Stock);
 
                     #if (DEBUG)
                         //For test, remove existing consumer bill and producer bill => That will never exit in normal mode cause they can only have one bill by week per user
@@ -94,7 +94,7 @@ namespace Stolons.Tools
                     //
                     dbContext.SaveChanges();
                     //Set product remaining stock to week stock value
-                    dbContext.Products.ToList().ForEach(x => x.RemainingStock = x.WeekStock);
+                    dbContext.Products.ToList().Where(x=>x.StockManagement == StockType.Week).ToList().ForEach(x => x.RemainingStock = x.WeekStock);
                     dbContext.SaveChanges();
                     #endregion Save bills
 
@@ -131,9 +131,9 @@ namespace Stolons.Tools
                 }
                 if (lastMode == ApplicationConfig.Modes.DeliveryAndStockUpdate && currentMode == ApplicationConfig.Modes.Order)
                 {
-                    foreach( var product in dbContext.Products.Where(x => x.State == Product.ProductState.Stock))
+                    foreach( var product in dbContext.Products.Where(x => x.State == ProductState.Stock))
                     {
-                        product.State = Product.ProductState.Disabled;
+                        product.State = ProductState.Disabled;
                     }
                     dbContext.SaveChanges();
                 }
@@ -169,7 +169,7 @@ namespace Stolons.Tools
             {
                 AuthMessageSender.SendEmail(Configurations.ApplicationConfig.ContactMailAddress,
                                                 "Stolons",
-                                                "Erreur lors de la génération de la facture " + bill.BillNumber,
+                                                "Erreur lors de la génération de la facture " + bill.BillNumber + " à " + bill.Producer.Email,
                                                 "Message d'erreur : " + exept.Message);
             }
 
@@ -207,7 +207,7 @@ namespace Stolons.Tools
             {
                 AuthMessageSender.SendEmail(Configurations.ApplicationConfig.ContactMailAddress,
                                                 "Stolons",
-                                                "Erreur lors de la génération de la facture " + bill.BillNumber,
+                                                "Erreur lors de la génération de la facture " + bill.BillNumber + " à " + bill.User.Email,
                                                 "Message d'erreur : " + exept.Message);
             }
 
