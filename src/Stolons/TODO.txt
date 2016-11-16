@@ -1,4 +1,7 @@
-﻿A faire :
+﻿Info :
+Paiement en ligne par "morning" : https://up.morning.com/
+
+A faire :
 
 Priorité 0 pour v2 :
 - Ajouter le système de permanance

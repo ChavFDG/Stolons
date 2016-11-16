@@ -82,11 +82,12 @@ namespace Stolons.Tools
                     dbContext.TempsWeekBaskets.Clear();
                     dbContext.ValidatedWeekBaskets.Clear();
                     dbContext.BillEntrys.Clear();
-                    //Move product to validate
-                    dbContext.Products.ToList().Where(x => x.StockManagement == StockType.Week).ToList().ForEach(x => x.State = Product.ProductState.Stock);
+
+                    //Move product to stock
+                    dbContext.Products.ToList().Where(x => x.StockManagement == StockType.Week && x.State == ProductState.Enabled).ToList().ForEach(x => x.State = ProductState.Stock);
 
                     #if (DEBUG)
-                        //For test, remove existing consumer bill and producer bill => That will never exit in normal mode cause they can only have one bill by week per user
+                        //For test, remove existing consumer bill and producer bill => That will never exist in normal mode cause they can only have one bill by week per user
                         dbContext.RemoveRange(dbContext.ConsumerBills.Where(x => consumerBills.Any(y => y.BillNumber == x.BillNumber)));
                         dbContext.RemoveRange(dbContext.ProducerBills.Where(x => producerBills.Any(y => y.BillNumber == x.BillNumber)));
                         dbContext.RemoveRange(dbContext.StolonsBills.Where(x => x.BillNumber == stolonsBill.BillNumber));
@@ -152,10 +153,11 @@ namespace Stolons.Tools
                 while (!File.Exists(bill.GetFilePath()))
                 {
                     cpt++;
-                    System.Threading.Thread.Sleep(500);
+                   Thread.Sleep(500);
                     if (cpt == 20)
                         return;
                 }
+                Thread.Sleep(50);
                 //Send mail to producer
                 AuthMessageSender.SendEmail(bill.Producer.Email,
                                                 bill.Producer.CompanyName,
