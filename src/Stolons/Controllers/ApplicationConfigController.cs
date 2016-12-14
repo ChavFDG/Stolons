@@ -7,49 +7,54 @@ using System;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Authorization;
 using static Stolons.Configurations;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Hosting;
+
+//TODO tout à revoir ici. On a d'un coté la configuration global de l'application et de l'autre la configuration d'un Stolon
 
 namespace Stolons.Controllers
 {
     public class ApplicationConfigController : BaseController
     {
-        private ApplicationDbContext _context;
 
-        public ApplicationConfigController(ApplicationDbContext context,
-            IServiceProvider serviceProvider) : base(serviceProvider)
+        public ApplicationConfigController(ApplicationDbContext context, IHostingEnvironment environment,
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
+            IServiceProvider serviceProvider) : base(serviceProvider, userManager, context, environment, signInManager)
         {
-            _context = context;    
+
         }
 
         [Authorize(Roles = Role_Administrator)]
-        // GET: ApplicationConfig
+        // GET: Stolon
         public IActionResult Index()
         {
-            return View(_context.ApplicationConfig.First());
+            return View(_context.Stolons.First());
         }
 
         [Authorize(Roles = Role_Administrator)]
-        // GET: ApplicationConfig/Edit/5
+        // GET: Stolon/Edit/5
         public IActionResult Edit()
         {
-            return View(_context.ApplicationConfig.First());
+            return View(_context.Stolons.First());
         }
 
 	    [HttpGet, ActionName("CurrentMode"), Route("api/currentMode")]
 	    public string JsonCurrentMode() {
-	        return JsonConvert.SerializeObject(Configurations.Mode, Formatting.Indented, new JsonSerializerSettings() {
+	        return JsonConvert.SerializeObject(GetCurrentStolon().GetMode(), Formatting.Indented, new JsonSerializerSettings() {
 		        ReferenceLoopHandling = ReferenceLoopHandling.Ignore
 			    });
 	    }
 
-        // POST: ApplicationConfig/Edit/5
+        // POST: Stolon/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = Role_Administrator)]
-        public IActionResult Edit(ApplicationConfig applicationConfig)
+        public IActionResult Edit(Stolon applicationConfig)
         {
             if (ModelState.IsValid)
             {
-                Configurations.ApplicationConfig = applicationConfig;
+                //Configurations.Application = applicationConfig;
                 _context.Update(applicationConfig);
                 _context.SaveChanges();
 
@@ -61,8 +66,8 @@ namespace Stolons.Controllers
         [Authorize(Roles = Role_Administrator)]
         public IActionResult SwitchMode()
         {
-            Configurations.ApplicationConfig.SimulationMode = Configurations.ApplicationConfig.SimulationMode == Models.ApplicationConfig.Modes.DeliveryAndStockUpdate ? Models.ApplicationConfig.Modes.Order : Models.ApplicationConfig.Modes.DeliveryAndStockUpdate;
-            _context.Update(Configurations.ApplicationConfig);
+            //Configurations.Application.SimulationMode = Configurations.Application.SimulationMode == Models.Stolon.Modes.DeliveryAndStockUpdate ? Models.Stolon.Modes.Order : Models.Stolon.Modes.DeliveryAndStockUpdate;
+            _context.Update(Configurations.Application);
             _context.SaveChanges();
             return RedirectToAction("Index");
         }        

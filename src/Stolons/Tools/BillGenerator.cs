@@ -31,114 +31,122 @@ namespace Stolons.Tools
             }
         }
 
+        private static Dictionary<Guid, Stolon.Modes> lastModes = new Dictionary<Guid, Stolon.Modes>();
+
         public static void ManageBills(ApplicationDbContext dbContext)
         {
-            ApplicationConfig.Modes lastMode = Configurations.Mode;
+            foreach (Stolon stolon in dbContext.Stolons)
+            {
+                lastModes.Add(stolon.Id, stolon.GetMode());
+            }
             do
             {
-                ApplicationConfig.Modes currentMode = Configurations.Mode;
-                if (lastMode == ApplicationConfig.Modes.Order && currentMode == ApplicationConfig.Modes.DeliveryAndStockUpdate)
+                foreach(Stolon stolon in dbContext.Stolons)
                 {
-                    //We moved form Order to Preparation, create and send bills
-                    List<ConsumerBill> consumerBills = new List<ConsumerBill>();
-                    List<ProducerBill> producerBills = new List<ProducerBill>();
-                    Dictionary<Producer, List<BillEntryConsumer>> brutProducerBills = new Dictionary<Producer, List<BillEntryConsumer>>();
-
-                    #region Create bills
-                    //Consumer (create bills)
-                    List<ValidatedWeekBasket> consumerWeekBaskets = dbContext.ValidatedWeekBaskets.Include(x => x.Products).Include(x => x.Consumer).ToList();
-                    StolonsBill stolonsBill = GenerateBill(consumerWeekBaskets, dbContext);
-                    dbContext.Add(stolonsBill);
-                    foreach (var weekBasket in consumerWeekBaskets)
+                    Stolon.Modes currentMode = stolon.GetMode();
+                    if (lastModes[stolon.Id] == Stolon.Modes.Order && currentMode == Stolon.Modes.DeliveryAndStockUpdate)
                     {
-                        //Generate bill for consumer
-                        ConsumerBill consumerBill = GenerateBill(weekBasket, dbContext);
-                        consumerBills.Add(consumerBill);
-                        dbContext.Add(consumerBill);
-                        //Add to producer bill entry
-                        foreach (var tmpBillEntry in weekBasket.Products)
+                        //We moved form Order to Preparation, create and send bills
+                        List<ConsumerBill> consumerBills = new List<ConsumerBill>();
+                        List<ProducerBill> producerBills = new List<ProducerBill>();
+                        Dictionary<Producer, List<BillEntryConsumer>> brutProducerBills = new Dictionary<Producer, List<BillEntryConsumer>>();
+
+                        #region Create bills
+                        //Consumer (create bills)
+                        List<ValidatedWeekBasket> consumerWeekBaskets = dbContext.ValidatedWeekBaskets.Include(x => x.Products).Include(x => x.Consumer).ToList();
+                        StolonsBill stolonsBill = GenerateBill(stolon,consumerWeekBaskets, dbContext);
+                        dbContext.Add(stolonsBill);
+                        foreach (var weekBasket in consumerWeekBaskets)
                         {
-                            var billEntry = dbContext.BillEntrys.Include(x => x.Product).ThenInclude(x => x.Producer).First(x=>x.Id == tmpBillEntry.Id);
-                            Producer producer = billEntry.Product.Producer;
-                            if (!brutProducerBills.ContainsKey(producer))
+                            //Generate bill for consumer
+                            ConsumerBill consumerBill = GenerateBill(weekBasket, dbContext);
+                            consumerBills.Add(consumerBill);
+                            dbContext.Add(consumerBill);
+                            //Add to producer bill entry
+                            foreach (var tmpBillEntry in weekBasket.Products)
                             {
-                                brutProducerBills.Add(producer, new List<BillEntryConsumer>());
+                                var billEntry = dbContext.BillEntrys.Include(x => x.Product).ThenInclude(x => x.Producer).First(x => x.Id == tmpBillEntry.Id);
+                                Producer producer = billEntry.Product.Producer;
+                                if (!brutProducerBills.ContainsKey(producer))
+                                {
+                                    brutProducerBills.Add(producer, new List<BillEntryConsumer>());
+                                }
+                                brutProducerBills[producer].Add(new BillEntryConsumer(billEntry, weekBasket.Consumer));
                             }
-                            brutProducerBills[producer].Add(new BillEntryConsumer(billEntry,weekBasket.Consumer));
                         }
+                        //Producer (creates bills)
+                        foreach (var producerBill in brutProducerBills)
+                        {
+                            //Generate bill for producer
+                            ProducerBill bill = GenerateBill(producerBill.Key, producerBill.Value, dbContext);
+                            producerBills.Add(bill);
+                            dbContext.Add(bill);
+                        }
+                        #endregion Create bills
+
+                        #region Save bills
+                        //Remove week basket
+                        dbContext.TempsWeekBaskets.Clear();
+                        dbContext.ValidatedWeekBaskets.Clear();
+                        dbContext.BillEntrys.Clear();
+
+                        //Move product to stock
+                        dbContext.Products.ToList().Where(x => x.StockManagement == StockType.Week && x.State == ProductState.Enabled).ToList().ForEach(x => x.State = ProductState.Stock);
+
+                        #if (DEBUG)
+                            //For test, remove existing consumer bill and producer bill => That will never exist in normal mode cause they can only have one bill by week per user
+                            dbContext.RemoveRange(dbContext.ConsumerBills.Where(x => consumerBills.Any(y => y.BillNumber == x.BillNumber)));
+                            dbContext.RemoveRange(dbContext.ProducerBills.Where(x => producerBills.Any(y => y.BillNumber == x.BillNumber)));
+                            dbContext.RemoveRange(dbContext.StolonsBills.Where(x => x.BillNumber == stolonsBill.BillNumber));
+                        #endif
+                        //
+                        dbContext.SaveChanges();
+                        //Set product remaining stock to week stock value
+                        dbContext.Products.ToList().Where(x => x.StockManagement == StockType.Week).ToList().ForEach(x => x.RemainingStock = x.WeekStock);
+                        dbContext.SaveChanges();
+                        #endregion Save bills
+
+                        #region Create PDF and send mail
+                        //For stolons
+                        string billWebAddress = Path.Combine("http://", Configurations.SiteUrl, "WeekBasketManagement", "ShowStolonsBill", stolonsBill.BillNumber).Replace("\\", "/");
+                        try
+                        {
+                            GeneratePDF(billWebAddress, stolonsBill.FilePath);
+                        }
+                        catch (Exception exept)
+                        {
+                            AuthMessageSender.SendEmail(Configurations.Application.ContactMailAddress,
+                                                            "Stolons",
+                                                            "Erreur lors de la génération de la facture Stolons",
+                                                            "Message d'erreur : " + exept.Message);
+                        }
+
+                        // => Producer, send mails
+                        foreach (var bill in producerBills)
+                        {
+                            Thread thread = new Thread(() => GeneratePdfAndSendEmail(bill));
+                            thread.Start();
+                        }
+
+                        //Bills (save bills and send mails to user)
+                        foreach (var bill in consumerBills)
+                        {
+                            Thread thread = new Thread(() => GeneratePdfAndSendEmail(bill));
+                            thread.Start();
+                        }
+
+                        #endregion  Create PDF and send mail
                     }
-                    //Producer (creates bills)
-                    foreach (var producerBill in brutProducerBills)
+                    if (lastModes[stolon.Id] == Stolon.Modes.DeliveryAndStockUpdate && currentMode == Stolon.Modes.Order)
                     {
-                        //Generate bill for producer
-                        ProducerBill bill = GenerateBill(producerBill.Key, producerBill.Value, dbContext);
-                        producerBills.Add(bill);
-                        dbContext.Add(bill);
+                        foreach (var product in dbContext.Products.Where(x => x.State == ProductState.Stock))
+                        {
+                            product.State = ProductState.Disabled;
+                        }
+                        dbContext.SaveChanges();
                     }
-                    #endregion Create bills
-
-                    #region Save bills
-                    //Remove week basket
-                    dbContext.TempsWeekBaskets.Clear();
-                    dbContext.ValidatedWeekBaskets.Clear();
-                    dbContext.BillEntrys.Clear();
-
-                    //Move product to stock
-                    dbContext.Products.ToList().Where(x => x.StockManagement == StockType.Week && x.State == ProductState.Enabled).ToList().ForEach(x => x.State = ProductState.Stock);
-
-                    #if (DEBUG)
-                        //For test, remove existing consumer bill and producer bill => That will never exist in normal mode cause they can only have one bill by week per user
-                        dbContext.RemoveRange(dbContext.ConsumerBills.Where(x => consumerBills.Any(y => y.BillNumber == x.BillNumber)));
-                        dbContext.RemoveRange(dbContext.ProducerBills.Where(x => producerBills.Any(y => y.BillNumber == x.BillNumber)));
-                        dbContext.RemoveRange(dbContext.StolonsBills.Where(x => x.BillNumber == stolonsBill.BillNumber));
-                     #endif
-                    //
-                    dbContext.SaveChanges();
-                    //Set product remaining stock to week stock value
-                    dbContext.Products.ToList().Where(x=>x.StockManagement == StockType.Week).ToList().ForEach(x => x.RemainingStock = x.WeekStock);
-                    dbContext.SaveChanges();
-                    #endregion Save bills
-
-                    #region Create PDF and send mail
-                    //For stolons
-                    string billWebAddress = Path.Combine("http://", Configurations.SiteUrl, "WeekBasketManagement", "ShowStolonsBill", stolonsBill.BillNumber).Replace("\\", "/");
-                    try
-                    {
-                        GeneratePDF(billWebAddress, stolonsBill.FilePath);
-                    }
-                    catch(Exception exept)
-                    {
-                        AuthMessageSender.SendEmail(Configurations.ApplicationConfig.ContactMailAddress,
-                                                        "Stolons",
-                                                        "Erreur lors de la génération de la facture Stolons",
-                                                        "Message d'erreur : " + exept.Message);
-                    }
-
-                    // => Producer, send mails
-                    foreach (var bill in producerBills)
-                    {
-                        Thread thread = new Thread(() => GeneratePdfAndSendEmail(bill));
-                        thread.Start();
-                    }
-
-                    //Bills (save bills and send mails to user)
-                    foreach (var bill in consumerBills)
-                    {
-                        Thread thread = new Thread(() => GeneratePdfAndSendEmail(bill));
-                        thread.Start();
-                    }
-
-                    #endregion  Create PDF and send mail
-                }
-                if (lastMode == ApplicationConfig.Modes.DeliveryAndStockUpdate && currentMode == ApplicationConfig.Modes.Order)
-                {
-                    foreach( var product in dbContext.Products.Where(x => x.State == ProductState.Stock))
-                    {
-                        product.State = ProductState.Disabled;
-                    }
-                    dbContext.SaveChanges();
-                }
-                lastMode = currentMode;
+                    lastModes[stolon.Id] = currentMode;
+                }                
                 Thread.Sleep(5000);
             } while (true);
         }
@@ -169,7 +177,7 @@ namespace Stolons.Tools
             }
             catch (Exception exept)
             {
-                AuthMessageSender.SendEmail(Configurations.ApplicationConfig.ContactMailAddress,
+                AuthMessageSender.SendEmail(Configurations.Application.ContactMailAddress,
                                                 "Stolons",
                                                 "Erreur lors de la génération de la facture " + bill.BillNumber + " à " + bill.Producer.Email,
                                                 "Message d'erreur : " + exept.Message);
@@ -192,7 +200,7 @@ namespace Stolons.Tools
                         return;
                 }
                 //Send mail to user with bill
-                string message = "<h3>" + Configurations.ApplicationConfig.OrderDeliveryMessage + "</h3>";
+                string message = "<h3>" + bill.User.Stolon.OrderDeliveryMessage + "</h3>";
                 message += "<br/>";
                 message += "<h4>En pièce jointe votre commande de la semaine (Facture " + bill.BillNumber + ")</h4>";
                 if (bill.Consumer.Token > 0)
@@ -207,7 +215,7 @@ namespace Stolons.Tools
             }
             catch (Exception exept)
             {
-                AuthMessageSender.SendEmail(Configurations.ApplicationConfig.ContactMailAddress,
+                AuthMessageSender.SendEmail(Configurations.Application.ContactMailAddress,
                                                 "Stolons",
                                                 "Erreur lors de la génération de la facture " + bill.BillNumber + " à " + bill.User.Email,
                                                 "Message d'erreur : " + exept.Message);
@@ -228,13 +236,13 @@ namespace Stolons.Tools
         }
 
 
-        private static StolonsBill GenerateBill(List<ValidatedWeekBasket> consumerWeekBaskets, ApplicationDbContext dbContext)
+        private static StolonsBill GenerateBill(Stolon stolon,List<ValidatedWeekBasket> consumerWeekBaskets, ApplicationDbContext dbContext)
         {
             StringBuilder builder = new StringBuilder();
             string billNumber = DateTime.Now.Year + "_" + DateTime.Now.GetIso8601WeekOfYear();
             StolonsBill bill = new StolonsBill(billNumber);
             bill.Amount = 0;
-            bill.Fee = Configurations.ApplicationConfig.Fee;
+            bill.ProducersFee =  stolon.ProducersFee;
             if (!consumerWeekBaskets.Any())
             {
                 builder.AppendLine("Rien cette semaine !");
@@ -315,7 +323,7 @@ namespace Stolons.Tools
                 totalAmount += billEntry.BillEntry.Price;
             }
             bill.OrderAmount = totalAmount;
-            bill.Fee = Configurations.ApplicationConfig.Fee;
+            bill.ProducersFee = producer.Stolon.ProducersFee;
             //Create list of bill entry by product
             Dictionary<Product, List<BillEntryConsumer>> products = new Dictionary<Product, List<BillEntryConsumer>>();
             foreach (var billEntryConsumer in billEntries)
@@ -520,7 +528,7 @@ namespace Stolons.Tools
             return bill;
         }
 
-        private static T CreateBill<T>(User user) where T : class, IBill , new()
+        private static T CreateBill<T>(StolonsUser user) where T : class, IBill , new()
         {
             IBill bill = new T();
             bill.BillNumber = DateTime.Now.Year + "_" + DateTime.Now.GetIso8601WeekOfYear() +"_" + user.Id;

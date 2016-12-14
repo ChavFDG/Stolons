@@ -4,12 +4,18 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Stolons.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Hosting;
 
 namespace Stolons.Controllers
 {
     public class HomeController : BaseController
     {
-        public HomeController(IServiceProvider serviceProvider) : base(serviceProvider)
+        public HomeController(ApplicationDbContext context, IHostingEnvironment environment,
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
+            IServiceProvider serviceProvider) : base(serviceProvider, userManager, context, environment, signInManager)
         {
         }
 

@@ -6,17 +6,20 @@ using Stolons.Models;
 using Microsoft.AspNetCore.Authorization;
 using Newtonsoft.Json;
 using System;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 
 namespace Stolons.Controllers
 {
     public class PublicProducersController : BaseController
     {
-        private ApplicationDbContext _context;
 
-        public PublicProducersController(ApplicationDbContext context,
-            IServiceProvider serviceProvider) : base(serviceProvider)
+        public PublicProducersController(ApplicationDbContext context, IHostingEnvironment environment,
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
+            IServiceProvider serviceProvider) : base(serviceProvider, userManager, context, environment, signInManager)
         {
-            _context = context;    
+              
         }
 
         // GET: PublicProducers

@@ -17,16 +17,13 @@ namespace Stolons.Controllers
 {
     public class WeekBasketManagementController : BaseController
     {
-        private ApplicationDbContext _context;
-        private readonly UserManager<ApplicationUser> _userManager;
-        private IHostingEnvironment _environment;
 
-        public WeekBasketManagementController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IHostingEnvironment environment,
-            IServiceProvider serviceProvider) : base(serviceProvider)
+        public WeekBasketManagementController(ApplicationDbContext context, IHostingEnvironment environment,
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
+            IServiceProvider serviceProvider) : base(serviceProvider, userManager, context, environment, signInManager)
         {
-            _userManager = userManager;
-            _environment = environment;
-            _context = context;
+
         }
 
         // GET: Bills
@@ -74,7 +71,7 @@ namespace Stolons.Controllers
                 _context.Add(prodRefound);
                 Transaction comitionInbound = new Transaction(
                     Transaction.TransactionType.Inbound,
-                    Transaction.TransactionCategory.Fee,
+                    Transaction.TransactionCategory.ProducersFee,
                     bill.FeeAmount,
                     "Encaissement de la commission de la facture " + bill.BillNumber + " de " + bill.Producer.CompanyName+ " ( " + bill.Producer.Id + " )");
                 _context.Add(comitionInbound);

@@ -15,29 +15,26 @@ using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
 using Stolons.ViewModels.ProductsManagement;
 using Microsoft.AspNetCore.Authorization;
+using Stolons.Models.Users;
 
 namespace Stolons.Controllers
 {
     public class ProductsManagementController : BaseController
     {
-        private ApplicationDbContext _context;
-        private readonly UserManager<ApplicationUser> _userManager;
-        private IHostingEnvironment _environment;
-
-        public ProductsManagementController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IHostingEnvironment environment,
-            IServiceProvider serviceProvider) : base(serviceProvider)
+        public ProductsManagementController(ApplicationDbContext context, IHostingEnvironment environment,
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
+            IServiceProvider serviceProvider) : base(serviceProvider, userManager, context, environment, signInManager)
         {
-            _userManager = userManager;
-            _environment = environment;
-            _context = context;
+
         }
 
         // GET: ProductsManagement
         [Authorize(Roles = Configurations.UserType_Producer)]
         public async Task<IActionResult> Index()
         {
-            var appUser = await GetCurrentUserAsync(_userManager);
-            var products = _context.Products.Include(m => m.Familly).Include(m => m.Familly.Type).Where(x => x.Producer.Email == appUser.Email).ToList();
+            Producer producer = await GetCurrentStolonsUserAsync() as Producer;
+            var products = _context.Products.Include(m => m.Familly).Include(m => m.Familly.Type).Where(x => x.Producer == producer).ToList();
             return View(products);
         }
 
@@ -45,9 +42,9 @@ namespace Stolons.Controllers
         [HttpGet, ActionName("ProducerProducts"), Route("api/producerProducts")]
         public string JsonProducerProducts()
         {
-            var appUser = GetCurrentUserSync(_userManager);
+            Producer producer = GetCurrentStolonsUserSync() as Producer;
             List<ProductViewModel> vmProducts = new List<ProductViewModel>();
-            var products = _context.Products.Include(m => m.Familly).Include(m => m.Familly.Type).Where(x => x.Producer.Email == appUser.Email).ToList();
+            var products = _context.Products.Include(m => m.Familly).Include(m => m.Familly.Type).Where(x => x.Producer == producer).ToList();
             foreach (var product in products)
             {
                 int orderedQty = 0;
@@ -104,8 +101,8 @@ namespace Stolons.Controllers
                 //Set Product familly (si ça retourne null c'est que la famille selectionnée n'existe pas, alors on est dans la merde)
                 vmProduct.Product.Familly = _context.ProductFamillys.FirstOrDefault(x => x.FamillyName == vmProduct.FamillyName);
                 //Set Producer (si ça retourne null, c'est que c'est pas un producteur qui est logger, alors on est dans la merde)
-                var appUser = await GetCurrentUserAsync(_userManager);
-                vmProduct.Product.Producer = _context.Producers.FirstOrDefault(x => x.Email == appUser.Email);
+                Producer producer = await GetCurrentStolonsUserAsync() as Producer;
+                vmProduct.Product.Producer = producer;
                 //On s'occupe des images du produit
                 if (!String.IsNullOrWhiteSpace(vmProduct.MainPictureLight))
                 {

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Stolons.Models.Users
 {
-    public class Sympathizer : User
+    public class Sympathizer : StolonsUser
     {
 
     }

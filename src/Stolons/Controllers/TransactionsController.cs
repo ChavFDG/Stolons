@@ -7,16 +7,21 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Stolons.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 
 namespace Stolons.Controllers
 {
-    public class TransactionsController : Controller
+    public class TransactionsController : BaseController
     {
-        private readonly ApplicationDbContext _context;
 
-        public TransactionsController(ApplicationDbContext context)
+
+        public TransactionsController(ApplicationDbContext context, IHostingEnvironment environment,
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
+            IServiceProvider serviceProvider) : base(serviceProvider, userManager, context, environment, signInManager)
         {
-            _context = context;    
+               
         }
 
         // GET: Transactions

@@ -19,16 +19,13 @@ namespace Stolons.Controllers
 {
     public class NewsController : BaseController
     {
-        private ApplicationDbContext _context;
-        private IHostingEnvironment _environment;
-        private readonly UserManager<ApplicationUser> _userManager;
 
-        public NewsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IHostingEnvironment environment,
-            IServiceProvider serviceProvider) : base(serviceProvider)
+        public NewsController(ApplicationDbContext context, IHostingEnvironment environment,
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
+            IServiceProvider serviceProvider) : base(serviceProvider, userManager, context, environment, signInManager)
         {
-            _userManager = userManager;
-            _environment = environment;
-            _context = context;    
+
         }
 
 
@@ -84,13 +81,7 @@ namespace Stolons.Controllers
                 news.DateOfPublication = DateTime.Now;
                 news.ImageLink = Path.Combine(Configurations.NewsImageStockagePath,fileName);
                 //TODO Get logged in User and add it to the news
-                var appUser = await GetCurrentUserAsync(_userManager);
-                User user;
-                user = _context.Consumers.FirstOrDefault(x => x.Email == appUser.Email);
-                if(user == null)
-                {
-                    user = _context.Producers.FirstOrDefault(x => x.Email == appUser.Email);
-                }
+                StolonsUser user = await GetCurrentStolonsUserAsync();
                 news.User = user;
                 _context.News.Add(news);
                 _context.SaveChanges();
@@ -135,13 +126,7 @@ namespace Stolons.Controllers
                     //Setting new value, saving
                     news.ImageLink = Path.Combine(Configurations.NewsImageStockagePath, fileName);
                 }
-                var appUser = await GetCurrentUserAsync(_userManager);
-                User user;
-                user = _context.Consumers.FirstOrDefault(x => x.Email == appUser.Email);
-		if (user == null)
-                {
-                    user = _context.Producers.FirstOrDefault(x => x.Email == appUser.Email);
-                }
+                StolonsUser user = await GetCurrentStolonsUserAsync();
                 news.User = user;
                 _context.Update(news);
                 _context.SaveChanges();

@@ -61,7 +61,7 @@
                         <li><a asp-controller="Mails" asp-action="Index">Courriels</a></li>
                         @if (User.IsInRole(Configurations.Role.Administrator.ToString()))
                         {
-                            <li><a asp-controller="ApplicationConfig" asp-action="Index">Site</a></li>
+                            <li><a asp-controller="Stolon" asp-action="Index">Site</a></li>
                         }
                     </ul>
                 </li>

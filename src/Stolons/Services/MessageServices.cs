@@ -21,7 +21,7 @@ namespace Stolons.Services
         public static void SendEmail(string email, string name, string subject, string message,byte[] attachment = null,string attachmentName ="Facture")
         {
             var mimeMessage = new MimeMessage();
-            mimeMessage.From.Add(new MailboxAddress(Configurations.ApplicationConfig.StolonsLabel, Configurations.ApplicationConfig.MailAddress));
+            mimeMessage.From.Add(new MailboxAddress(Configurations.Application.StolonsLabel, Configurations.Application.MailAddress));
             mimeMessage.To.Add(new MailboxAddress(name, email));
             mimeMessage.Subject = subject;
             var bodyBuilder = new BodyBuilder();
@@ -33,11 +33,11 @@ namespace Stolons.Services
             {
                 using (var client = new SmtpClient())
                 {
-                    client.Connect(Configurations.ApplicationConfig.MailSmtp, Configurations.ApplicationConfig.MailPort, false);
+                    client.Connect(Configurations.Application.MailSmtp, Configurations.Application.MailPort, false);
                     client.AuthenticationMechanisms.Remove("XOAUTH2");
                     // Note: since we don't have an OAuth2 token, disable
                     // the XOAUTH2 authentication mechanism.
-                    client.Authenticate(Configurations.ApplicationConfig.MailAddress, Configurations.ApplicationConfig.MailPassword);
+                    client.Authenticate(Configurations.Application.MailAddress, Configurations.Application.MailPassword);
                     client.Send(mimeMessage);
                     client.Disconnect(true);
                 }

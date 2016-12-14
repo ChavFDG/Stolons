@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Stolons.Models.Users
 {
-    public class Producer : User , IConsumer
+    public class Producer : Consumer
     {
         [Required]
         [Display(Name = "Raison sociale")]
@@ -65,8 +65,5 @@ namespace Stolons.Models.Users
         public double Latitude { get; set; }
 	    [Display(Name = "Longitude")]
         public double Longitude { get; set; }
-
-        [Display(Name = "Factures")]
-        public List<ConsumerBill> ConsumerBills { get; set; }
     }
 }

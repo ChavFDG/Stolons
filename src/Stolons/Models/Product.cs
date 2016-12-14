@@ -103,7 +103,7 @@ namespace Stolons.Models
         {
             get
             {
-                return Price - (Price / 100 * Configurations.ApplicationConfig.Fee);
+                return Price - (Price / 100 * Producer.Stolon.ProducersFee);
             }
         }
 
@@ -115,7 +115,7 @@ namespace Stolons.Models
         {
             get
             {
-                return UnitPrice - (UnitPrice / 100 * Configurations.ApplicationConfig.Fee);
+                return UnitPrice - (UnitPrice / 100 * Producer.Stolon.ProducersFee);
             }
         }
         [NotMapped]

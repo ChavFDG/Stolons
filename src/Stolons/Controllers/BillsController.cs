@@ -15,24 +15,19 @@ namespace Stolons.Controllers
 {
     public class BillsController : BaseController
     {
-        private ApplicationDbContext _context;
-        private readonly UserManager<ApplicationUser> _userManager;
-        private IHostingEnvironment _environment;
-
-        public BillsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IHostingEnvironment environment,
-            IServiceProvider serviceProvider) : base(serviceProvider)
+        public BillsController(ApplicationDbContext context, IHostingEnvironment environment,
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
+            IServiceProvider serviceProvider) : base(serviceProvider, userManager, context, environment, signInManager)
         {
-            _userManager = userManager;
-            _environment = environment;
-            _context = context;
+
         }
 
         // GET: Bills
         [Authorize()]
         public async Task<IActionResult> Index()
         {
-            var appUser = await GetCurrentUserAsync(_userManager);
-            var stolonsUser = _context.StolonsUsers.First(x => x.Email == appUser.Email);
+            StolonsUser stolonsUser = await this.GetCurrentStolonsUserAsync();
             if(stolonsUser is Producer)
             {
                 return View(_context.ProducerBills.Where(x=>x.Producer.Email == stolonsUser.Email).OrderBy(x=>x.EditionDate).ToList<IBill>());

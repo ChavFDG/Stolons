@@ -76,7 +76,7 @@ namespace Stolons.Models
             [Display(Name = "Cotisation")]
             Subscription = 4,
             [Display(Name = "Pourcentage producteur")]
-            Fee = 5,
+            ProducersFee = 5,
             [Display(Name = "Remboursement producteur")]
             ProducerRefound = 6,
             [Display(Name = "Paiement panier")]

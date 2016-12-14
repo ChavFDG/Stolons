@@ -7,11 +7,14 @@ using System.Threading.Tasks;
 
 namespace Stolons.Models.Users
 {
-    public abstract class User : IUser
+    public abstract class StolonsUser
     {
         [Key]
         [Display(Name = "Identifiant")]
         public int Id { get; set; }
+
+        [Display(Name = "Stolon de l'utilisateur")]
+        public Stolon Stolon { get; set; }
 
         [Display(Name = "Nom")]
         [Required]
@@ -55,7 +58,5 @@ namespace Stolons.Models.Users
         public string DisableReason { get; set; }
 
         public List<News> News { get; set; }
-
     }
-
 }

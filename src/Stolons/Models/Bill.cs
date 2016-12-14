@@ -15,7 +15,7 @@ namespace Stolons.Models
         [Display(Name = "Numéro de facture")] //Year_WeekNumber_UserId
         string BillNumber { get; set; }
         [Display(Name = "Utilisateur")]
-        User User { get; set; }
+        StolonsUser User { get; set; }
         [Display(Name = "Etat")]
         BillState State { get; set; }
 
@@ -45,7 +45,7 @@ namespace Stolons.Models
 
         [Display(Name = "Adhérant")]
         [NotMapped]
-        public User User
+        public StolonsUser User
         {
             get
             {
@@ -83,7 +83,7 @@ namespace Stolons.Models
         public BillState State { get; set; }
 
         [NotMapped]
-        public User User
+        public StolonsUser User
         {
             get
             {
@@ -100,14 +100,14 @@ namespace Stolons.Models
         public decimal OrderAmount { get; set; }
 
         [Display(Name = "Commission")]
-        public int Fee { get; set; }
+        public int ProducersFee { get; set; }
 
         [NotMapped]
         public decimal FeeAmount
         {
             get
             {
-                return OrderAmount / 100 * Fee;
+                return OrderAmount / 100 * ProducersFee;
             }
         }
 
@@ -117,7 +117,7 @@ namespace Stolons.Models
         {
             get
             {
-                return Math.Round(OrderAmount - (OrderAmount / 100m * Fee),2);
+                return Math.Round(OrderAmount - (OrderAmount / 100m * ProducersFee),2);
             }
         }
         [Display(Name = "Montant de la TVA")]
@@ -160,14 +160,14 @@ namespace Stolons.Models
         public decimal Amount { get; set; }
 
         [Display(Name = "Commission")]
-        public int Fee { get; set; }
+        public int ProducersFee { get; set; }
 
         [NotMapped]
         public decimal FeeAmount
         {
             get
             {
-                return Amount / 100 * Fee;
+                return Amount / 100 * ProducersFee;
             }
         }
 
@@ -176,7 +176,7 @@ namespace Stolons.Models
         {
             get
             {
-                return Amount - (Amount / 100 * Fee);
+                return Amount - (Amount / 100 * ProducersFee);
             }
         }
         

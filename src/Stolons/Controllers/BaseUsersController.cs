@@ -21,26 +21,19 @@ namespace Stolons.Controllers
 {
     public abstract class UsersBaseController : BaseController
     {
-        protected ApplicationDbContext _context;
-        protected IHostingEnvironment _environment;
-        protected readonly UserManager<ApplicationUser> _userManager;
-        protected readonly SignInManager<ApplicationUser> _signInManager;
 
         public UsersBaseController(ApplicationDbContext context, IHostingEnvironment environment,
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            IServiceProvider serviceProvider) : base(serviceProvider)
+            IServiceProvider serviceProvider) : base(serviceProvider, userManager, context, environment, signInManager)
         {
-            _environment = environment;
-            _context = context;
-            _userManager = userManager;
-            _signInManager = signInManager;
+
         }
         
         [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_Administrator)]
         public IActionResult PaySubscription(int id)
         {
-            User user = _context.StolonsUsers.Single(m => m.Id == id);
+            StolonsUser user = _context.StolonsUsers.Single(m => m.Id == id);
             //
             user.Cotisation = true;
             //Add a transaction
@@ -62,7 +55,7 @@ namespace Stolons.Controllers
         [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_Administrator)]
         public IActionResult Enable(int id)
         {
-            User user = _context.StolonsUsers.Single(m => m.Id == id);
+            StolonsUser user = _context.StolonsUsers.Single(m => m.Id == id);
             //
             user.DisableReason = "";
             user.Enable = true;
@@ -77,7 +70,7 @@ namespace Stolons.Controllers
         [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_Administrator)]
         public IActionResult Disable(int id, string comment)
         {
-            User user = _context.StolonsUsers.Single(m => m.Id == id);
+            StolonsUser user = _context.StolonsUsers.Single(m => m.Id == id);
             //
             user.DisableReason = comment;
             user.Enable = false;
@@ -86,6 +79,29 @@ namespace Stolons.Controllers
             //Save
             _context.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+        /// <summary>
+        /// Return User Role of the specified application user
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        protected async Task<Configurations.Role> GetUserRole(ApplicationUser user)
+        {
+
+            IList<string> roles = await _userManager.GetRolesAsync(user);
+            string role = roles.FirstOrDefault(x => Configurations.GetRoles().Contains(x));
+            return (Configurations.Role)Enum.Parse(typeof(Configurations.Role), role);
+        }
+
+        /// <summary>
+        /// Return the role of the current application user
+        /// </summary>
+        /// <returns></returns>
+        protected async Task<Configurations.Role> GetCurrentUserRole()
+        {
+            var user = await GetCurrentAppUserAsync();
+            return await GetUserRole(user);
         }
     }
 }

@@ -128,21 +128,23 @@ namespace Stolons
             });
 
             await CreateRoles(serviceProvider);
-            await CreateAdminAccount(context, userManager);
+            List<Stolon> stolons = CreateStolons(context);
+            await CreateAdminAccount(context, userManager, stolons.First());
             CreateProductCategories(context);
             SetGlobalConfigurations(context);
 #if DEBUG
-            await InitializeSampleAndTestData(serviceProvider, context, userManager);
+            await InitializeSampleAndTestData(serviceProvider, context, userManager, stolons.First());
 #endif
             Thread billManager = new Thread(() => BillGenerator.ManageBills(context));
             Configurations.Environment = env;
             billManager.Start();
         }
 
+
         #region Stolons config
-        private async Task InitializeSampleAndTestData(IServiceProvider serviceProvider, ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        private async Task InitializeSampleAndTestData(IServiceProvider serviceProvider, ApplicationDbContext context, UserManager<ApplicationUser> userManager,Stolon stolon)
         {
-            await CreateTestAcount(context, userManager);
+            await CreateTestAcount(context, userManager,stolon);
             CreateProductsSamples(context);
         }
 
@@ -151,12 +153,12 @@ namespace Stolons
 
             if (context.ApplicationConfig.Any())
             {
-                Configurations.ApplicationConfig = context.ApplicationConfig.First();
+                Configurations.Application = context.ApplicationConfig.First();
             }
             else
             {
-                Configurations.ApplicationConfig = new ApplicationConfig();
-                context.Add(Configurations.ApplicationConfig);
+                Configurations.Application = new ApplicationConfig();
+                context.Add(Configurations.Application);
                 context.SaveChanges();
             }
 
@@ -350,7 +352,48 @@ namespace Stolons
             }
         }
 
-        private async Task CreateAdminAccount(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+
+        private List<Stolon> CreateStolons(ApplicationDbContext context)
+        {
+            List<Stolon> stolons = new List<Stolon>();
+            Stolon stolon = new Stolon();
+            stolon.IsInMaintenance = false;
+            stolon.IsModeSimulated = false;
+
+            stolon.Label = "Stolons de Privas";
+            stolon.AboutPageText = "Les Stolons de Privas est une association loi 1901";
+            stolon.Address = "07000 PRIVAS";
+            stolon.PhoneNumber = "06 64 86 66 93";
+            stolon.ContactMailAddress = "contact@stolons.org";
+
+            stolon.DeliveryAndStockUpdateDayStartDate = DayOfWeek.Wednesday;
+            stolon.DeliveryAndStockUpdateDayStartDateHourStartDate = 12;
+            stolon.DeliveryAndStockUpdateDayStartDateMinuteStartDate = 00;
+            stolon.OrderDayStartDate = DayOfWeek.Sunday;
+            stolon.OrderHourStartDate = 16;
+            stolon.OrderMinuteStartDate = 00;
+
+            stolon.UseSubscipstion = true;
+            stolon.SubscriptionStartMonth = Stolon.Month.September;
+
+            stolon.OrderDeliveryMessage = "Votre panier est disponible jeudi de 17h30 à 19h au : 10 place de l'hotel de ville, 07000 Privas";
+
+            stolon.UseProducersFee = true;
+            stolon.ProducersFee = 5;
+
+            stolon.UseSympathizer = true;
+            stolon.SympathizerSubscription = 2;
+            stolon.ConsumerSubscription = 10;
+            stolon.ProducerSubscription = 20;
+
+            context.Add(stolon);
+            context.SaveChanges();
+
+            stolons.Add(stolon);
+            return stolons;
+        }
+
+        private async Task CreateAdminAccount(ApplicationDbContext context, UserManager<ApplicationUser> userManager, Stolon stolon)
         {
             await CreateAcount(context,
                     userManager,
@@ -359,7 +402,8 @@ namespace Stolons
                     "damien.paravel@gmail.com",
                     "damien.paravel@gmail.com",
                     Configurations.Role.Administrator,
-                    Configurations.UserType.Consumer);
+                    Configurations.UserType.Consumer,
+                    stolon);
             await CreateAcount(context,
                     userManager,
                     "MICHON",
@@ -367,7 +411,8 @@ namespace Stolons
                     "nicolas.michon@zoho.com",
                     "nicolas.michon@zoho.com",
                     Configurations.Role.Administrator,
-                    Configurations.UserType.Consumer);
+                    Configurations.UserType.Consumer,
+                    stolon);
             await CreateAcount(context,
                     userManager,
                     "Maurice",
@@ -375,10 +420,11 @@ namespace Stolons
                     "chavrouxfdg@hotmail.com",
                     "chavrouxfdg@hotmail.com",
                     Configurations.Role.User,
-                    Configurations.UserType.Producer);
+                    Configurations.UserType.Producer,
+                    stolon);
         }
 
-        private async Task CreateTestAcount(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        private async Task CreateTestAcount(ApplicationDbContext context, UserManager<ApplicationUser> userManager,Stolon stolon)
         {
             await CreateAcount(context,
                     userManager,
@@ -387,15 +433,16 @@ namespace Stolons
                     "chavrouxfdg@hotmail.com",
                     "chavrouxfdg@hotmail.com",
                     Configurations.Role.User,
-                    Configurations.UserType.Producer);
+                    Configurations.UserType.Producer,
+                    stolon);
         }
 
-        private async Task CreateAcount(ApplicationDbContext context, UserManager<ApplicationUser> userManager, string name, string surname, string email, string password, Configurations.Role role, Configurations.UserType userType, string postCode = "07000")
+        private async Task CreateAcount(ApplicationDbContext context, UserManager<ApplicationUser> userManager, string name, string surname, string email, string password, Configurations.Role role, Configurations.UserType userType, Stolon stolon, string postCode = "07000")
         {
 
             if (context.Consumers.Any(x => x.Email == email) || context.Producers.Any(x => x.Email == email))
                 return;
-            User user;
+            StolonsUser user;
             switch (userType)
             {
                 case Configurations.UserType.Producer:
@@ -415,6 +462,7 @@ namespace Stolons
             user.RegistrationDate = DateTime.Now;
             user.Enable = true;
             user.PostCode = postCode;
+            user.Stolon = stolon;
 
             switch (userType)
             {

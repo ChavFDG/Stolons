@@ -23,7 +23,6 @@ namespace Stolons.Controllers
 {
     public class SympathizersController : UsersBaseController
     {
-
         public SympathizersController(ApplicationDbContext context, IHostingEnvironment environment,
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
@@ -167,18 +166,6 @@ namespace Stolons.Controllers
             _context.SaveChanges();
             return RedirectToAction("Index");
         }
-
-        private async Task<Configurations.Role> GetUserRole(ApplicationUser user)
-        {
-
-            IList<string> roles = await _userManager.GetRolesAsync(user);
-            string role = roles.FirstOrDefault(x => Configurations.GetRoles().Contains(x));
-            return (Configurations.Role)Enum.Parse(typeof(Configurations.Role), role);
-        }
-        private async Task<Configurations.Role> GetCurrentUserRole()
-        {
-            var user = await GetCurrentUserAsync(_userManager);
-            return await GetUserRole(user);
-        }
+        
     }
 }

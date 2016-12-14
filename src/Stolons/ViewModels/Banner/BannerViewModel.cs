@@ -9,9 +9,9 @@ namespace Stolons.ViewModels.Banner
 {
     public class BannerViewModel
     {
-        public User User { get; set; }
+        public StolonsUser User { get; set; }
 
-        public BannerViewModel(User user)
+        public BannerViewModel(StolonsUser user)
         {
             User = user;
         }

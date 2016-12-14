@@ -14,24 +14,20 @@ using Stolons.Services;
 using Stolons.ViewModels.Account;
 using Stolons.ViewModels.Manage;
 using Stolons.Models.Users;
+using Microsoft.AspNetCore.Hosting;
 
 namespace Stolons.Controllers
 {
     [Authorize]
     public class AccountController : BaseController
     {
-        private ApplicationDbContext _context;
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
 
-        public AccountController(ApplicationDbContext context,
+        public AccountController(ApplicationDbContext context, IHostingEnvironment environment,
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            IServiceProvider serviceProvider) : base(serviceProvider)
+            IServiceProvider serviceProvider) : base(serviceProvider, userManager, context, environment, signInManager)
         {
-            _context = context;
-            _userManager = userManager;
-            _signInManager = signInManager;
+
         }
 
         //
@@ -55,7 +51,7 @@ namespace Stolons.Controllers
             if (ModelState.IsValid)
             {
                 //D'abord on regarde si il existe bien un User avec ce mail
-                User stolonsUser = _context.StolonsUsers.FirstOrDefault(x => model.Email.Equals(x.Email, StringComparison.CurrentCultureIgnoreCase));
+                StolonsUser stolonsUser = _context.StolonsUsers.FirstOrDefault(x => model.Email.Equals(x.Email, StringComparison.CurrentCultureIgnoreCase));
                 if (stolonsUser == null)
                 {
                     ModelState.AddModelError("LoginFailed", "Utilisateur inconnu");
@@ -120,7 +116,7 @@ namespace Stolons.Controllers
 	    {
 		return View(model);
 	    }
-	    User stolonsUser = _context.StolonsUsers.FirstOrDefault(x => model.Email.Equals(x.Email, StringComparison.CurrentCultureIgnoreCase));
+	    StolonsUser stolonsUser = _context.StolonsUsers.FirstOrDefault(x => model.Email.Equals(x.Email, StringComparison.CurrentCultureIgnoreCase));
 	    if (stolonsUser == null)
 	    {
 		return View("ForgotPasswordConfirmation");
@@ -152,7 +148,7 @@ namespace Stolons.Controllers
             {
                 return View(model);
             }
-	    User stolonsUser = _context.StolonsUsers.FirstOrDefault(x => model.Email.Equals(x.Email, StringComparison.CurrentCultureIgnoreCase));
+	    StolonsUser stolonsUser = _context.StolonsUsers.FirstOrDefault(x => model.Email.Equals(x.Email, StringComparison.CurrentCultureIgnoreCase));
 	    if (stolonsUser == null)
 	    {
 		return View(model);

@@ -17,10 +17,10 @@ namespace Stolons.Models
     //dotnet ef database update
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
-        public DbSet<User> StolonsUsers { get; set; }
+        public DbSet<StolonsUser> StolonsUsers { get; set; }
         public DbSet<Sympathizer> Sympathizers { get; set; }
-        public DbSet<Producer> Producers { get; set; }
         public DbSet<Consumer> Consumers { get; set; }
+        public DbSet<Producer> Producers { get; set; }
         public DbSet<News> News { get; set; }
         public DbSet<ConsumerBill> ConsumerBills { get; set; }
         public DbSet<ProducerBill> ProducerBills { get; set; }
@@ -30,6 +30,7 @@ namespace Stolons.Models
         public DbSet<ProductType> ProductTypes { get; set; }
         public DbSet<TempWeekBasket> TempsWeekBaskets { get; set; }
         public DbSet<ValidatedWeekBasket> ValidatedWeekBaskets { get; set; }
+        public DbSet<Stolon> Stolons { get; set; }
         public DbSet<ApplicationConfig> ApplicationConfig { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<StolonsBill> StolonsBills { get; set; }

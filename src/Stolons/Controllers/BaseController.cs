@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.EntityFrameworkCore;
 using Stolons.Models;
+using Stolons.Models.Users;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,10 +18,22 @@ namespace Stolons.Controllers
     public class BaseController : Controller
     {
         IServiceProvider _serviceProvider;
+        protected readonly UserManager<ApplicationUser> _userManager;
+        protected readonly ApplicationDbContext _context;
+        protected readonly IHostingEnvironment _environment;
+        protected readonly SignInManager<ApplicationUser> _signInManager;
 
-        public BaseController(IServiceProvider serviceProvider)
+        public BaseController(  IServiceProvider serviceProvider,
+                                UserManager<ApplicationUser> userManager,
+                                ApplicationDbContext dbContext,
+                                IHostingEnvironment environment,
+                                SignInManager<ApplicationUser> signInManager)
         {
             _serviceProvider = serviceProvider;
+            _userManager = userManager;
+            _context = dbContext;
+            _signInManager = signInManager;
+            _environment = environment;
         }
 
         protected string RenderPartialViewToString(string viewName, object model)
@@ -48,13 +63,29 @@ namespace Stolons.Controllers
             }
         }
 
-        protected async Task<ApplicationUser> GetCurrentUserAsync(UserManager<ApplicationUser> userManager)
+        protected async Task<ApplicationUser> GetCurrentAppUserAsync()
         {
-            return await userManager.FindByIdAsync(userManager.GetUserId(HttpContext.User));
+            return await _userManager.FindByIdAsync(_userManager.GetUserId(HttpContext.User));
         }
-        protected ApplicationUser GetCurrentUserSync(UserManager<ApplicationUser> userManager)
+        protected ApplicationUser GetCurrentAppUserSync()
         {
-            return userManager.FindByIdAsync(userManager.GetUserId(HttpContext.User)).GetAwaiter().GetResult();
+            return _userManager.FindByIdAsync(_userManager.GetUserId(HttpContext.User)).GetAwaiter().GetResult();
+        }
+
+        protected async Task<StolonsUser> GetCurrentStolonsUserAsync()
+        {
+            ApplicationUser user = await _userManager.FindByIdAsync(_userManager.GetUserId(HttpContext.User));
+            return _context.StolonsUsers.Include(x => x.Stolon).FirstOrDefault(x => x.Email == user.Email);
+        }
+        protected StolonsUser GetCurrentStolonsUserSync()
+        {
+            ApplicationUser user = _userManager.FindByIdAsync(_userManager.GetUserId(HttpContext.User)).GetAwaiter().GetResult();
+            return _context.StolonsUsers.Include(x => x.Stolon).FirstOrDefault(x => x.Email == user.Email);
+        }
+
+        protected Stolon GetCurrentStolon()
+        {
+            return GetCurrentAppUserSync().User.Stolon;
         }
     }
 }

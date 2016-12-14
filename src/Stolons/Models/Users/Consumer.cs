@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Stolons.Models.Users
 {
-    public class Consumer : User,IConsumer
+    public class Consumer : Sympathizer
     {
         [Display(Name = "Factures")]
         public List<ConsumerBill> ConsumerBills { get; set; }

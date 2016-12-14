@@ -11,7 +11,7 @@
 <p>
   <a asp-action="Manage" class="btn btn-small btn-default">Ajouter un produit</a>
   <a asp-action="ManageFamilies" class="btn btn-small btn-default">Gérer les familles de produits</a>
-  @if (Configurations.Mode == ApplicationConfig.Modes.DeliveryAndStockUpdate)
+  @if (Configurations.Mode == Stolon.Modes.DeliveryAndStockUpdate)
     {
         if (Model.Any(x => x.State == Product.ProductState.Stock))
         {
@@ -43,7 +43,7 @@
                 @Html.DisplayNameFor(model => model.State)
             </th>
             <th>
-                @if (Configurations.Mode == ApplicationConfig.Modes.DeliveryAndStockUpdate)
+                @if (Configurations.Mode == Stolon.Modes.DeliveryAndStockUpdate)
                 {
                     <a asp-action="DisableAllProduct">Désactiver tout les produits</a>
                 }
@@ -92,7 +92,7 @@
                     @(EnumHelper<Product.SellType>.GetDisplayValue(@item.Type))
                 </td>
                 <td>
-                    @if (Configurations.Mode == ApplicationConfig.Modes.Order || item.StockManagement == Product.StockType.Fixed)
+                    @if (Configurations.Mode == Stolon.Modes.Order || item.StockManagement == Product.StockType.Fixed)
                     {
                         @Html.DisplayNameFor(model => item.RemainingStock)
                         @(" : ")
@@ -134,7 +134,7 @@
                             <span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu">
-                            @if (Configurations.Mode == ApplicationConfig.Modes.DeliveryAndStockUpdate)
+                            @if (Configurations.Mode == Stolon.Modes.DeliveryAndStockUpdate)
                             {
                                 if (@item.State == Product.ProductState.Enabled)
                                 {
@@ -149,7 +149,7 @@
                                     <a asp-action="Enable" asp-route-id="@item.Id">Rendre disponible</a>
                                 </li>
                             }
-                            @if (Configurations.Mode == ApplicationConfig.Modes.DeliveryAndStockUpdate)
+                            @if (Configurations.Mode == Stolon.Modes.DeliveryAndStockUpdate)
                             {
                                 <li>
                                     <a asp-action="Manage" asp-route-id="@item.Id"> Modifier</a>

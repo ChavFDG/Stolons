@@ -22,16 +22,13 @@ namespace Stolons.Controllers
 {
     public class MailsController : BaseController
     {
-        private ApplicationDbContext _context;
-        private IHostingEnvironment _environment;
-        private readonly UserManager<ApplicationUser> _userManager;
 
-        public MailsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IHostingEnvironment environment,
-            IServiceProvider serviceProvider) : base(serviceProvider)
-        {
-            _userManager = userManager;
-            _environment = environment;
-            _context = context;    
+
+        public MailsController(ApplicationDbContext context, IHostingEnvironment environment,
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
+            IServiceProvider serviceProvider) : base(serviceProvider, userManager, context, environment, signInManager)
+        {   
         }
 
 
@@ -74,17 +71,17 @@ namespace Stolons.Controllers
         [Authorize(Roles = Configurations.Role_Administrator + "," + Configurations.Role_Volunteer)]
         public IActionResult SendToAllUser(MailMessage mailMessage)
         {
-            List<User> users = new List<User>();
+            List<StolonsUser> users = new List<StolonsUser>();
             users.AddRange(_context.Sympathizers);
             users.AddRange(_context.Consumers);
             users.AddRange(_context.Producers);
             return View("Report",  SendMail(users,mailMessage));
         }
 
-        private MailsSendedReport SendMail(IEnumerable<User> users, MailMessage mailMessage)
+        private MailsSendedReport SendMail(IEnumerable<StolonsUser> users, MailMessage mailMessage)
         {
             MailsSendedReport report = new MailsSendedReport();
-            foreach (User user in users)
+            foreach (StolonsUser user in users)
             {
                 if (!String.IsNullOrWhiteSpace(user.Email))
                 { 

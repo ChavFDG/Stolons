@@ -21,23 +21,18 @@ namespace Stolons.Controllers
     [Authorize]
     public class WeekBasketController : BaseController
     {
-        private ApplicationDbContext _context;
-        private readonly UserManager<ApplicationUser> _userManager;
-        private IHostingEnvironment _environment;
 
-        public WeekBasketController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IHostingEnvironment environment,
-            IServiceProvider serviceProvider) : base(serviceProvider)
+        public WeekBasketController(ApplicationDbContext context, IHostingEnvironment environment,
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
+            IServiceProvider serviceProvider) : base(serviceProvider, userManager, context, environment, signInManager)
         {
-            _context = context;
-            _userManager = userManager;
-            _environment = environment;
         }
 
         // GET: WeekBasket/Index/id
         public async Task<IActionResult> Index()
         {
-            var appUser = await GetCurrentUserAsync(_userManager);
-            Consumer consumer = _context.Consumers.FirstOrDefault(x => x.Email == appUser.Email);
+            Consumer consumer = await GetCurrentStolonsUserAsync() as Consumer; 
             if (consumer == null)
             {
                 return NotFound();
@@ -92,8 +87,7 @@ namespace Stolons.Controllers
         [HttpGet, ActionName("TmpWeekBasket"), Route("api/tmpWeekBasket")]
         public async Task<string> JsonTmpWeekBasket()
         {
-            var appUser = await GetCurrentUserAsync(_userManager);
-            Consumer consumer = _context.Consumers.FirstOrDefault(x => x.Email == appUser.Email);
+            Consumer consumer = await GetCurrentStolonsUserAsync() as Consumer;
             if (consumer == null)
             {
                 return null;
@@ -121,8 +115,7 @@ namespace Stolons.Controllers
         [HttpGet, ActionName("ValidatedWeekBasket"), Route("api/validatedWeekBasket")]
         public async Task<string> JsonValidatedWeekBasket()
         {
-            var appUser = await GetCurrentUserAsync(_userManager);
-            Consumer consumer = _context.Consumers.FirstOrDefault(x => x.Email == appUser.Email);
+            Consumer consumer = await GetCurrentStolonsUserAsync() as Consumer;
             if (consumer == null)
             {
                 return null;
@@ -277,7 +270,8 @@ namespace Stolons.Controllers
         [HttpPost, ActionName("ValidateBasket")]
         public IActionResult ValidateBasket(string basketId)
         {
-            if (Configurations.Mode == ApplicationConfig.Modes.DeliveryAndStockUpdate)
+            Stolon stolon = GetCurrentStolon() ;
+            if (stolon.GetMode() == Stolon.Modes.DeliveryAndStockUpdate)
                 return Redirect("Index");
 
             TempWeekBasket tempWeekBasket = _context.TempsWeekBaskets.Include(x => x.Products).Include(x => x.Consumer).First(x => x.Id.ToString() == basketId);

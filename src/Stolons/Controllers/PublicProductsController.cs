@@ -5,17 +5,19 @@ using Microsoft.EntityFrameworkCore;
 using Stolons.Models;
 using System;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 
 namespace Stolons.Controllers
 {
     public class PublicProductsController : BaseController
     {
-        private ApplicationDbContext _context;
 
-        public PublicProductsController(ApplicationDbContext context,
-            IServiceProvider serviceProvider) : base(serviceProvider)
+        public PublicProductsController(ApplicationDbContext context, IHostingEnvironment environment,
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
+            IServiceProvider serviceProvider) : base(serviceProvider, userManager, context, environment, signInManager)
         {
-            _context = context;    
         }
 
         // GET: PublicProducts

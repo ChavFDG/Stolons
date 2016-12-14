@@ -23,21 +23,13 @@ namespace Stolons.Controllers
     [Authorize]
     public class ManageController : BaseController
     {
-        private ApplicationDbContext _context;
-        private IHostingEnvironment _environment;
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
 
-        public ManageController(ApplicationDbContext context,
-        UserManager<ApplicationUser> userManager,
-        SignInManager<ApplicationUser> signInManager,
-        IHostingEnvironment environment,
-            IServiceProvider serviceProvider) : base(serviceProvider)
+        public ManageController(ApplicationDbContext context, IHostingEnvironment environment,
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
+            IServiceProvider serviceProvider) : base(serviceProvider, userManager, context, environment, signInManager)
         { 
-            _context = context;
-            _environment = environment;
-            _userManager = userManager;
-            _signInManager = signInManager;
+
         }
 
         //
@@ -55,9 +47,9 @@ namespace Stolons.Controllers
                 : message == ManageMessageId.RemovePhoneSuccess ? "Your phone number was removed."
                 : "";
 
-            var user = await GetCurrentUserAsync(_userManager);
-            User stolonsUser = _context.Consumers.FirstOrDefault(m => m.Email == user.Email);
-            if(stolonsUser == null)
+            var user = await GetCurrentAppUserAsync();
+            StolonsUser stolonsUser = _context.Consumers.FirstOrDefault(m => m.Email == user.Email);
+            if (stolonsUser == null)
             {
                 //It's a producer
                 stolonsUser = _context.Producers.FirstOrDefault(m => m.Email == user.Email);
@@ -95,7 +87,7 @@ namespace Stolons.Controllers
             {
                 return View(model);
             }
-            var user = await GetCurrentUserAsync(_userManager);
+            var user = await GetCurrentAppUserAsync();
             if (user != null)
             {
                 var result = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
@@ -113,7 +105,7 @@ namespace Stolons.Controllers
         [Authorize()]
         public async Task<IActionResult> ChangeUserInformations()
         {
-            var user = await GetCurrentUserAsync(_userManager);
+            var user = await GetCurrentAppUserAsync();
             Consumer consumer = _context.Consumers.Single(m => m.Email == user.Email);
             if (consumer == null)
             {
@@ -165,7 +157,7 @@ namespace Stolons.Controllers
         [Authorize()]
         public async Task<IActionResult> ChangeProducerInformations()
         {
-            var user = await GetCurrentUserAsync(_userManager);
+            var user = await GetCurrentAppUserAsync();
             Producer producer = _context.Producers.Single(m => m.Email == user.Email);
             if (producer == null)
             {

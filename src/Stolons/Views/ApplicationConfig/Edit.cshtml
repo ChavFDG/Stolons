@@ -1,4 +1,4 @@
-﻿@model Stolons.Models.ApplicationConfig
+﻿@model Stolons.Models.Stolon
 
 @{
 ViewData["Title"] = "Modifier la configuration";
@@ -21,31 +21,31 @@ return culture.DateTimeFormat.GetDayName(dayOfWeekValue);
 
         <h4>Configuration de la structure</h4>
         <div class="form-group">
-            <label asp-for="StolonsLabel" class="col-md-2 control-label"></label>
+            <label asp-for="Label" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <input asp-for="StolonsLabel" class="form-control" />
-                <span asp-validation-for="StolonsLabel" class="text-danger" />
+                <input asp-for="Label" class="form-control" />
+                <span asp-validation-for="Label" class="text-danger" />
             </div>
         </div>
         <div class="form-group">
-            <label asp-for="StolonsAddress" class="col-md-2 control-label"></label>
+            <label asp-for="Address" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <textarea rows="2" asp-for="StolonsAddress" class="form-control"></textarea>
-                <span asp-validation-for="StolonsAddress" class="text-danger" />
+                <textarea rows="2" asp-for="Address" class="form-control"></textarea>
+                <span asp-validation-for="Address" class="text-danger" />
             </div>
         </div>
         <div class="form-group">
-            <label asp-for="StolonsPhoneNumber" class="col-md-2 control-label"></label>
+            <label asp-for="PhoneNumber" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <input asp-for="StolonsPhoneNumber" class="form-control" />
-                <span asp-validation-for="StolonsPhoneNumber" class="text-danger" />
+                <input asp-for="PhoneNumber" class="form-control" />
+                <span asp-validation-for="PhoneNumber" class="text-danger" />
             </div>
         </div>
         <div class="form-group">
-            <label asp-for="Fee" class="col-md-2 control-label"></label>
+            <label asp-for="ProducersFee" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <input asp-for="Fee" class="form-control" min="0" max="100" />
-                <span asp-validation-for="Fee" class="text-danger" />
+                <input asp-for="ProducersFee" class="form-control" min="0" max="100" />
+                <span asp-validation-for="ProducersFee" class="text-danger" />
             </div>
         </div>
 
@@ -74,17 +74,17 @@ return culture.DateTimeFormat.GetDayName(dayOfWeekValue);
         <div class="form-group">
             <label asp-for="SubscriptionStartMonth" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <select asp-for="SubscriptionStartMonth" asp-items="Html.GetEnumSelectList<ApplicationConfig.Month>()" class="form-control"></select>
+                <select asp-for="SubscriptionStartMonth" asp-items="Html.GetEnumSelectList<Stolon.Month>()" class="form-control"></select>
               <span asp-validation-for="SubscriptionStartMonth" class="text-danger" />
             </div>
         </div>
 
         <h4>Configuration des pages du site</h4>
         <div class="form-group">
-            <label asp-for="StolonsAboutPageText" class="col-md-2 control-label"></label>
+            <label asp-for="AboutPageText" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <textarea rows="10" asp-for="StolonsAboutPageText" class="form-control"></textarea>
-                <span asp-validation-for="StolonsAboutPageText" class="text-danger" />
+                <textarea rows="10" asp-for="AboutPageText" class="form-control"></textarea>
+                <span asp-validation-for="AboutPageText" class="text-danger" />
             </div>
         </div>
 
@@ -213,7 +213,7 @@ return culture.DateTimeFormat.GetDayName(dayOfWeekValue);
         <div class="form-group">
             <label asp-for="SimulationMode" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <select asp-for="SimulationMode" asp-items="Html.GetEnumSelectList<ApplicationConfig.Modes>()" class="form-control"></select>
+                <select asp-for="SimulationMode" asp-items="Html.GetEnumSelectList<Stolon.Modes>()" class="form-control"></select>
                 <span asp-validation-for="SimulationMode" class="text-danger" />
             </div>
         </div>

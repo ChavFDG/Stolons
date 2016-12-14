@@ -12,9 +12,9 @@ namespace Stolons.ViewModels.Account
 
 	public string Link { get; set; }
 
-	public User User { get; set; }
+	public StolonsUser User { get; set; }
 
-	public ForgotPasswordEmailViewModel(User _user, string _link)
+	public ForgotPasswordEmailViewModel(StolonsUser _user, string _link)
 	{
 	    Link = _link;
 	    User = _user;

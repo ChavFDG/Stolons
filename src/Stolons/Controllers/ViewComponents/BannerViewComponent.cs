@@ -29,7 +29,7 @@ namespace Stolons.Controllers
             if (User.Identity.IsAuthenticated)
             {
                 ApplicationUser appUser = await _userManager.FindByIdAsync(_userManager.GetUserId(HttpContext.User));
-                User user = _dbContext.StolonsUsers.FirstOrDefault(x => x.Email.Equals(appUser.Email, StringComparison.CurrentCultureIgnoreCase));
+                StolonsUser user = _dbContext.StolonsUsers.FirstOrDefault(x => x.Email.Equals(appUser.Email, StringComparison.CurrentCultureIgnoreCase));
                 return View(new BannerViewModel(user));
             } else
             {
