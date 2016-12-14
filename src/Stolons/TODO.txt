@@ -19,7 +19,7 @@ FEATURES
 	- choisir si % aux producteur
 	- choisir si création de compte en ligne ?
 	- ajouter un mode maintenance
-- 
+- Gérer les mails à envoyer par un pool de mail. Si erreur on passe au suivant et on peut revenir, avec nombre de tentative et erreur remonté si impossible d'envoyer un mail
 
 
 
