@@ -58,10 +58,7 @@
         "portable-net45+win8"
       ],
       "dependencies": {
-        "Microsoft.NETCore.App": {
-          "version": "1.0.0",
-          "type": "platform"
-        }
+        "Microsoft.NETCore.App": "1.1.0"
       }
     }
   },
