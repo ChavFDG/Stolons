@@ -97,6 +97,17 @@ namespace Stolons
         {
             return Enum.GetNames(typeof(UserType));
         }
+        public static string GetAlias(this StolonsUser user)
+        {
+            if (user is Producer)
+            {
+                return (user as Producer).CompanyName;
+            }
+            else
+            {
+                return user.Stolon.Label;
+            }
+        }
 
         #endregion UserManagement
 

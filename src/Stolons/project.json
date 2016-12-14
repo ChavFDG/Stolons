@@ -3,7 +3,6 @@
 
     "dependencies": {
         "Microsoft.EntityFrameworkCore.Tools": "1.1.0-preview4-final",
-        "BundlerMinifier.Core": "2.1.258",
         "MailKit": "1.10.1",
         "Microsoft.AspNetCore.Authentication.Cookies": "1.1.0",
         "Microsoft.AspNetCore.Diagnostics": "1.1.0",
@@ -35,7 +34,9 @@
         "Microsoft.VisualStudio.Web.CodeGenerators.Mvc": {
             "version": "1.1.0-preview4-final",
             "type": "build"
-        }
+        },
+        "BundlerMinifier.Core": "2.2.306",
+        "Microsoft.AspNetCore.Hosting.Abstractions": "1.1.0"
     },
 
     "tools": {
@@ -52,7 +53,6 @@
     },
 
     "frameworks": {
-        "net461": {},
         "netcoreapp1.1": {
             "imports": [
                 "dotnet5.6",

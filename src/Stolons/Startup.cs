@@ -17,6 +17,9 @@ using Microsoft.AspNetCore.Localization;
 using System.Threading;
 using Stolons.Tools;
 using Stolons.Models.Users;
+using Microsoft.Extensions.Configuration.UserSecrets;
+
+[assembly: UserSecretsId("aspnet-Stolons-ce345b64-19cf-4972-b34f-d16f2e7976ed")]
 
 namespace Stolons
 {
@@ -34,7 +37,8 @@ namespace Stolons
             if (env.IsDevelopment())
             {
                 // For more details on using the user secret store see http://go.microsoft.com/fwlink/?LinkID=532709
-                builder.AddUserSecrets();
+                //builder.AddUserSecrets(); // http://stackoverflow.com/questions/40858155/ef-core-1-1-to-webapi-core-add-migration-fails
+                builder.AddUserSecrets<Startup>();
             }
             _environment = env;
             builder.AddEnvironmentVariables();
@@ -46,37 +50,50 @@ namespace Stolons
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            string test = Configuration["Data:DefaultConnection:SqLiteConnectionString"];
-
-            // Add framework services.
-            if (Configuration["Data:UseSqLite"] == "true")
+            try
             {
+
+                string test = Configuration["Data:DefaultConnection:SqLiteConnectionString"];
+
                 services.AddDbContext<ApplicationDbContext>(options =>
                     options.UseSqlite("Data Source=" + Path.Combine(_environment.ContentRootPath, "Stolons.sqlite")));
-                //options.UseSqlite(Configuration["Data:DefaultConnection:SqLiteConnectionString"]));
+
+                /*
+                // Add framework services.
+                if (Configuration["Data:UseSqLite"] == "true")
+                {
+                    services.AddDbContext<ApplicationDbContext>(options =>
+                        options.UseSqlite("Data Source=" + Path.Combine(_environment.ContentRootPath, "Stolons.sqlite")));
+                    //options.UseSqlite(Configuration["Data:DefaultConnection:SqLiteConnectionString"]));
+                }
+                else
+                {
+                    services.AddDbContext<ApplicationDbContext>(options =>
+                        options.UseSqlServer(Configuration["Data:DefaultConnection:MsSqlConnectionString"]));
+                }*/
+
+                services.AddIdentity<ApplicationUser, IdentityRole>()
+                    .AddEntityFrameworkStores<ApplicationDbContext>()
+                    .AddDefaultTokenProviders();
+
+                services.AddMvc();
+
+                //Password policy
+                //stackoverflow.com/questions/27831597/how-do-i-define-the-password-rules-for-identity-in-asp-net-5-mvc-6-vnext
+                services.AddIdentity<ApplicationUser, IdentityRole>(o => {
+                    // configure identity options
+                    o.Password.RequireDigit = false;
+                    o.Password.RequireLowercase = false;
+                    o.Password.RequireUppercase = false;
+                    o.Password.RequiredLength = 1;
+                    o.Password.RequireNonAlphanumeric = false;
+                }).AddDefaultTokenProviders();
             }
-            else
+            catch (Exception ex)
             {
-                services.AddDbContext<ApplicationDbContext>(options =>
-                    options.UseSqlServer(Configuration["Data:DefaultConnection:MsSqlConnectionString"]));
+                Console.WriteLine(ex.ToString());
+                throw;
             }
-
-            services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
-
-            services.AddMvc();
-
-            //Password policy
-            //stackoverflow.com/questions/27831597/how-do-i-define-the-password-rules-for-identity-in-asp-net-5-mvc-6-vnext
-            services.AddIdentity<ApplicationUser, IdentityRole>(o => {
-                // configure identity options
-                o.Password.RequireDigit = false;
-                o.Password.RequireLowercase = false;
-                o.Password.RequireUppercase = false;
-                o.Password.RequiredLength = 1;
-                o.Password.RequireNonAlphanumeric = false;
-            }).AddDefaultTokenProviders();
 
         }
 
