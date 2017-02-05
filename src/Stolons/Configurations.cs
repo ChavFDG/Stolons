@@ -62,16 +62,31 @@ namespace Stolons
 
         public const string Role_User = "User";
         public const string Role_Volunteer = "Volunteer";
+        public const string Role_Creator = "Volunteer";
         public const string Role_Administrator = "Administrator";
 
         public enum Role
         {
+            /// <summary>
+            /// Simple user 
+            /// </summary>
             [Display(Name = "Adhérent")]
             User = 1,
+            /// <summary>
+            /// Volunteer
+            /// </summary>
             [Display(Name = "Bénévole")]
             Volunteer = 2,
+            /// <summary>
+            /// Creator of the structure
+            /// </summary>
+            [Display(Name = "Créateur")]
+            Creator = 3,
+            /// <summary>
+            /// Administrator of the web site
+            /// </summary>
             [Display(Name = "Administrateur")]
-            Administrator = 3
+            Administrator = 4
         }
 
         public const string UserType_SympathizerUser = "Sympathizer";

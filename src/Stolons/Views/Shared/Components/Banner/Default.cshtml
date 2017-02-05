@@ -19,25 +19,25 @@
           @if (!User.Identity.IsAuthenticated)
           {
           <li><a asp-controller="Home" asp-action="HowItsWork">Comment ça marche</a></li>
-          <li><a asp-controller="News" asp-action="Index">Les nouvelles</a></li>
-          <li><a asp-controller="PublicProducts" asp-action="Index">Nos produits</a></li>
-          <li><a asp-controller="PublicProducers" asp-action="Index">Nos producteurs</a></li>
-          <li><a asp-controller="Home" asp-action="Contact">Qui sommes-nous ?</a></li>        
-          } else
+          <li><a asp-controller="Home" asp-action="Contact">Qui sommes-nous ?</a></li>
+          }
+          else
           {
-              <li><a asp-controller="News" asp-action="Index">Les nouvelles</a></li>
-              @if (User.IsInRole(Configurations.UserType.Consumer.ToString()))
-              {
-              <li><a asp-controller="WeekBasket" asp-action="Index">Mon panier</a></li>
-              <li><a asp-controller="Bills" asp-action="Index">Mes factures</a></li>
-              }
-              @if (User.IsInRole(Configurations.UserType.Producer.ToString()))
-              {
+            <li><a asp-controller="News" asp-action="Index">Les nouvelles</a></li>
+            <li><a asp-controller="PublicProducts" asp-action="Index">Nos produits</a></li>
+            <li><a asp-controller="PublicProducers" asp-action="Index">Nos producteurs</a></li>
+            @if (User.IsInRole(Configurations.UserType.Consumer.ToString()))
+            {
+                  <li><a asp-controller="WeekBasket" asp-action="Index">Mon panier</a></li>
+                  <li><a asp-controller="Bills" asp-action="Index">Mes factures</a></li>
+            }
+            @if (User.IsInRole(Configurations.UserType.Producer.ToString()))
+            {
                 <li><a asp-controller="ProductsManagement" asp-action="Index">Mes produits et mes stocks</a></li>
                 <li><a asp-controller="Bills" asp-action="Index">Mes factures</a></li>
-              }
-              @if (User.IsInRole(Configurations.Role.Volunteer.ToString()) || User.IsInRole(Configurations.Role.Administrator.ToString()))
-              {
+            }
+            @if (User.IsInRole(Configurations.Role.Volunteer.ToString()) || User.IsInRole(Configurations.Role.Administrator.ToString()))
+            {
                   <li><a asp-controller="WeekBasketManagement" asp-action="Index">Gérer les paniers</a></li>
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">
