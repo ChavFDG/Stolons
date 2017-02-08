@@ -62,7 +62,7 @@ namespace Stolons
 
         public const string Role_User = "User";
         public const string Role_Volunteer = "Volunteer";
-        public const string Role_Creator = "Volunteer";
+        public const string Role_Creator = "Creator";
         public const string Role_Administrator = "Administrator";
 
         public enum Role

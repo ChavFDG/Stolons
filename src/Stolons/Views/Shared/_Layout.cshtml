@@ -1,40 +1,42 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 @using Microsoft.AspNetCore.Identity;
 @using System.Security.Claims;
 @using Stolons.ViewModels;
 
 <html>
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>@ViewData["Title"] - Stolons</title>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Stolons</title>
 
-	<link rel="stylesheet" href="~/css/select2.min.css" />
-	<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-	<link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/select2.min.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
 
-        <script src="~/lib/jquery/dist/jquery.min.js"></script>
-        <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
-	<script src="~/lib/underscore-min.js"></script>
-	<script src="~/lib/backbone.js"></script>
-	<script src="~/lib/select2.full.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="~/lib/underscore-min.js"></script>
+    <script src="~/lib/backbone.js"></script>
+    <script src="~/lib/select2.full.min.js"></script>
 
-    </head>
-    <body>
-      <div id="wrapper">
+</head>
+<body>
+    <div id="wrapper">
+        @if (!User.Identity.IsAuthenticated)
+        {
+            await Component.InvokeAsync("Banner");
+        }
 
-	@await Component.InvokeAsync("Banner")
-	
-	<div class="container body-content">
-          @RenderBody()
-	</div>
-	<div id="footer">
-	  <footer>
-	    <hr />
-	    <p>&copy; 2016 - Association Stolons</p>
-	  </footer>
-	</div>
-      </div>
-      @RenderSection("scripts", required: false)
-    </body>
+        <div class="container body-content">
+            @RenderBody()
+        </div>
+        <div id="footer">
+            <footer>
+                <hr />
+                <p>&copy; 2016 - Association Stolons</p>
+            </footer>
+        </div>
+    </div>
+    @RenderSection("scripts", required: false)
+</body>
 </html>

@@ -3,8 +3,38 @@
 }
 
 <div class="row">
-   <h4>Bienvenue sur le site de Stolons!</h4>
+    <h2>Bienvenue sur le site de Stolons!</h2>
+    <p>
+        Salut Arnaud,
+        <br />Ici le Damien du passé qui te laisse un message.<br /> Sur cette page il faut faire une version simple et efficasse de La ruche qui dit oui : https://laruchequiditoui.fr/fr
+    </p>
+    <h4>Rejoindre un Stolon / Se connecter</h4>
+    <p>
+        Avoir un bouton pour chacun des choix : rejoindre un stolon / se connection 
+        <br />
+        Que ça apparaisse dans une popup le contenu serait coool !
+    </p>
+    <h5>Rejoindre un Stolon</h5>
+    <p>
+        Carte des Stolons. Avec quand on clique sur un Stolon l'affichage des informations le concernant. Voir la classe : Model.Stolon
+        En gros :
+        <br />- Stolon.Label
+        <br />- Adresse de récupération
+        <br />- Heures de récupération des paniers
+        <br />- ...
+    </p>
+    <h5>Se connecter</h5>
+    @await Html.PartialAsync("_LoginPartial")
+    <h4>Comment ça marche</h4>
+    <p>
+        Le top serait l'image avec que quand tu passes ta souris dessus ça explique chaque action avec un petit texte. Texte configurable dans ApplicationConfig.
+    </p>
     <div>
         <img src="~/images/HowItsWork.jpg" class="responsiveImage" />
     </div>
+    <h4>Créer un stolons</h4>
+    <p>
+        Bouton avec pop up et explication sur comment créer son Stolon en nous contactant avec nos Tarifs ou lien vers le projet GitHub pour ce qui veulent les sources.
+        <br />Texte paramétrable dans ApplicationConfig
+    </p>
 </div>

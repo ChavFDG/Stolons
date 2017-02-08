@@ -22,7 +22,7 @@ namespace Stolons.Controllers
         [AllowAnonymous]
         public IActionResult Index()
         {
-	    return RedirectToAction(nameof(NewsController.Index), "News");
+            return View();
         }
 
         [AllowAnonymous]
