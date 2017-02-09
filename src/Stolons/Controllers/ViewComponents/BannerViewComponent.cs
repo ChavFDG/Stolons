@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using Stolons.ViewModels.Banner;
 using Stolons.Models;
 using Stolons.Models.Users;
+using Microsoft.EntityFrameworkCore;
 
 namespace Stolons.Controllers
 {
@@ -29,9 +30,10 @@ namespace Stolons.Controllers
             if (User.Identity.IsAuthenticated)
             {
                 ApplicationUser appUser = await _userManager.FindByIdAsync(_userManager.GetUserId(HttpContext.User));
-                StolonsUser user = _dbContext.StolonsUsers.FirstOrDefault(x => x.Email.Equals(appUser.Email, StringComparison.CurrentCultureIgnoreCase));
+                StolonsUser user = _dbContext.StolonsUsers.Include(x=>x.Stolon).FirstOrDefault(x => x.Email.Equals(appUser.Email, StringComparison.CurrentCultureIgnoreCase));
                 return View(new BannerViewModel(user));
-            } else
+            }
+            else
             {
                 return View();
             }

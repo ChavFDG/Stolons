@@ -9,7 +9,7 @@ namespace Stolons.Models
     public class ProductFamilly
     {
         [Key]
-	public Guid Id { get; set; }
+        public Guid Id { get; set; }
         [Display(Name = "Nom")]
         public string FamillyName { get; set; }
         [Display(Name = "Type de produit")]
@@ -28,11 +28,11 @@ namespace Stolons.Models
             FamillyName = famillyName;
         }
 
-	public ProductFamilly(ProductType type, string famillyName, string image)
+        public ProductFamilly(ProductType type, string famillyName, string image)
         {
             Type = type;
             FamillyName = famillyName;
-	    Image = image;
+            Image = image;
         }
     }
 }

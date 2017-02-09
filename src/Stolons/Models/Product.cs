@@ -14,7 +14,9 @@ namespace Stolons.Models
         [Key]
         public Guid Id { get; set; }
         [Display(Name = "Producteur")]
-        public Producer Producer { get; set; }
+        public int ProducerId { get; set; }
+        [ForeignKey(nameof(ProducerId))]
+        public virtual Producer Producer { get; set; }
 	    [Display(Name = "Famille de produit")]
         public virtual ProductFamilly Familly { get; set; }
         [Display(Name = "Nom")]

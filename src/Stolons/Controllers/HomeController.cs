@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Authorization;
 using Stolons.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
+using Stolons.ViewModels.Home;
+using Stolons.Models.Users;
 
 namespace Stolons.Controllers
 {
@@ -29,15 +32,30 @@ namespace Stolons.Controllers
         public IActionResult About()
         {
             ViewData["Message"] = "Your application description page.";
-
             return View();
+        }
+
+        /// <summary>
+        /// Contact and infortion about a Stolon
+        /// </summary>
+        /// <param name="id">Id of the Stolon</param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        public IActionResult StolonContact(Guid id)
+        {
+            Stolon stolon = _context.Stolons.FirstOrDefault(x => x.Id == id);
+            Dictionary<Producer, List<Product>> prods = new Dictionary<Producer, List<Product>>();
+
+            foreach (var producer in _context.Producers.Include(x => x.Products))
+            {
+                prods.Add(producer, _context.Products.Include(x=>x.Familly).ThenInclude(x=>x.Type).Where(product => product.ProducerId == producer.Id).ToList());
+            }
+            return View(new StolonContactViewModel(stolon, prods));
         }
 
         [AllowAnonymous]
         public IActionResult Contact()
         {
-            ViewData["Message"] = "Your contact page.";
-
             return View();
         }
 

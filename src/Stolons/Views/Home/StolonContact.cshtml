@@ -1,0 +1,26 @@
+﻿@model Stolons.ViewModels.Home.StolonContactViewModel
+
+
+<div class="row">
+    TODO, voir si on met les news directs, ou un récap des heures de récup + les news...
+    <div>
+        <img src="~/images/ViewExemple/Home.StolonContact.png" class="responsiveImage" />
+    </div>
+</div>
+
+<h1>@Model.Stolon.Label</h1>
+<p>@Model.Stolon.Address</p>
+<p>@Model.Stolon.PhoneNumber</p>
+<p><a href="mailto:@Model.Stolon.ContactMailAddress">@Model.Stolon.ContactMailAddress</a></p>
+
+<h2>Panier</h2>
+@foreach (var productType in Model.AvailableProductFamillyAndType)
+{
+    <p>@productType.Key.Name</p>
+    <p>@productType.Key.Image</p>
+}
+
+<h2>Nos Producteurs</h2>
+
+<h2>Qui sommes nous ?</h2>
+<p>@Model.Stolon.AboutText</p>

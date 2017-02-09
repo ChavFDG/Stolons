@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Stolons.Models.Users;
 
 namespace Stolons.Models
 {
@@ -21,13 +22,16 @@ namespace Stolons.Models
         [Display(Name = "Courriel de contact")]
         public string ContactMailAddress { get; set; } = "";
  
-        [Display(Name = "Avoir un comission sur les producteurs")]
+        [Display(Name = "Avoir une comission sur les producteurs")]
         public bool UseProducersFee {get;set;} = true;        
         [Display(Name = "Montant de la comission sur les producteurs en %")]
         public int ProducersFee { get; set; } = 5;
 
-        [Display(Name = "Texte de la page \"qui somme nous\"")]
-        public string AboutPageText { get; set; } = @"Stolons est une association à visé social, étique et solidaire.";
+        [Display(Name = "Texte de : \"Qui sommes nous ?\"")]
+        public string AboutText { get; set; } = @"Texte de présentation de ma structure";
+
+        [Display(Name = "Texte de : \"Rejoingnez nous !\"")]
+        public string JoinUsText { get; set; } = @"Texte d'explication sur comment rejoindre la structure";
         //Cotisation
 
         [Display(Name = "Avoir un système de cotisation")]
@@ -66,6 +70,19 @@ namespace Stolons.Models
         [Display(Name = "Minute")]
         public int DeliveryAndStockUpdateDayStartDateMinuteStartDate { get; set; } = 0;
 
+        //Basket pickup time
+        [Display(Name = "Jour")]
+        public DayOfWeek BasketPickUpStartDay { get; set; } = DayOfWeek.Thursday;
+        [Display(Name = "Heure")]
+        public int BasketPickUpStartHour { get; set; } = 17;
+        [Display(Name = "Minute")]
+        public int BasketPickUpStartMinute { get; set; } = 30;
+        public DayOfWeek BasketPickEndUpDay { get; set; } = DayOfWeek.Thursday;
+        [Display(Name = "Heure")]
+        public int BasketPickUpEndHour { get; set; } = 19;
+        [Display(Name = "Minute")]
+        public int BasketPickUpEndMinute { get; set; } = 30;
+
         [Display(Name = "Mode simulation")]
         public bool IsModeSimulated { get; set; } = false;
 
@@ -77,6 +94,7 @@ namespace Stolons.Models
 
         [Display(Name = "Message de maintenance")]
         public string MaintenanceText { get; set; } = "Le site est en maintenance, réouverture prochainement";
+
 
         public enum Modes
         {

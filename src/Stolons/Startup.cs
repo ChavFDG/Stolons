@@ -378,7 +378,8 @@ namespace Stolons
             stolon.IsModeSimulated = false;
 
             stolon.Label = "Stolons de Privas";
-            stolon.AboutPageText = "Les Stolons de Privas est une association loi 1901";
+            stolon.AboutText = "Les Stolons de Privas est une association loi 1901";
+            stolon.JoinUsText = "Pour nous rejoindre contacter nous ! Ou venez nous rendre visite";
             stolon.Address = "07000 PRIVAS";
             stolon.PhoneNumber = "06 64 86 66 93";
             stolon.ContactMailAddress = "contact@stolons.org";
@@ -389,6 +390,13 @@ namespace Stolons
             stolon.OrderDayStartDate = DayOfWeek.Sunday;
             stolon.OrderHourStartDate = 16;
             stolon.OrderMinuteStartDate = 00;
+
+            stolon.BasketPickUpStartDay = DayOfWeek.Thursday;
+            stolon.BasketPickUpStartHour  = 17;
+            stolon.BasketPickUpStartMinute  = 30;
+            stolon.BasketPickEndUpDay  = DayOfWeek.Thursday;
+            stolon.BasketPickUpEndHour  = 19;
+            stolon.BasketPickUpEndMinute  = 30;
 
             stolon.UseSubscipstion = true;
             stolon.SubscriptionStartMonth = Stolon.Month.September;

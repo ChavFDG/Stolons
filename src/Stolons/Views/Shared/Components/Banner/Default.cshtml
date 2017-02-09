@@ -2,37 +2,41 @@
 @using Microsoft.AspNetCore.Identity;
 @using System.Security.Claims;
 @using Stolons.ViewModels;
+@model Stolons.ViewModels.Banner.BannerViewModel
 
-<div class="nav-container">
-    <nav class="navbar navbar-default">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <button class="navbar-toggle collapsed" aria-controls="navbar" aria-expanded="false" data-target=".navbar-collapse" data-toggle="collapse" type="button">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-            </div>
-            <div id="navbar" class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li><a asp-controller="Home" asp-action="Index">Index</a></li>
-                    <li><a asp-controller="News" asp-action="Index">Les nouvelles</a></li>
-                    <li><a asp-controller="PublicProducts" asp-action="Index">Nos produits</a></li>
-                    <li><a asp-controller="PublicProducers" asp-action="Index">Nos producteurs</a></li>
-                    @if (User.IsInRole(Configurations.UserType.Consumer.ToString()))
-                    {
-                        <li><a asp-controller="WeekBasket" asp-action="Index">Mon panier</a></li>
+@if (User.Identity.IsAuthenticated)
+{
+    <div class="nav-container">
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button class="navbar-toggle collapsed" aria-controls="navbar" aria-expanded="false" data-target=".navbar-collapse" data-toggle="collapse" type="button">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                </div>
+                <div id="navbar" class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li><a asp-controller="Home" asp-action="Index">Index</a></li>
+                        <li><a asp-controller="News" asp-action="Index">Les nouvelles</a></li>
+                        <!--
+                        <li><a asp-controller="PublicProducts" asp-action="Index">Nos produits</a></li>
+                        <li><a asp-controller="PublicProducers" asp-action="Index">Nos producteurs</a></li>
+                        -->
+                        @if (User.IsInRole(Configurations.UserType.Consumer.ToString()))
+                        {
+                            <li><a asp-controller="WeekBasket" asp-action="Index">Mon panier</a></li>
                             <li><a asp-controller="Bills" asp-action="Index">Mes factures</a></li>
-                    }
-                    @if (User.IsInRole(Configurations.UserType.Producer.ToString()))
-                    {
-                        <li><a asp-controller="ProductsManagement" asp-action="Index">Mes produits et mes stocks</a></li>
-                            <li><a asp-controller="Bills" asp-action="Index">Mes factures</a></li>
-                    }
-                    @if (User.IsInRole(Configurations.Role.Volunteer.ToString()) || User.IsInRole(Configurations.Role.Administrator.ToString()))
-                    {
-                        <li><a asp-controller="WeekBasketManagement" asp-action="Index">Gérer les paniers</a></li>
+                        }
+                        @if (User.IsInRole(Configurations.UserType.Producer.ToString()))
+                        {
+                            <li><a asp-controller="ProductsManagement" asp-action="Index">Mes produits et mes stocks</a></li>
+                        }
+                        @if (User.IsInRole(Configurations.Role.Volunteer.ToString()) || User.IsInRole(Configurations.Role.Administrator.ToString()))
+                        {
+                            <li><a asp-controller="WeekBasketManagement" asp-action="Index">Gérer les paniers</a></li>
                             <li class="dropdown">
                                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                                     Adhérents
@@ -45,7 +49,6 @@
                                     <li><a asp-controller="Producers" asp-action="Index">Producteurs</a></li>
                                 </ul>
                             </li>
-                            <li><a asp-controller="Transactions" asp-action="Index">Transactions</a></li>
                             <li class="dropdown">
                                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                                     Administration
@@ -53,19 +56,25 @@
                                 </a>
                                 <ul class="dropdown-menu">
                                     <li><a asp-controller="Mails" asp-action="Index">Courriels</a></li>
+                                    <li><a asp-controller="Transactions" asp-action="Index">Transactions</a></li>
+                                    @if (User.IsInRole(Configurations.Role.Creator.ToString()))
+                                    {
+                                        <li><a asp-controller="Stolon" asp-action="Index">Structure</a></li>
+                                    }
                                     @if (User.IsInRole(Configurations.Role.Administrator.ToString()))
                                     {
                                         <li><a asp-controller="Stolon" asp-action="Index">Site</a></li>
                                     }
                                 </ul>
                             </li>
-                            <li><a asp-controller="Home" asp-action="Contact">Qui sommes-nous ?</a></li>
-                    }
-                </ul>
+                            <li><a asp-controller="Home" asp-action="StolonContact" asp-route-id="@Model.User.Stolon.Id">@Model.User.Stolon.Label</a></li>
+                        }
+                    </ul>
+                </div>
+                <div class="navbar-right">
+                    @await Html.PartialAsync("_LoginPartial")
+                </div>
             </div>
-            <div class="navbar-right">
-                @await Html.PartialAsync("_LoginPartial")
-            </div>
-        </div>
-    </nav>
-</div>
+        </nav>
+    </div>
+}

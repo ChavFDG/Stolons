@@ -50,6 +50,8 @@ namespace Stolons.Models.Users
             }
         }
 
+        public virtual ICollection<Product> Products { get; set; }
+
         [Display(Name = "Production")]
         public string Production { get; set; }
         [Display(Name = "Texte libre")]
@@ -65,5 +67,7 @@ namespace Stolons.Models.Users
         public double Latitude { get; set; }
 	    [Display(Name = "Longitude")]
         public double Longitude { get; set; }
+
+
     }
 }

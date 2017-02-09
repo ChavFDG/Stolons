@@ -21,6 +21,11 @@ namespace Stolons.ViewModels.Account
         [Display(Name = "Se souvenir de moi ?")]
         public bool RememberMe { get; set; }
 
-	public string LoginFailed {get; set;}
+	    public string LoginFailed {get; set;}
+
+        public LoginViewModel()
+        {
+
+        }
     }
 }

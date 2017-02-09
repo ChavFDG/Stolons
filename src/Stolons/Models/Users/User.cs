@@ -13,8 +13,10 @@ namespace Stolons.Models.Users
         [Display(Name = "Identifiant")]
         public int Id { get; set; }
 
+        public Guid StolonId { get; set; }
         [Display(Name = "Stolon de l'utilisateur")]
-        public Stolon Stolon { get; set; }
+        [ForeignKey(nameof(StolonId))]
+        public virtual Stolon Stolon { get; set; }
 
         [Display(Name = "Nom")]
         [Required]
