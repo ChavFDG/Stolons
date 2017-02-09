@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Stolons.Models.Messages;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -59,6 +60,6 @@ namespace Stolons.Models.Users
         [Display(Name = "Raison du blocage")]
         public string DisableReason { get; set; }
 
-        public List<News> News { get; set; }
+        public virtual ICollection<News> News { get; set; }
     }
 }

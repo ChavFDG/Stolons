@@ -1,7 +1,7 @@
 ﻿@using System.Security.Claims
 @using Stolons.Services
 
-@model IEnumerable<Stolons.Models.News>
+@model IEnumerable<Stolons.Models.Messages.News>
 
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
@@ -35,7 +35,7 @@
                 <h3>@Html.DisplayFor(modelItem => item.Title)</h3>
 
                 <div class="newsContent">
-                    @Html.Raw(item.Message)
+                    @Html.Raw(item.Content)
                 </div>
 
                 <div class="newsAuthor">

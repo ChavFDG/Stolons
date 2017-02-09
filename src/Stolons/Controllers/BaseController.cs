@@ -85,7 +85,7 @@ namespace Stolons.Controllers
 
         protected Stolon GetCurrentStolon()
         {
-            return GetCurrentAppUserSync().User.Stolon;
+            return GetCurrentStolonsUserSync().Stolon;
         }
     }
 }

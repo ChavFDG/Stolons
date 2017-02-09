@@ -1,5 +1,4 @@
-﻿using Stolons.Models;
-using Stolons.Models.Users;
+﻿using Stolons.Models.Users;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -7,29 +6,28 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Stolons.Models
+namespace Stolons.Models.Messages
 {
-    public class News
+    public abstract class Message
     {
         [Key]
         public Guid Id { get; set; }
 
-        public int UserForeignKey { get; set; }
-
-        [ForeignKey("UserForeignKey")]
+        public int UserKey { get; set; }
+        
+        [ForeignKey(nameof(UserKey))]
         public StolonsUser User { get; set; }
 
+        public Guid StolonId { get; set; }
+        
+        [ForeignKey(nameof(StolonId))]
+        public Stolon Stolon{ get; set; }
+        
         [Required]
-        [Display(Name = "Titre")]
-        public string Title { get; set; }
+        [Display(Name = "Contenue")]
+        public string Content { get; set; }
 
         [Required]
-        [Display(Name = "Message")]
-        public string Message { get; set; }
-
-        [Display(Name = "Image d'illustration")]
-        public string ImageLink { get; set; }
-
         [Display(Name = "Publié le ")]
         public DateTime DateOfPublication { get; set; }
     }

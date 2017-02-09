@@ -14,6 +14,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Stolons.Helpers;
 using Stolons.Models.Users;
+using Stolons.Models.Messages;
 
 namespace Stolons.Controllers
 {
@@ -33,7 +34,7 @@ namespace Stolons.Controllers
         // GET: News
         public IActionResult Index()
         {
-            return View(_context.News.Include(m => m.User).ToList());
+            return View(_context.News.Include(x => x.User).Where(x=>x.StolonId == GetCurrentStolon().Id).ToList());
         }
 
         // GET: News/Details/5
@@ -44,7 +45,7 @@ namespace Stolons.Controllers
                 return NotFound();
             }
 
-            News news = _context.News.Include(m => m.User).Single(m => m.Id == id);
+            News news = _context.News.Include(x => x.User).Single(x => x.Id == id);
             if (news == null)
             {
                 return NotFound();
@@ -57,7 +58,7 @@ namespace Stolons.Controllers
         [Authorize(Roles = Configurations.Role_Administrator + "," + Configurations.Role_Volunteer + "," +Configurations.UserType_Producer)]
         public IActionResult Create()
         {
-            return View();
+            return View(new News() { User = GetCurrentStolonsUserSync() });
         }
 
         // POST: News/Create
@@ -83,6 +84,7 @@ namespace Stolons.Controllers
                 //TODO Get logged in User and add it to the news
                 StolonsUser user = await GetCurrentStolonsUserAsync();
                 news.User = user;
+                news.Stolon = user.Stolon;
                 _context.News.Add(news);
                 _context.SaveChanges();
                 return RedirectToAction("Index");
@@ -128,6 +130,7 @@ namespace Stolons.Controllers
                 }
                 StolonsUser user = await GetCurrentStolonsUserAsync();
                 news.User = user;
+                news.Stolon = user.Stolon;
                 _context.Update(news);
                 _context.SaveChanges();
                 return RedirectToAction("Index");

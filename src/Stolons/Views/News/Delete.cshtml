@@ -1,4 +1,4 @@
-﻿@model Stolons.Models.News
+﻿@model Stolons.Models.Messages.News
 
 @{
     ViewData["Title"] = "Suppression de la nouvelle de "+ Model.User.Surname + " " + Model.User.Name + " du " + Model.DateOfPublication;
@@ -22,10 +22,10 @@
             @Html.DisplayFor(model => model.DateOfPublication)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Message)
+            @Html.DisplayNameFor(model => model.Content)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Message)
+            @Html.Raw(Model.Content)
         </dd>
     </dl>
     
