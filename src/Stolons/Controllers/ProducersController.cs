@@ -35,7 +35,7 @@ namespace Stolons.Controllers
         // GET: Producer
         public IActionResult Index()
         {
-            return View(_context.Producers.ToList());
+            return View(_context.Producers.Where(x => x.StolonId == GetCurrentStolon().Id).ToList());
         }
 
         [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_Administrator)]
@@ -103,6 +103,7 @@ namespace Stolons.Controllers
                 //Setting value for creation
                 vmProducer.Producer.Avatar = Path.Combine(Configurations.UserAvatarStockagePath, fileName);
                 vmProducer.Producer.RegistrationDate = DateTime.Now;
+                vmProducer.Producer.StolonId = GetCurrentStolon().Id;
                 _context.Producers.Add(vmProducer.Producer);
                 #endregion Creating Producer
 
@@ -119,6 +120,7 @@ namespace Stolons.Controllers
                     result = await _userManager.AddToRoleAsync(producerAppUser, Configurations.UserType.Producer.ToString());
                 }
                 #endregion Creating linked application data
+
 
                 _context.SaveChanges();
                 //Send confirmation mail

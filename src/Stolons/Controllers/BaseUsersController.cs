@@ -33,7 +33,7 @@ namespace Stolons.Controllers
         [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_Administrator)]
         public IActionResult PaySubscription(int id)
         {
-            StolonsUser user = _context.StolonsUsers.Single(m => m.Id == id);
+            StolonsUser user = _context.StolonsUsers.Include(x=>x.Stolon).Single(m => m.Id == id);
             //
             user.Cotisation = true;
             //Add a transaction
@@ -55,7 +55,7 @@ namespace Stolons.Controllers
         [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_Administrator)]
         public IActionResult Enable(int id)
         {
-            StolonsUser user = _context.StolonsUsers.Single(m => m.Id == id);
+            StolonsUser user = _context.StolonsUsers.Include(x => x.Stolon).Single(m => m.Id == id);
             //
             user.DisableReason = "";
             user.Enable = true;
@@ -70,7 +70,7 @@ namespace Stolons.Controllers
         [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_Administrator)]
         public IActionResult Disable(int id, string comment)
         {
-            StolonsUser user = _context.StolonsUsers.Single(m => m.Id == id);
+            StolonsUser user = _context.StolonsUsers.Include(x => x.Stolon).Single(m => m.Id == id);
             //
             user.DisableReason = comment;
             user.Enable = false;

@@ -33,7 +33,7 @@ namespace Stolons.Controllers
         [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_Administrator)]
         public IActionResult Index()
         {
-            return View(_context.StolonsUsers.ToList());
+            return View(_context.StolonsUsers.Where(x => x.StolonId == GetCurrentStolon().Id).ToList());
         }        
     }
 }

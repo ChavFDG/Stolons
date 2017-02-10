@@ -35,7 +35,7 @@ namespace Stolons.Controllers
         // GET: Sympathizer
         public IActionResult Index()
         {
-            return View(_context.Sympathizers.ToList());
+            return View(_context.Sympathizers.Where(x=>x.StolonId == GetCurrentStolon().Id) .ToList());
         }
 
         [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_Administrator)]
@@ -93,6 +93,7 @@ namespace Stolons.Controllers
 
                 //Setting value for creation
                 vmSympathizer.Sympathizer.RegistrationDate = DateTime.Now;
+                vmSympathizer.Sympathizer.StolonId = GetCurrentStolon().Id;
                 _context.Sympathizers.Add(vmSympathizer.Sympathizer);
                 #endregion Creating Sympathizer
 

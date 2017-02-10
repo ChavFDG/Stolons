@@ -8,7 +8,10 @@ namespace Stolons.ViewModels.WeekBasketManagement
 {
     public class VmWeekBasketManagement
     {
+        public Stolon Stolon { get; set; }
+
         public List<ConsumerBill> ConsumerBills { get; set; }
+
         public List<ProducerBill> ProducerBills { get; set; }
 
         public List<StolonsBill> StolonsBills { get; set; }

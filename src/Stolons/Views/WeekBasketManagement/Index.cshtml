@@ -9,7 +9,7 @@
 
 
 <h2>@ViewData["Title"]</h2>
-@if (Configurations.Mode == Stolon.Modes.DeliveryAndStockUpdate && Model.WeekStolonsBill != null)
+@if (Model.Stolon.GetMode() == Stolon.Modes.DeliveryAndStockUpdate && Model.WeekStolonsBill != null)
 {
     <h4>Les paniers de la semaine </h4>
     <a href="@Model.WeekStolonsBill.UrlPath" class="btn btn-small btn-default">Télécharger les factures utilisateur de la semaine</a>

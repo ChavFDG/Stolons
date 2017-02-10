@@ -35,7 +35,7 @@ namespace Stolons.Controllers
         [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_Administrator)]
         public IActionResult Index()
         {
-            return View(_context.Consumers.ToList());
+            return View(_context.Consumers.Where(x => x.StolonId == GetCurrentStolon().Id).ToList());
         }
         
         // GET: Consumers/Details/5
@@ -103,6 +103,7 @@ namespace Stolons.Controllers
                 }
                 #endregion Creating linked application data
 
+                vmConsumer.Consumer.StolonId = GetCurrentStolon().Id;
                 _context.SaveChanges();
                 //Send confirmation mail
                 Services.AuthMessageSender.SendEmail(vmConsumer.Consumer.Email, vmConsumer.Consumer.Name, "Creation de votre compte", base.RenderPartialViewToString("UserCreatedConfirmationMail", vmConsumer));

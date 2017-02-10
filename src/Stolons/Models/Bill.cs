@@ -153,6 +153,11 @@ namespace Stolons.Models
         [Display(Name = "Numéro de facture")] //Year_WeekNumber
         public string BillNumber { get; set; }
 
+        public Guid StolonId { get;  set; }
+
+        [ForeignKey(nameof(StolonId))]
+        public Stolon Stolon { get;  set; }
+
         [Display(Name = "Date d'édition")]
         public DateTime EditionDate { get; set; }
 
@@ -201,6 +206,7 @@ namespace Stolons.Models
                 return url;
             }
         }
+
     }
 
 }

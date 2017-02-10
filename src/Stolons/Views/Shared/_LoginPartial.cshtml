@@ -32,6 +32,10 @@
         </a>
         <ul class="dropdown-menu">
             <li><a asp-controller="Manage" asp-action="Index" title="Manage">Mon compte</a></li>
+            @if (User.IsInRole(Configurations.UserType.Consumer.ToString()))
+            {
+                <li><a asp-controller="Bills" asp-action="Index">Mes factures</a></li>
+            }
             <li>
                 <a href="#" onclick="document.forms['logoutForm'].submit();return false;">Déconnexion</a>
                 <form asp-controller="Account" asp-action="LogOff" method="post" id="logoutForm"></form>

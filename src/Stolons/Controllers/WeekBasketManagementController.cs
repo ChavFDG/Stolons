@@ -29,10 +29,11 @@ namespace Stolons.Controllers
         // GET: Bills
         public IActionResult Index()
         {
+            Stolon stolons = GetCurrentStolon();
             VmWeekBasketManagement vm = new VmWeekBasketManagement();
-            vm.ConsumerBills = _context.ConsumerBills.Include(x=>x.Consumer).Where(x => x.State == BillState.Pending).OrderBy(x=>x.Consumer.Id).ToList();
-            vm.ProducerBills = _context.ProducerBills.Include(x => x.Producer).Where(x => x.State != BillState.Paid).OrderBy(x => x.Producer.Id).ToList();
-            vm.StolonsBills = _context.StolonsBills.ToList();
+            vm.ConsumerBills = _context.ConsumerBills.Include(x=>x.Consumer).Where(x => x.State == BillState.Pending && x.Consumer.StolonId == stolons.Id).OrderBy(x=>x.Consumer.Id).ToList();
+            vm.ProducerBills = _context.ProducerBills.Include(x => x.Producer).Where(x => x.State != BillState.Paid && x.Producer.StolonId == stolons.Id).OrderBy(x => x.Producer.Id).ToList();
+            vm.StolonsBills = _context.StolonsBills.Where(x => x.StolonId == stolons.Id).ToList();
             vm.WeekStolonsBill = vm.StolonsBills.FirstOrDefault(x => x.BillNumber == DateTime.Now.Year + "_" + DateTime.Now.GetIso8601WeekOfYear());
             return View(vm);
         }

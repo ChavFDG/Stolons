@@ -25,11 +25,7 @@
                         <li><a asp-controller="PublicProducts" asp-action="Index">Nos produits</a></li>
                         <li><a asp-controller="PublicProducers" asp-action="Index">Nos producteurs</a></li>
                         -->
-                        @if (User.IsInRole(Configurations.UserType.Consumer.ToString()))
-                        {
-                            <li><a asp-controller="WeekBasket" asp-action="Index">Mon panier</a></li>
-                            <li><a asp-controller="Bills" asp-action="Index">Mes factures</a></li>
-                        }
+                        <li><a asp-controller="WeekBasket" asp-action="Index">Mon panier</a></li>
                         @if (User.IsInRole(Configurations.UserType.Producer.ToString()))
                         {
                             <li><a asp-controller="ProductsManagement" asp-action="Index">Mes produits et mes stocks</a></li>

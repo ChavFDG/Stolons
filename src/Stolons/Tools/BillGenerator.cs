@@ -241,6 +241,7 @@ namespace Stolons.Tools
             StringBuilder builder = new StringBuilder();
             string billNumber = DateTime.Now.Year + "_" + DateTime.Now.GetIso8601WeekOfYear();
             StolonsBill bill = new StolonsBill(billNumber);
+            bill.Stolon = stolon;
             bill.Amount = 0;
             bill.ProducersFee =  stolon.ProducersFee;
             if (!consumerWeekBaskets.Any())
