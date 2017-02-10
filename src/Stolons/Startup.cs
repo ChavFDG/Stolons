@@ -80,7 +80,8 @@ namespace Stolons
 
                 //Password policy
                 //stackoverflow.com/questions/27831597/how-do-i-define-the-password-rules-for-identity-in-asp-net-5-mvc-6-vnext
-                services.AddIdentity<ApplicationUser, IdentityRole>(o => {
+                services.AddIdentity<ApplicationUser, IdentityRole>(o =>
+                {
                     // configure identity options
                     o.Password.RequireDigit = false;
                     o.Password.RequireLowercase = false;
@@ -159,9 +160,9 @@ namespace Stolons
 
 
         #region Stolons config
-        private async Task InitializeSampleAndTestData(IServiceProvider serviceProvider, ApplicationDbContext context, UserManager<ApplicationUser> userManager,Stolon stolon)
+        private async Task InitializeSampleAndTestData(IServiceProvider serviceProvider, ApplicationDbContext context, UserManager<ApplicationUser> userManager, Stolon stolon)
         {
-            await CreateTestAcount(context, userManager,stolon);
+            await CreateTestAcount(context, userManager, stolon);
             CreateProductsSamples(context);
         }
 
@@ -372,6 +373,8 @@ namespace Stolons
 
         private List<Stolon> CreateStolons(ApplicationDbContext context)
         {
+            if (context.Stolons.Any())
+                return context.Stolons.ToList();
             List<Stolon> stolons = new List<Stolon>();
             Stolon stolon = new Stolon();
             stolon.IsInMaintenance = false;
@@ -392,11 +395,11 @@ namespace Stolons
             stolon.OrderMinuteStartDate = 00;
 
             stolon.BasketPickUpStartDay = DayOfWeek.Thursday;
-            stolon.BasketPickUpStartHour  = 17;
-            stolon.BasketPickUpStartMinute  = 30;
-            stolon.BasketPickEndUpDay  = DayOfWeek.Thursday;
-            stolon.BasketPickUpEndHour  = 19;
-            stolon.BasketPickUpEndMinute  = 30;
+            stolon.BasketPickUpStartHour = 17;
+            stolon.BasketPickUpStartMinute = 30;
+            stolon.BasketPickEndUpDay = DayOfWeek.Thursday;
+            stolon.BasketPickUpEndHour = 19;
+            stolon.BasketPickUpEndMinute = 30;
 
             stolon.UseSubscipstion = true;
             stolon.SubscriptionStartMonth = Stolon.Month.September;
@@ -410,6 +413,15 @@ namespace Stolons
             stolon.SympathizerSubscription = 2;
             stolon.ConsumerSubscription = 10;
             stolon.ProducerSubscription = 20;
+
+
+            Service service = new Service()
+            {
+                Type = ServiceType.Basket,
+                Description = "Vos paniers personalisé disponible chaque jeudi de la semaine"
+            };
+            context.Add(service);
+            service.Stolon = stolon;
 
             context.Add(stolon);
             context.SaveChanges();
@@ -440,16 +452,16 @@ namespace Stolons
                     stolon);
             await CreateAcount(context,
                     userManager,
-                    "Maurice",
-                    "Robert",
-                    "chavrouxfdg@hotmail.com",
-                    "chavrouxfdg@hotmail.com",
-                    Configurations.Role.User,
-                    Configurations.UserType.Producer,
+                    "TESTON",
+                    "Arnaud",
+                    "arnaudteston@gmail.com",
+                    "arnaudteston@gmail.com",
+                    Configurations.Role.Administrator,
+                    Configurations.UserType.Consumer,
                     stolon);
         }
 
-        private async Task CreateTestAcount(ApplicationDbContext context, UserManager<ApplicationUser> userManager,Stolon stolon)
+        private async Task CreateTestAcount(ApplicationDbContext context, UserManager<ApplicationUser> userManager, Stolon stolon)
         {
             await CreateAcount(context,
                     userManager,
@@ -459,11 +471,28 @@ namespace Stolons
                     "chavrouxfdg@hotmail.com",
                     Configurations.Role.User,
                     Configurations.UserType.Producer,
-                    stolon);
+                    stolon,
+                    true);
         }
 
-        private async Task CreateAcount(ApplicationDbContext context, UserManager<ApplicationUser> userManager, string name, string surname, string email, string password, Configurations.Role role, Configurations.UserType userType, Stolon stolon, string postCode = "07000")
+        private async Task CreateAcount(ApplicationDbContext context, UserManager<ApplicationUser> userManager, string name, string surname, string email, string password, Configurations.Role role, Configurations.UserType userType, Stolon stolon, bool createOnlyIfTableEmpty = false)
         {
+            if (createOnlyIfTableEmpty)
+            {
+                switch (userType)
+                {
+                    case Configurations.UserType.Producer:
+                        if (context.Producers.Any())
+                            return;
+                        break;
+                    case Configurations.UserType.Consumer:
+                        if (context.Consumers.Any())
+                            return;
+                        break;
+                    default:
+                        break;
+                }
+            }
 
             if (context.Consumers.Any(x => x.Email == email) || context.Producers.Any(x => x.Email == email))
                 return;
@@ -486,7 +515,7 @@ namespace Stolons
             user.Avatar = Path.Combine(Configurations.UserAvatarStockagePath, Configurations.DefaultFileName);
             user.RegistrationDate = DateTime.Now;
             user.Enable = true;
-            user.PostCode = postCode;
+            user.PostCode = "07000";
             user.Stolon = stolon;
 
             switch (userType)

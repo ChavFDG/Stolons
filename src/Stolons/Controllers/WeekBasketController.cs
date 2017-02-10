@@ -32,7 +32,7 @@ namespace Stolons.Controllers
         // GET: WeekBasket/Index/id
         public async Task<IActionResult> Index()
         {
-            Consumer consumer = await GetCurrentStolonsUserAsync() as Consumer; 
+            Consumer consumer = await GetCurrentStolonsUserAsync() as Consumer;
             if (consumer == null)
             {
                 return NotFound();
@@ -55,7 +55,13 @@ namespace Stolons.Controllers
         [HttpGet, ActionName("Products"), Route("api/products")]
         public string JsonProducts()
         {
-            var Products = _context.Products.Include(x => x.Producer).ThenInclude(x => x.Stolon).Include(x => x.Familly).Include(x => x.Familly.Type).Where(x => x.State == Product.ProductState.Enabled).ToList();
+
+            var Products = _context.Products.Include(x => x.Producer)
+                                            .ThenInclude(x => x.Stolon)
+                                            .Include(x => x.Familly)
+                                            .Include(x => x.Familly.Type)
+                                            .Where(x => x.State ==  Product.ProductState.Enabled &&
+                                                                    x.Producer.StolonId == GetCurrentStolon().Id).ToList();
             return JsonConvert.SerializeObject(Products, Formatting.Indented, new JsonSerializerSettings()
             {
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore
@@ -66,7 +72,11 @@ namespace Stolons.Controllers
         [HttpGet, ActionName("PublicProducts"), Route("api/publicProducts")]
         public string JsonPublicProducts()
         {
-            var Products = _context.Products.Include(x => x.Producer).ThenInclude(x=>x.Stolon).Include(x => x.Familly).Include(x => x.Familly.Type).ToList();
+            var Products =  _context.Products.Include(x => x.Producer)
+                            .ThenInclude(x => x.Stolon)
+                            .Include(x => x.Familly)
+                            .Include(x => x.Familly.Type)
+                            .Where(x => x.Producer.StolonId == GetCurrentStolon().Id).ToList();
             return JsonConvert.SerializeObject(Products, Formatting.Indented, new JsonSerializerSettings()
             {
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore
@@ -263,14 +273,14 @@ namespace Stolons.Controllers
             }
             else
             {
-                product.RemainingStock += ((decimal)((decimal) qty * (decimal) product.QuantityStep)) / 1000.0M;
+                product.RemainingStock += ((decimal)((decimal)qty * (decimal)product.QuantityStep)) / 1000.0M;
             }
         }
 
         [HttpPost, ActionName("ValidateBasket")]
         public IActionResult ValidateBasket(string basketId)
         {
-            Stolon stolon = GetCurrentStolon() ;
+            Stolon stolon = GetCurrentStolon();
             if (stolon.GetMode() == Stolon.Modes.DeliveryAndStockUpdate)
                 return Redirect("Index");
 

@@ -9,6 +9,11 @@ namespace Stolons.Models
 {
     public class Stolon
     {
+        public Stolon()
+        {
+
+        }
+
         [Key]
         public Guid Id { get; set; }
 
@@ -95,6 +100,13 @@ namespace Stolons.Models
         [Display(Name = "Message de maintenance")]
         public string MaintenanceText { get; set; } = "Le site est en maintenance, réouverture prochainement";
 
+        [Display(Name = "Latitude")]
+        public double Latitude { get; set; }
+        [Display(Name = "Longitude")]
+        public double Longitude { get; set; }
+
+        [Display(Name = "Services proposés")]
+        public List<Service> Services { get; set; } = new List<Service>();
 
         public enum Modes
         {
@@ -132,7 +144,7 @@ namespace Stolons.Models
             December = 12
         }
         
-        public  Stolon.Modes GetMode()
+        public  Modes GetMode()
         {
             if (IsModeSimulated)
             {

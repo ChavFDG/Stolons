@@ -38,6 +38,7 @@ namespace Stolons.Models
         public DbSet<TempWeekBasket> TempsWeekBaskets { get; set; }
         public DbSet<ValidatedWeekBasket> ValidatedWeekBaskets { get; set; }
         //Stolons
+        public DbSet<Service> Services { get; set; }
         public DbSet<Stolon> Stolons { get; set; }
         public DbSet<ApplicationConfig> ApplicationConfig { get; set; }
         public DbSet<Transaction> Transactions { get; set; }

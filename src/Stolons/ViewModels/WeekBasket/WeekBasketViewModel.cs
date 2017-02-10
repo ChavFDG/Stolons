@@ -13,23 +13,31 @@ namespace Stolons.ViewModels.WeekBasket
     {
         public Consumer Consumer { get; set; }
 
+        public Stolon Stolon
+        {
+            get
+            {
+                return Consumer.Stolon;
+            }
+        }
+
         public List<Product> Products { get; set; }
 
-        public List<ProductType> ProductTypes { get; set;}
+        public List<ProductType> ProductTypes { get; set; }
 
         public TempWeekBasket TempWeekBasket { get; set; }
         public ValidatedWeekBasket ValidatedWeekBasket { get; set; }
 
-        public WeekBasketViewModel() 
+        public WeekBasketViewModel()
         {
         }
 
-        public WeekBasketViewModel(Consumer consumer, TempWeekBasket tempWeekBasket,ValidatedWeekBasket validatedWeekBasket, ApplicationDbContext context)
+        public WeekBasketViewModel(Consumer consumer, TempWeekBasket tempWeekBasket, ValidatedWeekBasket validatedWeekBasket, ApplicationDbContext context)
         {
             TempWeekBasket = tempWeekBasket;
             ValidatedWeekBasket = validatedWeekBasket;
             Consumer = consumer;
-            Products = context.Products.Include(x=>x.Producer).Where(x => x.State == Product.ProductState.Enabled).ToList();
+            Products = context.Products.Include(x => x.Producer).Where(x => x.State == Product.ProductState.Enabled).ToList();
             ProductTypes = context.ProductTypes.Include(x => x.ProductFamilly).ToList();
         }
     }

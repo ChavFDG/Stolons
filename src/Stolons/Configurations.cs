@@ -128,6 +128,7 @@ namespace Stolons
 
         #region FileManagement
 
+        public static string ServiceImageStockagePath = Path.Combine("images","services");
         public static string StolonsBillsStockagePath = Path.Combine("bills", "stolons");
         public static string ConsumersBillsStockagePath = Path.Combine("bills","consumer");
         public static string ProducersBillsStockagePath = Path.Combine("bills", "producer");

@@ -15,7 +15,7 @@ namespace Stolons.Models
         public Guid ProductId { get; set; }
 
         [Display(Name = "Fiche produit")]
-        [ForeignKey("ProductId")]
+        [ForeignKey(nameof(ProductId))]
         public Product Product { get; set; }
 
         [Display(Name = "Quantité")]
