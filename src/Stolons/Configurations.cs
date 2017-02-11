@@ -112,22 +112,12 @@ namespace Stolons
         {
             return Enum.GetNames(typeof(UserType));
         }
-        public static string GetAlias(this StolonsUser user)
-        {
-            if (user is Producer)
-            {
-                return (user as Producer).CompanyName;
-            }
-            else
-            {
-                return user.Stolon.Label;
-            }
-        }
 
         #endregion UserManagement
 
         #region FileManagement
 
+        public static string StolonLogoStockagePath = Path.Combine("uploads", "images","logos");
         public static string ServiceImageStockagePath = Path.Combine("images","services");
         public static string StolonsBillsStockagePath = Path.Combine("bills", "stolons");
         public static string ConsumersBillsStockagePath = Path.Combine("bills","consumer");

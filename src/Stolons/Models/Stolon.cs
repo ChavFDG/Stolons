@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Stolons.Models.Users;
+using System.IO;
 
 namespace Stolons.Models
 {
@@ -20,7 +21,18 @@ namespace Stolons.Models
         //Configuration de la structure
         [Display(Name = "Libelle de la structure")]
         public string Label { get; set; } = "Mon stolon";
+        [Display(Name = "Logo de la structure")]
+        public string LogoFileName { get; set; }
         [Display(Name = "Adresse de la structure")]
+        public string LogoFilePath
+        {
+            get
+            {
+                if(String.IsNullOrWhiteSpace(LogoFileName))
+                    return Path.Combine(Configurations.StolonLogoStockagePath, "default.png");
+                return Path.Combine(Configurations.StolonLogoStockagePath, LogoFileName);
+            }
+        }
         public string Address { get; set; } = "";
         [Display(Name = "Numéro de téléphone de contact")]
         public string PhoneNumber { get; set; } = "";

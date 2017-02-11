@@ -18,13 +18,13 @@
         <label asp-for="NewsType" class="col-md-2 control-label"></label>
         <div class="col-md-10">
             <select id="NewsType" class="form-control valid" name="NewsType" data-val="true" aria-required="true" aria-invalid="false" aria-describedby="UserRole-error">
-                @if (User.IsInRole(Configurations.Role.Volunteer.ToString()) || User.IsInRole(Configurations.Role.Administrator.ToString()))
-                {
-                    <option value="0">Stolon</option>
-                }
                 @if (Model.User is Producer)
                 {
-                    <option value="1">Producteur</option>
+                    <option value="0">Producteur</option>
+                }
+                @if (User.IsInRole(Configurations.Role.Volunteer.ToString()) || User.IsInRole(Configurations.Role.Administrator.ToString()))
+                {
+                    <option value="1">Stolon</option>
                 }
             </select>
         </div>
