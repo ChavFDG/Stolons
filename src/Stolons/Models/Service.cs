@@ -27,44 +27,12 @@ namespace Stolons.Models
 
 
         [Display(Name = "Nom")]
-        public string Name
-        {
-            get
-            {
-                return EnumHelper<ServiceType>.GetDisplayValue(Type);
-            }
-        }
+        public string Name { get; set; }
 
         [Display(Name = "Description")]
         public string Description { get; set; }
 
-        [Display(Name = "Chemin vers l'image")]
-        public string ImagePath
-        {
-            get
-            {
-                return Path.Combine(Configurations.ServiceImageStockagePath, Type.ToString() +".jpg");
-            }
-        }
-
-        public ServiceType Type { get; set; }
-    }
-
-    public enum ServiceType
-    {
-        [Display(Name = "Panier")]
-        Basket,
-        [Display(Name = "Bon plan")]
-        GoodPlan,
-        [Display(Name = "Bar")]
-        Bar,
-        [Display(Name = "Concert")]
-        Concert,
-        [Display(Name = "Conférence")]
-        Conference,
-        [Display(Name = "Restaurent")]
-        Restaurent,
-        [Display(Name = "Théatre")]
-        Theater
+        //Images parties les images présente dans images/services
+        public string ImageName { get; set; }
     }
 }

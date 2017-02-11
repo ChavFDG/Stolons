@@ -413,15 +413,7 @@ namespace Stolons
             stolon.SympathizerSubscription = 2;
             stolon.ConsumerSubscription = 10;
             stolon.ProducerSubscription = 20;
-
-
-            Service service = new Service()
-            {
-                Type = ServiceType.Basket,
-                Description = "Vos paniers personalisé disponible chaque jeudi de la semaine"
-            };
-            context.Add(service);
-            service.Stolon = stolon;
+            stolon.GoodPlan = true;
 
             context.Add(stolon);
             context.SaveChanges();

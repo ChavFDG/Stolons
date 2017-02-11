@@ -108,6 +108,9 @@ namespace Stolons.Models
         [Display(Name = "Services proposés")]
         public List<Service> Services { get; set; } = new List<Service>();
 
+        [Display(Name = "Bon plan")]
+        public bool GoodPlan { get; set; }        
+
         public enum Modes
         {
             [Display(Name = "Commandes")]
