@@ -1,0 +1,256 @@
+@model Stolons.Models.Stolon
+
+<div class="form-horizontal">
+    <hr />
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="Label" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="Label" class="form-control" />
+            <span asp-validation-for="Label" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="LogoFileName" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="LogoFileName" class="form-control" />
+            <span asp-validation-for="LogoFileName" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="Address" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="Address" class="form-control" />
+            <span asp-validation-for="Address" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="PhoneNumber" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="PhoneNumber" class="form-control" />
+            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="ContactMailAddress" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="ContactMailAddress" class="form-control" />
+            <span asp-validation-for="ContactMailAddress" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <div class="checkbox">
+                <input asp-for="UseProducersFee" />
+                <label asp-for="UseProducersFee"></label>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="ProducersFee" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="ProducersFee" class="form-control" />
+            <span asp-validation-for="ProducersFee" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="AboutText" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="AboutText" class="form-control" />
+            <span asp-validation-for="AboutText" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="JoinUsText" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="JoinUsText" class="form-control" />
+            <span asp-validation-for="JoinUsText" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <div class="checkbox">
+                <input asp-for="UseSubscipstion" />
+                <label asp-for="UseSubscipstion"></label>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <div class="checkbox">
+                <input asp-for="UseSympathizer" />
+                <label asp-for="UseSympathizer"></label>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="SympathizerSubscription" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="SympathizerSubscription" class="form-control" />
+            <span asp-validation-for="SympathizerSubscription" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="ConsumerSubscription" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="ConsumerSubscription" class="form-control" />
+            <span asp-validation-for="ConsumerSubscription" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="ProducerSubscription" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="ProducerSubscription" class="form-control" />
+            <span asp-validation-for="ProducerSubscription" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="SubscriptionStartMonth" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <select asp-for="SubscriptionStartMonth" class="form-control"></select>
+            <span asp-validation-for="SubscriptionStartMonth" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="OrderDeliveryMessage" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="OrderDeliveryMessage" class="form-control" />
+            <span asp-validation-for="OrderDeliveryMessage" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="OrderDayStartDate" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <select asp-for="OrderDayStartDate" class="form-control"></select>
+            <span asp-validation-for="OrderDayStartDate" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="OrderHourStartDate" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="OrderHourStartDate" class="form-control" />
+            <span asp-validation-for="OrderHourStartDate" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="OrderMinuteStartDate" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="OrderMinuteStartDate" class="form-control" />
+            <span asp-validation-for="OrderMinuteStartDate" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="DeliveryAndStockUpdateDayStartDate" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <select asp-for="DeliveryAndStockUpdateDayStartDate" class="form-control"></select>
+            <span asp-validation-for="DeliveryAndStockUpdateDayStartDate" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="DeliveryAndStockUpdateDayStartDateHourStartDate" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="DeliveryAndStockUpdateDayStartDateHourStartDate" class="form-control" />
+            <span asp-validation-for="DeliveryAndStockUpdateDayStartDateHourStartDate" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="DeliveryAndStockUpdateDayStartDateMinuteStartDate" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="DeliveryAndStockUpdateDayStartDateMinuteStartDate" class="form-control" />
+            <span asp-validation-for="DeliveryAndStockUpdateDayStartDateMinuteStartDate" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="BasketPickUpStartDay" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <select asp-for="BasketPickUpStartDay" class="form-control"></select>
+            <span asp-validation-for="BasketPickUpStartDay" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="BasketPickUpStartHour" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="BasketPickUpStartHour" class="form-control" />
+            <span asp-validation-for="BasketPickUpStartHour" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="BasketPickUpStartMinute" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="BasketPickUpStartMinute" class="form-control" />
+            <span asp-validation-for="BasketPickUpStartMinute" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="BasketPickEndUpDay" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <select asp-for="BasketPickEndUpDay" class="form-control"></select>
+            <span asp-validation-for="BasketPickEndUpDay" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="BasketPickUpEndHour" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="BasketPickUpEndHour" class="form-control" />
+            <span asp-validation-for="BasketPickUpEndHour" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="BasketPickUpEndMinute" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="BasketPickUpEndMinute" class="form-control" />
+            <span asp-validation-for="BasketPickUpEndMinute" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <div class="checkbox">
+                <input asp-for="IsModeSimulated" />
+                <label asp-for="IsModeSimulated"></label>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="SimulationMode" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <select asp-for="SimulationMode" class="form-control"></select>
+            <span asp-validation-for="SimulationMode" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="State" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <select asp-for="State" class="form-control"></select>
+            <span asp-validation-for="State" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="StolonStateMessage" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="StolonStateMessage" class="form-control" />
+            <span asp-validation-for="StolonStateMessage" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="Latitude" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="Latitude" class="form-control" />
+            <span asp-validation-for="Latitude" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="Longitude" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="Longitude" class="form-control" />
+            <span asp-validation-for="Longitude" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <div class="checkbox">
+                <input asp-for="GoodPlan" />
+                <label asp-for="GoodPlan"></label>
+            </div>
+        </div>
+    </div>
+</div>

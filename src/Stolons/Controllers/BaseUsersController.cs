@@ -30,7 +30,7 @@ namespace Stolons.Controllers
 
         }
         
-        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_Administrator)]
+        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
         public IActionResult PaySubscription(int id)
         {
             StolonsUser user = _context.StolonsUsers.Include(x=>x.Stolon).Single(m => m.Id == id);
@@ -52,7 +52,7 @@ namespace Stolons.Controllers
             return RedirectToAction("Index");
         }
         
-        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_Administrator)]
+        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
         public IActionResult Enable(int id)
         {
             StolonsUser user = _context.StolonsUsers.Include(x => x.Stolon).Single(m => m.Id == id);
@@ -67,7 +67,7 @@ namespace Stolons.Controllers
         }
 
 
-        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_Administrator)]
+        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
         public IActionResult Disable(int id, string comment)
         {
             StolonsUser user = _context.StolonsUsers.Include(x => x.Stolon).Single(m => m.Id == id);

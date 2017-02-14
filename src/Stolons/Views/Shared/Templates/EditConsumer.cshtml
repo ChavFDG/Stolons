@@ -69,14 +69,49 @@
         <label asp-for="UserRole" class="col-md-2 control-label"></label>
         <div class="col-md-10">
             <select id="UserRole" class="form-control valid" name="UserRole" data-val-required="The Droit utilisateur field is required." data-val="true" aria-required="true" aria-invalid="false" aria-describedby="UserRole-error">
-                <option value="1"> Adhérent </option>
-                @if (User.IsInRole(Configurations.Role.Volunteer.ToString()) || User.IsInRole(Configurations.Role.Administrator.ToString()))
+                @if (Model.UserRole == Configurations.Role.User)
                 {
-                    <option value="2">Bénévole</option>
+                    <option value="1" selected> Adhérent </option>
                 }
-                @if (User.IsInRole(Configurations.Role.Administrator.ToString()))
+                else
                 {
-                    <option value="3">Administrateur</option>
+                    <option value="1"> Adhérent </option>
+                }
+                @if (Model.UserRole >= Configurations.Role.Volunteer)
+                {
+
+                    @if (Model.UserRole == Configurations.Role.Volunteer)
+                    {
+                        <option value="2" selected> Bénévole </option>
+                    }
+                    else
+                    {
+                        <option value="2"> Bénévole </option>
+                    }
+                }
+                @if (Model.UserRole >= Configurations.Role.StolonAdmin)
+                {
+
+                    @if (Model.UserRole == Configurations.Role.StolonAdmin)
+                    {
+                        <option value="4" selected> Administrateur du stolon </option>
+                    }
+                    else
+                    {
+                        <option value="4"> Administrateur du stolon </option>
+                    }
+                }
+                @if (Model.UserRole >= Configurations.Role.WebAdmin)
+                {
+
+                    @if (Model.UserRole == Configurations.Role.WebAdmin)
+                    {
+                        <option value="4" selected> Administrateur stolon et site </option>
+                    }
+                    else
+                    {
+                        <option value="4"> Administrateur stolon et site </option>
+                    }
                 }
             </select>
             <!-- <select asp-for="UserRole" asp-items="Html.GetEnumSelectList<Configurations.Role>()" class="form-control"></select> -->

@@ -32,14 +32,14 @@ namespace Stolons.Controllers
         }
 
         // GET: Consumers
-        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_Administrator)]
+        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
         public IActionResult Index()
         {
             return View(_context.Consumers.Where(x => x.StolonId == GetCurrentStolon().Id).ToList());
         }
         
         // GET: Consumers/Details/5
-        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_Administrator)]
+        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -59,7 +59,7 @@ namespace Stolons.Controllers
         }
 
         // GET: Consumers/Create
-        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_Administrator)]
+        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
         public IActionResult Create()
         {
             return View(new ConsumerViewModel(new Consumer(),Configurations.Role.User));
@@ -68,7 +68,7 @@ namespace Stolons.Controllers
         // POST: Consumers/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_Administrator)]
+        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
         public async Task<IActionResult> Create(ConsumerViewModel vmConsumer, IFormFile uploadFile)
         {
             if (ModelState.IsValid)
@@ -114,7 +114,7 @@ namespace Stolons.Controllers
         }
 
         // GET: Consumers/Edit/5
-        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_Administrator)]
+        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -136,7 +136,7 @@ namespace Stolons.Controllers
         // POST: Consumers/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_Administrator)]
+        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
         public async Task<IActionResult> Edit(ConsumerViewModel consumerVm, IFormFile uploadFile, Configurations.Role UserRole)
         {
             if (ModelState.IsValid)
@@ -176,7 +176,7 @@ namespace Stolons.Controllers
 
         // GET: Consumers/Delete/5
         [ActionName("Delete")]
-        [Authorize(Roles = Configurations.Role_Administrator)]
+        [Authorize(Roles = Configurations.Role_WedAdmin)]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -198,7 +198,7 @@ namespace Stolons.Controllers
         // POST: Consumers/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = Configurations.Role_Administrator)]
+        [Authorize(Roles = Configurations.Role_WedAdmin)]
         public IActionResult DeleteConfirmed(int id)
         {
             Consumer consumer = _context.Consumers.Single(m => m.Id == id);
@@ -225,7 +225,7 @@ namespace Stolons.Controllers
 
         // GET: Consumers/CreditToken/5
         [ActionName("CreditToken")]
-        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_Administrator)]
+        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
         public IActionResult CreditToken(int? id)
         {
             if (id == null)
@@ -245,7 +245,7 @@ namespace Stolons.Controllers
         // POST: Consumers/CreditToken
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_Administrator)]
+        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
         public IActionResult CreditToken(CreditTokenViewModel vmCreditToken)
         {
             Consumer consumer = _context.Consumers.Single(m => m.Id == vmCreditToken.Consumer.Id);

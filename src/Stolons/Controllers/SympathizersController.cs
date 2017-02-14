@@ -31,14 +31,14 @@ namespace Stolons.Controllers
 
         }
 
-        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_Administrator)]
+        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
         // GET: Sympathizer
         public IActionResult Index()
         {
             return View(_context.Sympathizers.Where(x=>x.StolonId == GetCurrentStolon().Id) .ToList());
         }
 
-        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_Administrator)]
+        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
         // GET: Sympathizer/Details/5
         public IActionResult Details(int? id)
         {
@@ -56,7 +56,7 @@ namespace Stolons.Controllers
         }
 
 
-        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_Administrator)]
+        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
         // GET: Sympathizer/PartialDetails/5
         public IActionResult PartialDetails(int? id)
         {
@@ -74,7 +74,7 @@ namespace Stolons.Controllers
         }
 
         // GET: Sympathizer/Create
-        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_Administrator)]
+        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
         public IActionResult Create()
         {
             return View(new SympathizerViewModel(new Sympathizer()));
@@ -83,7 +83,7 @@ namespace Stolons.Controllers
         // POST: Sympathizer/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_Administrator)]
+        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
         public IActionResult Create(SympathizerViewModel vmSympathizer)
         {
             if (ModelState.IsValid)
@@ -105,7 +105,7 @@ namespace Stolons.Controllers
         }
 
         // GET: Sympathizer/Edit/5
-        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_Administrator)]
+        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
         public IActionResult Edit(int? id)
         {
             if (id == null)
@@ -125,7 +125,7 @@ namespace Stolons.Controllers
         // POST: Sympathizer/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_Administrator)]
+        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
         public IActionResult Edit(SympathizerViewModel vmSympathizer)
         {
             if (ModelState.IsValid)
@@ -139,7 +139,7 @@ namespace Stolons.Controllers
 
         // GET: Sympathizer/Delete/5
         [ActionName("Delete")]
-        [Authorize(Roles = Configurations.Role_Administrator)]
+        [Authorize(Roles = Configurations.Role_WedAdmin)]
         public IActionResult Delete(int? id)
         {
             if (id == null)
@@ -158,7 +158,7 @@ namespace Stolons.Controllers
         // POST: Sympathizer/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = Configurations.Role_Administrator)]
+        [Authorize(Roles = Configurations.Role_WedAdmin)]
         public IActionResult DeleteConfirmed(int id)
         {
             Sympathizer sympathizer = _context.Sympathizers.Single(m => m.Id == id);           

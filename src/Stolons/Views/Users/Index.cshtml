@@ -79,7 +79,7 @@
                                     new { onclick = "return confirm('Valider le paiement de la cotisation de " + item.Name + " pour un montant de : " + Configurations.GetStringSubscriptionAmount(item) + "');" })
                             </li>
                         }
-                        @if (User.IsInRole(Configurations.Role.Administrator.ToString()))
+                        @if (User.IsInRole(Configurations.Role.WebAdmin.ToString()))
                         {
                             @if (item.Enable == true)
                             {

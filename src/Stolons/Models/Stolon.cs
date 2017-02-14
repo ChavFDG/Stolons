@@ -34,7 +34,7 @@ namespace Stolons.Models
             }
         }
         public string Address { get; set; } = "";
-        [Display(Name = "Numéro de téléphone de contact")]
+        [Display(Name = "Téléphone de contact")]
         public string PhoneNumber { get; set; } = "";
         [Display(Name = "Courriel de contact")]
         public string ContactMailAddress { get; set; } = "";
@@ -106,11 +106,11 @@ namespace Stolons.Models
         [Display(Name = "Choix du mode à simuler")]
         public Modes SimulationMode { get; set; } = Modes.Order;
 
-        [Display(Name = "Mon stolon est en maintenance")]
-        public bool IsInMaintenance { get; set; } = false;
+        [Display(Name = "Etat du stolon")]
+        public StolonState State { get; set; } = StolonState.Closed;
 
-        [Display(Name = "Message de maintenance")]
-        public string MaintenanceText { get; set; } = "Le site est en maintenance, réouverture prochainement";
+        [Display(Name = "Message d'état du stolon")]
+        public string StolonStateMessage { get; set; } = "Le site est en maintenance, réouverture prochainement";
 
         [Display(Name = "Latitude")]
         public double Latitude { get; set; }
@@ -122,6 +122,12 @@ namespace Stolons.Models
 
         [Display(Name = "Bon plan")]
         public bool GoodPlan { get; set; }        
+
+        public enum StolonState
+        {
+            Closed = 0,
+            Open = 1
+        }
 
         public enum Modes
         {

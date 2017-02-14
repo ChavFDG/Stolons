@@ -30,7 +30,7 @@ namespace Stolons.Controllers
         }
 
         // GET: Consumers
-        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_Administrator)]
+        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
         public IActionResult Index()
         {
             return View(_context.StolonsUsers.Where(x => x.StolonId == GetCurrentStolon().Id).ToList());

@@ -1,0 +1,45 @@
+@model Stolons.Models.Stolon
+
+
+<h3>Êtes vous sur de vouloir supprimer @Model.Label</h3>
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Label)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Label)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.LogoFileName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.LogoFileName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Address)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Address)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.PhoneNumber)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PhoneNumber)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ContactMailAddress)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ContactMailAddress)
+        </dd>
+    </dl>
+    <form asp-action="Delete">
+        <div class="form-actions no-color">
+            <a asp-action="Index" class="btn btn-small btn-default">Retourner aux Stolons</a>
+            <input type="submit" value="Supprimer" class="btn btn-small btn-default" />
+        </div>
+    </form>
+</div>

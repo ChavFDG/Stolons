@@ -69,7 +69,7 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li><a asp-action="Details" asp-route-id="@item.Id">Voir détail</a></li>
-                        @if (User.IsInRole(Configurations.Role.Administrator.ToString()) && item.AddedAutomaticly == false)
+                        @if (User.IsInRole(Configurations.Role.WebAdmin.ToString()) && item.AddedAutomaticly == false)
                         {
                             <li><a asp-action="Edit" asp-route-id="@item.Id">Modifier</a></li>
                             <li><a asp-action="Delete" asp-route-id="@item.Id">Supprimer</a></li>

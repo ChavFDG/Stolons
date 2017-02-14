@@ -317,14 +317,14 @@ namespace Stolons.Controllers
             // }
         }
 
-        [Authorize(Roles = Configurations.Role_Administrator + "," + Configurations.UserType_Producer)]
+        [Authorize(Roles = Configurations.Role_WedAdmin + "," + Configurations.UserType_Producer)]
         [HttpGet, ActionName("ManageFamilies")]
         public IActionResult ManageFamilies()
         {
             return View();
         }
 
-        [Authorize(Roles = Configurations.Role_Administrator + "," + Configurations.UserType_Producer)]
+        [Authorize(Roles = Configurations.Role_WedAdmin + "," + Configurations.UserType_Producer)]
         [HttpPost, ActionName("CreateCategory")]
         public IActionResult CreateCategory(string categoryName)
         {
@@ -334,7 +334,7 @@ namespace Stolons.Controllers
             return Ok();
         }
 
-        [Authorize(Roles = Configurations.Role_Administrator + "," + Configurations.UserType_Producer)]
+        [Authorize(Roles = Configurations.Role_WedAdmin + "," + Configurations.UserType_Producer)]
         [HttpPost, ActionName("CreateFamily")]
         public IActionResult CreateFamily(Guid categoryId, string familyName)
         {
@@ -349,7 +349,7 @@ namespace Stolons.Controllers
             return Ok();
         }
 
-        [Authorize(Roles = Configurations.Role_Administrator + "," + Configurations.UserType_Producer)]
+        [Authorize(Roles = Configurations.Role_WedAdmin + "," + Configurations.UserType_Producer)]
         [HttpPost, ActionName("RenameCategory")]
         public IActionResult RenameCategory(Guid categoryId, string newCategoryName)
         {
@@ -364,7 +364,7 @@ namespace Stolons.Controllers
         }
 
 
-        [Authorize(Roles = Configurations.Role_Administrator + "," + Configurations.UserType_Producer)]
+        [Authorize(Roles = Configurations.Role_WedAdmin + "," + Configurations.UserType_Producer)]
         [HttpPost, ActionName("RenameFamily")]
         public IActionResult RenameFamily(Guid familyId, string newFamilyName)
         {
@@ -378,7 +378,7 @@ namespace Stolons.Controllers
             return Ok();
         }
 
-        [Authorize(Roles = Configurations.Role_Administrator + "," + Configurations.UserType_Producer)]
+        [Authorize(Roles = Configurations.Role_WedAdmin + "," + Configurations.UserType_Producer)]
         [HttpPost, ActionName("UpdateCategoryPicture")]
         public async Task<IActionResult> UpdateCategoryPicture(Guid categoryId, IFormFile picture)
         {
@@ -393,7 +393,7 @@ namespace Stolons.Controllers
             return Ok();
         }
 
-        [Authorize(Roles = Configurations.Role_Administrator + "," + Configurations.UserType_Producer)]
+        [Authorize(Roles = Configurations.Role_WedAdmin + "," + Configurations.UserType_Producer)]
         [HttpPost, ActionName("UpdateFamilyPicture")]
         public async Task<IActionResult> UpdateFamilyPicture(Guid familyId, IFormFile picture)
         {
@@ -408,7 +408,7 @@ namespace Stolons.Controllers
             return Ok();
         }
 
-        [Authorize(Roles = Configurations.Role_Administrator + "," + Configurations.UserType_Producer)]
+        [Authorize(Roles = Configurations.Role_WedAdmin + "," + Configurations.UserType_Producer)]
         [HttpPost, ActionName("DeleteCategory")]
         public IActionResult DeleteCategory(Guid categoryId)
         {
@@ -431,7 +431,7 @@ namespace Stolons.Controllers
             return Ok();
         }
 
-        [Authorize(Roles = Configurations.Role_Administrator + "," + Configurations.UserType_Producer)]
+        [Authorize(Roles = Configurations.Role_WedAdmin + "," + Configurations.UserType_Producer)]
         [HttpPost, ActionName("DeleteFamily")]
         public IActionResult DeleteFamily(Guid familyId)
         {

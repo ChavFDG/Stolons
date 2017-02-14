@@ -30,7 +30,7 @@
                         {
                             <li><a asp-controller="ProductsManagement" asp-action="Index">Mes produits et mes stocks</a></li>
                         }
-                        @if (User.IsInRole(Configurations.Role.Volunteer.ToString()) || User.IsInRole(Configurations.Role.Administrator.ToString()))
+                        @if (User.IsInRole(Configurations.Role.Volunteer.ToString()) || User.IsInRole(Configurations.Role.WebAdmin.ToString()) || User.IsInRole(Configurations.Role.StolonAdmin.ToString()))
                         {
                             <li><a asp-controller="WeekBasketManagement" asp-action="Index">Gérer les paniers</a></li>
                             <li class="dropdown">
@@ -53,18 +53,18 @@
                                 <ul class="dropdown-menu">
                                     <li><a asp-controller="Mails" asp-action="Index">Courriels</a></li>
                                     <li><a asp-controller="Transactions" asp-action="Index">Transactions</a></li>
-                                    @if (User.IsInRole(Configurations.Role.Creator.ToString()))
+                                    @if (User.IsInRole(Configurations.Role.WebAdmin.ToString()) || User.IsInRole(Configurations.Role.StolonAdmin.ToString()))
                                     {
-                                        <li><a asp-controller="Stolon" asp-action="Index">Structure</a></li>
+                                        <li><a asp-controller="Stolons" asp-route-id="@Model.User.Stolon.Id" asp-action="Details">@Model.User.Stolon.Label</a></li>
                                     }
-                                    @if (User.IsInRole(Configurations.Role.Administrator.ToString()))
+                                    @if (User.IsInRole(Configurations.Role.WebAdmin.ToString()))
                                     {
-                                        <li><a asp-controller="Stolon" asp-action="Index">Site</a></li>
+                                        <li><a asp-controller="Stolons" asp-action="Index">Stolons</a></li>
                                     }
                                 </ul>
                             </li>
-                            <li><a asp-controller="Home" asp-action="StolonContact" asp-route-id="@Model.User.Stolon.Id">@Model.User.Stolon.Label</a></li>
                         }
+                        <li><a asp-controller="Home" asp-action="StolonContact" asp-route-id="@Model.User.Stolon.Id">@(Model.User.Stolon.Label +"TODO changer de place")</a></li>
                     </ul>
                 </div>
                 <div class="navbar-right">

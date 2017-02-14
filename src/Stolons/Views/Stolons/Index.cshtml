@@ -1,0 +1,76 @@
+@using Stolons.Models;
+@model IEnumerable<Stolon>
+
+
+<h2>Stolons</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-small btn-default">Ajouter un nouveau Stolon</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Libelle
+            </th>
+            <th>
+                Logo
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PhoneNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ContactMailAddress)
+            </th>
+            <th>
+                Etat
+            </th>
+            <th>
+
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Label)
+                </td>
+                <td class="tdAvatarList">
+                    <div class="userListAvatar">
+                        <img src="@item.LogoFilePath" class="responsiveImage" />
+                    </div>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PhoneNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ContactMailAddress)
+                </td>                
+                    @switch (item.State)
+                    {
+                        case Stolon.StolonState.Open:
+                            <td>Ouvert</td>
+                            break;
+                        case Stolon.StolonState.Closed:
+                            <td>Fermé</td>
+                            break;
+                    }                
+                <td>
+
+                    <div class="dropdown">
+                        <a class="dropdown-toggle btn btn-small btn-default" data-toggle="dropdown" href="#">
+                            Actions
+                            <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a asp-action="Edit" asp-route-id="@item.Id">Modifer</a></li>
+                            <li><a asp-action="Details" asp-route-id="@item.Id">Voir détail</a></li>
+                            <li><a asp-action="Delete" asp-route-id="@item.Id">Supprimer</a></li>
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

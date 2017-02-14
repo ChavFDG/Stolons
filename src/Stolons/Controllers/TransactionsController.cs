@@ -25,14 +25,14 @@ namespace Stolons.Controllers
         }
 
         // GET: Transactions
-        [Authorize(Roles = Configurations.Role_Administrator + "," + Configurations.Role_Volunteer)]
+        [Authorize(Roles = Configurations.Role_WedAdmin + "," + Configurations.Role_Volunteer)]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Transactions.ToListAsync());
         }
 
         // GET: Transactions/Details/5
-        [Authorize(Roles = Configurations.Role_Administrator + "," + Configurations.Role_Volunteer)]
+        [Authorize(Roles = Configurations.Role_WedAdmin + "," + Configurations.Role_Volunteer)]
         public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null)
@@ -50,7 +50,7 @@ namespace Stolons.Controllers
         }
 
         // GET: Transactions/Create
-        [Authorize(Roles = Configurations.Role_Administrator + "," + Configurations.Role_Volunteer)]
+        [Authorize(Roles = Configurations.Role_WedAdmin + "," + Configurations.Role_Volunteer)]
         public IActionResult Create()
         {
             return View(new Transaction());
@@ -74,7 +74,7 @@ namespace Stolons.Controllers
         }
 
         // GET: Transactions/Edit/5
-        [Authorize(Roles = Configurations.Role_Administrator)]
+        [Authorize(Roles = Configurations.Role_WedAdmin)]
         public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)
@@ -126,7 +126,7 @@ namespace Stolons.Controllers
         }
 
         // GET: Transactions/Delete/5
-        [Authorize(Roles = Configurations.Role_Administrator)]
+        [Authorize(Roles = Configurations.Role_WedAdmin)]
         public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null)

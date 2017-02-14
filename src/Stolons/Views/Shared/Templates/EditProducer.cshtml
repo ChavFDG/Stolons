@@ -129,14 +129,14 @@
     <div class="col-md-10">
     <select asp-for="UserRole" class="form-control">
         @if (Model.UserRole == Configurations.Role.User)
-            {
+        {
             <option value="1" selected> Adhérent </option>
         }
         else
         {
             <option value="1"> Adhérent </option>
         }
-        @if (Model.UserRole == Configurations.Role.Volunteer || User.IsInRole(Configurations.Role.Volunteer.ToString()) || User.IsInRole(Configurations.Role.Administrator.ToString()))
+        @if (Model.UserRole >= Configurations.Role.Volunteer )
         {
 
             @if (Model.UserRole == Configurations.Role.Volunteer)
@@ -148,16 +148,28 @@
                 <option value="2"> Bénévole </option>
             }
         }
-        @if (Model.UserRole == Configurations.Role.Administrator || User.IsInRole(Configurations.Role.Administrator.ToString()))
+        @if (Model.UserRole >= Configurations.Role.StolonAdmin )
         {
 
-            @if (Model.UserRole == Configurations.Role.Administrator)
+            @if (Model.UserRole == Configurations.Role.StolonAdmin)
             {
-                <option value="3" selected> Administrateur </option>
+                <option value="4" selected> Administrateur du stolon </option>
             }
             else
             {
-                <option value="3"> Administrateur </option>
+                <option value="4"> Administrateur du stolon </option>
+            }
+        }
+        @if (Model.UserRole >= Configurations.Role.WebAdmin )
+        {
+
+            @if (Model.UserRole == Configurations.Role.WebAdmin)
+            {
+                <option value="4" selected> Administrateur stolon et site </option>
+            }
+            else
+            {
+                <option value="4"> Administrateur stolon et site </option>
             }
         }
       </select>

@@ -377,7 +377,7 @@ namespace Stolons
                 return context.Stolons.ToList();
             List<Stolon> stolons = new List<Stolon>();
             Stolon stolon = new Stolon();
-            stolon.IsInMaintenance = false;
+            stolon.State = Stolon.StolonState.Open;
             stolon.IsModeSimulated = false;
 
             stolon.Label = "Stolons de Privas";
@@ -430,7 +430,7 @@ namespace Stolons
                     "Damien",
                     "damien.paravel@gmail.com",
                     "damien.paravel@gmail.com",
-                    Configurations.Role.Administrator,
+                    Configurations.Role.WebAdmin,
                     Configurations.UserType.Consumer,
                     stolon);
             await CreateAcount(context,
@@ -439,7 +439,7 @@ namespace Stolons
                     "Nicolas",
                     "nicolas.michon@zoho.com",
                     "nicolas.michon@zoho.com",
-                    Configurations.Role.Administrator,
+                    Configurations.Role.WebAdmin,
                     Configurations.UserType.Consumer,
                     stolon);
             await CreateAcount(context,
@@ -448,7 +448,7 @@ namespace Stolons
                     "Arnaud",
                     "arnaudteston@gmail.com",
                     "arnaudteston@gmail.com",
-                    Configurations.Role.Administrator,
+                    Configurations.Role.WebAdmin,
                     Configurations.UserType.Consumer,
                     stolon);
         }

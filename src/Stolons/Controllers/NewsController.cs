@@ -55,7 +55,7 @@ namespace Stolons.Controllers
         }
 
         // GET: News/Create
-        [Authorize(Roles = Configurations.Role_Administrator + "," + Configurations.Role_Volunteer + "," +Configurations.UserType_Producer)]
+        [Authorize(Roles = Configurations.Role_WedAdmin + "," + Configurations.Role_Volunteer + "," +Configurations.UserType_Producer)]
         public IActionResult Create()
         {
             return View(new News() { User = GetCurrentStolonsUserSync() });
@@ -64,7 +64,7 @@ namespace Stolons.Controllers
         // POST: News/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = Configurations.Role_Administrator + "," + Configurations.Role_Volunteer + "," +Configurations.UserType_Producer)]
+        [Authorize(Roles = Configurations.Role_WedAdmin + "," + Configurations.Role_Volunteer + "," +Configurations.UserType_Producer)]
         public async Task<IActionResult> Create(News news, IFormFile uploadFile)
         {
             if (ModelState.IsValid)
@@ -93,7 +93,7 @@ namespace Stolons.Controllers
         }
 
         // GET: News/Edit/5
-        [Authorize(Roles = Configurations.Role_Administrator + "," + Configurations.Role_Volunteer + "," +Configurations.UserType_Producer)]
+        [Authorize(Roles = Configurations.Role_WedAdmin + "," + Configurations.Role_Volunteer + "," +Configurations.UserType_Producer)]
         public IActionResult Edit(Guid? id)
         {
             if (id == null)
@@ -112,7 +112,7 @@ namespace Stolons.Controllers
         // POST: News/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = Configurations.Role_Administrator + "," + Configurations.Role_Volunteer + "," +Configurations.UserType_Producer)]
+        [Authorize(Roles = Configurations.Role_WedAdmin + "," + Configurations.Role_Volunteer + "," +Configurations.UserType_Producer)]
         public async Task<IActionResult> Edit(News news,IFormFile uploadFile)
         {
             if (ModelState.IsValid)
@@ -140,7 +140,7 @@ namespace Stolons.Controllers
 
         // GET: News/Delete/5
         [ActionName("Delete")]
-        [Authorize(Roles = Configurations.Role_Administrator)]
+        [Authorize(Roles = Configurations.Role_WedAdmin)]
         public IActionResult Delete(Guid? id)
         {
             if (id == null)
@@ -159,7 +159,7 @@ namespace Stolons.Controllers
 
         // POST: News/Delete/5
         [HttpPost, ActionName("Delete")]
-        [Authorize(Roles = Configurations.Role_Administrator)]
+        [Authorize(Roles = Configurations.Role_WedAdmin)]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(Guid id)
         {

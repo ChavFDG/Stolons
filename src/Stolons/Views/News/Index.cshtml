@@ -16,8 +16,8 @@
 
 @if (SignInManager.IsSignedIn(User))
 {
-    if (User.IsInRole(Configurations.Role.Administrator.ToString())
-                        || User.IsInRole(Configurations.Role.Creator.ToString())
+    if (User.IsInRole(Configurations.Role.WebAdmin.ToString())
+                        || User.IsInRole(Configurations.Role.StolonAdmin.ToString())
                         || User.IsInRole(Configurations.Role.Volunteer.ToString())
                         || User.IsInRole(Configurations.UserType.Producer.ToString()))
     {
@@ -63,13 +63,13 @@
                     }
                     @item.DateOfPublication.ToString("le dd/MM/yyyy à HH:mm:ss")
                     @if (User.Identity.Name == item.User.Email 
-                        || User.IsInRole(Configurations.Role.Administrator.ToString())
+                        || User.IsInRole(Configurations.Role.WebAdmin.ToString())
                         || User.IsInRole(Configurations.Role.Volunteer.ToString())
-                        || User.IsInRole(Configurations.Role.Creator.ToString()))
+                        || User.IsInRole(Configurations.Role.StolonAdmin.ToString()))
                     {
                         <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-small btn-default">Modifier</a>
                     }
-                    @if (User.IsInRole(Configurations.Role.Administrator.ToString()) || User.IsInRole(Configurations.Role.Creator.ToString()) || UserManager.GetUserId(User) == item.User.Email)
+                    @if (User.IsInRole(Configurations.Role.WebAdmin.ToString()) || User.IsInRole(Configurations.Role.StolonAdmin.ToString()) || UserManager.GetUserId(User) == item.User.Email)
                     {
                         <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-small btn-default">Supprimer</a>
                     }

@@ -1,0 +1,263 @@
+@using Stolons.Helpers;
+@model Stolon
+
+
+<h2>@Model.Label</h2>
+
+<p>Mode actuel : <b>@(EnumHelper<Stolon.Modes>.GetDisplayValue(Model.GetMode()))</b></p>
+@if (Model.IsModeSimulated)
+{
+    <a asp-action="SwitchMode" asp-route-id="@Model.Id" class="btn btn-small btn-default">@(Model.GetMode() == Stolon.Modes.DeliveryAndStockUpdate ? "Passer en mode Commande" : "Passer en mode Livraison et mise à jour des stocks")</a>
+}
+
+<div>
+    <hr />
+    <h3>Informations</h3>
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Label)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Label)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.LogoFileName)
+        </dt>
+        <dd>
+            <div class="userListAvatar">
+                <img src="@Model.LogoFilePath" class="responsiveImage" />
+            </div>
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Address)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Address)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.PhoneNumber)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PhoneNumber)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ContactMailAddress)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ContactMailAddress)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Latitude)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Latitude)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Longitude)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Longitude)
+        </dd>
+    </dl>
+    <h3>Configurations</h3>
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.UseSympathizer)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.UseSympathizer)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.IsModeSimulated)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.IsModeSimulated)
+        </dd>
+        @if (Model.IsModeSimulated)
+        {
+            <dt>
+                @Html.DisplayNameFor(model => model.SimulationMode)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.SimulationMode)
+            </dd>
+        }
+        <dt>
+            @Html.DisplayNameFor(model => model.State)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.State)
+        </dd>
+        @if (Model.State == Stolon.StolonState.Closed)
+        {
+            <dt>
+                @Html.DisplayNameFor(model => model.StolonStateMessage)
+            </dt>
+            <dd>
+                @Html.Raw(Model.StolonStateMessage)
+            </dd>
+        }
+    </dl>
+    <h3>Textes</h3>
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.AboutText)
+        </dt>
+        <dd>
+            @Html.Raw(Model.AboutText)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.JoinUsText)
+        </dt>
+        <dd>
+            @Html.Raw(Model.JoinUsText)
+        </dd>
+    </dl>
+    <h3>Comissions</h3>
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.UseProducersFee)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.UseProducersFee)
+        </dd>
+        @if (Model.UseProducersFee)
+        {
+            <dt>
+                @Html.DisplayNameFor(model => model.ProducersFee)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.ProducersFee)
+            </dd>
+        }
+    </dl>
+    <h3>Cotisation</h3>
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.UseSubscipstion)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.UseSubscipstion)
+        </dd>
+        @if (Model.UseSubscipstion)
+        {
+            <dt>
+                @Html.DisplayNameFor(model => model.SympathizerSubscription)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.SympathizerSubscription)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.ConsumerSubscription)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.ConsumerSubscription)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.ProducerSubscription)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.ProducerSubscription)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.SubscriptionStartMonth)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.SubscriptionStartMonth)
+            </dd>
+        }
+    </dl>
+    <h3>Paniers</h3>
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.OrderDeliveryMessage)
+        </dt>
+        <dd>
+            @Html.Raw(Model.OrderDeliveryMessage)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.OrderDayStartDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.OrderDayStartDate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.OrderHourStartDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.OrderHourStartDate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.OrderMinuteStartDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.OrderMinuteStartDate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.DeliveryAndStockUpdateDayStartDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.DeliveryAndStockUpdateDayStartDate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.DeliveryAndStockUpdateDayStartDateHourStartDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.DeliveryAndStockUpdateDayStartDateHourStartDate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.DeliveryAndStockUpdateDayStartDateMinuteStartDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.DeliveryAndStockUpdateDayStartDateMinuteStartDate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.BasketPickUpStartDay)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.BasketPickUpStartDay)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.BasketPickUpStartHour)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.BasketPickUpStartHour)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.BasketPickUpStartMinute)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.BasketPickUpStartMinute)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.BasketPickEndUpDay)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.BasketPickEndUpDay)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.BasketPickUpEndHour)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.BasketPickUpEndHour)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.BasketPickUpEndMinute)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.BasketPickUpEndMinute)
+        </dd>
+    </dl>
+    <h3>Bon plans</h3>
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.GoodPlan)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.GoodPlan)
+        </dd>
+    </dl>
+</div>
+<p>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-small btn-default">Modifier @Model.Label</a>
+</p>

@@ -1,10 +1,7 @@
 @model Stolons.ViewModels.Sympathizers.SympathizerViewModel
 
-@{
-    ViewData["Title"] = "Edition de " + Model.Sympathizer.Surname + " " + Model.Sympathizer.Name;
-}
 
-<h2>@ViewData["Title"]</h2>
+<h2>@("Edition de " + Model.Sympathizer.Surname + " " + Model.Sympathizer.Name)</h2>
 
 <form asp-action="Edit" enctype="multipart/form-data">
     @Html.Partial("Templates/EditSympathizer")

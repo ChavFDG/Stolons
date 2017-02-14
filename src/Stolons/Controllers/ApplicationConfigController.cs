@@ -25,14 +25,14 @@ namespace Stolons.Controllers
 
         }
 
-        [Authorize(Roles = Role_Administrator)]
+        [Authorize(Roles = Role_WedAdmin)]
         // GET: Stolon
         public IActionResult Index()
         {
             return View(_context.Stolons.First());
         }
 
-        [Authorize(Roles = Role_Administrator)]
+        [Authorize(Roles = Role_WedAdmin)]
         // GET: Stolon/Edit/5
         public IActionResult Edit()
         {
@@ -49,7 +49,7 @@ namespace Stolons.Controllers
         // POST: Stolon/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = Role_Administrator)]
+        [Authorize(Roles = Role_WedAdmin)]
         public IActionResult Edit(Stolon applicationConfig)
         {
             if (ModelState.IsValid)
@@ -62,14 +62,6 @@ namespace Stolons.Controllers
             }
             return View(applicationConfig);
         }
-
-        [Authorize(Roles = Role_Administrator)]
-        public IActionResult SwitchMode()
-        {
-            //Configurations.Application.SimulationMode = Configurations.Application.SimulationMode == Models.Stolon.Modes.DeliveryAndStockUpdate ? Models.Stolon.Modes.Order : Models.Stolon.Modes.DeliveryAndStockUpdate;
-            _context.Update(Configurations.Application);
-            _context.SaveChanges();
-            return RedirectToAction("Index");
-        }        
+       
     }
 }

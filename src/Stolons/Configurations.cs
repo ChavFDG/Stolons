@@ -62,8 +62,8 @@ namespace Stolons
 
         public const string Role_User = "User";
         public const string Role_Volunteer = "Volunteer";
-        public const string Role_Creator = "Creator";
-        public const string Role_Administrator = "Administrator";
+        public const string Role_StolonAdmin = "StolonAdmin";
+        public const string Role_WedAdmin = "WebAdmin";
 
         public enum Role
         {
@@ -78,15 +78,15 @@ namespace Stolons
             [Display(Name = "Bénévole")]
             Volunteer = 2,
             /// <summary>
-            /// Creator of the structure
+            /// Admin of the stolon
             /// </summary>
-            [Display(Name = "Créateur")]
-            Creator = 3,
+            [Display(Name = "Administrateur du stolon")]
+            StolonAdmin = 3,
             /// <summary>
-            /// Administrator of the web site
+            /// WebAdmin of the web site
             /// </summary>
-            [Display(Name = "Administrateur")]
-            Administrator = 4
+            [Display(Name = "Administrateur du site")]
+            WebAdmin = 4
         }
 
         public const string UserType_SympathizerUser = "Sympathizer";

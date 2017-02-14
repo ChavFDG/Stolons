@@ -34,7 +34,7 @@ namespace Stolons.Controllers
 
 
         // GET: News
-        [Authorize(Roles = Configurations.Role_Administrator + "," + Configurations.Role_Volunteer)]
+        [Authorize(Roles = Configurations.Role_WedAdmin + "," + Configurations.Role_Volunteer)]
         public IActionResult Index(MailMessage mailMessage)
         {
             if (mailMessage == null)
@@ -43,32 +43,32 @@ namespace Stolons.Controllers
         }
 
         // GET: News/Details/5
-        [Authorize(Roles = Configurations.Role_Administrator + "," + Configurations.Role_Volunteer )]
+        [Authorize(Roles = Configurations.Role_WedAdmin + "," + Configurations.Role_Volunteer )]
         public IActionResult Preview(MailMessage mailMessage)
         {
             return View(mailMessage);
         }
 
-        [Authorize(Roles = Configurations.Role_Administrator + "," + Configurations.Role_Volunteer)]
+        [Authorize(Roles = Configurations.Role_WedAdmin + "," + Configurations.Role_Volunteer)]
         public IActionResult SendToSympathizers(MailMessage mailMessage)
         {
             return View("Report", SendMail(_context.Consumers, mailMessage));
         }
         
-        [Authorize(Roles = Configurations.Role_Administrator + "," + Configurations.Role_Volunteer )]
+        [Authorize(Roles = Configurations.Role_WedAdmin + "," + Configurations.Role_Volunteer )]
         public IActionResult SendToConsumers(MailMessage mailMessage)
         {
             return View("Report",SendMail(_context.Consumers, mailMessage));
         }
         
-        [Authorize(Roles = Configurations.Role_Administrator + "," + Configurations.Role_Volunteer)]
+        [Authorize(Roles = Configurations.Role_WedAdmin + "," + Configurations.Role_Volunteer)]
         public IActionResult SendToProducers(MailMessage mailMessage)
         {
             return View("Report",SendMail(_context.Producers, mailMessage));
         }
 
         // GET: News/Details/5
-        [Authorize(Roles = Configurations.Role_Administrator + "," + Configurations.Role_Volunteer)]
+        [Authorize(Roles = Configurations.Role_WedAdmin + "," + Configurations.Role_Volunteer)]
         public IActionResult SendToAllUser(MailMessage mailMessage)
         {
             List<StolonsUser> users = new List<StolonsUser>();

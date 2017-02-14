@@ -22,7 +22,7 @@
                 {
                     <option value="0">Producteur</option>
                 }
-                @if (User.IsInRole(Configurations.Role.Volunteer.ToString()) || User.IsInRole(Configurations.Role.Administrator.ToString()))
+                @if (User.IsInRole(Configurations.Role.Volunteer.ToString()) || User.IsInRole(Configurations.Role.WebAdmin.ToString()))
                 {
                     <option value="1">Stolon</option>
                 }
