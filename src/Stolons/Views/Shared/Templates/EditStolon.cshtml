@@ -1,8 +1,20 @@
 @model Stolons.Models.Stolon
 
+@functions
+{
+    string DayToFrench(DayOfWeek dayOfWeekValue)
+    {
+        var culture = new System.Globalization.CultureInfo("fr-FR");
+        return culture.DateTimeFormat.GetDayName(dayOfWeekValue);
+    }
+}
+
 <div class="form-horizontal">
     <hr />
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <h3>Informations</h3>
+
     <div class="form-group">
         <label asp-for="Label" class="col-md-2 control-label"></label>
         <div class="col-md-10">
@@ -20,7 +32,7 @@
     <div class="form-group">
         <label asp-for="Address" class="col-md-2 control-label"></label>
         <div class="col-md-10">
-            <input asp-for="Address" class="form-control" />
+            <textarea asp-for="Address" class="form-control" ></textarea>
             <span asp-validation-for="Address" class="text-danger"></span>
         </div>
     </div>
@@ -39,6 +51,81 @@
         </div>
     </div>
     <div class="form-group">
+        <label asp-for="Latitude" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="Latitude" class="form-control" />
+            <span asp-validation-for="Latitude" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="Longitude" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="Longitude" class="form-control" />
+            <span asp-validation-for="Longitude" class="text-danger"></span>
+        </div>
+    </div>
+
+
+    <h3>Configurations</h3>
+
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <div class="checkbox">
+                <input asp-for="UseSympathizer" />
+                <label asp-for="UseSympathizer"></label>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <div class="checkbox">
+                <input asp-for="IsModeSimulated" />
+                <label asp-for="IsModeSimulated"></label>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="SimulationMode" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <select asp-for="SimulationMode" asp-items="Html.GetEnumSelectList<Stolon.Modes>()" class="form-control"></select>
+            <span asp-validation-for="SimulationMode" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="State" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <select asp-for="State" asp-items="Html.GetEnumSelectList<Stolon.StolonState>()" class="form-control"></select>
+            <span asp-validation-for="State" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="StolonStateMessage" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <textarea asp-for="StolonStateMessage" class="form-control" ></textarea>
+            <span asp-validation-for="StolonStateMessage" class="text-danger"></span>
+        </div>
+    </div>
+
+    <h3>Textes</h3>
+    <div class="form-group">
+        <label asp-for="AboutText" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <textarea asp-for="AboutText" class="form-control" ></textarea>
+            <span asp-validation-for="AboutText" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="JoinUsText" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <textarea asp-for="JoinUsText" class="form-control" ></textarea>
+            <span asp-validation-for="JoinUsText" class="text-danger"></span>
+        </div>
+    </div>
+
+    <h3>Comissions</h3>
+
+    <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
             <div class="checkbox">
                 <input asp-for="UseProducersFee" />
@@ -54,32 +141,10 @@
         </div>
     </div>
     <div class="form-group">
-        <label asp-for="AboutText" class="col-md-2 control-label"></label>
-        <div class="col-md-10">
-            <input asp-for="AboutText" class="form-control" />
-            <span asp-validation-for="AboutText" class="text-danger"></span>
-        </div>
-    </div>
-    <div class="form-group">
-        <label asp-for="JoinUsText" class="col-md-2 control-label"></label>
-        <div class="col-md-10">
-            <input asp-for="JoinUsText" class="form-control" />
-            <span asp-validation-for="JoinUsText" class="text-danger"></span>
-        </div>
-    </div>
-    <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
             <div class="checkbox">
                 <input asp-for="UseSubscipstion" />
                 <label asp-for="UseSubscipstion"></label>
-            </div>
-        </div>
-    </div>
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <div class="checkbox">
-                <input asp-for="UseSympathizer" />
-                <label asp-for="UseSympathizer"></label>
             </div>
         </div>
     </div>
@@ -107,21 +172,32 @@
     <div class="form-group">
         <label asp-for="SubscriptionStartMonth" class="col-md-2 control-label"></label>
         <div class="col-md-10">
-            <select asp-for="SubscriptionStartMonth" class="form-control"></select>
+            <select asp-for="SubscriptionStartMonth" asp-items="Html.GetEnumSelectList<Stolon.Month>()" class="form-control"></select>
             <span asp-validation-for="SubscriptionStartMonth" class="text-danger"></span>
         </div>
     </div>
+
+
+    <h3>Paniers</h3>
+
+
+
     <div class="form-group">
         <label asp-for="OrderDeliveryMessage" class="col-md-2 control-label"></label>
         <div class="col-md-10">
-            <input asp-for="OrderDeliveryMessage" class="form-control" />
+            <textarea asp-for="OrderDeliveryMessage" class="form-control" ></textarea>
             <span asp-validation-for="OrderDeliveryMessage" class="text-danger"></span>
         </div>
     </div>
     <div class="form-group">
         <label asp-for="OrderDayStartDate" class="col-md-2 control-label"></label>
         <div class="col-md-10">
-            <select asp-for="OrderDayStartDate" class="form-control"></select>
+            <select asp-for="OrderDayStartDate" class="form-control">
+                @foreach (DayOfWeek item in Enum.GetValues(typeof(DayOfWeek)))
+                {
+                    <option value="@item">@DayToFrench(item)</option>
+                }
+            </select>
             <span asp-validation-for="OrderDayStartDate" class="text-danger"></span>
         </div>
     </div>
@@ -142,7 +218,12 @@
     <div class="form-group">
         <label asp-for="DeliveryAndStockUpdateDayStartDate" class="col-md-2 control-label"></label>
         <div class="col-md-10">
-            <select asp-for="DeliveryAndStockUpdateDayStartDate" class="form-control"></select>
+            <select asp-for="DeliveryAndStockUpdateDayStartDate" class="form-control">
+                @foreach (DayOfWeek item in Enum.GetValues(typeof(DayOfWeek)))
+                {
+                    <option value="@item">@DayToFrench(item)</option>
+                }
+            </select>
             <span asp-validation-for="DeliveryAndStockUpdateDayStartDate" class="text-danger"></span>
         </div>
     </div>
@@ -163,7 +244,12 @@
     <div class="form-group">
         <label asp-for="BasketPickUpStartDay" class="col-md-2 control-label"></label>
         <div class="col-md-10">
-            <select asp-for="BasketPickUpStartDay" class="form-control"></select>
+            <select asp-for="BasketPickUpStartDay" class="form-control">
+                @foreach (DayOfWeek item in Enum.GetValues(typeof(DayOfWeek)))
+                {
+                    <option value="@item">@DayToFrench(item)</option>
+                }
+            </select>
             <span asp-validation-for="BasketPickUpStartDay" class="text-danger"></span>
         </div>
     </div>
@@ -184,7 +270,12 @@
     <div class="form-group">
         <label asp-for="BasketPickEndUpDay" class="col-md-2 control-label"></label>
         <div class="col-md-10">
-            <select asp-for="BasketPickEndUpDay" class="form-control"></select>
+            <select asp-for="BasketPickEndUpDay" class="form-control">
+                @foreach (DayOfWeek item in Enum.GetValues(typeof(DayOfWeek)))
+                {
+                    <option value="@item">@DayToFrench(item)</option>
+                }
+            </select>
             <span asp-validation-for="BasketPickEndUpDay" class="text-danger"></span>
         </div>
     </div>
@@ -202,49 +293,10 @@
             <span asp-validation-for="BasketPickUpEndMinute" class="text-danger"></span>
         </div>
     </div>
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <div class="checkbox">
-                <input asp-for="IsModeSimulated" />
-                <label asp-for="IsModeSimulated"></label>
-            </div>
-        </div>
-    </div>
-    <div class="form-group">
-        <label asp-for="SimulationMode" class="col-md-2 control-label"></label>
-        <div class="col-md-10">
-            <select asp-for="SimulationMode" class="form-control"></select>
-            <span asp-validation-for="SimulationMode" class="text-danger"></span>
-        </div>
-    </div>
-    <div class="form-group">
-        <label asp-for="State" class="col-md-2 control-label"></label>
-        <div class="col-md-10">
-            <select asp-for="State" class="form-control"></select>
-            <span asp-validation-for="State" class="text-danger"></span>
-        </div>
-    </div>
-    <div class="form-group">
-        <label asp-for="StolonStateMessage" class="col-md-2 control-label"></label>
-        <div class="col-md-10">
-            <input asp-for="StolonStateMessage" class="form-control" />
-            <span asp-validation-for="StolonStateMessage" class="text-danger"></span>
-        </div>
-    </div>
-    <div class="form-group">
-        <label asp-for="Latitude" class="col-md-2 control-label"></label>
-        <div class="col-md-10">
-            <input asp-for="Latitude" class="form-control" />
-            <span asp-validation-for="Latitude" class="text-danger"></span>
-        </div>
-    </div>
-    <div class="form-group">
-        <label asp-for="Longitude" class="col-md-2 control-label"></label>
-        <div class="col-md-10">
-            <input asp-for="Longitude" class="form-control" />
-            <span asp-validation-for="Longitude" class="text-danger"></span>
-        </div>
-    </div>
+
+
+    <h3>Bon plans</h3>
+
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
             <div class="checkbox">

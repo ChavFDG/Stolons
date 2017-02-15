@@ -29,14 +29,14 @@ namespace Stolons.Controllers
         // GET: Stolon
         public IActionResult Index()
         {
-            return View(_context.Stolons.First());
+            return View(_context.ApplicationConfig.First());
         }
 
         [Authorize(Roles = Role_WedAdmin)]
         // GET: Stolon/Edit/5
         public IActionResult Edit()
         {
-            return View(_context.Stolons.First());
+            return View(_context.ApplicationConfig.First());
         }
 
 	    [HttpGet, ActionName("CurrentMode"), Route("api/currentMode")]
@@ -50,7 +50,7 @@ namespace Stolons.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = Role_WedAdmin)]
-        public IActionResult Edit(Stolon applicationConfig)
+        public IActionResult Edit(ApplicationConfig applicationConfig)
         {
             if (ModelState.IsValid)
             {

@@ -25,7 +25,6 @@ namespace Stolons.Controllers
         {
 
         }
-        but de l'
         // GET: Bills
         public IActionResult Index()
         {

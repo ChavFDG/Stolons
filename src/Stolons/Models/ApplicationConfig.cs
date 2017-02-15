@@ -27,5 +27,9 @@ namespace Stolons.Models
         public string MailSmtp { get; set; } = "mail.gandi.net";
         [Display(Name = "Port")]
         public int MailPort { get; set; } = 587;
+        [Display(Name = "Site en maintenance")]
+        public bool IsInMaintenance{ get; set; } = false;
+        [Display(Name = "Message de maintenance du site")]
+        public string MaintenanceMessage { get; set; } = "Le site est en maintenance, veuillez nous excuser pour la gène occasionée.";
     }
 }
