@@ -34,8 +34,9 @@ namespace Stolons.Controllers
         public async Task<IActionResult> Index()
         {
             Producer producer = await GetCurrentStolonsUserAsync() as Producer;
-            var products = _context.Products.Include(m => m.Familly).Include(m => m.Familly.Type).Where(x => x.Producer == producer).ToList();
-            return View(products);
+            var products = _context.Products.Include(m => m.Familly).Include(m => m.Familly.Type).Where(x => x.Producer == producer);
+            ProductsViewModel vm = new ProductsViewModel(products, GetCurrentStolon());
+            return View(vm);
         }
 
         [Authorize(Roles = Configurations.UserType_Producer)]

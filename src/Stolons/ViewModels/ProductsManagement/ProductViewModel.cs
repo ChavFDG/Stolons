@@ -11,18 +11,18 @@ namespace Stolons.ViewModels.ProductsManagement
     public class ProductViewModel
     {
 
-	public Product Product { get; set; }
+        public Product Product { get; set; }
 
-	public string OrderedQuantityString;
+        public string OrderedQuantityString;
 
-	public ProductViewModel()
+        public ProductViewModel()
         {
         }
 
         public ProductViewModel(Product product, int orderedQty)
         {
-	    Product = product;
-	    OrderedQuantityString = product.GetQuantityString(orderedQty);
-	}
+            Product = product;
+            OrderedQuantityString = product.GetQuantityString(orderedQty);
+        }
     }
 }
