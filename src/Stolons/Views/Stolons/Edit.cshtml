@@ -1,5 +1,6 @@
-@model Stolons.Models.Stolon
-<h2>@("Edition de " + Model.Label)</h2>
+@model Stolons.ViewModels.Stolons.StolonViewModel
+
+<h2>@("Edition de " + Model.Stolon.Label)</h2>
 
 <form asp-action="Edit" enctype="multipart/form-data">
     @Html.Partial("Templates/EditStolon")
@@ -9,10 +10,6 @@
         </div>
     </div>
 </form>
-
-<div>
-    <a asp-action="Index" class="btn btn-small btn-default">Retourner aux stolons</a>
-</div>
 
 @section Scripts {
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

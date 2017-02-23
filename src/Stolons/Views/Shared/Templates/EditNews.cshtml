@@ -1,6 +1,21 @@
 ﻿@using Stolons.Models.Users;
-@model Stolons.Models.Messages.News
+@using Stolons.Models.Messages;
+@model News
+ 
 
+<script type='text/javascript'>
+        $(document).ready(function () {
+            $('select[name="NewsType"]').change(function () {
+                //Check if the A option is checked
+                if ($(this).val() == "0") {
+                    $("#PublishEnd").hide();
+                }
+                else {
+                    $("#PublishEnd").show();
+                }
+            });
+        });
+</script>
 
 <div class="form-horizontal">
     <hr />
@@ -15,9 +30,9 @@
         </div>
     </div>
     <div class="form-group">
-        <label asp-for="NewsType" class="col-md-2 control-label"></label>
+        <label asp-for="PublishAs" class="col-md-2 control-label"></label>
         <div class="col-md-10">
-            <select id="NewsType" class="form-control valid" name="NewsType" data-val="true" aria-required="true" aria-invalid="false" aria-describedby="UserRole-error">
+            <select id="PublishAs" class="form-control valid" name="PublishAs" data-val="true" aria-required="true" aria-invalid="false" aria-describedby="UserRole-error">
                 @if (Model.User is Producer)
                 {
                     <option value="0">Producteur</option>
@@ -28,8 +43,22 @@
                 }
             </select>
         </div>
-
-
+    </div>
+    <div class="form-group">
+        <label asp-for="NewsType" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <select id="NewsType" class="form-control valid" name="NewsType" data-val="true" aria-required="true" aria-invalid="false" aria-describedby="UserRole-error">
+                <option value="0">Pour la semaine</option>
+                <option value="1">Jusqu'à une date</option>
+            </select>
+        </div>
+    </div>
+    <div class="form-group" id="PublishEnd"  style="@(Model.NewsType == NewsType.Week ? "display: none;" : "display: block;")">
+        <label asp-for="PublishEnd" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="PublishEnd" class="form-control" />
+            <span asp-validation-for="PublishEnd" class="text-danger" />
+        </div>
     </div>
     <div class="form-group">
         <label asp-for="Content" class="col-md-2 control-label"></label>

@@ -7,12 +7,6 @@
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
-@{
-    ViewData["Title"] = "Nouvelles de l'association et des producteurs";
-}
-
-<h2>@ViewData["Title"]</h2>
-
 
 @if (SignInManager.IsSignedIn(User))
 {
@@ -27,7 +21,7 @@
     }
 }
 <table class="table">
-    @foreach (var item in Model.OrderByDescending(x => x.DateOfPublication))
+    @foreach (var item in Model.OrderByDescending(x => x.DateOfPublication).OrderBy(x=>x.NewsType))
     {
         <tr>
             <td class="tdImageNews">
@@ -42,22 +36,22 @@
 
                 <div class="newsAuthor">
                     <div class="nextToDiv">
-                        @switch (item.NewsType)
+                        @switch (item.PublishAs)
                         {
-                            case Stolons.Models.Messages.NewsType.Producer:
-                                <img class="avatar userNewsAvatar" src="@item.User.Avatar" />
+                            case Stolons.Models.Messages.NewsPublishAs.Producer:
+                                <img class="avatar userNewsAvatar" src="@item.User.AvatarFilePath" />
                                 break;
-                            case Stolons.Models.Messages.NewsType.Stolon:
+                            case Stolons.Models.Messages.NewsPublishAs.Stolon:
                                 <img class="avatar userNewsAvatar" src="@item.Stolon.LogoFilePath" />
                                 break;
                         }
                     </div>
-                    @switch (item.NewsType)
+                    @switch (item.PublishAs)
                     {
-                        case Stolons.Models.Messages.NewsType.Producer:
+                        case Stolons.Models.Messages.NewsPublishAs.Producer:
                             <a asp-action="PartialDetail" asp-controller="Producers" asp-route-id="@item.User.Id">@((item.User as Producer).CompanyName)</a>
                             break;
-                        case Stolons.Models.Messages.NewsType.Stolon:
+                        case Stolons.Models.Messages.NewsPublishAs.Stolon:
                             @item.Stolon.Label
                             break;
                     }

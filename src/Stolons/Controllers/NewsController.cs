@@ -58,7 +58,7 @@ namespace Stolons.Controllers
         [Authorize(Roles = Configurations.Role_WedAdmin + "," + Configurations.Role_Volunteer + "," +Configurations.UserType_Producer)]
         public IActionResult Create()
         {
-            return View(new News() { User = GetCurrentStolonsUserSync() });
+            return View(new News());
         }
 
         // POST: News/Create

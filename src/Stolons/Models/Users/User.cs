@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -28,7 +29,17 @@ namespace Stolons.Models.Users
         public string Surname { get; set; }
 
         [Display(Name = "Avatar")]
-        public string Avatar { get; set; } //Lien vers l'image sur le serveur
+        public string AvatarFileName { get; set; } //Lien vers l'image sur le serveur
+        
+        public string AvatarFilePath
+        {
+            get
+            {
+                if (String.IsNullOrWhiteSpace(AvatarFileName))
+                    return Path.Combine(Configurations.AvatarStockagePath, Configurations.DefaultFileName);
+                return Path.Combine(Configurations.AvatarStockagePath, AvatarFileName);
+            }
+        }
 
         [Display(Name = "Adresse")] 
         public string Address { get; set; }

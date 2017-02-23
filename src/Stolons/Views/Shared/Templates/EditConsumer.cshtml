@@ -5,7 +5,7 @@
     <input asp-for="Consumer.Id" hidden="hidden" />
     <input asp-for="Consumer.StolonId" hidden="hidden" />
     <input asp-for="OriginalEmail" hidden="hidden" />
-    <input asp-for="Consumer.Avatar" hidden="hidden" />
+    <input asp-for="Consumer.AvatarFileName" hidden="hidden" />
     <input asp-for="Consumer.Cotisation" hidden="hidden" />
     <input asp-for="Consumer.Enable" hidden="hidden" />
     <input asp-for="Consumer.RegistrationDate" hidden="hidden" />
@@ -32,7 +32,7 @@
         </div>
     </div>
     <div class="form-group">
-        <label asp-for="Consumer.Avatar" class="col-md-2 control-label"></label>
+        <label asp-for="Consumer.AvatarFileName" class="col-md-2 control-label"></label>
         <div class="col-md-10">
             <input type="file" accept="image/*" name="uploadFile" class="form-control" />
         </div>

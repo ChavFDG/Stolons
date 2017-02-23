@@ -12,16 +12,16 @@
         <dd>
             @if (User.IsInRole(Configurations.UserType.Consumer.ToString()))
             {
-            <a asp-controller="Manage" asp-action="ChangeUserInformations">Modifier mes paramètres personnels</a>
+                <a asp-controller="Manage" asp-action="ChangeUserInformations">Modifier mes paramètres personnels</a>
             }
             @if (User.IsInRole(Configurations.UserType.Producer.ToString()))
             {
-            <a asp-controller="Manage" asp-action="ChangeProducerInformations">Modifier mes paramètres personnels</a>
-             }
+                <a asp-controller="Manage" asp-action="ChangeProducerInformations">Modifier mes paramètres personnels</a>
+            }
         </dd>
         <dt>Mot de passe :</dt>
         <dd>
-          <a asp-controller="Manage" asp-action="ChangePassword">Changer mon mot de passe</a>
+            <a asp-controller="Manage" asp-action="ChangePassword">Changer mon mot de passe</a>
         </dd>
     </dl>
 </div>

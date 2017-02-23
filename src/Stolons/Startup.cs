@@ -504,7 +504,6 @@ namespace Stolons
             user.Name = name;
             user.Surname = surname;
             user.Email = email;
-            user.Avatar = Path.Combine(Configurations.UserAvatarStockagePath, Configurations.DefaultFileName);
             user.RegistrationDate = DateTime.Now;
             user.Enable = true;
             user.PostCode = "07000";

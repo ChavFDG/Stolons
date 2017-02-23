@@ -1,10 +1,13 @@
 ﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Net.Http.Headers;
+using Stolons.Helpers;
 using Stolons.Models;
 using Stolons.Models.Users;
 using System;
@@ -24,7 +27,7 @@ namespace Stolons.Controllers
         protected readonly IHostingEnvironment _environment;
         protected readonly SignInManager<ApplicationUser> _signInManager;
 
-        public BaseController(  IServiceProvider serviceProvider,
+        public BaseController(IServiceProvider serviceProvider,
                                 UserManager<ApplicationUser> userManager,
                                 ApplicationDbContext dbContext,
                                 IHostingEnvironment environment,
@@ -87,6 +90,33 @@ namespace Stolons.Controllers
         protected Stolon GetCurrentStolon()
         {
             return GetCurrentStolonsUserSync().Stolon;
+        }
+
+
+        /// <summary>
+        /// Upload a file and return is name
+        /// </summary>
+        /// <param name="uploadFile">File to upload</param>
+        /// <param name="stockagePath">Stockage path of the file</param>
+        /// <param name="filePathToDelete">File path to delete</param>
+        /// <returns></returns>
+        protected async Task<string> UploadFile(IFormFile uploadFile, string stockagePath, string filePathToDelete = null)
+        {
+            if (!String.IsNullOrWhiteSpace(filePathToDelete) && !filePathToDelete.EndsWith(Configurations.DefaultFileName))
+                if (System.IO.File.Exists(filePathToDelete))
+                    System.IO.File.Delete(filePathToDelete);
+
+            if (uploadFile == null)
+                return String.IsNullOrWhiteSpace(filePathToDelete) || filePathToDelete.EndsWith(Configurations.DefaultFileName) ? null : Path.GetFileName(filePathToDelete);
+
+            string uploads = Path.Combine(_environment.WebRootPath, stockagePath);
+            string fileName = Guid.NewGuid().ToString() + "_" + ContentDispositionHeaderValue.Parse(uploadFile.ContentDisposition).FileName.Trim('"');
+            await uploadFile.SaveAsAsync(Path.Combine(uploads, fileName));
+            return fileName;
+        }
+        protected async void UploadAndSetAvatar(Consumer consumer, IFormFile uploadFile)
+        {
+            consumer.AvatarFileName = await UploadFile(uploadFile, Configurations.AvatarStockagePath, consumer.AvatarFilePath);
         }
     }
 }

@@ -10,6 +10,11 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using static Stolons.Configurations;
+using Microsoft.AspNetCore.Http;
+using System.IO;
+using Microsoft.Net.Http.Headers;
+using Stolons.Helpers;
+using Stolons.ViewModels.Stolons;
 
 namespace Stolons.Controllers
 {
@@ -61,21 +66,23 @@ namespace Stolons.Controllers
         [HttpPost]
         [Authorize(Roles = Role_WedAdmin)]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Label,LogoFileName,Address,PhoneNumber,ContactMailAddress,UseProducersFee,ProducersFee,AboutText,JoinUsText,UseSubscipstion,UseSympathizer,SympathizerSubscription,ConsumerSubscription,ProducerSubscription,SubscriptionStartMonth,OrderDeliveryMessage,OrderDayStartDate,OrderHourStartDate,OrderMinuteStartDate,DeliveryAndStockUpdateDayStartDate,DeliveryAndStockUpdateDayStartDateHourStartDate,DeliveryAndStockUpdateDayStartDateMinuteStartDate,BasketPickUpStartDay,BasketPickUpStartHour,BasketPickUpStartMinute,BasketPickEndUpDay,BasketPickUpEndHour,BasketPickUpEndMinute,IsModeSimulated,SimulationMode,State,StolonStateMessage,Latitude,Longitude,GoodPlan")] Stolon stolon)
+        public async Task<IActionResult> Create(StolonViewModel vm, IFormFile uploadFile)
         {
             if (ModelState.IsValid)
             {
-                stolon.Id = Guid.NewGuid();
-                _context.Add(stolon);
+                vm.Stolon.Id = Guid.NewGuid();
+                vm.Stolon.LogoFileName = await UploadFile(uploadFile, Configurations.StolonLogoStockagePath);
+                _context.Add(vm.Stolon);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            return View(stolon);
+            return View(vm);
         }
+
 
         // GET: Stolons/Edit/5
         [Authorize(Roles = Role_StolonAdmin + "," + Role_WedAdmin)]
-        public async Task<IActionResult> Edit(Guid? id)
+        public async Task<IActionResult> Edit(Guid? id, IFormFile uploadFile)
         {
             if (id == null)
             {
@@ -87,7 +94,7 @@ namespace Stolons.Controllers
             {
                 return NotFound();
             }
-            return View(stolon);
+            return View(new StolonViewModel(stolon));
         }
 
         // POST: Stolons/Edit/5
@@ -96,9 +103,9 @@ namespace Stolons.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = Role_StolonAdmin + "," + Role_WedAdmin)]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Label,LogoFileName,Address,PhoneNumber,ContactMailAddress,UseProducersFee,ProducersFee,AboutText,JoinUsText,UseSubscipstion,UseSympathizer,SympathizerSubscription,ConsumerSubscription,ProducerSubscription,SubscriptionStartMonth,OrderDeliveryMessage,OrderDayStartDate,OrderHourStartDate,OrderMinuteStartDate,DeliveryAndStockUpdateDayStartDate,DeliveryAndStockUpdateDayStartDateHourStartDate,DeliveryAndStockUpdateDayStartDateMinuteStartDate,BasketPickUpStartDay,BasketPickUpStartHour,BasketPickUpStartMinute,BasketPickEndUpDay,BasketPickUpEndHour,BasketPickUpEndMinute,IsModeSimulated,SimulationMode,State,StolonStateMessage,Latitude,Longitude,GoodPlan")] Stolon stolon)
+        public async Task<IActionResult> Edit(Guid id, StolonViewModel vm, IFormFile uploadFile)
         {
-            if (id != stolon.Id)
+            if (id != vm.Stolon.Id)
             {
                 return NotFound();
             }
@@ -107,12 +114,13 @@ namespace Stolons.Controllers
             {
                 try
                 {
-                    _context.Update(stolon);
+                    vm.Stolon.LogoFileName = await UploadFile(uploadFile, Configurations.AvatarStockagePath, vm.Stolon.LogoFileName);
+                    _context.Update(vm.Stolon);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!StolonExists(stolon.Id))
+                    if (!StolonExists(vm.Stolon.Id))
                     {
                         return NotFound();
                     }
@@ -123,7 +131,7 @@ namespace Stolons.Controllers
                 }
                 return RedirectToAction("Index");
             }
-            return View(stolon);
+            return View(vm.Stolon);
         }
 
         // GET: Stolons/Delete/5

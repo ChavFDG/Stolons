@@ -33,11 +33,11 @@
             "version": "1.1.0-preview4-final",
             "type": "build"
         },
-        "BundlerMinifier.Core": "2.2.306",
-      "Microsoft.AspNetCore.Hosting.Abstractions": "1.1.0",
+        "Microsoft.AspNetCore.Hosting.Abstractions": "1.1.0",
       "MailKit": "1.10.2",
-        "Microsoft.AspNetCore.Mvc": "1.1.0",
-        "Microsoft.EntityFrameworkCore": "1.1.0"
+        "Microsoft.EntityFrameworkCore": "1.1.0",
+        "BundlerMinifier.Core": "2.3.327",
+        "Microsoft.AspNetCore.Mvc": "1.1.1"
     },
 
     "tools": {

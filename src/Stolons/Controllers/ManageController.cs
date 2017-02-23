@@ -57,7 +57,7 @@ namespace Stolons.Controllers
 
             var model = new IndexViewModel
             {
-                Avatar = stolonsUser.Avatar,
+                AvatarFilePath = stolonsUser.AvatarFilePath,
                 HasPassword = await _userManager.HasPasswordAsync(user),
                 PhoneNumber = await _userManager.GetPhoneNumberAsync(user),
                 TwoFactor = await _userManager.GetTwoFactorEnabledAsync(user),
@@ -120,23 +120,13 @@ namespace Stolons.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize()]
-        public async Task<IActionResult> ChangeUserInformations(ConsumerViewModel userStolonVm, IFormFile uploadFile, Configurations.Role UserRole)
+        public async Task<IActionResult> ChangeUserInformations(ConsumerViewModel vmConsumer, IFormFile uploadFile, Configurations.Role UserRole)
         {
             if (ModelState.IsValid)
             {
-                if (uploadFile != null)
-                {
-                    //Deleting old image
-                    string oldImage = Path.Combine(_environment.WebRootPath, Configurations.UserAvatarStockagePath, userStolonVm.Consumer.Avatar);
-                    if (System.IO.File.Exists(oldImage) && userStolonVm.Consumer.Avatar != Path.Combine(Configurations.UserAvatarStockagePath, Configurations.DefaultFileName))
-                        System.IO.File.Delete(Path.Combine(_environment.WebRootPath, Configurations.UserAvatarStockagePath, userStolonVm.Consumer.Avatar));
-                    //Image uploading
-                    string fileName = await Configurations.UploadImageFile(_environment, uploadFile, Configurations.UserAvatarStockagePath);
-                    //Setting new value, saving
-                    userStolonVm.Consumer.Avatar =  fileName;
-                }
-                ApplicationUser appUser = _context.Users.First(x => x.Email == userStolonVm.OriginalEmail);
-                appUser.Email = userStolonVm.Consumer.Email;
+                UploadAndSetAvatar(vmConsumer.Consumer, uploadFile);
+                ApplicationUser appUser = _context.Users.First(x => x.Email == vmConsumer.OriginalEmail);
+                appUser.Email = vmConsumer.Consumer.Email;
                 _context.Update(appUser);
                 //Getting actual roles
                 IList<string> roles = await _userManager.GetRolesAsync(appUser);
@@ -147,11 +137,11 @@ namespace Stolons.Controllers
                     //Add user role
                     await _userManager.AddToRoleAsync(appUser, UserRole.ToString());
                 }
-                _context.Update(userStolonVm.Consumer);
+                _context.Update(vmConsumer.Consumer);
                 _context.SaveChanges();
                 return RedirectToAction("Index");
             }
-            return View(userStolonVm);
+            return View(vmConsumer);
         }
 
         [Authorize()]
@@ -172,23 +162,14 @@ namespace Stolons.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize()]
-        public async Task<IActionResult> ChangeProducerInformations(ProducerViewModel producerVm, IFormFile uploadFile, Configurations.Role UserRole)
+        public async Task<IActionResult> ChangeProducerInformations(ProducerViewModel vmProducer, IFormFile uploadFile, Configurations.Role UserRole)
         {
             if (ModelState.IsValid)
             {
-                if (uploadFile != null)
-                {
-                    //Deleting old image
-                    string oldImage = Path.Combine(_environment.WebRootPath, Configurations.UserAvatarStockagePath, producerVm.Producer.Avatar);
-                    if (System.IO.File.Exists(oldImage) && producerVm.Producer.Avatar != Path.Combine(Configurations.UserAvatarStockagePath, Configurations.DefaultFileName))
-                        System.IO.File.Delete(Path.Combine(_environment.WebRootPath, Configurations.UserAvatarStockagePath, producerVm.Producer.Avatar));
-                    //Image uploading
-                    string fileName = await Configurations.UploadImageFile(_environment, uploadFile, Configurations.UserAvatarStockagePath);
-                    //Setting new value, saving
-                    producerVm.Producer.Avatar = Path.Combine( fileName);
-                }
-                ApplicationUser appUser = _context.Users.First(x => x.Email == producerVm.OriginalEmail);
-                appUser.Email = producerVm.Producer.Email;
+                UploadAndSetAvatar(vmProducer.Producer, uploadFile);
+                 
+                ApplicationUser appUser = _context.Users.First(x => x.Email == vmProducer.OriginalEmail);
+                appUser.Email = vmProducer.Producer.Email;
                 _context.Update(appUser);
                 //Getting actual roles
                 IList<string> roles = await _userManager.GetRolesAsync(appUser);
@@ -199,11 +180,11 @@ namespace Stolons.Controllers
                     //Add user role
                     await _userManager.AddToRoleAsync(appUser, UserRole.ToString());
                 }
-                _context.Update(producerVm.Producer);
+                _context.Update(vmProducer.Producer);
                 _context.SaveChanges();
                 return RedirectToAction("Index");
             }
-            return View(producerVm);
+            return View(vmProducer);
         }
         
 

@@ -92,16 +92,7 @@ namespace Stolons.Controllers
             if (ModelState.IsValid)
             {
                 #region Creating Producer
-                string fileName = Configurations.DefaultFileName;
-                if (uploadFile != null)
-                {
-                    //Image uploading
-                    string uploads = Path.Combine(_environment.WebRootPath, Configurations.UserAvatarStockagePath);
-                    fileName = Guid.NewGuid().ToString() + "_" + ContentDispositionHeaderValue.Parse(uploadFile.ContentDisposition).FileName.Trim('"');
-                    await uploadFile.SaveAsAsync(Path.Combine(uploads, fileName));
-                }
-                //Setting value for creation
-                vmProducer.Producer.Avatar = Path.Combine(Configurations.UserAvatarStockagePath, fileName);
+                UploadAndSetAvatar(vmProducer.Producer, uploadFile);
                 vmProducer.Producer.RegistrationDate = DateTime.Now;
                 vmProducer.Producer.StolonId = GetCurrentStolon().Id;
                 _context.Producers.Add(vmProducer.Producer);
@@ -159,19 +150,7 @@ namespace Stolons.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (uploadFile != null)
-                {
-                    string uploads = Path.Combine(_environment.WebRootPath, Configurations.UserAvatarStockagePath);
-                    //Deleting old image
-                    string oldImage = Path.Combine(uploads, vmProducer.Producer.Avatar);
-                    if (System.IO.File.Exists(oldImage) && vmProducer.Producer.Avatar != Path.Combine(Configurations.UserAvatarStockagePath, Configurations.DefaultFileName))
-                        System.IO.File.Delete(Path.Combine(uploads, vmProducer.Producer.Avatar));
-                    //Image uploading
-                    string fileName = Guid.NewGuid().ToString() + "_" + ContentDispositionHeaderValue.Parse(uploadFile.ContentDisposition).FileName.Trim('"');
-                    await uploadFile.SaveAsAsync(Path.Combine(uploads, fileName));
-                    //Setting new value, saving
-                    vmProducer.Producer.Avatar = Path.Combine(Configurations.UserAvatarStockagePath, fileName);
-                }
+                UploadAndSetAvatar(vmProducer.Producer,uploadFile);
                 ApplicationUser producerAppUser = _context.Users.First(x => x.Email == vmProducer.OriginalEmail);
                 producerAppUser.Email = vmProducer.Producer.Email;
                 _context.Update(producerAppUser);
@@ -218,10 +197,10 @@ namespace Stolons.Controllers
         {
             Producer producer = _context.Producers.Single(m => m.Id == id);
             //Deleting image
-            string uploads = Path.Combine(_environment.WebRootPath, Configurations.UserAvatarStockagePath);
-            string image = Path.Combine(uploads, producer.Avatar);
-            if (System.IO.File.Exists(image) && producer.Avatar != Path.Combine(Configurations.UserAvatarStockagePath, Configurations.DefaultFileName))
-                System.IO.File.Delete(Path.Combine(uploads, producer.Avatar));
+            string uploads = Path.Combine(_environment.WebRootPath, Configurations.AvatarStockagePath);
+            string image = Path.Combine(uploads, producer.AvatarFileName);
+            if (System.IO.File.Exists(image) && producer.AvatarFileName != Path.Combine(Configurations.AvatarStockagePath, Configurations.DefaultFileName))
+                System.IO.File.Delete(Path.Combine(uploads, producer.AvatarFileName));
             //Delete App User
             ApplicationUser producerAppUser = _context.Users.First(x => x.Email == producer.Email);
             _context.Users.Remove(producerAppUser);

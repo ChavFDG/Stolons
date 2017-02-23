@@ -15,7 +15,7 @@
             @Html.DisplayNameFor(item => item.Id)
         </th>
         <th>
-            @Html.DisplayNameFor(item => item.Avatar)
+            @Html.DisplayNameFor(item => item.AvatarFileName)
         </th>
         <th>
             @Html.DisplayNameFor(item => item.Name)
@@ -45,7 +45,7 @@
             </td>
             <td class="tdAvatarList">
                 <div class="userListAvatar" >
-                    <img src="@Html.DisplayFor(modelItem => item.Avatar)" class="responsiveImage circleAvatarDiv"  />
+                    <img src="@Html.DisplayFor(modelItem => item.AvatarFilePath)" class="responsiveImage circleAvatarDiv"  />
                 </div>
             </td>
             <td>

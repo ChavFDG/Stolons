@@ -27,12 +27,12 @@
             </div>
         </div>
         <div class="form-group">
-            <label asp-for="Consumer.Avatar" class="col-md-2 control-label"></label>
+            <label asp-for="Consumer.AvatarFileName" class="col-md-2 control-label"></label>
             <div class="col-md-10">
                 <input type="file" accept="image/*" name="uploadFile" class="form-control" />
             </div>
         </div>
-        <input asp-for="Consumer.Avatar" hidden="hidden" />
+        <input asp-for="Consumer.AvatarFileName" hidden="hidden" />
         <div class="form-group">
             <label asp-for="Consumer.Email" class="col-md-2 control-label"></label>
             <div class="col-md-10">
@@ -79,10 +79,6 @@
         </div>
     </div>
 </form>
-
-<div>
-    <a asp-action="Index">Retourner à mon compte</a>
-</div>
 
 @section Scripts {
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

@@ -123,12 +123,12 @@ namespace Stolons
         public static string ConsumersBillsStockagePath = Path.Combine("bills","consumer");
         public static string ProducersBillsStockagePath = Path.Combine("bills", "producer");
         public static string NewsImageStockagePath = Path.Combine("uploads", "images", "news");
-        public static string UserAvatarStockagePath = Path.Combine("uploads", "images", "avatars");
+        public static string AvatarStockagePath = Path.Combine("uploads", "images", "avatars");
         public static string ProductsTypeAndFamillyIconsStockagesPath = Path.Combine("images", "productFamilies");
         public static string ProductsStockagePathLight = Path.Combine("uploads", "images", "products","light");
         public static string ProductsStockagePathHeavy = Path.Combine("uploads", "images", "products","heavy");
         public static string DefaultProductImage = Path.Combine("uploads", "images", "products", "Default.png");
-        public static string DefaultFileName = "Default.png";
+        public static string DefaultFileName = "default.png";
         private static string _labelImagePath = Path.Combine("images", "labels");
         public static string GetImage(this Product.Label label)
         {
