@@ -4,7 +4,8 @@
  
 
 <script type='text/javascript'>
-        $(document).ready(function () {
+    $(document).ready(function () {
+            $('#InputPublishEnd').datepicker();
             $('select[name="NewsType"]').change(function () {
                 //Check if the A option is checked
                 if ($(this).val() == "0") {
@@ -56,7 +57,7 @@
     <div class="form-group" id="PublishEnd"  style="@(Model.NewsType == NewsType.Week ? "display: none;" : "display: block;")">
         <label asp-for="PublishEnd" class="col-md-2 control-label"></label>
         <div class="col-md-10">
-            <input asp-for="PublishEnd" class="form-control" />
+            <input asp-for="PublishEnd" class="form-control" id="InputPublishEnd"/>
             <span asp-validation-for="PublishEnd" class="text-danger" />
         </div>
     </div>
