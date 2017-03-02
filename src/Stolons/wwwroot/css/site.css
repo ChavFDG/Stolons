@@ -3,6 +3,7 @@ body,html {
     margin:0;
     padding:0;
     height: 100%;
+    font-family: 'Trebuchet MS';
     /* background-image: url("/images/trocoul.jpg"); */
     /* background-repeat: repeat; */
 }
@@ -633,3 +634,37 @@ div#warning-informations{
             display:block;
         }
 	
+
+        /*******************************/
+
+        div#home div.row {
+            margin-top: 20px;
+        }
+
+        div#products {
+            margin-top: 20px;
+        }
+
+        div#products img{
+            max-width: 100px;
+        }
+
+        div#links {
+            margin: 30px 0;
+        }
+
+        a.main-links {
+            max-width: 250px;
+            margin: auto;
+            display: block;
+            padding: 10px;
+            background: #609DD6;
+            color: #fff;
+            border-radius: 5px;
+        }
+
+        a.main-links:hover, a.main-links:active {
+            text-decoration: none;
+            background: green;
+            color: #fff;
+        }

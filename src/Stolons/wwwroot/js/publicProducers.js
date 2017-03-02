@@ -106,9 +106,8 @@ $(function() {
     window.ProducerModalView = new ProducerViewModal();
 
     PublicProducers.ProducersModel = new ProducersModel();
-
     PublicProducers.ProducersModel.on("sync", function() {
-	initMap(PublicProducers.ProducersModel);
+        initMap(PublicProducers.ProducersModel);
     });
 
 });

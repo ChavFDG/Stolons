@@ -2,9 +2,89 @@
     ViewData["Title"] = "Index";
 }
 
+<link rel="stylesheet" href="~/css/leaflet.css" />
+
 <div class="row">
     <a asp-controller="Account" asp-action="Login" class="btn btn-link navbar-btn navbar-link">Se connecter</a>
-    <div>
-        <img src="~/images/ViewExemple/Home.Index.png" class="responsiveImage" />
-    </div> 
+    <div class="col-lg-12" id="logo">
+        <img src="~/images/logos/Logo_HD.png" class="responsiveImage" style="max-width: 600px;" />
+    </div>
 </div>
+
+<div id="home">
+    <div id="producerModal" class="modals"></div>
+    <div class="row">
+        <div class="col-lg-12 producersMapContainer">
+            <div id="map" style="height: 400px">
+            </div>
+        </div>
+        <div class="col-lg-12" id="links">
+            <div class="col-lg-offset-3 col-lg-3 text-center"><a href="#" class="main-links" data-toggle="modal" data-target="#myModal">Se connecter</a></div>
+            <div class="col-lg-3 text-center"><a href="#" class="main-links">Créer un Stolon</a></div>
+        </div>
+    </div>
+
+    <div class="row">
+        <h1 class="col-lg-12 text-center">Stolons c'est quoi ?</h1>
+        <div class="col-lg-12" id="presentation-text">
+            Stolons c'est une plateforme libre et open source regroupant des structures, appelé
+
+            Stolon, souhaitant développer l'agriculture local, éthique et écologique tout en créant du
+
+            lien social et en développant les actions locals.
+
+            Tous les Stolons vous proposent de composer chaque semaine votre panier de produit
+
+            locaux respectueux de l'environnement.
+
+            De plus les Stolons peuvent vous proposer d'autres services comme un café associatif,
+
+            des concerts, des bon plans ...
+        </div>
+        <div class="col-lg-12 text-center" id="products">
+            <img src="~/images/productFamilies/alcool.jpg"/>
+            <img src="~/images/productFamilies/confitures.jpg" />
+            <img src="~/images/productFamilies/fruits.jpg" />
+            <img src="~/images/productFamilies/legumes.jpg" />
+            <img src="~/images/productFamilies/pain.jpg" />
+            <img src="~/images/productFamilies/produits_laitiers.jpg" />
+        </div>
+    </div>
+
+    <div class="row">
+        <h1 class="col-lg-12 text-center">Comment ça marche ?</h1>
+        <div class="col-lg-3"><img src="~/images/howitswork/Step1_low.png" class="responsiveImage" /></div>
+        <div class="col-lg-3"><img src="~/images/howitswork/Step2_low.png" class="responsiveImage" /></div>
+        <div class="col-lg-3"><img src="~/images/howitswork/Step3_low.png" class="responsiveImage" /></div>
+        <div class="col-lg-3"><img src="~/images/howitswork/Step4_low.png" class="responsiveImage" /></div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12 text-center">
+            <a href="#">Qui sommes nous ?</a>
+        </div>
+    </div>
+
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+                </div>
+                <div class="modal-body">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@{ await Html.RenderPartialAsync("Templates/ProducerModalTemplate"); }
+
+<script src="~/lib/leaflet.js"></script>
+<script src="~/js/publicProducers.js"></script>
