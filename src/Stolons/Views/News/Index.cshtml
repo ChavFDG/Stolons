@@ -21,7 +21,7 @@
     }
 }
 <table class="table">
-    @foreach (var item in Model.OrderByDescending(x => x.DateOfPublication).OrderBy(x=>x.NewsType))
+    @foreach (var item in Model.OrderByDescending(x => x.DateOfPublication).OrderBy(x=>x.IsHighlight))
     {
         <tr>
             <td class="tdImageNews">

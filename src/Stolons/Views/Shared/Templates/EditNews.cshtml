@@ -5,16 +5,10 @@
 
 <script type='text/javascript'>
     $(document).ready(function () {
-            $('#InputPublishEnd').datepicker();
-            $('select[name="NewsType"]').change(function () {
-                //Check if the A option is checked
-                if ($(this).val() == "0") {
-                    $("#PublishEnd").hide();
-                }
-                else {
-                    $("#PublishEnd").show();
-                }
-            });
+        $.datepicker.setDefaults($.datepicker.regional["fr"]);
+        $.timepicker.setDefaults($.timepicker.regional['fr']);
+        $('#InputPublishEnd').datetimepicker();
+        $('#InputPublishStart').datetimepicker();
         });
 </script>
 
@@ -46,18 +40,23 @@
         </div>
     </div>
     <div class="form-group">
-        <label asp-for="NewsType" class="col-md-2 control-label"></label>
+        <label asp-for="IsHighlight" class="col-md-2 control-label"></label>
         <div class="col-md-10">
-            <select id="NewsType" class="form-control valid" name="NewsType" data-val="true" aria-required="true" aria-invalid="false" aria-describedby="UserRole-error">
-                <option value="0">Pour la semaine</option>
-                <option value="1">Jusqu'à une date</option>
-            </select>
+            <input asp-for="IsHighlight" class="form-control" />
+            <span asp-validation-for="IsHighlight" class="text-danger" />
         </div>
     </div>
-    <div class="form-group" id="PublishEnd"  style="@(Model.NewsType == NewsType.Week ? "display: none;" : "display: block;")">
+    <div class="form-group" id="PublishStart">
+        <label asp-for="PublishStart" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="PublishStart" class="form-control" id="InputPublishStart" asp-format="{0:dd/MM/yyyy HH:mm}" />
+            <span asp-validation-for="PublishStart" class="text-danger" />
+        </div>
+    </div>
+    <div class="form-group" id="PublishEnd">
         <label asp-for="PublishEnd" class="col-md-2 control-label"></label>
         <div class="col-md-10">
-            <input asp-for="PublishEnd" class="form-control" id="InputPublishEnd"/>
+            <input asp-for="PublishEnd" class="form-control" id="InputPublishEnd" asp-format="{0:dd/MM/yyyy HH:mm}" />
             <span asp-validation-for="PublishEnd" class="text-danger" />
         </div>
     </div>

@@ -11,6 +11,25 @@ namespace Stolons.Models.Messages
 {
     public class News : Message
     {
+        public News()
+        {
+
+        }
+        public News(Stolon stolon): this()
+        {
+            var day = stolon.BasketPickEndUpDay - DateTime.Now.DayOfWeek;
+            if (day < 0)
+                day = 7 + day ;
+            var hours =  stolon.BasketPickUpEndHour - DateTime.Now.Hour;
+            var minutes =  stolon.BasketPickUpEndMinute - DateTime.Now.Minute;
+
+            var publishEnd = DateTime.Now;
+            publishEnd = publishEnd.AddDays(day);
+            publishEnd = publishEnd.AddHours(hours);
+            publishEnd = publishEnd.AddMinutes(minutes);
+            PublishEnd = publishEnd;
+        }
+
         [Required]
         [Display(Name = "Titre")]
         public string Title { get; set; }
@@ -22,8 +41,8 @@ namespace Stolons.Models.Messages
         public DateTime PublishStart { get; set; } = DateTime.Now;
 
         [Required]
-        [Display(Name = "Type de news")]
-        public NewsType NewsType { get; set; }
+        [Display(Name = "Est afficher en surbriallance")]
+        public bool IsHighlight { get; set; }
 
         [Required]
         [Display(Name = "Date de fin de publication")]
@@ -33,17 +52,8 @@ namespace Stolons.Models.Messages
         [Display(Name = "Publié comme")]
         public NewsPublishAs PublishAs { get; set; }
 
-
     }
-
-    public enum NewsType
-    {
-        [Display(Name = "Pour la semaine")]
-        Week = 0,
-        [Display(Name = "Jusqu'à une date")]
-        Highlight = 0
-    }
-    
+       
 
     public enum NewsPublishAs
     {
