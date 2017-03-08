@@ -20,12 +20,77 @@
         </p>
     }
 }
+<div class="container">
+
+    @foreach (var item in Model.OrderByDescending(x => x.DateOfPublication).OrderBy(x => x.IsHighlight))
+    {
+        <div class="row">
+            @if (!String.IsNullOrWhiteSpace(item.ImageLink))
+            {
+                <div class="col-md-4">
+                    <img src="@Configurations.GetUrl(item.ImageLink)" class="newsThumnail responsiveImage">
+                </div>
+            }
+            <div class="col-md-8">
+                <h3>@Html.DisplayFor(modelItem => item.Title)</h3>
+
+                <div class="newsContent">
+                    @Html.Raw(item.Content)
+                </div>
+
+                <div class="newsAuthor">
+                    <div class="nextToDiv">
+                        @switch (item.PublishAs)
+                        {
+                            case Stolons.Models.Messages.NewsPublishAs.Producer:
+                                <img class="avatar userNewsAvatar" src="@item.User.AvatarFilePath" />
+                                break;
+                            case Stolons.Models.Messages.NewsPublishAs.Stolon:
+                                <img class="avatar userNewsAvatar" src="@item.Stolon.LogoFilePath" />
+                                break;
+                        }
+                    </div>
+                    @switch (item.PublishAs)
+                    {
+                        case Stolons.Models.Messages.NewsPublishAs.Producer:
+                            <a asp-action="PartialDetail" asp-controller="Producers" asp-route-id="@item.User.Id">@((item.User as Producer).CompanyName)</a>
+                            break;
+                        case Stolons.Models.Messages.NewsPublishAs.Stolon:
+                            @item.Stolon.Label
+                            break;
+                    }
+                    @item.DateOfPublication.ToString("le dd/MM/yyyy à HH:mm:ss")
+                    @if (User.Identity.Name == item.User.Email
+                        || User.IsInRole(Configurations.Role.WebAdmin.ToString())
+                        || User.IsInRole(Configurations.Role.Volunteer.ToString())
+                        || User.IsInRole(Configurations.Role.StolonAdmin.ToString()))
+                    {
+                        <a asp-action="Edit" asp-controller="News" asp-route-id="@item.Id" class="btn btn-small btn-default">Modifier</a>
+                    }
+                    @if (User.IsInRole(Configurations.Role.WebAdmin.ToString()) || User.IsInRole(Configurations.Role.StolonAdmin.ToString()) || UserManager.GetUserId(User) == item.User.Email)
+                    {
+                        <a asp-action="Delete" asp-controller="News" asp-route-id="@item.Id" class="btn btn-small btn-default">Supprimer</a>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+
+<!--ANCIENNE MANIERE DE FAIRE-->
+
+
 <table class="table">
-    @foreach (var item in Model.OrderByDescending(x => x.DateOfPublication).OrderBy(x=>x.IsHighlight))
+
+    @foreach (var item in Model.OrderByDescending(x => x.DateOfPublication).OrderBy(x => x.IsHighlight))
     {
         <tr>
             <td class="tdImageNews">
-                <img src="@Configurations.GetUrl(item.ImageLink)" class="newsThumnail responsiveImage">
+                @if (!String.IsNullOrWhiteSpace(item.ImageLink))
+                {
+                    <img src="@Configurations.GetUrl(item.ImageLink)" class="newsThumnail responsiveImage">
+                }
             </td>
             <td class="newsInfos">
                 <h3>@Html.DisplayFor(modelItem => item.Title)</h3>
@@ -56,16 +121,16 @@
                             break;
                     }
                     @item.DateOfPublication.ToString("le dd/MM/yyyy à HH:mm:ss")
-                    @if (User.Identity.Name == item.User.Email 
-                        || User.IsInRole(Configurations.Role.WebAdmin.ToString())
-                        || User.IsInRole(Configurations.Role.Volunteer.ToString())
-                        || User.IsInRole(Configurations.Role.StolonAdmin.ToString()))
+                    @if (User.Identity.Name == item.User.Email
+                    || User.IsInRole(Configurations.Role.WebAdmin.ToString())
+                    || User.IsInRole(Configurations.Role.Volunteer.ToString())
+                    || User.IsInRole(Configurations.Role.StolonAdmin.ToString()))
                     {
                         <a asp-action="Edit" asp-controller="News" asp-route-id="@item.Id" class="btn btn-small btn-default">Modifier</a>
                     }
                     @if (User.IsInRole(Configurations.Role.WebAdmin.ToString()) || User.IsInRole(Configurations.Role.StolonAdmin.ToString()) || UserManager.GetUserId(User) == item.User.Email)
                     {
-                        <a asp-action="Delete" asp-controller="News"  asp-route-id="@item.Id" class="btn btn-small btn-default">Supprimer</a>
+                        <a asp-action="Delete" asp-controller="News" asp-route-id="@item.Id" class="btn btn-small btn-default">Supprimer</a>
                     }
                 </div>
             </td>

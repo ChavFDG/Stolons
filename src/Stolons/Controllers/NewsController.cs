@@ -76,11 +76,11 @@ namespace Stolons.Controllers
                     string uploads = Path.Combine(_environment.WebRootPath, Configurations.NewsImageStockagePath);
                     fileName = Guid.NewGuid().ToString() + "_" + ContentDispositionHeaderValue.Parse(uploadFile.ContentDisposition).FileName.Trim('"');
                     await uploadFile.SaveImageAsAsync(Path.Combine(uploads, fileName));
+                    news.ImageLink = Path.Combine(Configurations.NewsImageStockagePath, fileName);
                 }
                 //Setting value for creation
                 news.Id = Guid.NewGuid();
                 news.DateOfPublication = DateTime.Now;
-                news.ImageLink = Path.Combine(Configurations.NewsImageStockagePath,fileName);
                 //TODO Get logged in User and add it to the news
                 StolonsUser user = await GetCurrentStolonsUserAsync();
                 news.User = user;

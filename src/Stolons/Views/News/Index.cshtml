@@ -59,7 +59,10 @@
                 {
                     <tr @(item.IsHighlight ? "bgcolor=\"#53B6F4\"" : "")>
                         <td class="tdImagePreviewNews">
-                            <img src="@Configurations.GetUrl(item.ImageLink)" class="newsPreviewThumnail responsiveImage">
+                            @if (!String.IsNullOrWhiteSpace(item.ImageLink))
+                            {
+                                <img src="@Configurations.GetUrl(item.ImageLink)" class="newsPreviewThumnail responsiveImage">
+                            }
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.PublishStart)
