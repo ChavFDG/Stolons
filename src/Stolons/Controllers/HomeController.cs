@@ -25,7 +25,11 @@ namespace Stolons.Controllers
         [AllowAnonymous]
         public IActionResult Index()
         {
-            return View();
+            var user = GetCurrentStolonsUserSync();
+            HomeViewModel vm = new HomeViewModel();
+            if(user != null)
+                vm.News = _context.News.Include(x => x.User).Where(x => x.StolonId == user.StolonId).ToList();
+            return View(vm);
         }
 
         [AllowAnonymous]

@@ -151,8 +151,15 @@ div#warning-informations{
 
 .newsThumnail {
     position: relative;
-    width: 375px;
-    height: 216px;
+    width: 250px;
+    height: 150px;
+    background-color: #222;
+}
+
+.newsPreviewThumnail {
+    position: relative;
+    width: 100px;
+    height: 50px;
     background-color: #222;
 }
 
@@ -189,8 +196,13 @@ div#warning-informations{
 }
 
 .tdImageNews {
-    width: 375px;
+    width: 250px;
 }
+
+.tdImagePreviewNews {
+    width: 100px;
+}
+
 
 .circleAvatarDiv {
     border-radius: 50%;

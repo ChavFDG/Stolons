@@ -20,7 +20,6 @@
                 <div id="navbar" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
                         <li><a asp-controller="Home" asp-action="Index">Index</a></li>
-                        <li><a asp-controller="News" asp-action="Index">Les nouvelles</a></li>
                         <!--
         <li><a asp-controller="PublicProducts" asp-action="Index">Nos produits</a></li>
         <li><a asp-controller="PublicProducers" asp-action="Index">Nos producteurs</a></li>
@@ -29,6 +28,7 @@
                         @if (User.IsInRole(Configurations.UserType.Producer.ToString()))
                         {
                             <li><a asp-controller="ProductsManagement" asp-action="Index">Mes produits et mes stocks</a></li>
+                            <li><a asp-controller="News" asp-action="Index">Mes nouvelles</a></li>
                         }
                         @if (User.IsInRole(Configurations.Role.Volunteer.ToString()) || User.IsInRole(Configurations.Role.WebAdmin.ToString()) || User.IsInRole(Configurations.Role.StolonAdmin.ToString()))
                         {
@@ -53,6 +53,7 @@
                                 <ul class="dropdown-menu">
                                     <li><a asp-controller="Mails" asp-action="Index">Courriels</a></li>
                                     <li><a asp-controller="Transactions" asp-action="Index">Transactions</a></li>
+                                    <li><a asp-controller="News" asp-action="Index">Les nouvelles</a></li>
                                     @if (User.IsInRole(Configurations.Role.WebAdmin.ToString()) || User.IsInRole(Configurations.Role.StolonAdmin.ToString()))
                                     {
                                         <li><a asp-controller="Stolons" asp-route-id="@Model.User.Stolon.Id" asp-action="Details">@Model.User.Stolon.Label</a></li>

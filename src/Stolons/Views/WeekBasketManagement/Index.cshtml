@@ -3,12 +3,8 @@
 @using Stolons.Models
 @using Stolons.Tools
 
-@{
-    ViewData["Title"] = "Gestion des paniers";
-}
 
-
-<h2>@ViewData["Title"]</h2>
+<h2>Gestion des paniers</h2>
 @if (Model.Stolon.GetMode() == Stolon.Modes.DeliveryAndStockUpdate && Model.WeekStolonsBill != null)
 {
     <h4>Les paniers de la semaine </h4>
