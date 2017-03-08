@@ -27,9 +27,8 @@ namespace Stolons.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                HomeViewModel vm = new HomeViewModel();
                 var user = GetCurrentStolonsUserSync();
-                vm.News = _context.News.Include(x => x.User).Where(x => x.StolonId == user.StolonId).ToList();
+                HomeViewModel vm = new HomeViewModel(_context.News.Include(x => x.User).Where(x => x.StolonId == user.StolonId).Where(x=> x.PublishStart < DateTime.Now && x.PublishEnd > DateTime.Now).ToList());
                 return View(vm);
             }
             else
@@ -77,6 +76,13 @@ namespace Stolons.Controllers
         public IActionResult Error()
         {
             return View();
+        }
+
+        public IActionResult ShowAllNews()
+        {
+            var user = GetCurrentStolonsUserSync();
+            HomeViewModel vm = new HomeViewModel(_context.News.Include(x => x.User).Where(x => x.StolonId == user.StolonId).Where(x => (x.PublishStart < DateTime.Now && x.PublishEnd > DateTime.Now) ||(x.PublishEnd < DateTime.Now)).ToList());
+            return View(vm);
         }
     }
 }

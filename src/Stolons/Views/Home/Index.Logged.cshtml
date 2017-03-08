@@ -1,18 +1,18 @@
 ﻿@using Stolons.ViewModels.Home
 @model HomeViewModel
 
-<div class="container">
-    <div class="row">
-        <div class="col-md-8">
-            <h2>News</h2>
-            @{
-                Html.RenderPartial("../News/ShowNews",Model.News);
-            }
-        </div>
-        <div class="col-md-4">
-            <h2>Chat box</h2>
-        </div>
+<div class="row">
+    <div class="col-md-8">
+        <h2>Les nouvelles</h2>
+        @{
+            Html.RenderPartial("../News/ShowNews", Model.News);
+        }
     </div>
-</div> 
+
+    <div class="col-md-4">
+        <h2>Chat box / Messages</h2>
+    </div>
+
+</div>
 
 

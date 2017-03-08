@@ -20,29 +20,32 @@
         </p>
     }
 }
-<div class="container">
+<div>
 
-    @foreach (var item in Model.OrderByDescending(x => x.DateOfPublication).OrderBy(x => x.IsHighlight))
+    @if (!Model.Any())
     {
-        <div class="row">
-            @if (!String.IsNullOrWhiteSpace(item.ImageLink))
-            {
-                <div class="col-md-4">
-                    <img src="@Configurations.GetUrl(item.ImageLink)" class="newsThumnail responsiveImage">
-                </div>
-            }
-            <div class="col-md-8">
-                <h3>@Html.DisplayFor(modelItem => item.Title)</h3>
-
-                <div class="newsContent">
+        <span>Aucune nouvelle pour l'instant</span>
+    }
+    else
+    {
+        @foreach (var item in Model.OrderBy(x => x.IsHighlight).OrderByDescending(x => x.PublishStart))
+        {
+            <div class="newsListItem clearfix @(item.IsHighlight? "newsListItemHighLight" : "") @(item.PublishEnd < DateTime.Now ? "oldNews" : "") ">
+                <div class="newsListItemTitle">@Html.DisplayFor(modelItem => item.Title)</div>
+                <div class="newsListItemContent clearfix">
+                    @if (!String.IsNullOrWhiteSpace(item.ImageLink))
+                    {
+                        <div class="newsListItemContentImg">
+                            <img src="@Configurations.GetUrl(item.ImageLink)" class="newsThumnail responsiveImage">
+                        </div>
+                    }
                     @Html.Raw(item.Content)
                 </div>
-
-                <div class="newsAuthor">
+                <div class="newsListItemBottom">
                     <div class="nextToDiv">
                         @switch (item.PublishAs)
-                        {
-                            case Stolons.Models.Messages.NewsPublishAs.Producer:
+                    {
+                        case Stolons.Models.Messages.NewsPublishAs.Producer:
                                 <img class="avatar userNewsAvatar" src="@item.User.AvatarFilePath" />
                                 break;
                             case Stolons.Models.Messages.NewsPublishAs.Stolon:
@@ -61,9 +64,9 @@
                     }
                     @item.DateOfPublication.ToString("le dd/MM/yyyy à HH:mm:ss")
                     @if (User.Identity.Name == item.User.Email
-                        || User.IsInRole(Configurations.Role.WebAdmin.ToString())
-                        || User.IsInRole(Configurations.Role.Volunteer.ToString())
-                        || User.IsInRole(Configurations.Role.StolonAdmin.ToString()))
+                                    || User.IsInRole(Configurations.Role.WebAdmin.ToString())
+                                    || User.IsInRole(Configurations.Role.Volunteer.ToString())
+                                    || User.IsInRole(Configurations.Role.StolonAdmin.ToString()))
                     {
                         <a asp-action="Edit" asp-controller="News" asp-route-id="@item.Id" class="btn btn-small btn-default">Modifier</a>
                     }
@@ -73,72 +76,15 @@
                     }
                 </div>
             </div>
-        </div>
+            @if (!item.IsHighlight)
+            {
+                <div class="newsListItemSeparator"></div>
+            }
+        }
+        <a asp-action="ShowAllNews" asp-controller="Home" class="btn btn-small btn-default">Voir les anciennes nouvelles</a>
     }
+
 </div>
 
 
-<!--ANCIENNE MANIERE DE FAIRE-->
 
-
-<table class="table">
-
-    @foreach (var item in Model.OrderByDescending(x => x.DateOfPublication).OrderBy(x => x.IsHighlight))
-    {
-        <tr>
-            <td class="tdImageNews">
-                @if (!String.IsNullOrWhiteSpace(item.ImageLink))
-                {
-                    <img src="@Configurations.GetUrl(item.ImageLink)" class="newsThumnail responsiveImage">
-                }
-            </td>
-            <td class="newsInfos">
-                <h3>@Html.DisplayFor(modelItem => item.Title)</h3>
-
-                <div class="newsContent">
-                    @Html.Raw(item.Content)
-                </div>
-
-                <div class="newsAuthor">
-                    <div class="nextToDiv">
-                        @switch (item.PublishAs)
-                        {
-                            case Stolons.Models.Messages.NewsPublishAs.Producer:
-                                <img class="avatar userNewsAvatar" src="@item.User.AvatarFilePath" />
-                                break;
-                            case Stolons.Models.Messages.NewsPublishAs.Stolon:
-                                <img class="avatar userNewsAvatar" src="@item.Stolon.LogoFilePath" />
-                                break;
-                        }
-                    </div>
-                    @switch (item.PublishAs)
-                    {
-                        case Stolons.Models.Messages.NewsPublishAs.Producer:
-                            <a asp-action="PartialDetail" asp-controller="Producers" asp-route-id="@item.User.Id">@((item.User as Producer).CompanyName)</a>
-                            break;
-                        case Stolons.Models.Messages.NewsPublishAs.Stolon:
-                            @item.Stolon.Label
-                            break;
-                    }
-                    @item.DateOfPublication.ToString("le dd/MM/yyyy à HH:mm:ss")
-                    @if (User.Identity.Name == item.User.Email
-                    || User.IsInRole(Configurations.Role.WebAdmin.ToString())
-                    || User.IsInRole(Configurations.Role.Volunteer.ToString())
-                    || User.IsInRole(Configurations.Role.StolonAdmin.ToString()))
-                    {
-                        <a asp-action="Edit" asp-controller="News" asp-route-id="@item.Id" class="btn btn-small btn-default">Modifier</a>
-                    }
-                    @if (User.IsInRole(Configurations.Role.WebAdmin.ToString()) || User.IsInRole(Configurations.Role.StolonAdmin.ToString()) || UserManager.GetUserId(User) == item.User.Email)
-                    {
-                        <a asp-action="Delete" asp-controller="News" asp-route-id="@item.Id" class="btn btn-small btn-default">Supprimer</a>
-                    }
-                </div>
-            </td>
-        </tr>
-    }
-</table>
-
-@if (!Model.Any())
-{
-    <span>Aucune nouvelle pour l'instant</span>
-}
