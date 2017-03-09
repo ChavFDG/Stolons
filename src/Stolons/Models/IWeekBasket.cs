@@ -1,4 +1,5 @@
-﻿using Stolons.Models.Users;
+﻿using Microsoft.EntityFrameworkCore;
+using Stolons.Models.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +22,7 @@ namespace Stolons.Models
             {
                 if (billEntry.Product == null)
                 {
-                    billEntry.Product = context.Products.First(x => x.Id == billEntry.ProductId);
+                    billEntry.Product = context.Products.Include(x=>x.Producer).ThenInclude(x=>x.Stolon).First(x => x.Id == billEntry.ProductId);
                 }
             }
         }

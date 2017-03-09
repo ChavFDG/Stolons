@@ -152,6 +152,7 @@ div#warning-informations{
 .newsListItemTitle {
     font-size: 20px;
     margin: 10px 0 15px 0;
+    text-align:center;
 }
 
 .newsListItemContent {
@@ -175,6 +176,10 @@ div#warning-informations{
 
 .newsListItemHighLight{
     border-color:#609DD6
+}
+
+.newsShowAll{
+
 }
 
 .newsThumnail {

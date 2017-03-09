@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Stolons.ViewModels.Home;
 using Stolons.Models.Users;
+using Stolons.Models.Messages;
 
 namespace Stolons.Controllers
 {
@@ -23,12 +24,17 @@ namespace Stolons.Controllers
         }
 
         [AllowAnonymous]
-        public IActionResult Index()
+        public IActionResult Index(bool showOldNews = false)
         {
             if (User.Identity.IsAuthenticated)
             {
+                HomeViewModel vm = new HomeViewModel();
                 var user = GetCurrentStolonsUserSync();
-                HomeViewModel vm = new HomeViewModel(_context.News.Include(x => x.User).Where(x => x.StolonId == user.StolonId).Where(x=> x.PublishStart < DateTime.Now && x.PublishEnd > DateTime.Now).ToList());
+                if (showOldNews)
+                    vm.News = _context.News.Include(x => x.User).Where(x => x.StolonId == user.StolonId).Where(x => (x.PublishStart < DateTime.Now && x.PublishEnd > DateTime.Now) || (x.PublishEnd < DateTime.Now)).ToList();
+                else
+
+                    vm.News = _context.News.Include(x => x.User).Where(x => x.StolonId == user.StolonId).Where(x => x.PublishStart < DateTime.Now && x.PublishEnd > DateTime.Now).ToList();
                 return View(vm);
             }
             else
@@ -78,11 +84,10 @@ namespace Stolons.Controllers
             return View();
         }
 
+        [Route("Home/ShowAllNews")]
         public IActionResult ShowAllNews()
         {
-            var user = GetCurrentStolonsUserSync();
-            HomeViewModel vm = new HomeViewModel(_context.News.Include(x => x.User).Where(x => x.StolonId == user.StolonId).Where(x => (x.PublishStart < DateTime.Now && x.PublishEnd > DateTime.Now) ||(x.PublishEnd < DateTime.Now)).ToList());
-            return View(vm);
+            return RedirectToAction("Index", new { showOldNews = true });
         }
     }
 }

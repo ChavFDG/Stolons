@@ -32,7 +32,7 @@ else
     {
         <p>
             Votre panier a été validé avec succès.
-            @Configurations.Stolon.OrderDeliveryMessage
+            @Model.ValidatedWeekBasket.Consumer.Stolon.OrderDeliveryMessage
         </p>
     }
     else
@@ -40,7 +40,7 @@ else
         <p>
             Votre panier a été partiellement validé.
             Certains produits ne sont plus disponibles dans la quantité demandée. Veuilliez en prendre connaissance sur le tableau ci-dessous puis ajuster vos besoins.
-            @Configurations.Stolon.OrderDeliveryMessage
+            @Model.ValidatedWeekBasket.Consumer.Stolon.OrderDeliveryMessage
         </p>
     }
 

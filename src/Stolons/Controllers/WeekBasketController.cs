@@ -108,7 +108,7 @@ namespace Stolons.Controllers
                 //Il n'a pas encore de panier de la semaine, on lui en creer un
                 tempWeekBasket = new TempWeekBasket();
                 tempWeekBasket.Consumer = consumer;
-                tempWeekBasket.Products = new System.Collections.Generic.List<BillEntry>();
+                tempWeekBasket.Products = new List<BillEntry>();
                 _context.Add(tempWeekBasket);
                 _context.SaveChanges();
             }
@@ -147,7 +147,7 @@ namespace Stolons.Controllers
             TempWeekBasket tempWeekBasket = _context.TempsWeekBaskets.Include(x => x.Consumer).Include(x => x.Products).First(x => x.Id.ToString() == weekBasketId);
             tempWeekBasket.RetrieveProducts(_context);
             BillEntry billEntry = new BillEntry();
-            billEntry.Product = _context.Products.First(x => x.Id.ToString() == productId);
+            billEntry.Product = _context.Products.Include(x=>x.Producer).ThenInclude(x=>x.Stolon).First(x => x.Id.ToString() == productId);
             billEntry.ProductId = billEntry.Product.Id;
             billEntry.Quantity = 1;
             tempWeekBasket.Products.Add(billEntry);

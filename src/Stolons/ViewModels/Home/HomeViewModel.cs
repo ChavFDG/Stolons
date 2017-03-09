@@ -9,9 +9,9 @@ namespace Stolons.ViewModels.Home
     public class HomeViewModel
     {
         public List<News> News { get; set; }
-        public HomeViewModel(List<News> news )
+        public HomeViewModel()
         {
-            News = news;
+
         }
     }
 }
