@@ -129,7 +129,7 @@ namespace Stolons.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction("Index");
+                return RedirectToAction("Details", new { id = id });
             }
             return View(vm.Stolon);
         }
@@ -167,7 +167,8 @@ namespace Stolons.Controllers
 
 
 
-        [HttpPost, ActionName("SwitchMode")]
+       
+        [Route("Stolons/SwitchMode")]
         [Authorize(Roles = Role_StolonAdmin + "," + Role_WedAdmin)]
         public IActionResult SwitchMode(Guid id)
         {
@@ -175,7 +176,7 @@ namespace Stolons.Controllers
             stolon.SimulationMode = stolon.GetMode() == Stolon.Modes.DeliveryAndStockUpdate ? Stolon.Modes.Order : Stolon.Modes.DeliveryAndStockUpdate;
             _context.Update(stolon);
             _context.SaveChanges();
-            return RedirectToAction("Index");
+            return RedirectToAction("Details",new {id = id });
         }
 
         private bool StolonExists(Guid id)

@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Stolons.ViewModels.Home;
 using Stolons.Models.Users;
+using static Stolons.Configurations;
 using Stolons.Models.Messages;
 
 namespace Stolons.Controllers
@@ -85,6 +86,7 @@ namespace Stolons.Controllers
         }
 
         [Route("Home/ShowAllNews")]
+        [Authorize(Roles = Role_User +","+Role_Volunteer+","+ Role_StolonAdmin + "," + Role_WedAdmin)]
         public IActionResult ShowAllNews()
         {
             return RedirectToAction("Index", new { showOldNews = true });

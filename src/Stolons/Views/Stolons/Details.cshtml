@@ -3,11 +3,14 @@
 
 
 <h2>@Model.Label</h2>
-
+@if (User.IsInRole(Configurations.Role.WebAdmin.ToString()))
+{
+    <a asp-controller="Stolons" asp-action="Index"class="btn btn-small btn-default">Voir tous les Stolons</a>
+}
 <p>Mode actuel : <b>@(EnumHelper<Stolon.Modes>.GetDisplayValue(Model.GetMode()))</b></p>
 @if (Model.IsModeSimulated)
 {
-    <a asp-action="SwitchMode" asp-route-id="@Model.Id" class="btn btn-small btn-default">@(Model.GetMode() == Stolon.Modes.DeliveryAndStockUpdate ? "Passer en mode Commande" : "Passer en mode Livraison et mise à jour des stocks")</a>
+    <a asp-action="SwitchMode" asp-controller="Stolons" asp-route-id="@Model.Id" class="btn btn-small btn-default">@(Model.GetMode() == Stolon.Modes.DeliveryAndStockUpdate ? "Passer en mode Commande" : "Passer en mode Livraison et mise à jour des stocks")</a>
 }
 
 <div>

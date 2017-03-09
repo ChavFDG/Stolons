@@ -24,7 +24,7 @@ namespace Stolons.Models.Messages
         public Stolon Stolon{ get; set; }
         
         [Required]
-        [Display(Name = "Contenue")]
+        [Display(Name = "Contenu")]
         public string Content { get; set; }
 
         [Required]
