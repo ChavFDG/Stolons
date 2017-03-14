@@ -34,7 +34,6 @@ namespace Stolons.Controllers
                 if (showOldNews)
                     vm.News = _context.News.Include(x => x.User).Where(x => x.StolonId == user.StolonId).Where(x => (x.PublishStart < DateTime.Now && x.PublishEnd > DateTime.Now) || (x.PublishEnd < DateTime.Now)).ToList();
                 else
-
                     vm.News = _context.News.Include(x => x.User).Where(x => x.StolonId == user.StolonId).Where(x => x.PublishStart < DateTime.Now && x.PublishEnd > DateTime.Now).ToList();
                 return View(vm);
             }

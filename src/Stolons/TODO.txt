@@ -1,6 +1,14 @@
 ﻿Info :
 Paiement en ligne par "morning" : https://up.morning.com/
 
+A faire :
+
+- Ajouter par factures stolons le total gagné et le total total
+- "Valider les payements de facture" accessible qu'aux admins 
+
+
+
+
 FEATURES
 - Gestion des structures 
 	- pouvoir créer un Stolon avec type de structure, mail admin, nom de la structure, lieux, horraires, photos

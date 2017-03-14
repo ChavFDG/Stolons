@@ -19,7 +19,6 @@ using Stolons.Tools;
 using Stolons.Models.Users;
 using Microsoft.Extensions.Configuration.UserSecrets;
 
-[assembly: UserSecretsId("aspnet-Stolons-ce345b64-19cf-4972-b34f-d16f2e7976ed")]
 
 namespace Stolons
 {
