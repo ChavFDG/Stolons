@@ -19,10 +19,8 @@ namespace Stolons.Models
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         //Users
-        public DbSet<StolonsUser> StolonsUsers { get; set; }
+        public DbSet<Adherent> Adherents { get; set; }
         public DbSet<Sympathizer> Sympathizers { get; set; }
-        public DbSet<Consumer> Consumers { get; set; }
-        public DbSet<Producer> Producers { get; set; }
         //Message
         public DbSet<News> News { get; set; }
         //Bills
@@ -37,11 +35,14 @@ namespace Stolons.Models
         //WeekBasket
         public DbSet<TempWeekBasket> TempsWeekBaskets { get; set; }
         public DbSet<ValidatedWeekBasket> ValidatedWeekBaskets { get; set; }
-        //Stolons
-        public DbSet<Service> Services { get; set; }
+        //Stolons        
         public DbSet<Stolon> Stolons { get; set; }
+        public DbSet<Service> Services { get; set; }
         public DbSet<ApplicationConfig> ApplicationConfig { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
+
+        //Adherent Stolons
+        public DbSet<AdherentStolon> AdherentStolons { get; set; }
 
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
@@ -53,6 +54,19 @@ namespace Stolons.Models
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            //AdherentStolon
+            modelBuilder.Entity<AdherentStolon>()
+                .HasOne(x => x.Adherent);
+            modelBuilder.Entity<AdherentStolon>()
+                .HasOne(x => x.Stolon);
+            //Adherent
+            modelBuilder.Entity<Adherent>()
+                .HasOne(x => x.ActiveAdherentStolon);
+            modelBuilder.Entity<Adherent>()
+                .HasMany(x => x.AdherentStolons)
+                    .WithOne(x => x.Adherent);
+
         }
     }
 

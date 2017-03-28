@@ -14,7 +14,7 @@ namespace Stolons.ViewModels.Consumers
         {
 
         }
-        public ConsumerViewModel(Consumer consumer, Configurations.Role userRole)
+        public ConsumerViewModel(Adherent consumer, Configurations.Role userRole)
         {
             Consumer = consumer;
             UserRole = userRole;
@@ -23,12 +23,12 @@ namespace Stolons.ViewModels.Consumers
 
         public string OriginalEmail { get; set; }
 
-        public Consumer Consumer { get; set; }
+        public Adherent Consumer { get; set; }
 
         [Display(Name = "Droit utilisateur ")]
         public Configurations.Role UserRole { get; set; }
 
-        public StolonsUser User
+        public Adherent User
         {
             get
             {

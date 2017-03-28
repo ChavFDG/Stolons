@@ -31,36 +31,36 @@ namespace Stolons.Controllers
         }
         
         [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
-        public IActionResult PaySubscription(int id)
+        public IActionResult PaySubscription(Guid id)
         {
-            StolonsUser user = _context.StolonsUsers.Include(x=>x.Stolon).Single(m => m.Id == id);
+            Adherent user = _context.Adherents.Include(x=>x.ActiveAdherentStolon).Single(m => m.Id == id);
             //
-            user.Cotisation = true;
+            user.ActiveAdherentStolon.SubscriptionPaid = true;
             //Add a transaction
             Transaction transaction = new Transaction();
             transaction.AddedAutomaticly = true;
             transaction.Date = DateTime.Now;
             transaction.Type = Transaction.TransactionType.Inbound;
             transaction.Category = Transaction.TransactionCategory.Subscription;
-            transaction.Amount = Configurations.GetSubscriptionAmount(user);
+            transaction.Amount = user.ActiveAdherentStolon.GetSubscriptionAmount();
             transaction.Description = "Paiement de la cotisation de : "+  user.Name + " " + user.Surname;
             _context.Transactions.Add(transaction);
             //Update
-            _context.StolonsUsers.Update(user);
+            _context.Adherents.Update(user);
             //Save
             _context.SaveChanges();
             return RedirectToAction("Index");
         }
         
         [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
-        public IActionResult Enable(int id)
+        public IActionResult Enable(Guid id)
         {
-            StolonsUser user = _context.StolonsUsers.Include(x => x.Stolon).Single(m => m.Id == id);
+            Adherent user = _context.Adherents.Include(x => x.ActiveAdherentStolon).Single(m => m.Id == id);
             //
-            user.DisableReason = "";
-            user.Enable = true;
+            user.ActiveAdherentStolon.DisableReason = "";
+            user.ActiveAdherentStolon.Enable = true;
             //Update
-            _context.StolonsUsers.Update(user);
+            _context.Adherents.Update(user);
             //Save
             _context.SaveChanges();
             return RedirectToAction("Index");
@@ -68,14 +68,14 @@ namespace Stolons.Controllers
 
 
         [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
-        public IActionResult Disable(int id, string comment)
+        public IActionResult Disable(Guid id, string comment)
         {
-            StolonsUser user = _context.StolonsUsers.Include(x => x.Stolon).Single(m => m.Id == id);
+            Adherent user = _context.Adherents.Include(x => x.ActiveAdherentStolon).Single(m => m.Id == id);
             //
-            user.DisableReason = comment;
-            user.Enable = false;
+            user.ActiveAdherentStolon.DisableReason = comment;
+            user.ActiveAdherentStolon.Enable = false;
             //Update
-            _context.StolonsUsers.Update(user);
+            _context.Adherents.Update(user);
             //Save
             _context.SaveChanges();
             return RedirectToAction("Index");

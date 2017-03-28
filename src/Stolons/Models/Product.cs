@@ -14,9 +14,9 @@ namespace Stolons.Models
         [Key]
         public Guid Id { get; set; }
         [Display(Name = "Producteur")]
-        public int ProducerId { get; set; }
+        public Guid ProducerId { get; set; }
         [ForeignKey(nameof(ProducerId))]
-        public virtual Producer Producer { get; set; }
+        public virtual Adherent Producer { get; set; }
 	    [Display(Name = "Famille de produit")]
         public virtual ProductFamilly Familly { get; set; }
         [Display(Name = "Nom")]
@@ -105,7 +105,7 @@ namespace Stolons.Models
         {
             get
             {
-                return Price - (Price / 100 * Producer.Stolon.ProducersFee);
+                return Price - (Price / 100 * Producer.ActiveAdherentStolon.Stolon.ProducersFee);
             }
         }
 
@@ -117,7 +117,7 @@ namespace Stolons.Models
         {
             get
             {
-                return UnitPrice - (UnitPrice / 100 * Producer.Stolon.ProducersFee);
+                return UnitPrice - (UnitPrice / 100 * Producer.ActiveAdherentStolon.Stolon.ProducersFee);
             }
         }
         [NotMapped]

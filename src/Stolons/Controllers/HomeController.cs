@@ -32,9 +32,9 @@ namespace Stolons.Controllers
                 HomeViewModel vm = new HomeViewModel();
                 var user = GetCurrentStolonsUserSync();
                 if (showOldNews)
-                    vm.News = _context.News.Include(x => x.User).Where(x => x.StolonId == user.StolonId).Where(x => (x.PublishStart < DateTime.Now && x.PublishEnd > DateTime.Now) || (x.PublishEnd < DateTime.Now)).ToList();
+                    vm.News = _context.News.Include(x => x.PublishBy).Where(x => x.PublishBy.StolonId == user.ActiveAdherentStolonId).Where(x => (x.PublishStart < DateTime.Now && x.PublishEnd > DateTime.Now) || (x.PublishEnd < DateTime.Now)).ToList();
                 else
-                    vm.News = _context.News.Include(x => x.User).Where(x => x.StolonId == user.StolonId).Where(x => x.PublishStart < DateTime.Now && x.PublishEnd > DateTime.Now).ToList();
+                    vm.News = _context.News.Include(x => x.PublishBy).Where(x => x.PublishBy.StolonId == user.ActiveAdherentStolonId).Where(x => x.PublishStart < DateTime.Now && x.PublishEnd > DateTime.Now).ToList();
                 return View(vm);
             }
             else
@@ -57,9 +57,9 @@ namespace Stolons.Controllers
         public IActionResult StolonContact(Guid id)
         {
             Stolon stolon = _context.Stolons.FirstOrDefault(x => x.Id == id);
-            Dictionary<Producer, List<Product>> prods = new Dictionary<Producer, List<Product>>();
+            Dictionary<Adherent, List<Product>> prods = new Dictionary<Adherent, List<Product>>();
 
-            foreach (var producer in _context.Producers.Include(x => x.Products))
+            foreach (var producer in _context.Adherents.Include(x => x.Products))
             {
                 prods.Add(producer, _context.Products.Include(x=>x.Familly).ThenInclude(x=>x.Type).Where(product => product.ProducerId == producer.Id).ToList());
             }

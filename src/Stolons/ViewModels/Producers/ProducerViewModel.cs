@@ -15,7 +15,7 @@ namespace Stolons.ViewModels.Producers
         {
 
         }
-        public ProducerViewModel(Producer producer, Configurations.Role userRole)
+        public ProducerViewModel(Adherent producer, Configurations.Role userRole)
         {
             Producer = producer;
             OriginalEmail = producer.Email;
@@ -24,9 +24,9 @@ namespace Stolons.ViewModels.Producers
         
 
         public string OriginalEmail { get; set; }
-        public Producer Producer { get; set; }
+        public Adherent Producer { get; set; }
 
-        public StolonsUser User
+        public Adherent User
         {
             get
             {

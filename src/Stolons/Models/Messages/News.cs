@@ -29,7 +29,7 @@ namespace Stolons.Models.Messages
             publishEnd = publishEnd.AddMinutes(minutes);
             PublishEnd = publishEnd;
         }
-
+        
         [Required]
         [Display(Name = "Titre")]
         public string Title { get; set; }
@@ -53,7 +53,7 @@ namespace Stolons.Models.Messages
         public NewsPublishAs PublishAs { get; set; }
 
     }
-       
+
 
     public enum NewsPublishAs
     {

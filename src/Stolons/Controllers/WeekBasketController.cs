@@ -32,7 +32,7 @@ namespace Stolons.Controllers
         // GET: WeekBasket/Index/id
         public async Task<IActionResult> Index()
         {
-            Consumer consumer = await GetCurrentStolonsUserAsync() as Consumer;
+            Adherent consumer = await GetCurrentStolonsUserAsync() as Adherent;
             if (consumer == null)
             {
                 return NotFound();
@@ -48,7 +48,7 @@ namespace Stolons.Controllers
                 _context.Add(tempWeekBasket);
                 _context.SaveChanges();
             }
-            return View(new WeekBasketViewModel(consumer, tempWeekBasket, validatedWeekBasket, _context));
+            return View(new WeekBasketViewModel(consumer.ActiveAdherentStolon, tempWeekBasket, validatedWeekBasket, _context));
         }
 
         [AllowAnonymous]
@@ -57,11 +57,11 @@ namespace Stolons.Controllers
         {
 
             var Products = _context.Products.Include(x => x.Producer)
-                                            .ThenInclude(x => x.Stolon)
+                                            .ThenInclude(x => x.ActiveAdherentStolon)
                                             .Include(x => x.Familly)
                                             .Include(x => x.Familly.Type)
                                             .Where(x => x.State ==  Product.ProductState.Enabled &&
-                                                                    x.Producer.StolonId == GetCurrentStolon().Id).ToList();
+                                                                    x.Producer.AdherentStolons.Any(stolProd=> stolProd.StolonId == GetCurrentStolon().Id)).ToList();
             return JsonConvert.SerializeObject(Products, Formatting.Indented, new JsonSerializerSettings()
             {
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore
@@ -73,10 +73,10 @@ namespace Stolons.Controllers
         public string JsonPublicProducts()
         {
             var Products =  _context.Products.Include(x => x.Producer)
-                            .ThenInclude(x => x.Stolon)
+                            .ThenInclude(x => x.ActiveAdherentStolon)
                             .Include(x => x.Familly)
                             .Include(x => x.Familly.Type)
-                            .Where(x => x.Producer.StolonId == GetCurrentStolon().Id).ToList();
+                            .Where(x => x.Producer.AdherentStolons.Any(stolProd => stolProd.StolonId == GetCurrentStolon().Id)).ToList();
             return JsonConvert.SerializeObject(Products, Formatting.Indented, new JsonSerializerSettings()
             {
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore
@@ -97,7 +97,7 @@ namespace Stolons.Controllers
         [HttpGet, ActionName("TmpWeekBasket"), Route("api/tmpWeekBasket")]
         public async Task<string> JsonTmpWeekBasket()
         {
-            Consumer consumer = await GetCurrentStolonsUserAsync() as Consumer;
+            Adherent consumer = await GetCurrentStolonsUserAsync() as Adherent;
             if (consumer == null)
             {
                 return null;
@@ -125,7 +125,7 @@ namespace Stolons.Controllers
         [HttpGet, ActionName("ValidatedWeekBasket"), Route("api/validatedWeekBasket")]
         public async Task<string> JsonValidatedWeekBasket()
         {
-            Consumer consumer = await GetCurrentStolonsUserAsync() as Consumer;
+            Adherent consumer = await GetCurrentStolonsUserAsync() as Adherent;
             if (consumer == null)
             {
                 return null;
@@ -147,7 +147,7 @@ namespace Stolons.Controllers
             TempWeekBasket tempWeekBasket = _context.TempsWeekBaskets.Include(x => x.Consumer).Include(x => x.Products).First(x => x.Id.ToString() == weekBasketId);
             tempWeekBasket.RetrieveProducts(_context);
             BillEntry billEntry = new BillEntry();
-            billEntry.Product = _context.Products.Include(x=>x.Producer).ThenInclude(x=>x.Stolon).First(x => x.Id.ToString() == productId);
+            billEntry.Product = _context.Products.Include(x=>x.Producer).ThenInclude(x=>x.ActiveAdherentStolon).First(x => x.Id.ToString() == productId);
             billEntry.ProductId = billEntry.Product.Id;
             billEntry.Quantity = 1;
             tempWeekBasket.Products.Add(billEntry);

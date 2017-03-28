@@ -26,13 +26,13 @@ namespace Stolons.Controllers
         [AllowAnonymous]
         public IActionResult Index()
         {
-            return View(_context.Producers.ToList());
+            return View(_context.Adherents.Where(x => x.IsProducer).ToList());
         }
 
 	[AllowAnonymous]
 	[HttpGet, ActionName("Producers"), Route("api/producers")]
 	public string JsonProducts() {
-	    var producers = _context.Producers.ToList();
+	    var producers = _context.Adherents.Where(x=>x.IsProducer).ToList();
 
 	    return JsonConvert.SerializeObject(producers, Formatting.Indented, new JsonSerializerSettings() {
 		    ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore

@@ -33,7 +33,7 @@ namespace Stolons.Controllers
         [Authorize(Roles = Configurations.UserType_Producer)]
         public async Task<IActionResult> Index()
         {
-            Producer producer = await GetCurrentStolonsUserAsync() as Producer;
+            Adherent producer = await GetCurrentStolonsUserAsync() as Adherent;
             var products = _context.Products.Include(m => m.Familly).Include(m => m.Familly.Type).Where(x => x.Producer == producer);
             ProductsViewModel vm = new ProductsViewModel(products, GetCurrentStolon());
             return View(vm);
@@ -43,7 +43,7 @@ namespace Stolons.Controllers
         [HttpGet, ActionName("ProducerProducts"), Route("api/producerProducts")]
         public string JsonProducerProducts()
         {
-            Producer producer = GetCurrentStolonsUserSync() as Producer;
+            Adherent producer = GetCurrentStolonsUserSync() as Adherent;
             List<ProductViewModel> vmProducts = new List<ProductViewModel>();
             var products = _context.Products.Include(m => m.Familly).Include(m => m.Familly.Type).Where(x => x.Producer == producer).ToList();
             foreach (var product in products)
@@ -102,7 +102,7 @@ namespace Stolons.Controllers
                 //Set Product familly (si ça retourne null c'est que la famille selectionnée n'existe pas, alors on est dans la merde)
                 vmProduct.Product.Familly = _context.ProductFamillys.FirstOrDefault(x => x.FamillyName == vmProduct.FamillyName);
                 //Set Producer (si ça retourne null, c'est que c'est pas un producteur qui est logger, alors on est dans la merde)
-                Producer producer = await GetCurrentStolonsUserAsync() as Producer;
+                Adherent producer = await GetCurrentStolonsUserAsync() as Adherent;
                 vmProduct.Product.Producer = producer;
                 //On s'occupe des images du produit
                 if (!String.IsNullOrWhiteSpace(vmProduct.MainPictureLight))

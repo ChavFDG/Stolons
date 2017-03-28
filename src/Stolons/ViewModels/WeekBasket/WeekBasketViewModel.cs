@@ -11,15 +11,8 @@ namespace Stolons.ViewModels.WeekBasket
 {
     public class WeekBasketViewModel
     {
-        public Consumer Consumer { get; set; }
 
-        public Stolon Stolon
-        {
-            get
-            {
-                return Consumer.Stolon;
-            }
-        }
+        public AdherentStolon UserStolon { get; set; }
 
         public List<Product> Products { get; set; }
 
@@ -32,11 +25,11 @@ namespace Stolons.ViewModels.WeekBasket
         {
         }
 
-        public WeekBasketViewModel(Consumer consumer, TempWeekBasket tempWeekBasket, ValidatedWeekBasket validatedWeekBasket, ApplicationDbContext context)
+        public WeekBasketViewModel(AdherentStolon userStolon, TempWeekBasket tempWeekBasket, ValidatedWeekBasket validatedWeekBasket, ApplicationDbContext context)
         {
             TempWeekBasket = tempWeekBasket;
             ValidatedWeekBasket = validatedWeekBasket;
-            Consumer = consumer;
+            UserStolon = userStolon;
             Products = context.Products.Include(x => x.Producer).Where(x => x.State == Product.ProductState.Enabled).ToList();
             ProductTypes = context.ProductTypes.Include(x => x.ProductFamilly).ToList();
         }

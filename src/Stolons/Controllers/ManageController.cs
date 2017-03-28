@@ -48,11 +48,11 @@ namespace Stolons.Controllers
                 : "";
 
             var user = await GetCurrentAppUserAsync();
-            StolonsUser stolonsUser = _context.Consumers.FirstOrDefault(m => m.Email == user.Email);
+            Adherent stolonsUser = _context.Adherents.FirstOrDefault(m => m.Email == user.Email);
             if (stolonsUser == null)
             {
                 //It's a producer
-                stolonsUser = _context.Producers.FirstOrDefault(m => m.Email == user.Email);
+                stolonsUser = _context.Adherents.FirstOrDefault(m => m.Email == user.Email);
             }
 
             var model = new IndexViewModel
@@ -106,7 +106,7 @@ namespace Stolons.Controllers
         public async Task<IActionResult> ChangeUserInformations()
         {
             var user = await GetCurrentAppUserAsync();
-            Consumer consumer = _context.Consumers.Single(m => m.Email == user.Email);
+            Adherent consumer = _context.Adherents.Single(m => m.Email == user.Email);
             if (consumer == null)
             {
                 return NotFound();
@@ -148,7 +148,7 @@ namespace Stolons.Controllers
         public async Task<IActionResult> ChangeProducerInformations()
         {
             var user = await GetCurrentAppUserAsync();
-            Producer producer = _context.Producers.Single(m => m.Email == user.Email);
+            Adherent producer = _context.Adherents.Single(m => m.Email == user.Email);
             if (producer == null)
             {
                 return NotFound();

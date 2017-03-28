@@ -35,19 +35,19 @@ namespace Stolons.Controllers
         // GET: Producer
         public IActionResult Index()
         {
-            return View(_context.Producers.Where(x => x.StolonId == GetCurrentStolon().Id).ToList());
+            return View(_context.Adherents.Include(x=>x.AdherentStolons).Where(x => x.AdherentStolons.Any(prodStolon=>prodStolon.StolonId == GetCurrentStolon().Id)).ToList());
         }
 
         [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
         // GET: Producer/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(Guid id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            Producer producer = _context.Producers.Single(m => m.Id == id);
+            Adherent producer = _context.Adherents.Single(m => m.Id == id);
             if (producer == null)
             {
                 return NotFound();
@@ -59,14 +59,14 @@ namespace Stolons.Controllers
 
         [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
         // GET: Producer/PartialDetails/5
-        public async Task<IActionResult> PartialDetails(int? id)
+        public async Task<IActionResult> PartialDetails(Guid id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            Producer producer = _context.Producers.Single(m => m.Id == id);
+            Adherent producer = _context.Adherents.Single(m => m.Id == id);
             if (producer == null)
             {
                 return NotFound();
@@ -79,7 +79,7 @@ namespace Stolons.Controllers
         // GET: Producer/Create
         public IActionResult Create()
         {
-            return View(new ProducerViewModel(new Producer(),Configurations.Role.User));
+            return View(new ProducerViewModel(new Adherent(),Configurations.Role.User));
         }
 
         // POST: Producer/Create
@@ -93,9 +93,9 @@ namespace Stolons.Controllers
             {
                 #region Creating Producer
                 UploadAndSetAvatar(vmProducer.Producer, uploadFile);
-                vmProducer.Producer.RegistrationDate = DateTime.Now;
-                vmProducer.Producer.StolonId = GetCurrentStolon().Id;
-                _context.Producers.Add(vmProducer.Producer);
+                vmProducer.Producer.ActiveAdherentStolon.RegistrationDate = DateTime.Now;
+                vmProducer.Producer.ActiveAdherentStolon.StolonId = GetCurrentStolon().Id;
+                _context.Adherents.Add(vmProducer.Producer);
                 #endregion Creating Producer
 
                 #region Creating linked application data
@@ -125,14 +125,14 @@ namespace Stolons.Controllers
 
         // GET: Producer/Edit/5
         [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            Producer producer = _context.Producers.Single(m => m.Id == id);
+            Adherent producer = _context.Adherents.Single(m => m.Id == id);
             if (producer == null)
             {
                 return NotFound();
@@ -173,14 +173,14 @@ namespace Stolons.Controllers
         // GET: Producer/Delete/5
         [ActionName("Delete")]
         [Authorize(Roles = Configurations.Role_WedAdmin)]
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            Producer producer = _context.Producers.Single(m => m.Id == id);
+            Adherent producer = _context.Adherents.Single(m => m.Id == id);
             if (producer == null)
             {
                 return NotFound();
@@ -193,22 +193,22 @@ namespace Stolons.Controllers
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = Configurations.Role_WedAdmin)]
-        public IActionResult DeleteConfirmed(int id)
+        public IActionResult DeleteConfirmed(Guid id)
         {
-            Producer producer = _context.Producers.Single(m => m.Id == id);
+            Adherent adherent = _context.Adherents.Single(m => m.Id == id);
             //Deleting image
             string uploads = Path.Combine(_environment.WebRootPath, Configurations.AvatarStockagePath);
-            string image = Path.Combine(uploads, producer.AvatarFileName);
-            if (System.IO.File.Exists(image) && producer.AvatarFileName != Path.Combine(Configurations.AvatarStockagePath, Configurations.DefaultFileName))
-                System.IO.File.Delete(Path.Combine(uploads, producer.AvatarFileName));
+            string image = Path.Combine(uploads, adherent.AvatarFileName);
+            if (System.IO.File.Exists(image) && adherent.AvatarFileName != Path.Combine(Configurations.AvatarStockagePath, Configurations.DefaultFileName))
+                System.IO.File.Delete(Path.Combine(uploads, adherent.AvatarFileName));
             //Delete App User
-            ApplicationUser producerAppUser = _context.Users.First(x => x.Email == producer.Email);
+            ApplicationUser producerAppUser = _context.Users.First(x => x.Email == adherent.Email);
             _context.Users.Remove(producerAppUser);
             //Delete User => TODO voir mieux car la on supprime tout ce qui est dépendant avant de supprimer le producteur, on fait le job de EF soit un Cascade delete !
-            _context.News.RemoveRange(_context.News.Include(x => x.User).Where(x => x.User.Id == producer.Id));
-            _context.Products.RemoveRange(_context.Products.Include(x => x.Producer).Where(x => x.Producer.Id == producer.Id));
-            _context.ProducerBills.RemoveRange(_context.ProducerBills.Include(x => x.Producer).Where(x => x.Producer.Id == producer.Id));
-            _context.Producers.Remove(producer);
+            _context.News.RemoveRange(_context.News.Include(x => x.PublishBy).Where(x => x.PublishBy.Adherent.Id == adherent.Id));
+            _context.Products.RemoveRange(_context.Products.Include(x => x.Producer).Where(x => x.Producer.Id == adherent.Id));
+            _context.ProducerBills.RemoveRange(_context.ProducerBills.Include(x => x.Adherent).Where(x => x.Adherent.Id == adherent.Id));
+            _context.Adherents.Remove(adherent);
             //Save
             _context.SaveChanges();
             return RedirectToAction("Index");

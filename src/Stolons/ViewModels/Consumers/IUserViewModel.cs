@@ -9,6 +9,6 @@ namespace Stolons.ViewModels.Consumers
 {
     public interface IUserViewModel
     {
-        StolonsUser User { get; }
+        Adherent User { get; }
     }
 }

@@ -35,19 +35,19 @@ namespace Stolons.Controllers
         [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
         public IActionResult Index()
         {
-            return View(_context.Consumers.Where(x => x.StolonId == GetCurrentStolon().Id).ToList());
+            return View(_context.Adherents.Where(x => x.ActiveAdherentStolonId == GetCurrentStolon().Id).ToList());
         }
         
         // GET: Consumers/Details/5
         [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(Guid id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            Consumer consumer = _context.Consumers.Single(m => m.Id == id);
+            Adherent consumer = _context.Adherents.Single(m => m.Id == id);
             if (consumer == null)
             {
                 return NotFound();
@@ -62,7 +62,7 @@ namespace Stolons.Controllers
         [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
         public IActionResult Create()
         {
-            return View(new ConsumerViewModel(new Consumer(),Configurations.Role.User));
+            return View(new ConsumerViewModel(new Adherent(),Configurations.Role.User));
         }
 
         // POST: Consumers/Create
@@ -76,9 +76,12 @@ namespace Stolons.Controllers
                 #region Creating Consumer
                 //Setting value for creation
                 UploadAndSetAvatar(vmConsumer.Consumer, uploadFile);
-                vmConsumer.Consumer.RegistrationDate = DateTime.Now;
+
                 vmConsumer.Consumer.Name = vmConsumer.Consumer.Name.ToUpper();
-                _context.Consumers.Add(vmConsumer.Consumer);
+                AdherentStolon consumerStolon = new AdherentStolon(vmConsumer.Consumer, GetCurrentStolon());
+                consumerStolon.RegistrationDate = DateTime.Now;
+                _context.Adherents.Add(vmConsumer.Consumer);
+                _context.AdherentStolons.Add(consumerStolon);
                 #endregion Creating Consumer
 
                 #region Creating linked application data
@@ -95,7 +98,7 @@ namespace Stolons.Controllers
                 }
                 #endregion Creating linked application data
 
-                vmConsumer.Consumer.StolonId = GetCurrentStolon().Id;
+                vmConsumer.Consumer.ActiveAdherentStolonId = GetCurrentStolon().Id;
                 _context.SaveChanges();
                 //Send confirmation mail
                 Services.AuthMessageSender.SendEmail(vmConsumer.Consumer.Email, vmConsumer.Consumer.Name, "Creation de votre compte", base.RenderPartialViewToString("UserCreatedConfirmationMail", vmConsumer));
@@ -107,14 +110,14 @@ namespace Stolons.Controllers
 
         // GET: Consumers/Edit/5
         [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(Guid id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            Consumer consumer = _context.Consumers.Single(m => m.Id == id);
+            Adherent consumer = _context.Adherents.Single(m => m.Id == id);
             if (consumer == null)
             {
                 return NotFound();
@@ -157,14 +160,14 @@ namespace Stolons.Controllers
         // GET: Consumers/Delete/5
         [ActionName("Delete")]
         [Authorize(Roles = Configurations.Role_WedAdmin)]
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            Consumer consumer = _context.Consumers.Single(m => m.Id == id);
+            Adherent consumer = _context.Adherents.Single(m => m.Id == id);
             if (consumer == null)
             {
                 return NotFound();
@@ -179,25 +182,25 @@ namespace Stolons.Controllers
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = Configurations.Role_WedAdmin)]
-        public IActionResult DeleteConfirmed(int id)
+        public IActionResult DeleteConfirmed(Guid id)
         {
-            Consumer consumer = _context.Consumers.Single(m => m.Id == id);
+            Adherent adherent = _context.Adherents.Single(m => m.Id == id);
             //Deleting image
             string uploads = Path.Combine(_environment.WebRootPath, Configurations.AvatarStockagePath);
-            string image = Path.Combine(uploads, consumer.AvatarFileName);
-            if (System.IO.File.Exists(image) && consumer.AvatarFileName != Path.Combine(Configurations.AvatarStockagePath, Configurations.DefaultFileName))
-                System.IO.File.Delete(Path.Combine(uploads, consumer.AvatarFileName));
+            string image = Path.Combine(uploads, adherent.AvatarFileName);
+            if (System.IO.File.Exists(image) && adherent.AvatarFileName != Path.Combine(Configurations.AvatarStockagePath, Configurations.DefaultFileName))
+                System.IO.File.Delete(Path.Combine(uploads, adherent.AvatarFileName));
             //Delete App User
-            ApplicationUser appUser = _context.Users.First(x => x.Email == consumer.Email);
+            ApplicationUser appUser = _context.Users.First(x => x.Email == adherent.Email);
             _context.Users.Remove(appUser);
             //Delete User
             //TODO ajouter les bill entry
 
-            _context.News.RemoveRange(_context.News.Include(x => x.User).Where(x => x.User.Id == consumer.Id));
-            _context.TempsWeekBaskets.RemoveRange(_context.TempsWeekBaskets.Include(x => x.Consumer).Where(x => x.Consumer.Id == consumer.Id));
-            _context.ValidatedWeekBaskets.RemoveRange(_context.ValidatedWeekBaskets.Include(x => x.Consumer).Where(x => x.Consumer.Id == consumer.Id));
-            _context.ConsumerBills.RemoveRange(_context.ConsumerBills.Include(x => x.User).Where(x => x.Consumer.Id == consumer.Id));
-            _context.Consumers.Remove(consumer);
+            _context.News.RemoveRange(_context.News.Include(x => x.PublishBy).ThenInclude(x=>x.Adherent).Where(x => x.PublishBy.Adherent.Id == adherent.Id));
+            _context.TempsWeekBaskets.RemoveRange(_context.TempsWeekBaskets.Include(x => x.Consumer).Where(x => x.Consumer.Id == adherent.Id));
+            _context.ValidatedWeekBaskets.RemoveRange(_context.ValidatedWeekBaskets.Include(x => x.Consumer).Where(x => x.Consumer.Id == adherent.Id));
+            _context.ConsumerBills.RemoveRange(_context.ConsumerBills.Include(x => x.Adherent).Where(x => x.Adherent.Id == adherent.Id));
+            _context.Adherents.Remove(adherent);
             //Save
             _context.SaveChanges();
             return RedirectToAction("Index");
@@ -206,14 +209,14 @@ namespace Stolons.Controllers
         // GET: Consumers/CreditToken/5
         [ActionName("CreditToken")]
         [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
-        public IActionResult CreditToken(int? id)
+        public IActionResult CreditToken(Guid id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            Consumer consumer = _context.Consumers.Single(m => m.Id == id);
+            Adherent consumer = _context.Adherents.Single(m => m.Id == id);
             if (consumer == null)
             {
                 return NotFound();
@@ -228,8 +231,8 @@ namespace Stolons.Controllers
         [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
         public IActionResult CreditToken(CreditTokenViewModel vmCreditToken)
         {
-            Consumer consumer = _context.Consumers.Single(m => m.Id == vmCreditToken.Consumer.Id);
-            consumer.Token += vmCreditToken.CreditedToken;
+            Adherent consumer = _context.Adherents.Include(x=>x.ActiveAdherentStolon).Single(m => m.Id == vmCreditToken.Consumer.Id);
+            consumer.ActiveAdherentStolon.Token += vmCreditToken.CreditedToken;
             _context.Add(new Transaction(
                 Transaction.TransactionType.Inbound,
                 Transaction.TransactionCategory.TokenCredit,

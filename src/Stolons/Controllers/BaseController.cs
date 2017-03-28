@@ -76,20 +76,20 @@ namespace Stolons.Controllers
             return _userManager.FindByIdAsync(_userManager.GetUserId(HttpContext.User)).GetAwaiter().GetResult();
         }
 
-        protected async Task<StolonsUser> GetCurrentStolonsUserAsync()
+        protected async Task<Adherent> GetCurrentStolonsUserAsync()
         {
             ApplicationUser user = await _userManager.FindByIdAsync(_userManager.GetUserId(HttpContext.User));
-            return _context.StolonsUsers.Include(x => x.Stolon).FirstOrDefault(x => x.Email == user.Email);
+            return _context.Adherents.Include(x => x.ActiveAdherentStolon).FirstOrDefault(x => x.Email == user.Email);
         }
-        protected StolonsUser GetCurrentStolonsUserSync()
+        protected Adherent GetCurrentStolonsUserSync()
         {
             ApplicationUser user = _userManager.FindByIdAsync(_userManager.GetUserId(HttpContext.User)).GetAwaiter().GetResult();
-            return _context.StolonsUsers.Include(x => x.Stolon).FirstOrDefault(x => x.Email == user.Email);
+            return _context.Adherents.Include(x => x.ActiveAdherentStolon).FirstOrDefault(x => x.Email == user.Email);
         }
 
         protected Stolon GetCurrentStolon()
         {
-            return GetCurrentStolonsUserSync().Stolon;
+            return GetCurrentStolonsUserSync().ActiveAdherentStolon.Stolon;
         }
 
 
@@ -114,7 +114,7 @@ namespace Stolons.Controllers
             await uploadFile.SaveAsAsync(Path.Combine(uploads, fileName));
             return fileName;
         }
-        protected async void UploadAndSetAvatar(Consumer consumer, IFormFile uploadFile)
+        protected async void UploadAndSetAvatar(Adherent consumer, IFormFile uploadFile)
         {
             consumer.AvatarFileName = await UploadFile(uploadFile, Configurations.AvatarStockagePath, consumer.AvatarFilePath);
         }

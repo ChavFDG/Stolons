@@ -30,7 +30,7 @@ namespace Stolons.Controllers
             if (User.Identity.IsAuthenticated)
             {
                 ApplicationUser appUser = await _userManager.FindByIdAsync(_userManager.GetUserId(HttpContext.User));
-                StolonsUser user = _dbContext.StolonsUsers.Include(x=>x.Stolon).FirstOrDefault(x => x.Email.Equals(appUser.Email, StringComparison.CurrentCultureIgnoreCase));
+                Adherent user = _dbContext.Adherents.Include(x=>x.ActiveAdherentStolon).FirstOrDefault(x => x.Email.Equals(appUser.Email, StringComparison.CurrentCultureIgnoreCase));
                 return View(new BannerViewModel(user));
             }
             else

@@ -40,7 +40,7 @@ namespace Stolons.Controllers
 
         [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
         // GET: Sympathizer/Details/5
-        public IActionResult Details(int? id)
+        public IActionResult Details(Guid id)
         {
             if (id == null)
             {
@@ -58,7 +58,7 @@ namespace Stolons.Controllers
 
         [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
         // GET: Sympathizer/PartialDetails/5
-        public IActionResult PartialDetails(int? id)
+        public IActionResult PartialDetails(Guid id)
         {
             if (id == null)
             {
@@ -92,7 +92,6 @@ namespace Stolons.Controllers
                 string fileName = Configurations.DefaultFileName;
 
                 //Setting value for creation
-                vmSympathizer.Sympathizer.RegistrationDate = DateTime.Now;
                 vmSympathizer.Sympathizer.StolonId = GetCurrentStolon().Id;
                 _context.Sympathizers.Add(vmSympathizer.Sympathizer);
                 #endregion Creating Sympathizer
@@ -106,7 +105,7 @@ namespace Stolons.Controllers
 
         // GET: Sympathizer/Edit/5
         [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
-        public IActionResult Edit(int? id)
+        public IActionResult Edit(Guid id)
         {
             if (id == null)
             {
@@ -140,7 +139,7 @@ namespace Stolons.Controllers
         // GET: Sympathizer/Delete/5
         [ActionName("Delete")]
         [Authorize(Roles = Configurations.Role_WedAdmin)]
-        public IActionResult Delete(int? id)
+        public IActionResult Delete(Guid id)
         {
             if (id == null)
             {
@@ -159,7 +158,7 @@ namespace Stolons.Controllers
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = Configurations.Role_WedAdmin)]
-        public IActionResult DeleteConfirmed(int id)
+        public IActionResult DeleteConfirmed(Guid id)
         {
             Sympathizer sympathizer = _context.Sympathizers.Single(m => m.Id == id);           
             _context.Sympathizers.Remove(sympathizer);

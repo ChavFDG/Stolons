@@ -34,7 +34,7 @@ namespace Stolons.Controllers
         // GET: News
         public IActionResult Index()
         {
-            return View(_context.News.Include(x => x.User).Where(x=>x.StolonId == GetCurrentStolon().Id).ToList());
+            return View(_context.News.Include(x => x.PublishBy).Where(x=>x.PublishBy.StolonId == GetCurrentStolon().Id).ToList());
         }
 
         // GET: News/Details/5
@@ -45,7 +45,7 @@ namespace Stolons.Controllers
                 return NotFound();
             }
 
-            News news = _context.News.Include(x => x.User).Single(x => x.Id == id);
+            News news = _context.News.Include(x => x.PublishBy).Single(x => x.Id == id);
             if (news == null)
             {
                 return NotFound();
@@ -82,9 +82,8 @@ namespace Stolons.Controllers
                 news.Id = Guid.NewGuid();
                 news.DateOfPublication = DateTime.Now;
                 //TODO Get logged in User and add it to the news
-                StolonsUser user = await GetCurrentStolonsUserAsync();
-                news.User = user;
-                news.Stolon = user.Stolon;
+                Adherent user = await GetCurrentStolonsUserAsync();
+                news.PublishBy = user.ActiveAdherentStolon;
                 _context.News.Add(news);
                 _context.SaveChanges();
                 return RedirectToAction("Index");
@@ -101,7 +100,7 @@ namespace Stolons.Controllers
                 return NotFound();
             }
 
-            News news = _context.News.Include(m => m.User).Single(m => m.Id == id);
+            News news = _context.News.Include(m => m.PublishBy).Single(m => m.Id == id);
             if (news == null)
             {
                 return NotFound();
@@ -128,9 +127,8 @@ namespace Stolons.Controllers
                     //Setting new value, saving
                     news.ImageLink = Path.Combine(Configurations.NewsImageStockagePath, fileName);
                 }
-                StolonsUser user = await GetCurrentStolonsUserAsync();
-                news.User = user;
-                news.Stolon = user.Stolon;
+                Adherent user = await GetCurrentStolonsUserAsync();
+                news.PublishBy = user.ActiveAdherentStolon;
                 _context.Update(news);
                 _context.SaveChanges();
                 return RedirectToAction("Index");
@@ -148,7 +146,7 @@ namespace Stolons.Controllers
                 return NotFound();
             }
 
-            News news = _context.News.Include(m => m.User).Single(m => m.Id == id);
+            News news = _context.News.Include(m => m.PublishBy).Single(m => m.Id == id);
             if (news == null)
             {
                 return NotFound();

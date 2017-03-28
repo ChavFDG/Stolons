@@ -52,36 +52,37 @@ namespace Stolons.Controllers
         [Authorize(Roles = Configurations.Role_WedAdmin + "," + Configurations.Role_Volunteer)]
         public IActionResult SendToSympathizers(MailMessage mailMessage)
         {
-            return View("Report", SendMail(_context.Consumers, mailMessage));
+            return View("Report", SendMail(_context.Adherents, mailMessage));
         }
         
         [Authorize(Roles = Configurations.Role_WedAdmin + "," + Configurations.Role_Volunteer )]
         public IActionResult SendToConsumers(MailMessage mailMessage)
         {
-            return View("Report",SendMail(_context.Consumers, mailMessage));
+            return View("Report",SendMail(_context.Adherents, mailMessage));
         }
         
         [Authorize(Roles = Configurations.Role_WedAdmin + "," + Configurations.Role_Volunteer)]
         public IActionResult SendToProducers(MailMessage mailMessage)
         {
-            return View("Report",SendMail(_context.Producers, mailMessage));
+            return View("Report",SendMail(_context.Adherents, mailMessage));
         }
 
         // GET: News/Details/5
         [Authorize(Roles = Configurations.Role_WedAdmin + "," + Configurations.Role_Volunteer)]
-        public IActionResult SendToAllUser(MailMessage mailMessage)
+        public IActionResult SendToAllUser(MailMessage mailMessage,Stolon stolon)
         {
-            List<StolonsUser> users = new List<StolonsUser>();
-            users.AddRange(_context.Sympathizers);
-            users.AddRange(_context.Consumers);
-            users.AddRange(_context.Producers);
-            return View("Report",  SendMail(users,mailMessage));
+            List<IAdherent> users = new List<IAdherent>();
+            users.AddRange(_context.Sympathizers.Where(x=>x.StolonId == stolon.Id && x.ReceivedInformationsEmail));
+            users.AddRange(_context.Adherents.Include(x=>x.AdherentStolons).Where(x=>x.AdherentStolons.Any(consStol=>consStol.StolonId == stolon.Id)));
+            //On peut envoyer deux fois à un producteur qui est un consomateur
+            users.AddRange(_context.Adherents.Include(x => x.AdherentStolons).Where(x => x.AdherentStolons.Any(consStol => consStol.StolonId == stolon.Id)));
+            return View("Report",  SendMail(users.Distinct(),mailMessage));
         }
 
-        private MailsSendedReport SendMail(IEnumerable<StolonsUser> users, MailMessage mailMessage)
+        private MailsSendedReport SendMail(IEnumerable<IAdherent> users, MailMessage mailMessage)
         {
             MailsSendedReport report = new MailsSendedReport();
-            foreach (StolonsUser user in users)
+            foreach (Adherent user in users)
             {
                 if (!String.IsNullOrWhiteSpace(user.Email))
                 { 

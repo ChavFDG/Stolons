@@ -18,6 +18,8 @@ namespace Stolons.Models
         [Key]
         public Guid Id { get; set; }
 
+        public List<AdherentStolon> UserStolons { get; set; }
+
         //Configuration de la structure
         [Display(Name = "Libelle de la structure")]
         public string Label { get; set; } = "Mon stolon";

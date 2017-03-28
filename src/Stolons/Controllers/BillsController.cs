@@ -27,14 +27,14 @@ namespace Stolons.Controllers
         [Authorize()]
         public async Task<IActionResult> Index()
         {
-            StolonsUser stolonsUser = await this.GetCurrentStolonsUserAsync();
-            if(stolonsUser is Producer)
+            Adherent stolonsUser = await this.GetCurrentStolonsUserAsync();
+            if(stolonsUser is Adherent)
             {
-                return View(_context.ProducerBills.Where(x=>x.Producer.Email == stolonsUser.Email).OrderBy(x=>x.EditionDate).ToList<IBill>());
+                return View(_context.ProducerBills.Where(x=>x.Adherent.Email == stolonsUser.Email).OrderBy(x=>x.EditionDate).ToList<IBill>());
             }
-            else if (stolonsUser is Consumer)
+            else if (stolonsUser is Adherent)
             {
-                return View(_context.ConsumerBills.Where(x => x.Consumer.Email == stolonsUser.Email).OrderBy(x => x.EditionDate).ToList<IBill>());
+                return View(_context.ConsumerBills.Where(x => x.Adherent.Email == stolonsUser.Email).OrderBy(x => x.EditionDate).ToList<IBill>());
             }
             return View();//ERROR
         }
@@ -45,7 +45,7 @@ namespace Stolons.Controllers
             IBill bill = _context.ConsumerBills.FirstOrDefault(x => x.BillNumber == id);
             if(bill != null)
                 return View(bill);
-            bill = _context.ProducerBills.Include(x=>x.Producer).FirstOrDefault(x => x.BillNumber == id);
+            bill = _context.ProducerBills.Include(x=>x.Adherent).FirstOrDefault(x => x.BillNumber == id);
             if (bill != null)
                 return View(bill);
             //Bill not found

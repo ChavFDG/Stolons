@@ -14,11 +14,11 @@ namespace Stolons.ViewModels.Token
         {
 
         }
-        public CreditTokenViewModel(Consumer consumer)
+        public CreditTokenViewModel(Adherent consumer)
         {
             Consumer = consumer;
         }
-        public Consumer Consumer { get; set; }
+        public Adherent Consumer { get; set; }
 
         [Display(Name ="Bogues à créditer :")]
         public decimal CreditedToken { get; set; } = 0;

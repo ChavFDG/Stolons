@@ -15,16 +15,19 @@ namespace Stolons.Models
         [Display(Name = "Numéro de facture")] //Year_WeekNumber_UserId
         string BillNumber { get; set; }
         [Display(Name = "Utilisateur")]
-        StolonsUser User { get; set; }
+        AdherentStolon AdherentStolon { get; set; }
+
+        Stolon Stolon { get; }
+
         [Display(Name = "Etat")]
         BillState State { get; set; }
 
         [Display(Name = "Date d'édition")]
         DateTime EditionDate { get; set; }
-        
+
         [Display(Name = "Montant")]
         decimal OrderAmount { get; set; }
-        
+
         string HtmlBillContent { get; set; }
     }
     public class ConsumerBill : IBill
@@ -32,31 +35,30 @@ namespace Stolons.Models
         [Key]
         [Display(Name = "Numéro de facture")] //Year_WeekNumber_UserId
         public string BillNumber { get; set; }
+        public AdherentStolon AdherentStolon { get; set; }
+        
+        public Adherent Adherent
+        {
+            get
+            {
+                return AdherentStolon.Adherent;
+            }
+        }
 
-
-        [Display(Name = "Consomateur")] //Year_WeekNumber_UserId
-        public Consumer Consumer { get; set; }
+        [Display(Name = "Stolon")]
+        public Stolon Stolon
+        {
+            get
+            {
+                return AdherentStolon.Stolon;
+            }
+        }
 
         [Display(Name = "Date d'édition de la facture")]
         public DateTime EditionDate { get; set; }
 
         [Display(Name = "Etat")]
         public BillState State { get; set; }
-
-        [Display(Name = "Adhérant")]
-        [NotMapped]
-        public StolonsUser User
-        {
-            get
-            {
-                return Consumer;
-            }
-
-            set
-            {
-                Consumer = value as Consumer;
-            }
-        }
 
         [Display(Name = "Montant")]
         public decimal OrderAmount { get; set; }
@@ -72,29 +74,30 @@ namespace Stolons.Models
         [Key]
         [Display(Name = "Numéro de facture")] //Year_WeekNumber_UserId
         public string BillNumber { get; set; }
+        public AdherentStolon AdherentStolon { get; set; }
 
-        [Display(Name = "Producteur")]
-        public Producer Producer { get; set; }
+        public Adherent Adherent
+        {
+            get
+            {
+                return AdherentStolon.Adherent;
+            }
+        }
+
+        [Display(Name = "Stolon")]
+        public Stolon Stolon
+        {
+            get
+            {
+                return AdherentStolon.Stolon;
+            }
+        }
 
         [Display(Name = "Date d'édition de la facture")]
         public DateTime EditionDate { get; set; }
 
         [Display(Name = "Etat")]
         public BillState State { get; set; }
-
-        [NotMapped]
-        public StolonsUser User
-        {
-            get
-            {
-                return Producer;
-            }
-
-            set
-            {
-                Producer = value as Producer;
-            }
-        }
 
         [Display(Name = "Montant de la commande")]
         public decimal OrderAmount { get; set; }
@@ -117,7 +120,7 @@ namespace Stolons.Models
         {
             get
             {
-                return Math.Round(OrderAmount - (OrderAmount / 100m * ProducersFee),2);
+                return Math.Round(OrderAmount - (OrderAmount / 100m * ProducersFee), 2);
             }
         }
         [Display(Name = "Montant de la TVA")]
@@ -153,10 +156,10 @@ namespace Stolons.Models
         [Display(Name = "Numéro de facture")] //Year_WeekNumber
         public string BillNumber { get; set; }
 
-        public Guid StolonId { get;  set; }
+        public Guid StolonId { get; set; }
 
         [ForeignKey(nameof(StolonId))]
-        public Stolon Stolon { get;  set; }
+        public Stolon Stolon { get; set; }
 
         [Display(Name = "Date d'édition")]
         public DateTime EditionDate { get; set; }
@@ -184,7 +187,7 @@ namespace Stolons.Models
                 return Amount - (Amount / 100 * ProducersFee);
             }
         }
-        
+
         [NotMapped]
         public string FilePath
         {

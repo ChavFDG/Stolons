@@ -18,7 +18,7 @@ using System.Threading;
 using Stolons.Tools;
 using Stolons.Models.Users;
 using Microsoft.Extensions.Configuration.UserSecrets;
-
+using static Stolons.Configurations;
 
 namespace Stolons
 {
@@ -152,9 +152,10 @@ namespace Stolons
 #if DEBUG
             await InitializeSampleAndTestData(serviceProvider, context, userManager, stolons.First());
 #endif
-            Thread billManager = new Thread(() => BillGenerator.ManageBills(context));
             Configurations.Environment = env;
-            billManager.Start();
+            //TODO à relancer !
+            //Thread billManager = new Thread(() => BillGenerator.ManageBills(context));
+            //billManager.Start();
         }
 
 
@@ -248,7 +249,7 @@ namespace Stolons
             pain.Price = Convert.ToDecimal(15.5);
             pain.UnitPrice = 4;
             pain.TaxEnum = Product.TAX.Ten;
-            pain.Producer = context.Producers.First();
+            pain.Producer = context.Adherents.First();
             pain.ProductUnit = Product.Unit.Kg;
             pain.StockManagement = Product.StockType.Week;
             pain.RemainingStock = 10;
@@ -266,7 +267,7 @@ namespace Stolons
             tomate.TaxEnum = Product.TAX.FiveFive;
             tomate.UnitPrice = Convert.ToDecimal(1.5);
             tomate.QuantityStep = 500;
-            tomate.Producer = context.Producers.First();
+            tomate.Producer = context.Adherents.First();
             tomate.ProductUnit = Product.Unit.Kg;
             tomate.StockManagement = Product.StockType.Week;
             tomate.RemainingStock = 10;
@@ -284,7 +285,7 @@ namespace Stolons
             pommedeterre.TaxEnum = Product.TAX.FiveFive;
             pommedeterre.UnitPrice = Convert.ToDecimal(1.99);
             pommedeterre.QuantityStep = 1000;
-            pommedeterre.Producer = context.Producers.First();
+            pommedeterre.Producer = context.Adherents.First();
             pommedeterre.ProductUnit = Product.Unit.Kg;
             pommedeterre.StockManagement = Product.StockType.Week;
             pommedeterre.RemainingStock = 10;
@@ -301,7 +302,7 @@ namespace Stolons
             radis.Price = 0;
             radis.UnitPrice = 4;
             radis.TaxEnum = Product.TAX.FiveFive;
-            radis.Producer = context.Producers.First();
+            radis.Producer = context.Adherents.First();
             radis.ProductUnit = Product.Unit.Kg;
             radis.StockManagement = Product.StockType.Week;
             radis.RemainingStock = 10;
@@ -318,7 +319,7 @@ namespace Stolons
             salade.UnitPrice = Convert.ToDecimal(0.80);
             salade.TaxEnum = Product.TAX.FiveFive;
             salade.Price = 0;
-            salade.Producer = context.Producers.First();
+            salade.Producer = context.Adherents.First();
             salade.ProductUnit = Product.Unit.Kg;
             salade.StockManagement = Product.StockType.Week;
             salade.RemainingStock = 10;
@@ -334,7 +335,7 @@ namespace Stolons
             conserveTomate.UnitPrice = Convert.ToDecimal(4);
             conserveTomate.TaxEnum = Product.TAX.None;
             conserveTomate.Price = 0;
-            conserveTomate.Producer = context.Producers.First();
+            conserveTomate.Producer = context.Adherents.First();
             conserveTomate.ProductUnit = Product.Unit.L;
             conserveTomate.StockManagement = Product.StockType.Fixed;
             conserveTomate.RemainingStock = 10;
@@ -430,7 +431,6 @@ namespace Stolons
                     "damien.paravel@gmail.com",
                     "damien.paravel@gmail.com",
                     Configurations.Role.WebAdmin,
-                    Configurations.UserType.Consumer,
                     stolon);
             await CreateAcount(context,
                     userManager,
@@ -439,7 +439,6 @@ namespace Stolons
                     "nicolas.michon@zoho.com",
                     "nicolas.michon@zoho.com",
                     Configurations.Role.WebAdmin,
-                    Configurations.UserType.Consumer,
                     stolon);
             await CreateAcount(context,
                     userManager,
@@ -448,7 +447,6 @@ namespace Stolons
                     "arnaudteston@gmail.com",
                     "arnaudteston@gmail.com",
                     Configurations.Role.WebAdmin,
-                    Configurations.UserType.Consumer,
                     stolon);
         }
 
@@ -461,74 +459,54 @@ namespace Stolons
                     "chavrouxfdg@hotmail.com",
                     "chavrouxfdg@hotmail.com",
                     Configurations.Role.User,
-                    Configurations.UserType.Producer,
                     stolon,
+                    true,
                     true);
         }
 
-        private async Task CreateAcount(ApplicationDbContext context, UserManager<ApplicationUser> userManager, string name, string surname, string email, string password, Configurations.Role role, Configurations.UserType userType, Stolon stolon, bool createOnlyIfTableEmpty = false)
+        private async Task CreateAcount(ApplicationDbContext context, UserManager<ApplicationUser> userManager, string name, string surname, string email, string password, Configurations.Role role, Stolon stolon, bool isProducer = false, bool createOnlyIfTableEmpty = false)
         {
             if (createOnlyIfTableEmpty)
             {
-                switch (userType)
+                if (isProducer)
                 {
-                    case Configurations.UserType.Producer:
-                        if (context.Producers.Any())
-                            return;
-                        break;
-                    case Configurations.UserType.Consumer:
-                        if (context.Consumers.Any())
-                            return;
-                        break;
-                    default:
-                        break;
+                    if (context.Adherents.Any(x => x.IsProducer))
+                    {
+                        return;
+                    }
+                    if (context.Adherents.Any(x => !x.IsProducer))
+                    {
+                        return;
+                    }
                 }
             }
 
-            if (context.Consumers.Any(x => x.Email == email) || context.Producers.Any(x => x.Email == email))
+            if (context.Adherents.Any(x => x.Email == email))
                 return;
-            StolonsUser user;
-            switch (userType)
+            Adherent adherent;
+            adherent = new Adherent();
+            adherent.Name = name;
+            adherent.Surname = surname;
+            adherent.Email = email;
+            adherent.PostCode = "07000";
+            AdherentStolon consumerStolon = new AdherentStolon(adherent, stolon)
             {
-                case Configurations.UserType.Producer:
-                    user = new Producer();
-                    break;
-                case Configurations.UserType.Consumer:
-                    user = new Consumer();
-                    break;
-                default:
-                    user = new Consumer();
-                    break;
-            }
-            user.Name = name;
-            user.Surname = surname;
-            user.Email = email;
-            user.RegistrationDate = DateTime.Now;
-            user.Enable = true;
-            user.PostCode = "07000";
-            user.Stolon = stolon;
+                RegistrationDate = DateTime.Now,
+                Enable = true
+            };
+            adherent.ActiveAdherentStolon = consumerStolon;
 
-            switch (userType)
+            if (isProducer)
             {
-                case Configurations.UserType.Producer:
-                    Producer producer = user as Producer;
-                    producer.CompanyName = "La ferme de " + producer.Name;
-                    producer.Latitude = 44.7354673;
-                    producer.Longitude = 4.601407399999971;
-                    context.Producers.Add(producer);
-                    break;
-                case Configurations.UserType.Consumer:
-                    context.Consumers.Add(user as Consumer);
-                    break;
-                default:
-                    context.Consumers.Add(user as Consumer);
-                    break;
+                adherent.CompanyName = "La ferme de " + adherent.Name;
+                adherent.Latitude = 44.7354673;
+                adherent.Longitude = 4.601407399999971;
+                adherent.IsProducer = true;
             }
-
 
             #region Creating linked application data
-            var appUser = new ApplicationUser { UserName = user.Email, Email = user.Email };
-            appUser.User = user;
+            var appUser = new ApplicationUser { UserName = adherent.Email, Email = adherent.Email };
+            appUser.User = adherent;
 
             var result = await userManager.CreateAsync(appUser, password);
             if (result.Succeeded)
@@ -536,10 +514,12 @@ namespace Stolons
                 //Add user role
                 result = await userManager.AddToRoleAsync(appUser, role.ToString());
                 //Add user type
+                foreach(UserType userType in adherent.GetUserTypes())
                 result = await userManager.AddToRoleAsync(appUser, userType.ToString());
             }
             #endregion Creating linked application data
 
+            context.Adherents.Add(adherent);
             context.SaveChanges();
 
         }

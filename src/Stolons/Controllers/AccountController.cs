@@ -51,7 +51,7 @@ namespace Stolons.Controllers
             if (ModelState.IsValid)
             {
                 //D'abord on regarde si il existe bien un User avec ce mail
-                StolonsUser stolonsUser = _context.StolonsUsers.FirstOrDefault(x => model.Email.Equals(x.Email, StringComparison.CurrentCultureIgnoreCase));
+                Adherent stolonsUser = _context.Adherents.FirstOrDefault(x => model.Email.Equals(x.Email, StringComparison.CurrentCultureIgnoreCase));
                 if (stolonsUser == null)
                 {
                     ModelState.AddModelError("LoginFailed", "Utilisateur inconnu");
@@ -60,9 +60,9 @@ namespace Stolons.Controllers
                 else
                 {
                     //On regarde si le compte de l'utilisateur est actif
-                    if (!stolonsUser.Enable)
+                    if (!stolonsUser.ActiveAdherentStolon.Enable)
                     {
-                        ModelState.AddModelError("LoginFailed", "Votre compte a été bloqué pour la raison suivante : " + stolonsUser.DisableReason);
+                        ModelState.AddModelError("LoginFailed", "Votre compte a été bloqué pour la raison suivante : " + stolonsUser.ActiveAdherentStolon.DisableReason);
                         return View(model);
                     }
                     // Il a un mot de passe, on le log si il est bon
@@ -116,7 +116,7 @@ namespace Stolons.Controllers
 	    {
 		return View(model);
 	    }
-	    StolonsUser stolonsUser = _context.StolonsUsers.FirstOrDefault(x => model.Email.Equals(x.Email, StringComparison.CurrentCultureIgnoreCase));
+	    Adherent stolonsUser = _context.Adherents.FirstOrDefault(x => model.Email.Equals(x.Email, StringComparison.CurrentCultureIgnoreCase));
 	    if (stolonsUser == null)
 	    {
 		return View("ForgotPasswordConfirmation");
@@ -148,7 +148,7 @@ namespace Stolons.Controllers
             {
                 return View(model);
             }
-	    StolonsUser stolonsUser = _context.StolonsUsers.FirstOrDefault(x => model.Email.Equals(x.Email, StringComparison.CurrentCultureIgnoreCase));
+	    Adherent stolonsUser = _context.Adherents.FirstOrDefault(x => model.Email.Equals(x.Email, StringComparison.CurrentCultureIgnoreCase));
 	    if (stolonsUser == null)
 	    {
 		return View(model);
