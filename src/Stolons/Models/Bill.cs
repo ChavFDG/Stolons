@@ -17,6 +17,8 @@ namespace Stolons.Models
         [Display(Name = "Utilisateur")]
         AdherentStolon AdherentStolon { get; set; }
 
+        List<BillEntry> BillEntries { get; set; }
+
         Stolon Stolon { get; }
 
         [Display(Name = "Etat")]
@@ -29,6 +31,13 @@ namespace Stolons.Models
         decimal OrderAmount { get; set; }
 
         string HtmlBillContent { get; set; }
+
+        [Display(Name ="A été modifier")]
+        bool HasBeenModified { get; set; }
+        [Display(Name = "Raison de la modification")]
+        string ModificationReason { get; set; }
+        [Display(Name = "Montant")]
+        DateTime ModifiedDate { get; set; }
     }
     public class ConsumerBill : IBill
     {
@@ -44,6 +53,7 @@ namespace Stolons.Models
                 return AdherentStolon.Adherent;
             }
         }
+        public List<BillEntry> BillEntries { get; set; }
 
         [Display(Name = "Stolon")]
         public Stolon Stolon
@@ -67,6 +77,13 @@ namespace Stolons.Models
         public decimal TokenUsed { get; set; } = 0;
 
         public string HtmlBillContent { get; set; }
+
+        [Display(Name = "A été modifier")]
+        public bool HasBeenModified { get; set; }
+        [Display(Name = "Raison de la modification")]
+        public string ModificationReason { get; set; }
+        [Display(Name = "Montant")]
+        public DateTime ModifiedDate { get; set; }
     }
 
     public class ProducerBill : IBill
@@ -83,6 +100,7 @@ namespace Stolons.Models
                 return AdherentStolon.Adherent;
             }
         }
+        public List<BillEntry> BillEntries { get; set; }
 
         [Display(Name = "Stolon")]
         public Stolon Stolon
@@ -127,6 +145,13 @@ namespace Stolons.Models
         public decimal TaxAmount { get; set; }
         public string HtmlBillContent { get; set; }
         public string HtmlOrderContent { get; set; }
+
+        [Display(Name = "A été modifier")]
+        public bool HasBeenModified { get; set; }
+        [Display(Name = "Raison de la modification")]
+        public string ModificationReason { get; set; }
+        [Display(Name = "Montant")]
+        public DateTime ModifiedDate { get; set; }
     }
 
     public enum BillState

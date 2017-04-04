@@ -35,7 +35,7 @@ namespace Stolons.Controllers
         [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
         public IActionResult Index()
         {
-            return View(_context.Adherents.Where(x => x.ActiveAdherentStolonId == GetCurrentStolon().Id).ToList());
+            return View(_context.AdherentStolons.Include(x=>x.Adherent).Where(x => x.StolonId == GetCurrentStolon().Id).ToList());
         }
         
         // GET: Consumers/Details/5
@@ -78,7 +78,7 @@ namespace Stolons.Controllers
                 UploadAndSetAvatar(vmConsumer.Consumer, uploadFile);
 
                 vmConsumer.Consumer.Name = vmConsumer.Consumer.Name.ToUpper();
-                AdherentStolon consumerStolon = new AdherentStolon(vmConsumer.Consumer, GetCurrentStolon());
+                AdherentStolon consumerStolon = new AdherentStolon(vmConsumer.Consumer, GetCurrentStolon(), true);
                 consumerStolon.RegistrationDate = DateTime.Now;
                 _context.Adherents.Add(vmConsumer.Consumer);
                 _context.AdherentStolons.Add(consumerStolon);
@@ -97,8 +97,7 @@ namespace Stolons.Controllers
                     result = await _userManager.AddToRoleAsync(appUser, Configurations.UserType.Consumer.ToString());
                 }
                 #endregion Creating linked application data
-
-                vmConsumer.Consumer.ActiveAdherentStolonId = GetCurrentStolon().Id;
+                
                 _context.SaveChanges();
                 //Send confirmation mail
                 Services.AuthMessageSender.SendEmail(vmConsumer.Consumer.Email, vmConsumer.Consumer.Name, "Creation de votre compte", base.RenderPartialViewToString("UserCreatedConfirmationMail", vmConsumer));
@@ -231,14 +230,14 @@ namespace Stolons.Controllers
         [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
         public IActionResult CreditToken(CreditTokenViewModel vmCreditToken)
         {
-            Adherent consumer = _context.Adherents.Include(x=>x.ActiveAdherentStolon).Single(m => m.Id == vmCreditToken.Consumer.Id);
-            consumer.ActiveAdherentStolon.Token += vmCreditToken.CreditedToken;
+            AdherentStolon adherentStolon = _context.AdherentStolons.Include(x=>x.Adherent).Single(x => x.AdherentId == vmCreditToken.Consumer.Id);
+            adherentStolon.Token += vmCreditToken.CreditedToken;
             _context.Add(new Transaction(
                 Transaction.TransactionType.Inbound,
                 Transaction.TransactionCategory.TokenCredit,
                 vmCreditToken.CreditedToken,
-                "Créditage du compte de "+ consumer.Name + "( " + consumer.Id + " ) de "  + vmCreditToken.CreditedToken + "??"));
-            _context.Update(consumer);
+                "Créditage du compte de "+ adherentStolon.Adherent.Name + "( " + adherentStolon.Id + " ) de "  + vmCreditToken.CreditedToken + "??"));
+            _context.Update(adherentStolon);
             _context.SaveChanges();
             return RedirectToAction("Index");
         }

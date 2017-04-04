@@ -30,11 +30,11 @@ namespace Stolons.Controllers
             if (User.Identity.IsAuthenticated)
             {
                 HomeViewModel vm = new HomeViewModel();
-                var user = GetCurrentStolonsUserSync();
+                var adherentStolon = GetActiveAdherentStolon();
                 if (showOldNews)
-                    vm.News = _context.News.Include(x => x.PublishBy).Where(x => x.PublishBy.StolonId == user.ActiveAdherentStolonId).Where(x => (x.PublishStart < DateTime.Now && x.PublishEnd > DateTime.Now) || (x.PublishEnd < DateTime.Now)).ToList();
+                    vm.News = _context.News.Include(x => x.PublishBy).Where(x => x.PublishBy.StolonId == adherentStolon.StolonId).Where(x => (x.PublishStart < DateTime.Now && x.PublishEnd > DateTime.Now) || (x.PublishEnd < DateTime.Now)).ToList();
                 else
-                    vm.News = _context.News.Include(x => x.PublishBy).Where(x => x.PublishBy.StolonId == user.ActiveAdherentStolonId).Where(x => x.PublishStart < DateTime.Now && x.PublishEnd > DateTime.Now).ToList();
+                    vm.News = _context.News.Include(x => x.PublishBy).Where(x => x.PublishBy.StolonId == adherentStolon.StolonId).Where(x => x.PublishStart < DateTime.Now && x.PublishEnd > DateTime.Now).ToList();
                 return View(vm);
             }
             else

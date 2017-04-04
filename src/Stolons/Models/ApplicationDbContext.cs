@@ -30,6 +30,7 @@ namespace Stolons.Models
         public DbSet<StolonsBill> StolonsBills { get; set; }
         //Products
         public DbSet<Product> Products { get; set; }
+        public DbSet<ProductStockStolon> ProductsStocks { get; set; }
         public DbSet<ProductFamilly> ProductFamillys { get; set; }
         public DbSet<ProductType> ProductTypes { get; set; }
         //WeekBasket
@@ -62,11 +63,17 @@ namespace Stolons.Models
                 .HasOne(x => x.Stolon);
             //Adherent
             modelBuilder.Entity<Adherent>()
-                .HasOne(x => x.ActiveAdherentStolon);
-            modelBuilder.Entity<Adherent>()
                 .HasMany(x => x.AdherentStolons)
                     .WithOne(x => x.Adherent);
-
+            //StolonsStock
+            modelBuilder.Entity<ProductStockStolon>()
+                .HasOne(x => x.Product);
+            //Product
+            modelBuilder.Entity<Product>()
+                .HasMany(x => x.BillEntries)
+                    .WithOne(x => x.Product);
+            modelBuilder.Entity<Product>()
+                .HasOne(x => x.Producer);
         }
     }
 

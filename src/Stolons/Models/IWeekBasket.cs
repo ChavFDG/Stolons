@@ -23,7 +23,7 @@ namespace Stolons.Models
             {
                 if (billEntry.Product == null)
                 {
-                    billEntry.Product = context.Products.Include(x=>x.Producer).ThenInclude(x=>x.ActiveAdherentStolon).First(x => x.Id == billEntry.ProductId);
+                    billEntry.Product = context.Products.Include(x=>x.Producer).First(x => x.Id == billEntry.ProductId);
                 }
             }
         }

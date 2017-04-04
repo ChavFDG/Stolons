@@ -5,8 +5,8 @@ A faire :
 
 - Ajouter par factures stolons le total gagné et le total total
 - "Valider les payements de facture" accessible qu'aux admins 
-
-
+- Ajout un moyen de laisser des comtpes rendu ou autre  (fichier pdf ...)
+- stocker l'addresse dans bill
 
 
 FEATURES

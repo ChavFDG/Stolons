@@ -31,7 +31,7 @@ namespace Stolons.Controllers
 
 	[AllowAnonymous]
 	[HttpGet, ActionName("Producers"), Route("api/producers")]
-	public string JsonProducts() {
+	public string JsonProductsStocks() {
 	    var producers = _context.Adherents.Where(x=>x.IsProducer).ToList();
 
 	    return JsonConvert.SerializeObject(producers, Formatting.Indented, new JsonSerializerSettings() {

@@ -57,31 +57,31 @@
                     @switch (item.PublishAs)
                     {
                         case Stolons.Models.Messages.NewsPublishAs.Producer:
-                            <img class="avatar userNewsAvatar" src="@item.User.AvatarFilePath" />
+                            <img class="avatar userNewsAvatar" src="@item.PublishBy.Adherent.AvatarFilePath" />
                             break;
                         case Stolons.Models.Messages.NewsPublishAs.Stolon:
-                            <img class="avatar userNewsAvatar" src="@item.Stolon.LogoFilePath" />
+                            <img class="avatar userNewsAvatar" src="@item.PublishBy.Stolon.LogoFilePath" />
                             break;
                     }
                 </div>
                 @switch (item.PublishAs)
                 {
                     case Stolons.Models.Messages.NewsPublishAs.Producer:
-                        <a asp-action="PartialDetail" asp-controller="Producers" asp-route-id="@item.User.Id">@((item.User as Producer).CompanyName)</a>
+                        <a asp-action="PartialDetail" asp-controller="Producers" asp-route-id="@item.PublishBy.Adherent.Id">PublishBy.Adherent.CompanyName)</a>
                         break;
                     case Stolons.Models.Messages.NewsPublishAs.Stolon:
-                        @item.Stolon.Label
+                        @item.PublishBy.Stolon.Label
                         break;
                 }
                 @item.DateOfPublication.ToString("le dd/MM/yyyy à HH:mm:ss")
-                @if (User.Identity.Name == item.User.Email
+                @if (User.Identity.Name == item.PublishBy.Adherent.Email
                                 || User.IsInRole(Configurations.Role.WebAdmin.ToString())
                                 || User.IsInRole(Configurations.Role.Volunteer.ToString())
                                 || User.IsInRole(Configurations.Role.StolonAdmin.ToString()))
                 {
                     <a asp-action="Edit" asp-controller="News" asp-route-id="@item.Id" class="btn btn-small btn-default">Modifier</a>
                 }
-                @if (User.IsInRole(Configurations.Role.WebAdmin.ToString()) || User.IsInRole(Configurations.Role.StolonAdmin.ToString()) || UserManager.GetUserId(User) == item.User.Email)
+                @if (User.IsInRole(Configurations.Role.WebAdmin.ToString()) || User.IsInRole(Configurations.Role.StolonAdmin.ToString()) || UserManager.GetUserId(User) == item.PublishBy.Adherent.Email)
                 {
                     <a asp-action="Delete" asp-controller="News" asp-route-id="@item.Id" class="btn btn-small btn-default">Supprimer</a>
                 }

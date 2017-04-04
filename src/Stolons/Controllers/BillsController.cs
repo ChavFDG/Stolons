@@ -27,7 +27,7 @@ namespace Stolons.Controllers
         [Authorize()]
         public async Task<IActionResult> Index()
         {
-            Adherent stolonsUser = await this.GetCurrentStolonsUserAsync();
+            Adherent stolonsUser = await this.GetCurrentAdherentAsync();
             if(stolonsUser is Adherent)
             {
                 return View(_context.ProducerBills.Where(x=>x.Adherent.Email == stolonsUser.Email).OrderBy(x=>x.EditionDate).ToList<IBill>());

@@ -246,16 +246,14 @@ namespace Stolons
             pain.Description = "Pain farine complete T80";
             pain.Labels.Add(Product.Label.Ab);
             pain.PicturesSerialized = Path.Combine("pain.png");
-            pain.Price = Convert.ToDecimal(15.5);
+            pain.WeightPrice = Convert.ToDecimal(15.5);
             pain.UnitPrice = 4;
             pain.TaxEnum = Product.TAX.Ten;
-            pain.Producer = context.Adherents.First();
+            pain.Producer = context.Adherents.First(x=>x.IsProducer);
             pain.ProductUnit = Product.Unit.Kg;
             pain.StockManagement = Product.StockType.Week;
-            pain.RemainingStock = 10;
-            pain.State = Product.ProductState.Enabled;
             pain.Type = Product.SellType.Piece;
-            pain.WeekStock = 10;
+            AddStocks(pain);
             pain.Familly = context.ProductFamillys.First(x => x.FamillyName == "Pains");
             context.Add(pain);
             Product tomate = new Product();
@@ -263,53 +261,47 @@ namespace Stolons
             tomate.Description = "Avec ces tomates, c'est nous qui rougissons même si elles ne sont pas toutes nues!";
             tomate.Labels.Add(Product.Label.Ab);
             tomate.PicturesSerialized = Path.Combine("tomate.jpg");
-            tomate.Price = 3;
+            tomate.WeightPrice = 3;
             tomate.TaxEnum = Product.TAX.FiveFive;
             tomate.UnitPrice = Convert.ToDecimal(1.5);
             tomate.QuantityStep = 500;
-            tomate.Producer = context.Adherents.First();
+            tomate.Producer = context.Adherents.First(x => x.IsProducer);
             tomate.ProductUnit = Product.Unit.Kg;
             tomate.StockManagement = Product.StockType.Week;
-            tomate.RemainingStock = 10;
+            AddStocks(tomate);
             tomate.Familly = context.ProductFamillys.First(x => x.FamillyName == "Légumes");
-            tomate.State = Product.ProductState.Enabled;
             tomate.Type = Product.SellType.Weigh;
-            tomate.WeekStock = 10;
             context.Add(tomate);
             Product pommedeterre = new Product();
             pommedeterre.Name = "Pomme de terre";
             pommedeterre.Description = "Pataaaaaaaaaaaaaaaates!!";
             pommedeterre.Labels.Add(Product.Label.Ab);
             pommedeterre.PicturesSerialized = Path.Combine("pommedeterre.jpg");
-            pommedeterre.Price = Convert.ToDecimal(1.99);
+            pommedeterre.WeightPrice = Convert.ToDecimal(1.99);
             pommedeterre.TaxEnum = Product.TAX.FiveFive;
             pommedeterre.UnitPrice = Convert.ToDecimal(1.99);
             pommedeterre.QuantityStep = 1000;
-            pommedeterre.Producer = context.Adherents.First();
+            pommedeterre.Producer = context.Adherents.First(x => x.IsProducer);
             pommedeterre.ProductUnit = Product.Unit.Kg;
             pommedeterre.StockManagement = Product.StockType.Week;
-            pommedeterre.RemainingStock = 10;
+            AddStocks(pommedeterre);
             pommedeterre.Familly = context.ProductFamillys.First(x => x.FamillyName == "Légumes");
-            pommedeterre.State = Product.ProductState.Enabled;
             pommedeterre.Type = Product.SellType.Weigh;
-            pommedeterre.WeekStock = 10;
             context.Add(pommedeterre);
             Product radis = new Product();
             radis.Name = "Radis";
             radis.Description = "Des supers radis (pour ceux qui aiment)";
             radis.Labels.Add(Product.Label.Ab);
             radis.PicturesSerialized = Path.Combine("radis.jpg");
-            radis.Price = 0;
+            radis.WeightPrice = 0;
             radis.UnitPrice = 4;
             radis.TaxEnum = Product.TAX.FiveFive;
-            radis.Producer = context.Adherents.First();
+            radis.Producer = context.Adherents.First(x => x.IsProducer);
             radis.ProductUnit = Product.Unit.Kg;
             radis.StockManagement = Product.StockType.Week;
-            radis.RemainingStock = 10;
+            AddStocks(radis);
             radis.Familly = context.ProductFamillys.First(x => x.FamillyName == "Légumes");
-            radis.State = Product.ProductState.Enabled;
             radis.Type = Product.SellType.Piece;
-            radis.WeekStock = 10;
             context.Add(radis);
             Product salade = new Product();
             salade.Name = "Salade";
@@ -318,15 +310,13 @@ namespace Stolons
             salade.PicturesSerialized = Path.Combine("salade.jpg");
             salade.UnitPrice = Convert.ToDecimal(0.80);
             salade.TaxEnum = Product.TAX.FiveFive;
-            salade.Price = 0;
-            salade.Producer = context.Adherents.First();
+            salade.WeightPrice = 0;
+            salade.Producer = context.Adherents.First(x => x.IsProducer);
             salade.ProductUnit = Product.Unit.Kg;
             salade.StockManagement = Product.StockType.Week;
-            salade.RemainingStock = 10;
+            AddStocks(salade);
             salade.Familly = context.ProductFamillys.First(x => x.FamillyName == "Légumes");
-            salade.State = Product.ProductState.Enabled;
             salade.Type = Product.SellType.Piece;
-            salade.WeekStock = 10;
             context.Add(salade);
             Product conserveTomate = new Product();
             conserveTomate.Name = "Bocaux de tomate 500ml";
@@ -334,20 +324,30 @@ namespace Stolons
             conserveTomate.PicturesSerialized = Path.Combine("ConserveTomate.jpg");
             conserveTomate.UnitPrice = Convert.ToDecimal(4);
             conserveTomate.TaxEnum = Product.TAX.None;
-            conserveTomate.Price = 0;
-            conserveTomate.Producer = context.Adherents.First();
+            conserveTomate.WeightPrice = 0;
+            conserveTomate.Producer = context.Adherents.First(x => x.IsProducer);
             conserveTomate.ProductUnit = Product.Unit.L;
             conserveTomate.StockManagement = Product.StockType.Fixed;
-            conserveTomate.RemainingStock = 10;
+            AddStocks(salade, 30, 0);
             conserveTomate.Familly = context.ProductFamillys.First(x => x.FamillyName == "Légumes");
-            conserveTomate.State = Product.ProductState.Enabled;
             conserveTomate.Type = Product.SellType.Piece;
-            conserveTomate.WeekStock = 0;
             context.Add(conserveTomate);
 
 
             //
             context.SaveChanges();
+        }
+
+        private static void AddStocks(Product product, int remainingStock = 10, int weekStock = 10, Product.ProductState productState = Product.ProductState.Enabled)
+        {
+            foreach (var adherentStolon in product.Producer.AdherentStolons)
+            {
+                ProductStockStolon productStock = new ProductStockStolon(product.Id, adherentStolon.Id);
+                product.ProductStocks.Add(productStock);
+                productStock.RemainingStock = remainingStock;
+                productStock.State = productState;
+                productStock.WeekStock = weekStock;
+            }
         }
 
         private async Task CreateRoles(IServiceProvider serviceProvider)
@@ -474,27 +474,16 @@ namespace Stolons
                     {
                         return;
                     }
-                    if (context.Adherents.Any(x => !x.IsProducer))
-                    {
-                        return;
-                    }
                 }
             }
 
             if (context.Adherents.Any(x => x.Email == email))
                 return;
-            Adherent adherent;
-            adherent = new Adherent();
+            Adherent adherent = new Adherent(); 
             adherent.Name = name;
             adherent.Surname = surname;
             adherent.Email = email;
             adherent.PostCode = "07000";
-            AdherentStolon consumerStolon = new AdherentStolon(adherent, stolon)
-            {
-                RegistrationDate = DateTime.Now,
-                Enable = true
-            };
-            adherent.ActiveAdherentStolon = consumerStolon;
 
             if (isProducer)
             {
@@ -503,6 +492,15 @@ namespace Stolons
                 adherent.Longitude = 4.601407399999971;
                 adherent.IsProducer = true;
             }
+
+            AdherentStolon adherentStolon = new AdherentStolon(adherent, stolon, true)
+            {
+                RegistrationDate = DateTime.Now,
+                Enable = true,
+            };
+            context.Adherents.Add(adherent);
+            context.AdherentStolons.Add(adherentStolon);
+            context.SaveChanges();
 
             #region Creating linked application data
             var appUser = new ApplicationUser { UserName = adherent.Email, Email = adherent.Email };
@@ -514,13 +512,11 @@ namespace Stolons
                 //Add user role
                 result = await userManager.AddToRoleAsync(appUser, role.ToString());
                 //Add user type
-                foreach(UserType userType in adherent.GetUserTypes())
-                result = await userManager.AddToRoleAsync(appUser, userType.ToString());
+                foreach (UserType userType in adherent.GetUserTypes())
+                    result = await userManager.AddToRoleAsync(appUser, userType.ToString());
             }
             #endregion Creating linked application data
 
-            context.Adherents.Add(adherent);
-            context.SaveChanges();
 
         }
 

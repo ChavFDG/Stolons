@@ -56,7 +56,7 @@
                                     <li><a asp-controller="News" asp-action="Index">Les nouvelles</a></li>
                                     @if (User.IsInRole(Configurations.Role.WebAdmin.ToString()) || User.IsInRole(Configurations.Role.StolonAdmin.ToString()))
                                     {
-                                        <li><a asp-controller="Stolons" asp-route-id="@Model.User.Stolon.Id" asp-action="Details">@Model.User.Stolon.Label</a></li>
+                                        <li><a asp-controller="Stolons" asp-route-id="@Model.AdherentStolon.Stolon.Id" asp-action="Details">@Model.AdherentStolon.Stolon.Label</a></li>
                                     }
                                     @if (User.IsInRole(Configurations.Role.WebAdmin.ToString()))
                                     {
@@ -67,7 +67,7 @@
                                 </ul>
                             </li>
                         }
-                        <li><a asp-controller="Home" asp-action="StolonContact" asp-route-id="@Model.User.Stolon.Id">@(Model.User.Stolon.Label +"TODO changer de place")</a></li>
+                        <li><a asp-controller="Home" asp-action="StolonContact" asp-route-id="@Model.AdherentStolon.Stolon.Id">@(Model.AdherentStolon.Stolon.Label +"TODO changer de place")</a></li>
                     </ul>
                 </div>
                 <div class="navbar-right">

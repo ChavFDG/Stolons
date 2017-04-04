@@ -82,8 +82,7 @@ namespace Stolons.Controllers
                 news.Id = Guid.NewGuid();
                 news.DateOfPublication = DateTime.Now;
                 //TODO Get logged in User and add it to the news
-                Adherent user = await GetCurrentStolonsUserAsync();
-                news.PublishBy = user.ActiveAdherentStolon;
+                news.PublishBy = GetActiveAdherentStolon();
                 _context.News.Add(news);
                 _context.SaveChanges();
                 return RedirectToAction("Index");
@@ -127,8 +126,7 @@ namespace Stolons.Controllers
                     //Setting new value, saving
                     news.ImageLink = Path.Combine(Configurations.NewsImageStockagePath, fileName);
                 }
-                Adherent user = await GetCurrentStolonsUserAsync();
-                news.PublishBy = user.ActiveAdherentStolon;
+                news.PublishBy = GetActiveAdherentStolon();
                 _context.Update(news);
                 _context.SaveChanges();
                 return RedirectToAction("Index");

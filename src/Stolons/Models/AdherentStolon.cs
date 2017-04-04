@@ -17,10 +17,11 @@ namespace Stolons.Models
         {
 
         }
-        public AdherentStolon(Adherent adherent, Stolon stolon)
+        public AdherentStolon(Adherent adherent, Stolon stolon, bool isActiveStolon = false)
         {
             Adherent = adherent;
             Stolon = stolon;
+            IsActiveStolon = isActiveStolon;
         }
 
 
@@ -40,7 +41,15 @@ namespace Stolons.Models
         public virtual Adherent Adherent { get; set; }
         
         //
-
+        public bool IsActiveStolon { get; protected set; }
+        public void SetHasActiveStolon(ApplicationDbContext context)
+        {
+            foreach(var adherentStolon in context.AdherentStolons.Where(x=>x.AdherentId == AdherentId))
+            {
+                adherentStolon.IsActiveStolon = adherentStolon.Id == Id;
+            }
+        }
+        //
         [Display(Name = "Actif / Inactif")]
         public bool Enable { get; set; } = true;
 

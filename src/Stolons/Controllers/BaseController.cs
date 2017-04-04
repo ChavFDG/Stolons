@@ -76,21 +76,35 @@ namespace Stolons.Controllers
             return _userManager.FindByIdAsync(_userManager.GetUserId(HttpContext.User)).GetAwaiter().GetResult();
         }
 
-        protected async Task<Adherent> GetCurrentStolonsUserAsync()
+        protected async Task<Adherent> GetCurrentAdherentAsync()
         {
             ApplicationUser user = await _userManager.FindByIdAsync(_userManager.GetUserId(HttpContext.User));
-            return _context.Adherents.Include(x => x.ActiveAdherentStolon).FirstOrDefault(x => x.Email == user.Email);
+            
+            return _context.Adherents.Include(x => x.AdherentStolons).FirstOrDefault(x => x.Email == user.Email);
         }
-        protected Adherent GetCurrentStolonsUserSync()
+        protected Adherent GetCurrentAdherentSync()
         {
             ApplicationUser user = _userManager.FindByIdAsync(_userManager.GetUserId(HttpContext.User)).GetAwaiter().GetResult();
-            return _context.Adherents.Include(x => x.ActiveAdherentStolon).FirstOrDefault(x => x.Email == user.Email);
+            return _context.Adherents.Include(x => x.AdherentStolons).FirstOrDefault(x => x.Email == user.Email);
         }
 
         protected Stolon GetCurrentStolon()
         {
-            return GetCurrentStolonsUserSync().ActiveAdherentStolon.Stolon;
+            return _context.Stolons.First(stolon=>stolon.Id ==  GetCurrentAdherentSync().AdherentStolons.First(x=>x.IsActiveStolon).StolonId);
         }
+
+
+        protected AdherentStolon GetActiveAdherentStolonOf(Adherent adherent)
+        {
+            return _context.AdherentStolons.Include(x => x.Stolon).Include(x => x.Adherent).First(x => x.AdherentId == adherent.Id && x.IsActiveStolon);
+
+        }
+
+        protected AdherentStolon GetActiveAdherentStolon()
+        {
+            Adherent adherent = GetCurrentAdherentSync();
+            return GetActiveAdherentStolonOf(adherent);
+         }
 
 
         /// <summary>

@@ -51,7 +51,7 @@ namespace Stolons.Controllers
             if (ModelState.IsValid)
             {
                 //D'abord on regarde si il existe bien un User avec ce mail
-                Adherent stolonsUser = _context.Adherents.FirstOrDefault(x => model.Email.Equals(x.Email, StringComparison.CurrentCultureIgnoreCase));
+                Adherent stolonsUser = _context.Adherents.Include(x=>x.AdherentStolons).FirstOrDefault(x => model.Email.Equals(x.Email, StringComparison.CurrentCultureIgnoreCase));
                 if (stolonsUser == null)
                 {
                     ModelState.AddModelError("LoginFailed", "Utilisateur inconnu");
@@ -59,10 +59,11 @@ namespace Stolons.Controllers
                 }
                 else
                 {
+                    AdherentStolon activeAdherentStolon = stolonsUser.AdherentStolons.First(x => x.IsActiveStolon);
                     //On regarde si le compte de l'utilisateur est actif
-                    if (!stolonsUser.ActiveAdherentStolon.Enable)
+                    if (!activeAdherentStolon.Enable)
                     {
-                        ModelState.AddModelError("LoginFailed", "Votre compte a été bloqué pour la raison suivante : " + stolonsUser.ActiveAdherentStolon.DisableReason);
+                        ModelState.AddModelError("LoginFailed", "Votre compte a été bloqué pour la raison suivante : " + activeAdherentStolon.DisableReason);
                         return View(model);
                     }
                     // Il a un mot de passe, on le log si il est bon

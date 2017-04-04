@@ -10,7 +10,7 @@
     <div class="bannerAccount">
 
         @{
-            if (!Model.User.Cotisation)
+            if (!Model.AdherentStolon.SubscriptionPaid)
             {
                 <div id="warning-container">
                     <img id="warning" src="/images/warning.png" />
@@ -20,13 +20,10 @@
                 </div>
             }
         }
-        @if (Model.User is Consumer)
-        {
-            <div id="bogues">@((Model.User as Consumer).Token) 𝞫</div>
-        }
+        <div id="bogues">@(Model.AdherentStolon.Token) 𝞫</div>
         <a class="dropdown-toggle" data-toggle="dropdown" href="#">
             <div class="bannerAvatar">
-                <img class="avatar" src="/@Model.User.AvatarFilePath" />
+                <img class="avatar" src="/@Model.AdherentStolon.Adherent.AvatarFilePath" />
             </div>
             <span class="caret"></span>
         </a>

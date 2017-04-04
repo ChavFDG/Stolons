@@ -93,8 +93,9 @@ namespace Stolons.Controllers
             {
                 #region Creating Producer
                 UploadAndSetAvatar(vmProducer.Producer, uploadFile);
-                vmProducer.Producer.ActiveAdherentStolon.RegistrationDate = DateTime.Now;
-                vmProducer.Producer.ActiveAdherentStolon.StolonId = GetCurrentStolon().Id;
+                AdherentStolon activeAdhrentStolon= GetActiveAdherentStolonOf(vmProducer.Producer);
+                activeAdhrentStolon.RegistrationDate = DateTime.Now;
+                activeAdhrentStolon.StolonId = GetCurrentStolon().Id;
                 _context.Adherents.Add(vmProducer.Producer);
                 #endregion Creating Producer
 

@@ -33,7 +33,7 @@ namespace Stolons.Controllers
         [Authorize(Roles = Configurations.UserType_Producer)]
         public async Task<IActionResult> Index()
         {
-            Adherent producer = await GetCurrentStolonsUserAsync() as Adherent;
+            Adherent producer = await GetCurrentAdherentAsync() as Adherent;
             var products = _context.Products.Include(m => m.Familly).Include(m => m.Familly.Type).Where(x => x.Producer == producer);
             ProductsViewModel vm = new ProductsViewModel(products, GetCurrentStolon());
             return View(vm);
@@ -43,7 +43,7 @@ namespace Stolons.Controllers
         [HttpGet, ActionName("ProducerProducts"), Route("api/producerProducts")]
         public string JsonProducerProducts()
         {
-            Adherent producer = GetCurrentStolonsUserSync() as Adherent;
+            Adherent producer = GetCurrentAdherentSync() as Adherent;
             List<ProductViewModel> vmProducts = new List<ProductViewModel>();
             var products = _context.Products.Include(m => m.Familly).Include(m => m.Familly.Type).Where(x => x.Producer == producer).ToList();
             foreach (var product in products)
@@ -102,7 +102,7 @@ namespace Stolons.Controllers
                 //Set Product familly (si ça retourne null c'est que la famille selectionnée n'existe pas, alors on est dans la merde)
                 vmProduct.Product.Familly = _context.ProductFamillys.FirstOrDefault(x => x.FamillyName == vmProduct.FamillyName);
                 //Set Producer (si ça retourne null, c'est que c'est pas un producteur qui est logger, alors on est dans la merde)
-                Adherent producer = await GetCurrentStolonsUserAsync() as Adherent;
+                Adherent producer = await GetCurrentAdherentAsync() as Adherent;
                 vmProduct.Product.Producer = producer;
                 //On s'occupe des images du produit
                 if (!String.IsNullOrWhiteSpace(vmProduct.MainPictureLight))
@@ -233,11 +233,13 @@ namespace Stolons.Controllers
             return RedirectToAction("Index");
         }
 
-
         [Authorize(Roles = Configurations.UserType_Producer)]
-        public IActionResult Enable(Guid? id)
+        public IActionResult EnableForAllStolon(Guid? productId)
         {
-            _context.Products.First(x => x.Id == id).State = Product.ProductState.Enabled;
+            foreach (var productStock in _context.ProductsStocks.Where(x => x.ProductId == productId))
+            {
+                productStock.State = Product.ProductState.Enabled;
+            }
             _context.SaveChanges();
             return RedirectToAction("Index");
 
@@ -246,7 +248,18 @@ namespace Stolons.Controllers
         [Authorize(Roles = Configurations.UserType_Producer)]
         public IActionResult EnableAllStockProduct()
         {
-            foreach (var product in _context.Products.Where(x => x.State == Product.ProductState.Stock))
+            foreach (var product in _context.ProductsStocks.Include(x => x.AdherentStolon).Where(x => x.AdherentStolon.AdherentId == GetCurrentAdherentSync().Id && x.State == Product.ProductState.Stock))
+            {
+                product.State = Product.ProductState.Enabled;
+            }
+            _context.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        [Authorize(Roles = Configurations.UserType_Producer)]
+        public IActionResult EnableAllStockProductForStolon(Guid? stolonId)
+        {
+            foreach (var product in _context.ProductsStocks.Include(x => x.AdherentStolon).Where(x => x.AdherentStolon.StolonId == stolonId &&  x.State == Product.ProductState.Stock))
             {
                 product.State = Product.ProductState.Enabled;
             }
@@ -257,7 +270,46 @@ namespace Stolons.Controllers
         [Authorize(Roles = Configurations.UserType_Producer)]
         public IActionResult DisableAllProduct()
         {
-            foreach (var product in _context.Products.Where(x => x.State != Product.ProductState.Disabled))
+            foreach (var product in _context.ProductsStocks.Include(x => x.AdherentStolon).Where(x => x.AdherentStolon.AdherentId == GetCurrentAdherentSync().Id && x.State != Product.ProductState.Disabled))
+            {
+                product.State = Product.ProductState.Disabled;
+            }
+            _context.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        [Authorize(Roles = Configurations.UserType_Producer)]
+        public IActionResult EnableForSpecified(Guid? productStockId)
+        {
+            _context.ProductsStocks.First(x => x.Id == productStockId).State = Product.ProductState.Enabled;
+            _context.SaveChanges();
+            return RedirectToAction("Index");
+
+        }
+        [Authorize(Roles = Configurations.UserType_Producer)]
+        public IActionResult DisableForSpecified(Guid? productStockId)
+        {
+            _context.ProductsStocks.First(x => x.Id == productStockId).State = Product.ProductState.Disabled;
+            _context.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+
+        [Authorize(Roles = Configurations.UserType_Producer)]
+        public IActionResult EnableAllStockProductForSpecified(Guid? adherentStolonId)
+        {
+            foreach (var product in _context.ProductsStocks.Where(x => x.AdherentStolonId == adherentStolonId && x.State == Product.ProductState.Stock))
+            {
+                product.State = Product.ProductState.Enabled;
+            }
+            _context.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        [Authorize(Roles = Configurations.UserType_Producer)]
+        public IActionResult DisableAllProductForSpecified(Guid? adherentStolonId)
+        {
+            foreach (var product in _context.ProductsStocks.Where(x => x.AdherentStolonId == adherentStolonId && x.State != Product.ProductState.Disabled))
             {
                 product.State = Product.ProductState.Disabled;
             }
@@ -266,56 +318,25 @@ namespace Stolons.Controllers
         }
 
 
-        [Authorize(Roles = Configurations.UserType_Producer)]
-        public IActionResult Disable(Guid? id)
-        {
-            _context.Products.First(x => x.Id == id).State = Product.ProductState.Disabled;
-            _context.SaveChanges();
-            return RedirectToAction("Index");
-        }
 
         [Authorize(Roles = Configurations.UserType_Producer)]
         [HttpPost, ActionName("ChangeStock")]
-        public IActionResult ChangeStock(Guid id, decimal newStock)
+        public IActionResult ChangeStock(Guid productStockId, decimal newStock)
         {
-            _context.Products.First(x => x.Id == id).WeekStock = newStock;
-            _context.Products.First(x => x.Id == id).RemainingStock = newStock;
+            _context.ProductsStocks.First(x => x.Id == productStockId).WeekStock = newStock;
+            _context.ProductsStocks.First(x => x.Id == productStockId).RemainingStock = newStock;
             _context.SaveChanges();
             return Ok();
         }
 
         [Authorize(Roles = Configurations.UserType_Producer)]
         [HttpPost, ActionName("ChangeCurrentStock")]
-        public string ChangeCurrentStock(Guid id, decimal newStock)
+        public string ChangeCurrentStock(Guid productStockId, decimal newStock)
         {
-            var product = _context.Products.First(x => x.Id == id);
-            // int orderedQty = 0;
-            // List<BillEntry> billEntries = new List<BillEntry>();
-            // foreach (var validateWeekBasket in _context.ValidatedWeekBaskets.Include(x => x.Products))
-            // {
-            // 	validateWeekBasket.Products.Where(x => x.ProductId == product.Id).ToList().ForEach(x=> orderedQty +=x.Quantity);
-            // }
-            // decimal orderedQuantity;
-            // if (product.Type == Product.SellType.Piece)
-            // {
-            // 	orderedQuantity = orderedQty;
-            // }
-            // else
-            // {
-            // 	orderedQuantity = (orderedQty * product.QuantityStep) / 1000.0M;
-            // }
-            // if (orderedQuantity < newStock)
-            // {
-            product.RemainingStock = newStock;
+            var productStock = _context.ProductsStocks.First(x => x.Id == productStockId);
+            productStock.RemainingStock = newStock;
             _context.SaveChanges();
             return "ok";
-            // }
-            // else
-            // {
-            // 	return JsonConvert.SerializeObject(new {error = "INVALID_STOCK"}, Formatting.Indented, new JsonSerializerSettings() {
-            // 		ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-            // 		    });
-            // }
         }
 
         [Authorize(Roles = Configurations.Role_WedAdmin + "," + Configurations.UserType_Producer)]

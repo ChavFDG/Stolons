@@ -17,12 +17,6 @@ namespace Stolons.Models.Users
         [Display(Name = "Identifiant")]
         public string DisplayId { get; set; }
 
-
-        public Guid ActiveAdherentStolonId { get; set; }
-        [Display(Name = "Stolon de l'utilisateur")]
-        [ForeignKey(nameof(ActiveAdherentStolonId))]
-        public virtual AdherentStolon ActiveAdherentStolon { get; set; }
-
         public List<AdherentStolon> AdherentStolons { get; set; }
 
         [Display(Name = "Nom")]
@@ -71,7 +65,6 @@ namespace Stolons.Models.Users
 
         [Display(Name = "Est un producteur")]
         public bool IsProducer { get; set; }
-        [Required]
         [Display(Name = "Raison sociale")]
         public string CompanyName { get; set; }
         [Display(Name = "Superficie en m²")]

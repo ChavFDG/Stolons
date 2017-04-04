@@ -9,11 +9,11 @@ namespace Stolons.ViewModels.Banner
 {
     public class BannerViewModel
     {
-        public Adherent User { get; set; }
+        public AdherentStolon AdherentStolon{ get; set; }
 
-        public BannerViewModel(Adherent user)
+        public BannerViewModel(AdherentStolon adherentStolon)
         {
-            User = user;
+            AdherentStolon = adherentStolon;
         }
     }
 }
