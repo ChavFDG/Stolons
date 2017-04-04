@@ -1,10 +1,12 @@
-﻿using System;
+﻿using Stolons.Models.Users;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Stolons.Models
+namespace Stolons.Models.Transactions
 {
     public class Transaction
     {
@@ -32,7 +34,11 @@ namespace Stolons.Models
 
         [Key]
         public Guid Id { get; set; }
-
+        
+        public Guid StolonId { get; set; }
+        [ForeignKey(nameof(StolonId))]
+        public Stolon Stolon { get; set; }
+        
         [Required]
         [Display(Name = "Date")]
         public DateTime Date { get; set; } = DateTime.Now;

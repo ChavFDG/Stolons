@@ -85,21 +85,11 @@ namespace Stolons.Models
         public bool SubscriptionPaid { get; set; } = false;
         public decimal GetSubscriptionAmount()
         {
-            int currentMonth = DateTime.Now.Month - 6;
-            int subscriptionMonth = (int)Stolon.SubscriptionStartMonth;
-            if (currentMonth < subscriptionMonth)
-                currentMonth += 12;
-            bool isHalfSubscription = currentMonth > (subscriptionMonth + 6);
-            
-            if (Adherent is Adherent)
-                return isHalfSubscription ? Stolon.ConsumerSubscription / 2 : Stolon.ConsumerSubscription;
-            if (Adherent is Adherent)
-                return isHalfSubscription ? Stolon.ProducerSubscription / 2 : Stolon.ProducerSubscription;
-            return -1;
+            return Stolon.GetSubscriptionAmount(Adherent);
         }
-        public string GetStringSubscriptionAmount(Adherent user)
+        public string GetStringSubscriptionAmount()
         {
-            return GetSubscriptionAmount() + "€";
+            return Stolon.GetStringSubscriptionAmount(Adherent);
         }
 
 

@@ -9,6 +9,9 @@ namespace Stolons.Models.Users
 {
     public interface IAdherent
     {
+        [Key]
+        Guid Id { get; set; }
+
         [Display(Name = "Nom")]
         [Required]
         string Name { get; set; }

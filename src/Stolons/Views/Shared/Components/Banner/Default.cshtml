@@ -40,7 +40,10 @@
                                 </a>
                                 <ul class="dropdown-menu">
                                     <li><a asp-controller="Users" asp-action="Index">Tous les adhérents</a></li>
-                                    <li><a asp-controller="Sympathizers" asp-action="Index">Sympathisants</a></li>
+                                    @if (Model.AdherentStolon.Stolon.UseSympathizer)
+                                    {
+                                        <li><a asp-controller="Sympathizers" asp-action="Index">Sympathisants</a></li>
+                                    }
                                     <li><a asp-controller="Consumers" asp-action="Index">Consomateurs</a></li>
                                     <li><a asp-controller="Producers" asp-action="Index">Producteurs</a></li>
                                 </ul>

@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Stolons.Models.Users;
 using Stolons.Models.Messages;
+using Stolons.Models.Transactions;
 
 namespace Stolons.Models
 {
@@ -41,6 +42,7 @@ namespace Stolons.Models
         public DbSet<Service> Services { get; set; }
         public DbSet<ApplicationConfig> ApplicationConfig { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<AdherentTransaction> AdherentTransactions { get; set; }
 
         //Adherent Stolons
         public DbSet<AdherentStolon> AdherentStolons { get; set; }

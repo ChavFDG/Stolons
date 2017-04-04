@@ -36,6 +36,21 @@ namespace Stolons.Models.Users
         [Display(Name = "Recevoir les mails d'informations")]
         public bool ReceivedInformationsEmail { get; set; }
 
+        [Display(Name = "Cotisation réglée")]
+        public bool SubscriptionPaid { get; set; } = false;
+
+        [Display(Name = "Date d'enregistrement")]
+        public DateTime RegistrationDate { get; set; }
+
+        public decimal GetSubscriptionAmount()
+        {
+            return Stolon.GetSubscriptionAmount(this);
+        }
+        public string GetStringSubscriptionAmount()
+        {
+            return Stolon.GetStringSubscriptionAmount(this);
+        }
+
         public Configurations.UserType[] UserType
         {
             get

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Stolons.Models.Transactions;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -18,6 +19,9 @@ namespace Stolons.Models.Users
         public string DisplayId { get; set; }
 
         public List<AdherentStolon> AdherentStolons { get; set; }
+        public List<ConsumerBill> ConsumerBills{ get; set; }
+        public List<ProducerBill> ProducerBills { get; set; }
+        public List<AdherentTransaction> Transactions { get; set; }
 
         [Display(Name = "Nom")]
         [Required]

@@ -9,6 +9,7 @@ using Stolons.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Stolons.Models.Transactions;
 
 namespace Stolons.Controllers
 {
@@ -28,7 +29,7 @@ namespace Stolons.Controllers
         [Authorize(Roles = Configurations.Role_WedAdmin + "," + Configurations.Role_Volunteer)]
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Transactions.ToListAsync());
+            return View(await _context.Transactions.Include(x=>x.Stolon).Where(x=>x.StolonId == GetCurrentStolon().Id).ToListAsync());
         }
 
         // GET: Transactions/Details/5

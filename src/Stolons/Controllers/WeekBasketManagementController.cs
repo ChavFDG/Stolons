@@ -10,8 +10,9 @@ using System.Security.Claims;
 using Stolons.ViewModels.WeekBasketManagement;
 using System;
 using Stolons.Tools;
-using static Stolons.Models.Transaction;
 using Stolons.Helpers;
+using static Stolons.Models.Transactions.Transaction;
+using Stolons.Models.Transactions;
 
 namespace Stolons.Controllers
 {

@@ -209,5 +209,29 @@ namespace Stolons.Models
             }
         }
 
+        public decimal GetSubscriptionAmount(IAdherent adherent)
+        {
+            int currentMonth = DateTime.Now.Month - 6;
+            int subscriptionMonth = (int)SubscriptionStartMonth;
+            if (currentMonth < subscriptionMonth)
+                currentMonth += 12;
+            bool isHalfSubscription = currentMonth > (subscriptionMonth + 6);
+
+            if (adherent is Sympathizer)
+                return isHalfSubscription ? SympathizerSubscription / 2 : SympathizerSubscription;
+            else
+            {
+                if((adherent as Adherent).IsProducer)
+                    return isHalfSubscription ? ProducerSubscription / 2 : ProducerSubscription;
+                else
+                    return isHalfSubscription ? ConsumerSubscription / 2 : ConsumerSubscription;
+            }
+
+        }
+        public string GetStringSubscriptionAmount(IAdherent adherent)
+        {
+            return GetSubscriptionAmount(adherent) + "€";
+        }
+
     }
 }

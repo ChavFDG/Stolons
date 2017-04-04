@@ -4,8 +4,8 @@
     <hr />
     <input asp-for="Sympathizer.Id" hidden="hidden" />
     <input asp-for="Sympathizer.StolonId" hidden="hidden" />
-    <input asp-for="Sympathizer.Cotisation" hidden="hidden" />
-    <input asp-for="Sympathizer.Enable" hidden="hidden" />
+    <input asp-for="Sympathizer.SubscriptionPaid" hidden="hidden" />
+    <input asp-for="Sympathizer.RegistrationDate" hidden="hidden" />
     <div asp-validation-summary="All" class="text-danger"></div>
     <div class="form-group">
         <label asp-for="Sympathizer.Name" class="col-md-2 control-label"></label>
@@ -26,6 +26,20 @@
         <div class="col-md-10">
             <input asp-for="Sympathizer.PostCode" class="form-control" />
             <span asp-validation-for="Sympathizer.PostCode" class="text-danger" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="Sympathizer.ReceivedInformationsEmail" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="Sympathizer.ReceivedInformationsEmail" class="form-control" />
+            <span asp-validation-for="Sympathizer.ReceivedInformationsEmail" class="text-danger" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="Sympathizer.Email" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="Sympathizer.Email" class="form-control" />
+            <span asp-validation-for="Sympathizer.Email" class="text-danger" />
         </div>
     </div>
 </div>
