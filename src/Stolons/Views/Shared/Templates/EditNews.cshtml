@@ -28,7 +28,7 @@
         <label asp-for="PublishAs" class="col-md-2 control-label"></label>
         <div class="col-md-10">
             <select id="PublishAs" class="form-control valid" name="PublishAs" data-val="true" aria-required="true" aria-invalid="false" aria-describedby="UserRole-error">
-                @if (Model.User is Producer)
+                @if (Model.PublishBy.Adherent.IsProducer)
                 {
                     <option value="0">Producteur</option>
                 }

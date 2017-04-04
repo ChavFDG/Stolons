@@ -1,7 +1,7 @@
 ﻿@model Stolons.Models.Messages.News
 
 @{
-    ViewData["Title"] = "Modification de la nouvelle de " + Model.User.Surname + " " + Model.User.Name + " du " + Model.DateOfPublication;
+    ViewData["Title"] = "Modification de la nouvelle de " + Model.PublishBy.Adherent.Surname + " " + Model.PublishBy.Adherent.Name + " du " + Model.DateOfPublication;
 }
 
 <h2>@ViewData["Title"]</h2>

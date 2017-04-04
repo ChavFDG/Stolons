@@ -11,6 +11,8 @@ namespace Stolons.Models.Messages
 {
     public class News : Message
     {
+        private AdherentStolon adherentStolon;
+
         public News()
         {
 
@@ -29,7 +31,12 @@ namespace Stolons.Models.Messages
             publishEnd = publishEnd.AddMinutes(minutes);
             PublishEnd = publishEnd;
         }
-        
+
+        public News(AdherentStolon adherentStolon): this(adherentStolon.Stolon)
+        {
+            this.PublishBy = adherentStolon;
+        }
+
         [Required]
         [Display(Name = "Titre")]
         public string Title { get; set; }

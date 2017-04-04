@@ -32,9 +32,9 @@ namespace Stolons.Controllers
                 HomeViewModel vm = new HomeViewModel();
                 var adherentStolon = GetActiveAdherentStolon();
                 if (showOldNews)
-                    vm.News = _context.News.Include(x => x.PublishBy).Where(x => x.PublishBy.StolonId == adherentStolon.StolonId).Where(x => (x.PublishStart < DateTime.Now && x.PublishEnd > DateTime.Now) || (x.PublishEnd < DateTime.Now)).ToList();
+                    vm.NewsVm = new ViewModels.News.NewsViewModel( _context.News.Include(x => x.PublishBy).Where(x => x.PublishBy.StolonId == adherentStolon.StolonId).Where(x => (x.PublishStart < DateTime.Now && x.PublishEnd > DateTime.Now) || (x.PublishEnd < DateTime.Now)).ToList(),true);
                 else
-                    vm.News = _context.News.Include(x => x.PublishBy).Where(x => x.PublishBy.StolonId == adherentStolon.StolonId).Where(x => x.PublishStart < DateTime.Now && x.PublishEnd > DateTime.Now).ToList();
+                    vm.NewsVm = new ViewModels.News.NewsViewModel(_context.News.Include(x => x.PublishBy).Where(x => x.PublishBy.StolonId == adherentStolon.StolonId).Where(x => x.PublishStart < DateTime.Now && x.PublishEnd > DateTime.Now).ToList());
                 return View(vm);
             }
             else

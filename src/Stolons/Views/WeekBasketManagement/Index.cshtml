@@ -39,13 +39,13 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Producer.Id)
+                    @Html.DisplayFor(modelItem => item.Adherent.Id)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Producer.CompanyName)
+                    @Html.DisplayFor(modelItem => item.Adherent.CompanyName)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Producer.PhoneNumber)
+                    @Html.DisplayFor(modelItem => item.Adherent.PhoneNumber)
                 </td>
                 <td>
                     @if (User.IsInRole(Configurations.Role.StolonAdmin.ToString()) || User.IsInRole(Configurations.Role.WebAdmin.ToString()))
@@ -54,7 +54,7 @@
                                    "Valider paiement de la facture",
                                   "UpdateProducerBill",
                                     new { billNumber = item.BillNumber },
-                                    new { onclick = "return confirm('Confirmation du paiement de " + +item.BillAmount + " à " + item.Producer.CompanyName + "');" })
+                                    new { onclick = "return confirm('Confirmation du paiement de " + +item.BillAmount + " à " + item.Adherent.CompanyName + "');" })
                     }
                    </td>
                 <td>
@@ -99,20 +99,20 @@ else
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Producer.Id)
+                    @Html.DisplayFor(modelItem => item.Adherent.Id)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Producer.CompanyName)
+                    @Html.DisplayFor(modelItem => item.Adherent.CompanyName)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Producer.PhoneNumber)
+                    @Html.DisplayFor(modelItem => item.Adherent.PhoneNumber)
                 </td>
                 <td>
                     @Html.ActionLink(
                                    "Valider la livraison",
                                   "UpdateProducerBill",
                                     new { billNumber = item.BillNumber },
-                                    new { onclick = "return confirm('Confirmation de la livraison de " + item.Producer.CompanyName + "');" })
+                                    new { onclick = "return confirm('Confirmation de la livraison de " + item.Adherent.CompanyName + "');" })
                 </td>
                 <td>
                     @{
@@ -161,22 +161,22 @@ else
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Consumer.Id)
+                    @Html.DisplayFor(modelItem => item.Adherent.Id)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Consumer.Name)
+                    @Html.DisplayFor(modelItem => item.Adherent.Name)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Consumer.Surname)
+                    @Html.DisplayFor(modelItem => item.Adherent.Surname)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Consumer.PhoneNumber)
+                    @Html.DisplayFor(modelItem => item.Adherent.PhoneNumber)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Consumer.Token)𝞫
+                    @Html.DisplayFor(modelItem => item.AdherentStolon.Token)𝞫
                 </td>
                 <td>
-                    <a href="#" class="btn btn-small btn-default open-consumer-modal" billNumber="@item.BillNumber" canUseToken="@(Convert.ToInt32(item.Consumer.Token >= item.OrderAmount))">Valider la récupération et le paiement</a>
+                    <a href="#" class="btn btn-small btn-default open-consumer-modal" billNumber="@item.BillNumber" canUseToken="@(Convert.ToInt32(item.AdherentStolon.Token >= item.OrderAmount))">Valider la récupération et le paiement</a>
                 </td>
                 <td>
                     @{

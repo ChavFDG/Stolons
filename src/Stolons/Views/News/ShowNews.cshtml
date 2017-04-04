@@ -2,8 +2,9 @@
 @using Stolons.Services
 @using Stolons.Models.Users
 @using Stolons.Models.Messages
+@using Stolons.ViewModels.News
 
-@model IEnumerable<Stolons.Models.Messages.News>
+@model NewsViewModel
 
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
@@ -26,10 +27,10 @@
 
     @{
         List<News> news = new List<News>();
-        if (Model.Any())
+        if (Model.News.Any())
         {
-            Model.Where(x => x.IsHighlight).OrderByDescending(x => x.PublishEnd).ToList().ForEach(x => news.Add(x));
-            Model.Where(x => !x.IsHighlight).OrderByDescending(x => x.PublishEnd).ToList().ForEach(x => news.Add(x));
+            Model.News.Where(x => x.IsHighlight).OrderByDescending(x => x.PublishEnd).ToList().ForEach(x => news.Add(x));
+            Model.News.Where(x => !x.IsHighlight).OrderByDescending(x => x.PublishEnd).ToList().ForEach(x => news.Add(x));
         }
         else
         {
@@ -92,9 +93,11 @@
                 <div class="newsListItemSeparator"></div>
             }
     }
-    <!--Comment faire pour appeler ShowAllNews de HomeController ?-->
-    <div class="newsShowAll">
-        <a asp-action="ShowAllNews" asp-controller="Home" class="btn btn-small btn-default">Voir les anciennes nouvelles</a>
-    </div>
+    @if (!Model.OldNews)
+    {
+        <div class="newsShowAll">
+            <a asp-action="ShowAllNews" asp-controller="Home" class="btn btn-small btn-default">Voir les anciennes nouvelles</a>
+        </div>
+    }
 
 </div>

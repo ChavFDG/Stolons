@@ -3,7 +3,7 @@
 @using Stolons.Models.Users
 @using Stolons.Models.Messages
 
-@model IEnumerable<Stolons.Models.Messages.News>
+@model IEnumerable<News>
 
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
@@ -57,7 +57,7 @@
                 <tr><td colspan="4"><b>@tuple.Item1</b></td></tr>
                 @foreach (var item in tuple.Item2)
                 {
-                    <tr @(item.IsHighlight ? "bgcolor=\"#53B6F4\"" : "")>
+                    <tr @(item.IsHighlight ? "bgcolor=\"#609DD6\"" : "")>
                         <td class="tdImagePreviewNews">
                             @if (!String.IsNullOrWhiteSpace(item.ImageLink))
                             {
@@ -74,20 +74,20 @@
                                 @switch (item.PublishAs)
                                 {
                                     case Stolons.Models.Messages.NewsPublishAs.Producer:
-                                        <img class="avatar userNewsAvatar" src="@item.User.AvatarFilePath" />
+                                        <img class="avatar userNewsAvatar" src="@item.PublishBy.Adherent.AvatarFilePath" />
                                         break;
                                     case Stolons.Models.Messages.NewsPublishAs.Stolon:
-                                        <img class="avatar userNewsAvatar" src="@item.Stolon.LogoFilePath" />
+                                        <img class="avatar userNewsAvatar" src="@item.PublishBy.Stolon.LogoFilePath" />
                                         break;
                                 }
                             </div>
                             @switch (item.PublishAs)
                             {
                                 case Stolons.Models.Messages.NewsPublishAs.Producer:
-                                    <a asp-action="PartialDetail" asp-controller="Producers" asp-route-id="@item.User.Id">@((item.User as Producer).CompanyName)</a>
+                                    <a asp-action="PartialDetail" asp-controller="Producers" asp-route-id="@item.PublishBy.Adherent.Id">@(item.PublishBy.Adherent.CompanyName)</a>
                                     break;
                                 case Stolons.Models.Messages.NewsPublishAs.Stolon:
-                                    @item.Stolon.Label
+                                    @item.PublishBy.Stolon.Label
                                     break;
                             }
                         </td>
@@ -104,7 +104,7 @@
                                     <span class="caret"></span>
                                 </a>
                                 <ul class="dropdown-menu">
-                                    @if (  User.Identity.Name == item.User.Email
+                                    @if (  User.Identity.Name == item.PublishBy.Adherent.Email
                                         || User.IsInRole(Configurations.Role.WebAdmin.ToString())
                                         || User.IsInRole(Configurations.Role.Volunteer.ToString())
                                         || User.IsInRole(Configurations.Role.StolonAdmin.ToString()))
@@ -113,7 +113,7 @@
                                             <a asp-action="Edit" asp-route-id="@item.Id">Modifier</a>
                                         </li>
                                     }
-                                    @if (User.IsInRole(Configurations.Role.WebAdmin.ToString()) || User.IsInRole(Configurations.Role.StolonAdmin.ToString()) || UserManager.GetUserId(User) == item.User.Email)
+                                    @if (User.IsInRole(Configurations.Role.WebAdmin.ToString()) || User.IsInRole(Configurations.Role.StolonAdmin.ToString()) || UserManager.GetUserId(User) == item.PublishBy.Adherent.Email)
                                     {
                                         <li>
                                             <a asp-action="Delete" asp-route-id="@item.Id">Supprimer</a>

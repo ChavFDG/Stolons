@@ -31,9 +31,9 @@ namespace Stolons.Controllers
             Stolon stolon = GetCurrentStolon();
             VmWeekBasketManagement vm = new VmWeekBasketManagement();
             vm.Stolon = GetCurrentStolon();
-            vm.ConsumerBills = _context.ConsumerBills.Include(x=>x.Adherent).Where(x => x.State == BillState.Pending && x.AdherentStolon.StolonId == stolon.Id).OrderBy(x=>x.Adherent.Id).ToList();
-            vm.ProducerBills = _context.ProducerBills.Include(x => x.Adherent).Where(x => x.State != BillState.Paid && x.AdherentStolon.StolonId == stolon.Id).OrderBy(x => x.Adherent.Id).ToList();
-            vm.StolonsBills = _context.StolonsBills.Where(x => x.StolonId == stolon.Id).ToList();
+            vm.ConsumerBills = _context.ConsumerBills.Include(x=>x.AdherentStolon).ThenInclude(x=>x.Adherent).Include(x=>x.AdherentStolon).ThenInclude(x=>x.Stolon).Where(x => x.State == BillState.Pending && x.AdherentStolon.StolonId == stolon.Id).OrderBy(x=>x.Adherent.Id).ToList();
+            vm.ProducerBills = _context.ProducerBills.Include(x => x.AdherentStolon).ThenInclude(x => x.Adherent).Include(x => x.AdherentStolon).ThenInclude(x => x.Stolon).Where(x => x.State != BillState.Paid && x.AdherentStolon.StolonId == stolon.Id).OrderBy(x => x.Adherent.Id).ToList();
+            vm.StolonsBills = _context.StolonsBills.Include(x=>x.Stolon).Where(x => x.StolonId == stolon.Id).ToList();
             vm.WeekStolonsBill = vm.StolonsBills.FirstOrDefault(x => x.BillNumber == DateTime.Now.Year + "_" + DateTime.Now.GetIso8601WeekOfYear());
             return View(vm);
         }

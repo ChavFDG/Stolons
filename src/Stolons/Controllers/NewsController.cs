@@ -34,7 +34,7 @@ namespace Stolons.Controllers
         // GET: News
         public IActionResult Index()
         {
-            return View(_context.News.Include(x => x.PublishBy).Where(x=>x.PublishBy.StolonId == GetCurrentStolon().Id).ToList());
+            return View(_context.News.Include(x => x.PublishBy).ThenInclude(x => x.Adherent).Include(x => x.PublishBy).ThenInclude(x => x.Stolon).Where(x=>x.PublishBy.StolonId == GetCurrentStolon().Id).ToList());
         }
 
         // GET: News/Details/5
@@ -45,7 +45,7 @@ namespace Stolons.Controllers
                 return NotFound();
             }
 
-            News news = _context.News.Include(x => x.PublishBy).Single(x => x.Id == id);
+            News news = _context.News.Include(x => x.PublishBy).ThenInclude(x => x.Adherent).Include(x => x.PublishBy).ThenInclude(x => x.Stolon).Single(x => x.Id == id);
             if (news == null)
             {
                 return NotFound();
@@ -58,7 +58,7 @@ namespace Stolons.Controllers
         [Authorize(Roles = Configurations.Role_WedAdmin + "," + Configurations.Role_Volunteer + "," +Configurations.UserType_Producer)]
         public IActionResult Create()
         {
-            return View(new News(GetCurrentStolon()));
+            return View(new News(GetActiveAdherentStolon()));
         }
 
         // POST: News/Create
@@ -99,7 +99,7 @@ namespace Stolons.Controllers
                 return NotFound();
             }
 
-            News news = _context.News.Include(m => m.PublishBy).Single(m => m.Id == id);
+            News news = _context.News.Include(m => m.PublishBy).ThenInclude(x=>x.Adherent).Include(x=>x.PublishBy).ThenInclude(x=>x.Stolon).Single(m => m.Id == id);
             if (news == null)
             {
                 return NotFound();
@@ -144,7 +144,7 @@ namespace Stolons.Controllers
                 return NotFound();
             }
 
-            News news = _context.News.Include(m => m.PublishBy).Single(m => m.Id == id);
+            News news = _context.News.Include(m => m.PublishBy).ThenInclude(x => x.Adherent).Include(x => x.PublishBy).ThenInclude(x => x.Stolon).Single(m => m.Id == id);
             if (news == null)
             {
                 return NotFound();
