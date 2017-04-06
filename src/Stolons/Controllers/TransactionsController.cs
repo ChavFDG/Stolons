@@ -10,12 +10,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Stolons.Models.Transactions;
+using Stolons.ViewModels.Transactions;
 
 namespace Stolons.Controllers
 {
     public class TransactionsController : BaseController
     {
-
 
         public TransactionsController(ApplicationDbContext context, IHostingEnvironment environment,
             UserManager<ApplicationUser> userManager,
@@ -31,7 +31,8 @@ namespace Stolons.Controllers
             if (!Authorized(Role.Volunteer))
                 return Unauthorized();
 
-            return View(await _context.Transactions.Include(x=>x.Stolon).Where(x=>x.StolonId == GetCurrentStolon().Id).ToListAsync());
+            Stolon stolon = GetCurrentStolon();
+            return View(new TransactionsViewModel(GetActiveAdherentStolon(), stolon,await _context.Transactions.Include(x=>x.Stolon).Where(x=>x.StolonId == stolon.Id).ToListAsync()));
         }
 
         // GET: Transactions/Details/5
@@ -51,7 +52,7 @@ namespace Stolons.Controllers
                 return NotFound();
             }
 
-            return View(transaction);
+            return View(new TransactionViewModel(GetActiveAdherentStolon(),GetCurrentStolon(), transaction));
         }
 
         // GET: Transactions/Create
@@ -60,7 +61,7 @@ namespace Stolons.Controllers
             if (!Authorized(Role.Volunteer))
                 return Unauthorized();
 
-            return View(new Transaction());
+            return View(new TransactionViewModel(GetActiveAdherentStolon(), GetCurrentStolon(), new Transaction()));
         }
 
         // POST: Transactions/Create
@@ -68,20 +69,21 @@ namespace Stolons.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Amount,Category,Date,Description,Type")] Transaction transaction)
+        public async Task<IActionResult> Create( TransactionViewModel transactionVm)
         {
             if (ModelState.IsValid)
             {
-                transaction.Id = Guid.NewGuid();
-                _context.Add(transaction);
+                transactionVm.Transaction.Id = Guid.NewGuid();
+                transactionVm.Transaction.StolonId = transactionVm.Stolon.Id;
+                _context.Add(transactionVm.Transaction);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            return View(transaction);
+            return View(transactionVm);
         }
 
         // GET: Transactions/Edit/5
-        public async Task<IActionResult> Edit(Guid? id)
+        public IActionResult Edit(Guid? id)
         {
             if (!Authorized(Role.Admin))
                 return Unauthorized();
@@ -91,12 +93,12 @@ namespace Stolons.Controllers
                 return NotFound();
             }
 
-            var transaction = await _context.Transactions.SingleOrDefaultAsync(m => m.Id == id);
+            var transaction = _context.Transactions.FirstOrDefault(x => x.Id == id);
             if (transaction == null)
             {
                 return NotFound();
             }
-            return View(transaction);
+            return View(new TransactionViewModel(GetActiveAdherentStolon(), GetCurrentStolon(), transaction));
         }
 
         // POST: Transactions/Edit/5
@@ -104,9 +106,9 @@ namespace Stolons.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Amount,Category,Date,Description,Type")] Transaction transaction)
+        public async Task<IActionResult> Edit(Guid id, TransactionViewModel transactionVm)
         {
-            if (id != transaction.Id)
+            if (id != transactionVm.Transaction.Id)
             {
                 return NotFound();
             }
@@ -115,12 +117,12 @@ namespace Stolons.Controllers
             {
                 try
                 {
-                    _context.Update(transaction);
+                    _context.Update(transactionVm.Transaction);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!TransactionExists(transaction.Id))
+                    if (!TransactionExists(transactionVm.Transaction.Id))
                     {
                         return NotFound();
                     }
@@ -131,11 +133,11 @@ namespace Stolons.Controllers
                 }
                 return RedirectToAction("Index");
             }
-            return View(transaction);
+            return View(transactionVm);
         }
 
         // GET: Transactions/Delete/5
-        public async Task<IActionResult> Delete(Guid? id)
+        public IActionResult Delete(Guid? id)
         {
             if (!Authorized(Role.Admin))
                 return Unauthorized();
@@ -145,13 +147,13 @@ namespace Stolons.Controllers
                 return NotFound();
             }
 
-            var transaction = await _context.Transactions.SingleOrDefaultAsync(m => m.Id == id);
+            var transaction = _context.Transactions.FirstOrDefault(x => x.Id == id);
             if (transaction == null)
             {
                 return NotFound();
             }
 
-            return View(transaction);
+            return View(new TransactionViewModel(GetActiveAdherentStolon(), GetCurrentStolon(), transaction));
         }
 
         // POST: Transactions/Delete/5

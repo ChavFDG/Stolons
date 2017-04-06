@@ -1,84 +1,90 @@
-﻿@model IEnumerable<Stolons.Models.Transactions.Transaction>
+﻿@model TransactionsViewModel
+@using Stolons.ViewModels.Transactions
 @using Stolons.Models.Transactions
 @using Stolons.Helpers
 
 <h2>Transactions</h2>
 
 <p>
-    <a asp-action="Create" class="btn btn-small btn-default">Ajouter une transaction</a>
+    Solde actuel : @(Model.Balance)€
+    <br/>
+    Solde actuel réel : @(Model.RealBalance)€
 </p>
+<a asp-action="Create" class="btn btn-small btn-default">Ajouter une transaction</a>
+
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Date)
+                @Html.DisplayNameFor(model => model.Transactions.First().Date)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Type)
+                @Html.DisplayNameFor(model => model.Transactions.First().Type)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Category)
+                @Html.DisplayNameFor(model => model.Transactions.First().Category)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Description)
+                @Html.DisplayNameFor(model => model.Transactions.First().Description)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Amount)
+                @Html.DisplayNameFor(model => model.Transactions.First().Amount)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.AddedAutomaticly)
+                @Html.DisplayNameFor(model => model.Transactions.First().AddedAutomaticly)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.OrderBy(x=>x.Date)) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Date)
-            </td>
-            <td>
-                @(EnumHelper<Transaction.TransactionType>.GetDisplayValue(item.Type))
-            </td>
-            <td>
-                @(EnumHelper<Transaction.TransactionCategory>.GetDisplayValue(item.Category))
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            @switch (item.Type)
-            {
-                case Transaction.TransactionType.Outbound:
-                    <td bgcolor="#ff0000">
-                        @Html.DisplayFor(modelItem => item.Amount)
-                    </td>
-                    break;
-                case Transaction.TransactionType.Inbound:
-                    <td bgcolor="#00ff00">
-                        @Html.DisplayFor(modelItem => item.Amount)
-                    </td>
-                    break;
-            }
-            <td>
-                @Html.DisplayFor(modelItem => item.AddedAutomaticly)
-            </td>
-            <td>
-                <div class="dropdown">
-                    <a class="dropdown-toggle btn btn-small btn-default" data-toggle="dropdown" href="#">
-                        Actions
-                        <span class="caret"></span>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a asp-action="Details" asp-route-id="@item.Id">Voir détail</a></li>
-                        @if (User.IsInRole(Configurations.Role.WebAdmin.ToString()) && item.AddedAutomaticly == false)
-                        {
-                            <li><a asp-action="Edit" asp-route-id="@item.Id">Modifier</a></li>
-                            <li><a asp-action="Delete" asp-route-id="@item.Id">Supprimer</a></li>
-                        }
-                    </ul>
-                </div>          
-            </td>
-        </tr>
-}
+        @foreach (var item in Model.Transactions.OrderByDescending(x => x.Date))
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Date)
+                </td>
+                <td>
+                    @(EnumHelper<Transaction.TransactionType>.GetDisplayValue(item.Type))
+                </td>
+                <td>
+                    @(EnumHelper<Transaction.TransactionCategory>.GetDisplayValue(item.Category))
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                @switch (item.Type)
+                {
+                    case Transaction.TransactionType.Outbound:
+                        <td bgcolor="#ff0000">
+                            @Html.DisplayFor(modelItem => item.Amount)€
+                        </td>
+                        break;
+                    case Transaction.TransactionType.Inbound:
+                        <td bgcolor="#00ff00">
+                            @Html.DisplayFor(modelItem => item.Amount)€
+                        </td>
+                        break;
+                }
+                <td>
+                    @Html.DisplayFor(modelItem => item.AddedAutomaticly)
+                </td>
+                <td>
+                    <div class="dropdown">
+                        <a class="dropdown-toggle btn btn-small btn-default" data-toggle="dropdown" href="#">
+                            Actions
+                            <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a asp-action="Details" asp-route-id="@item.Id">Voir détail</a></li>
+                            @if (Model.ActiveAdherentStolon.Authorized(Role.Admin) && item.AddedAutomaticly == false)
+                            {
+                                <li><a asp-action="Edit" asp-route-id="@item.Id">Modifier</a></li>
+                                <li><a asp-action="Delete" asp-route-id="@item.Id">Supprimer</a></li>
+                            }
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

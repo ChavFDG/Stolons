@@ -1,40 +1,6 @@
-﻿@model Stolons.Models.Transactions.Transaction
-@using Stolons.Models.Transactions
-@using Stolons.Helpers
+﻿@model TransactionViewModel
+@using Stolons.ViewModels.Transactions
 
-<h2>Details de la transaction du @Model.Date</h2>
+<h2>Details de la transaction du @Model.Transaction.Date</h2>
 
-<div>
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Date)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Date)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Type)
-        </dt>
-        <dd>
-            @(EnumHelper<Transaction.TransactionType>.GetDisplayValue(Model.Type))
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Category)
-        </dt>
-        <dd>
-            @(EnumHelper<Transaction.TransactionCategory>.GetDisplayValue(Model.Category))
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Amount)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Amount)
-        </dd>
-    </dl>
-</div>
+@Html.Partial("Templates/DetailsTransaction", @Model)

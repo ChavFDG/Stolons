@@ -76,7 +76,7 @@ namespace Stolons.Controllers
                 Transaction.TransactionType.Inbound,
                 Transaction.TransactionCategory.TokenCredit,
                 vmCreditToken.CreditedToken,                
-                "Créditage du compte de "+ adherentStolon.Adherent.Name + "( " + adherentStolon.Id + " ) de "  + vmCreditToken.CreditedToken + "??"));
+                "Créditage du compte de "+ adherentStolon.Adherent.Name + "( " + adherentStolon.LocalId + " ) de "  + vmCreditToken.CreditedToken + "??"));
             _context.Update(adherentStolon);
             _context.SaveChanges();
             return RedirectToAction("Index");

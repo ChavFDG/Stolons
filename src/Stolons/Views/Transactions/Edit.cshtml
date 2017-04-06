@@ -1,6 +1,7 @@
-﻿@model Stolons.Models.Transactions.Transaction
+﻿@model TransactionViewModel
+@using Stolons.ViewModels.Transactions
 
-<h2>Edition de la transaction du @Model.Date</h2>
+<h2>Edition de la transaction du @Model.Transaction.Date</h2>
 
 <form asp-action="Edit">
     <div class="form-horizontal">
