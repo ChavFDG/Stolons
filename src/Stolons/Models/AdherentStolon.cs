@@ -56,7 +56,7 @@ namespace Stolons.Models
         [Display(Name = "Est un producteur")]
         public bool IsProducer { get; set; }
 
-        [Display(Name = "Role de l'adhérent")]
+        [Display(Name = "Role")]
         public Role Role { get; set; } = Role.Adherent;
 
         //

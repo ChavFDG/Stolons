@@ -17,15 +17,16 @@ using System.Security.Claims;
 using Stolons.Helpers;
 using Stolons.ViewModels.Sympathizers;
 using Stolons.Models.Users;
+using Stolons.Models.Transactions;
 
 namespace Stolons.Controllers
 {
-    public class SympathizersController : UsersBaseController
+    public class SympathizersController : BaseController
     {
         public SympathizersController(ApplicationDbContext context, IHostingEnvironment environment,
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            IServiceProvider serviceProvider) : base(context,environment,userManager,signInManager,serviceProvider)
+            IServiceProvider serviceProvider) : base(serviceProvider,userManager,context,environment,signInManager)
         {
 
         }
@@ -183,6 +184,34 @@ namespace Stolons.Controllers
             _context.SaveChanges();
             return RedirectToAction("Index");
         }
-        
+
+        /// <summary>
+        /// PaySympathiserSubscription
+        /// </summary>
+        /// <param name="id">Sympathizer ID</param>
+        /// <returns></returns>
+        public IActionResult PaySympathiserSubscription(Guid id)
+        {
+            if (!Authorized(Role.Volunteer))
+                return Unauthorized();
+
+            Transaction transaction = new Transaction();
+            Sympathizer sympathizer = _context.Sympathizers.FirstOrDefault(x => x.Id == id);
+            Stolon currentStolon = GetCurrentStolon();
+            sympathizer.SubscriptionPaid = true;
+            transaction.Amount = currentStolon.SympathizerSubscription;
+            //Add a transaction
+            transaction.Stolon = currentStolon;
+            transaction.AddedAutomaticly = true;
+            transaction.Date = DateTime.Now;
+            transaction.Type = Transaction.TransactionType.Inbound;
+            transaction.Category = Transaction.TransactionCategory.Subscription;
+            transaction.Description = "Paiement de la cotisation du sympathisant : " + sympathizer.Name + " " + sympathizer.Surname;
+            _context.Transactions.Add(transaction);
+            //Save
+            _context.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
     }
 }

@@ -14,8 +14,9 @@ namespace Stolons.ViewModels.Adherents
 
         }
 
-        public AdherentStolonViewModel(AdherentStolon adherentStolon)
+        public AdherentStolonViewModel(AdherentStolon activeAdherentStolon ,AdherentStolon adherentStolon)
         {
+            ActiveAdherentStolon = activeAdherentStolon;
             AdherentStolon = adherentStolon;
         }
 

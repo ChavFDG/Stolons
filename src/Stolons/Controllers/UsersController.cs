@@ -14,16 +14,17 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
 using Stolons.Helpers;
+using Stolons.Models.Users;
 
 namespace Stolons.Controllers
 {
-    public class UsersController : UsersBaseController
+    public class UsersController : BaseController
     {
 
         public UsersController(ApplicationDbContext context, IHostingEnvironment environment,
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            IServiceProvider serviceProvider) : base(context,environment,userManager,signInManager,serviceProvider)
+            IServiceProvider serviceProvider) : base(serviceProvider, userManager, context, environment, signInManager)
         {
 
         }
@@ -34,7 +35,11 @@ namespace Stolons.Controllers
             if (!Authorized(Role.Volunteer))
                 return Unauthorized();
 
-            return View(_context.AdherentStolons.Include(x=>x.Stolon).Include(x=>x.Adherent).Where(x=>x.StolonId== GetCurrentStolon().Id));
+            Stolon stolon = GetCurrentStolon();
+            List<IAdherent> iAdherents = new List<IAdherent>();
+            _context.AdherentStolons.Include(x => x.Stolon).Include(x => x.Adherent).Where(x => x.StolonId == stolon.Id).ToList().ForEach(x => iAdherents.Add(x.Adherent));
+            _context.Sympathizers.Where(x => x.StolonId == stolon.Id);
+            return View(iAdherents); 
         }        
     }
 }

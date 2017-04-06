@@ -4,6 +4,7 @@
     <hr />
     <input asp-for="Adherent.Id" hidden="hidden" />
     <input asp-for="OriginalEmail" hidden="hidden" />
+    <input asp-for="Edition" hidden="hidden" />
     <input asp-for="Adherent.ExploitationPicuresSerialized" hidden="hidden" />
 
     @if (Model.Edition == Stolons.ViewModels.Adherents.AdherentEdition.Adherent)
@@ -20,7 +21,7 @@
     }
     else
     {
-        <h3>Information personnelle</h3>
+        <h3>Informations adhérent</h3>
     }
 
     <div asp-validation-summary="All" class="text-danger"></div>
@@ -89,7 +90,7 @@
 
     @if (Model.Edition == Stolons.ViewModels.Adherents.AdherentEdition.Producer)
     {
-        <h3>Information producteur</h3>
+        <h3>Informations producteur</h3>
 
         <div class="form-group">
             <label asp-for="Adherent.CompanyName" class="col-md-2 control-label"></label>

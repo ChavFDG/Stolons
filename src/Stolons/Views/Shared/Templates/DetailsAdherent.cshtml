@@ -1,0 +1,140 @@
+@model Stolons.ViewModels.Adherents.AdherentStolonViewModel
+
+<div>
+    <hr />
+    <h3>Informations adhrérent</h3>
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.AdherentStolon.LocalId)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AdherentStolon.LocalId)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.AdherentStolon.Adherent.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AdherentStolon.Adherent.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.AdherentStolon.Adherent.Surname)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AdherentStolon.Adherent.Surname)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.AdherentStolon.Adherent.Email)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AdherentStolon.Adherent.Email)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.AdherentStolon.Adherent.PhoneNumber)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AdherentStolon.Adherent.PhoneNumber)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.AdherentStolon.Adherent.Address)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AdherentStolon.Adherent.Address)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.AdherentStolon.Adherent.PostCode)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AdherentStolon.Adherent.PostCode)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.AdherentStolon.Adherent.City)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AdherentStolon.Adherent.City)
+        </dd>
+    </dl>
+    <h3>Informations @Model.AdherentStolon.Stolon.Label</h3>
+    <dl>
+        <dt>
+            @Html.DisplayNameFor(model => model.AdherentStolon.RegistrationDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AdherentStolon.RegistrationDate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.AdherentStolon.SubscriptionPaid)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AdherentStolon.SubscriptionPaid)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.AdherentStolon.Enable)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AdherentStolon.Enable)
+        </dd>
+        @if (!Model.AdherentStolon.Enable)
+        {
+            <dt>
+                @Html.DisplayNameFor(model => model.AdherentStolon.DisableReason)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.AdherentStolon.DisableReason)
+            </dd>
+        }
+        <dt>
+            @Html.DisplayNameFor(model => model.AdherentStolon.Role)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AdherentStolon.Role)
+        </dd>
+    </dl>
+    @if (Model.AdherentStolon.IsProducer)
+    {
+        <h3>Informations producteur</h3>
+        <dl class="dl-horizontal" title="Informations producteur">
+            <dt>
+                @Html.DisplayNameFor(model => model.AdherentStolon.Adherent.Latitude)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.AdherentStolon.Adherent.Latitude)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.AdherentStolon.Adherent.Longitude)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.AdherentStolon.Adherent.Longitude)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.AdherentStolon.Adherent.Area)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.AdherentStolon.Adherent.Area)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.AdherentStolon.Adherent.OpenText)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.AdherentStolon.Adherent.OpenText)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.AdherentStolon.Adherent.Production)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.AdherentStolon.Adherent.Production)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.AdherentStolon.Adherent.StartDate)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.AdherentStolon.Adherent.StartDate)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.AdherentStolon.Adherent.WebSiteLink)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.AdherentStolon.Adherent.WebSiteLink)
+            </dd>
+        </dl>
+    }
+</div>

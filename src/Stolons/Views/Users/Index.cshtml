@@ -4,22 +4,16 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(item => item.Id)
-        </th>
-        <th>
             @Html.DisplayNameFor(item => item.Name)
         </th>
         <th>
             @Html.DisplayNameFor(item => item.Surname)
         </th>
         <th>
-            @Html.DisplayNameFor(item => item.PhoneNumber)
+            @Html.DisplayNameFor(item => item.PostCode)
         </th>
         <th>
-            @Html.DisplayNameFor(item => item.Cotisation)
-        </th>
-        <th>
-            @Html.DisplayNameFor(item => item.Enable)
+            @Html.DisplayNameFor(item => item.Email)
         </th>
         <th></th>
     </tr>
@@ -27,84 +21,17 @@
     {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Surname)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PhoneNumber)
-            </td>
-            @if (item.Cotisation)
-            {
-                <td>
-                    @Html.DisplayFor(modelItem => item.Cotisation)
-                </td>
-            }
-            else
-            {
-                <td bgcolor="#ff8000">
-                    @Html.DisplayFor(modelItem => item.Cotisation)
-                </td>
-            }
-            @if (item.Enable)
-            {
-                <td>
-                    @Html.DisplayFor(modelItem => item.Enable)
-                </td>
-            }
-            else
-            {
-                <td bgcolor="#ff0000">
-                    @Html.DisplayFor(modelItem => item.Enable)
-                </td>
-            }
-            <td>
-                <div class="dropdown">
-                    <a class="dropdown-toggle btn btn-small btn-default" data-toggle="dropdown" href="#">
-                        Actions
-                        <span class="caret"></span>
-                    </a>
-                    <ul class="dropdown-menu">
-                        @if (item.Cotisation == false)
-                        {
-                            <li>
-                                @Html.ActionLink(
-                                   "Payer cotisation de : " + Configurations.GetStringSubscriptionAmount(item),
-                                   "PaySubscription",
-                                    new { id = item.Id },
-                                    new { onclick = "return confirm('Valider le paiement de la cotisation de " + item.Name + " pour un montant de : " + Configurations.GetStringSubscriptionAmount(item) + "');" })
-                            </li>
-                        }
-                        @if (User.IsInRole(Configurations.Role.WebAdmin.ToString()))
-                        {
-                            @if (item.Enable == true)
-                            {
-                                <li>
-                                    @Html.ActionLink(
-                                   "Désactiver le compte",
-                                   "Disable",
-                                    new { id = item.Id },
-                                    new { onclick = "return confirm('Entrer la raison de la désactivation du compte pour " + item.Name + "');" })
-                                </li>
-                            }
-                            else
-                            {
-                                <li>
-                                    @Html.ActionLink(
-                                   "Activer le compte",
-                                   "Enable",
-                                    new { id = item.Id },
-                                    new { onclick = "return confirm('Confirmation de l'activation du compte de " + item.Name + " ?');" })
-                                </li>
-                            }
-                        }
-                    </ul>
-                </div>
-            </td>
+            <th>
+                @Html.DisplayFor(modelItem => item.PostCode)
+            </th>
+            <th>
+                @Html.DisplayFor(modelItem => item.Email)
+            </th>
         </tr>
     }
 </table>
