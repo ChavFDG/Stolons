@@ -30,19 +30,23 @@ namespace Stolons.Controllers
         }
 
         // GET: ProductsManagement
-        [Authorize(Roles = Configurations.UserType_Producer)]
         public async Task<IActionResult> Index()
         {
+            if (!AuthorizedProducer())
+                return Unauthorized();
+
             Adherent producer = await GetCurrentAdherentAsync() as Adherent;
             var products = _context.Products.Include(m => m.Familly).Include(m => m.Familly.Type).Where(x => x.Producer == producer);
-            ProductsViewModel vm = new ProductsViewModel(products, GetCurrentStolon());
+            ProductsViewModel vm = new ProductsViewModel(GetActiveAdherentStolon(), products, GetCurrentStolon());
             return View(vm);
         }
-
-        [Authorize(Roles = Configurations.UserType_Producer)]
+        
         [HttpGet, ActionName("ProducerProducts"), Route("api/producerProducts")]
         public string JsonProducerProducts()
         {
+            if (!AuthorizedProducer())
+                return "401";
+
             Adherent producer = GetCurrentAdherentSync() as Adherent;
             List<ProductViewModel> vmProducts = new List<ProductViewModel>();
             var products = _context.Products.Include(m => m.Familly).Include(m => m.Familly.Type).Where(x => x.Producer == producer).ToList();
@@ -54,7 +58,7 @@ namespace Stolons.Controllers
                 {
                     validateWeekBasket.Products.Where(x => x.ProductId == product.Id).ToList().ForEach(x => orderedQty += x.Quantity);
                 }
-                vmProducts.Add(new ProductViewModel(product, orderedQty));
+                vmProducts.Add(new ProductViewModel(GetActiveAdherentStolon(), product, orderedQty));
             }
             return JsonConvert.SerializeObject(vmProducts, Formatting.Indented, new JsonSerializerSettings()
             {
@@ -63,15 +67,17 @@ namespace Stolons.Controllers
         }
 
         // GET: ProductsManagement/Details/5
-        [Authorize(Roles = Configurations.UserType_Producer)]
         public IActionResult Details(Guid? id)
         {
+            if (!AuthorizedProducer())
+                return Unauthorized();
+
             if (id == null)
             {
                 return NotFound();
             }
 
-            Product product = _context.Products.Single(m => m.Id == id);
+            Product product = _context.Products.FirstOrDefault(x => x.Id == id);
             if (product == null)
             {
                 return NotFound();
@@ -81,20 +87,24 @@ namespace Stolons.Controllers
         }
 
         // GET: ProductsManagement/Create
-        [Authorize(Roles = Configurations.UserType_Producer)]
         public IActionResult Manage(Guid? id)
         {
+            if (!AuthorizedProducer())
+                return Unauthorized();
+
             Product product = id == null ? new Product() : _context.Products.Include(x => x.Familly).First(x => x.Id == id);
-            return View(new ProductEditionViewModel(product, _context, id == null));
+            return View(new ProductEditionViewModel(GetActiveAdherentStolon(), product, _context, id == null));
 
         }
 
         // POST: ProductsManagement/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = Configurations.UserType_Producer)]
         public async Task<IActionResult> Manage(ProductEditionViewModel vmProduct)
         {
+            if (!AuthorizedProducer())
+                return Unauthorized();
+
             if (ModelState.IsValid)
             {
                 //Set Labels
@@ -204,15 +214,17 @@ namespace Stolons.Controllers
 
         // GET: ProductsManagement/Delete/5
         [ActionName("Delete")]
-        [Authorize(Roles = Configurations.UserType_Producer)]
         public IActionResult Delete(Guid? id)
         {
+            if (!AuthorizedProducer())
+                return Unauthorized();
+
             if (id == null)
             {
                 return NotFound();
             }
 
-            Product product = _context.Products.Single(m => m.Id == id);
+            Product product = _context.Products.FirstOrDefault(x => x.Id == id);
             if (product == null)
             {
                 return NotFound();
@@ -224,18 +236,22 @@ namespace Stolons.Controllers
         // POST: ProductsManagement/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = Configurations.UserType_Producer)]
         public IActionResult DeleteConfirmed(Guid id)
         {
-            Product product = _context.Products.Single(m => m.Id == id);
+            if (!AuthorizedProducer())
+                return Unauthorized();
+
+            Product product = _context.Products.FirstOrDefault(x => x.Id == id);
             _context.Products.Remove(product);
             _context.SaveChanges();
             return RedirectToAction("Index");
         }
-
-        [Authorize(Roles = Configurations.UserType_Producer)]
+        
         public IActionResult EnableForAllStolon(Guid? productId)
         {
+            if (!AuthorizedProducer())
+                return Unauthorized();
+
             foreach (var productStock in _context.ProductsStocks.Where(x => x.ProductId == productId))
             {
                 productStock.State = Product.ProductState.Enabled;
@@ -244,10 +260,12 @@ namespace Stolons.Controllers
             return RedirectToAction("Index");
 
         }
-
-        [Authorize(Roles = Configurations.UserType_Producer)]
+        
         public IActionResult EnableAllStockProduct()
         {
+            if (!AuthorizedProducer())
+                return Unauthorized();
+
             foreach (var product in _context.ProductsStocks.Include(x => x.AdherentStolon).Where(x => x.AdherentStolon.AdherentId == GetCurrentAdherentSync().Id && x.State == Product.ProductState.Stock))
             {
                 product.State = Product.ProductState.Enabled;
@@ -255,10 +273,12 @@ namespace Stolons.Controllers
             _context.SaveChanges();
             return RedirectToAction("Index");
         }
-
-        [Authorize(Roles = Configurations.UserType_Producer)]
+        
         public IActionResult EnableAllStockProductForStolon(Guid? stolonId)
         {
+            if (!AuthorizedProducer())
+                return Unauthorized();
+
             foreach (var product in _context.ProductsStocks.Include(x => x.AdherentStolon).Where(x => x.AdherentStolon.StolonId == stolonId &&  x.State == Product.ProductState.Stock))
             {
                 product.State = Product.ProductState.Enabled;
@@ -266,10 +286,12 @@ namespace Stolons.Controllers
             _context.SaveChanges();
             return RedirectToAction("Index");
         }
-
-        [Authorize(Roles = Configurations.UserType_Producer)]
+        
         public IActionResult DisableAllProduct()
         {
+            if (!AuthorizedProducer())
+                return Unauthorized();
+
             foreach (var product in _context.ProductsStocks.Include(x => x.AdherentStolon).Where(x => x.AdherentStolon.AdherentId == GetCurrentAdherentSync().Id && x.State != Product.ProductState.Disabled))
             {
                 product.State = Product.ProductState.Disabled;
@@ -277,27 +299,33 @@ namespace Stolons.Controllers
             _context.SaveChanges();
             return RedirectToAction("Index");
         }
-
-        [Authorize(Roles = Configurations.UserType_Producer)]
+        
         public IActionResult EnableForSpecified(Guid? productStockId)
         {
+            if (!AuthorizedProducer())
+                return Unauthorized();
+
             _context.ProductsStocks.First(x => x.Id == productStockId).State = Product.ProductState.Enabled;
             _context.SaveChanges();
             return RedirectToAction("Index");
 
         }
-        [Authorize(Roles = Configurations.UserType_Producer)]
         public IActionResult DisableForSpecified(Guid? productStockId)
         {
+            if (!AuthorizedProducer())
+                return Unauthorized();
+
             _context.ProductsStocks.First(x => x.Id == productStockId).State = Product.ProductState.Disabled;
             _context.SaveChanges();
             return RedirectToAction("Index");
         }
 
-
-        [Authorize(Roles = Configurations.UserType_Producer)]
+        
         public IActionResult EnableAllStockProductForSpecified(Guid? adherentStolonId)
         {
+            if (!AuthorizedProducer())
+                return Unauthorized();
+
             foreach (var product in _context.ProductsStocks.Where(x => x.AdherentStolonId == adherentStolonId && x.State == Product.ProductState.Stock))
             {
                 product.State = Product.ProductState.Enabled;
@@ -305,10 +333,12 @@ namespace Stolons.Controllers
             _context.SaveChanges();
             return RedirectToAction("Index");
         }
-
-        [Authorize(Roles = Configurations.UserType_Producer)]
+        
         public IActionResult DisableAllProductForSpecified(Guid? adherentStolonId)
         {
+            if (!AuthorizedProducer())
+                return Unauthorized();
+
             foreach (var product in _context.ProductsStocks.Where(x => x.AdherentStolonId == adherentStolonId && x.State != Product.ProductState.Disabled))
             {
                 product.State = Product.ProductState.Disabled;
@@ -318,48 +348,54 @@ namespace Stolons.Controllers
         }
 
 
-
-        [Authorize(Roles = Configurations.UserType_Producer)]
+        
         [HttpPost, ActionName("ChangeStock")]
         public IActionResult ChangeStock(Guid productStockId, decimal newStock)
         {
+            if (!AuthorizedProducer())
+                return Unauthorized();
+
             _context.ProductsStocks.First(x => x.Id == productStockId).WeekStock = newStock;
             _context.ProductsStocks.First(x => x.Id == productStockId).RemainingStock = newStock;
             _context.SaveChanges();
             return Ok();
         }
-
-        [Authorize(Roles = Configurations.UserType_Producer)]
+        
         [HttpPost, ActionName("ChangeCurrentStock")]
         public string ChangeCurrentStock(Guid productStockId, decimal newStock)
         {
+            if (!AuthorizedProducer())
+                return "401";
             var productStock = _context.ProductsStocks.First(x => x.Id == productStockId);
             productStock.RemainingStock = newStock;
             _context.SaveChanges();
             return "ok";
         }
-
-        [Authorize(Roles = Configurations.Role_WedAdmin + "," + Configurations.UserType_Producer)]
+        
         [HttpGet, ActionName("ManageFamilies")]
         public IActionResult ManageFamilies()
         {
+            if (!AuthorizedWebAdmin())
+                return Unauthorized();
             return View();
         }
-
-        [Authorize(Roles = Configurations.Role_WedAdmin + "," + Configurations.UserType_Producer)]
+        
         [HttpPost, ActionName("CreateCategory")]
         public IActionResult CreateCategory(string categoryName)
         {
+            if (!AuthorizedWebAdmin())
+                return Unauthorized();
             var productCategory = new ProductType(categoryName);
             _context.ProductTypes.Add(productCategory);
             _context.SaveChanges();
             return Ok();
         }
-
-        [Authorize(Roles = Configurations.Role_WedAdmin + "," + Configurations.UserType_Producer)]
+        
         [HttpPost, ActionName("CreateFamily")]
         public IActionResult CreateFamily(Guid categoryId, string familyName)
         {
+            if (!AuthorizedWebAdmin())
+                return Unauthorized();
             var productCategory = _context.ProductTypes.FirstOrDefault(x => x.Id == categoryId);
             if (productCategory == null)
             {
@@ -370,11 +406,12 @@ namespace Stolons.Controllers
             _context.SaveChanges();
             return Ok();
         }
-
-        [Authorize(Roles = Configurations.Role_WedAdmin + "," + Configurations.UserType_Producer)]
+        
         [HttpPost, ActionName("RenameCategory")]
         public IActionResult RenameCategory(Guid categoryId, string newCategoryName)
         {
+            if (!AuthorizedWebAdmin())
+                return Unauthorized();
             var category = _context.ProductTypes.FirstOrDefault(x => x.Id == categoryId);
             if (category == null)
             {
@@ -385,11 +422,12 @@ namespace Stolons.Controllers
             return Ok();
         }
 
-
-        [Authorize(Roles = Configurations.Role_WedAdmin + "," + Configurations.UserType_Producer)]
+        
         [HttpPost, ActionName("RenameFamily")]
         public IActionResult RenameFamily(Guid familyId, string newFamilyName)
         {
+            if (!AuthorizedWebAdmin())
+                return Unauthorized();
             var family = _context.ProductFamillys.FirstOrDefault(x => x.Id == familyId);
             if (family == null)
             {
@@ -399,11 +437,12 @@ namespace Stolons.Controllers
             _context.SaveChanges();
             return Ok();
         }
-
-        [Authorize(Roles = Configurations.Role_WedAdmin + "," + Configurations.UserType_Producer)]
+        
         [HttpPost, ActionName("UpdateCategoryPicture")]
         public async Task<IActionResult> UpdateCategoryPicture(Guid categoryId, IFormFile picture)
         {
+            if (!AuthorizedWebAdmin())
+                return Unauthorized();
             var category = _context.ProductTypes.FirstOrDefault(x => x.Id == categoryId);
             if (category == null)
             {
@@ -414,11 +453,13 @@ namespace Stolons.Controllers
             _context.SaveChanges();
             return Ok();
         }
-
-        [Authorize(Roles = Configurations.Role_WedAdmin + "," + Configurations.UserType_Producer)]
+        
         [HttpPost, ActionName("UpdateFamilyPicture")]
         public async Task<IActionResult> UpdateFamilyPicture(Guid familyId, IFormFile picture)
         {
+            if (!AuthorizedWebAdmin())
+                return Unauthorized();
+
             var family = _context.ProductFamillys.FirstOrDefault(x => x.Id == familyId);
             if (family == null)
             {
@@ -429,11 +470,12 @@ namespace Stolons.Controllers
             _context.SaveChanges();
             return Ok();
         }
-
-        [Authorize(Roles = Configurations.Role_WedAdmin + "," + Configurations.UserType_Producer)]
+        
         [HttpPost, ActionName("DeleteCategory")]
         public IActionResult DeleteCategory(Guid categoryId)
         {
+            if (!AuthorizedWebAdmin())
+                return Unauthorized();
             var category = _context.ProductTypes.Include(x => x.ProductFamilly).FirstOrDefault(x => x.Id == categoryId);
             if (category == null)
             {
@@ -452,11 +494,12 @@ namespace Stolons.Controllers
             _context.SaveChanges();
             return Ok();
         }
-
-        [Authorize(Roles = Configurations.Role_WedAdmin + "," + Configurations.UserType_Producer)]
+        
         [HttpPost, ActionName("DeleteFamily")]
         public IActionResult DeleteFamily(Guid familyId)
         {
+            if (!AuthorizedWebAdmin())
+                return Unauthorized();
             var family = _context.ProductFamillys.FirstOrDefault(x => x.Id == familyId);
             if (family == null)
             {

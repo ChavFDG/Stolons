@@ -7,13 +7,11 @@ using Stolons.Models.Users;
 
 namespace Stolons.ViewModels.Banner
 {
-    public class BannerViewModel
+    public class BannerViewModel : BaseViewModel
     {
-        public AdherentStolon AdherentStolon{ get; set; }
-
         public BannerViewModel(AdherentStolon adherentStolon)
         {
-            AdherentStolon = adherentStolon;
+            ActiveAdherentStolon = adherentStolon;
         }
     }
 }

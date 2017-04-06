@@ -1,23 +1,24 @@
-﻿using System;
+﻿using Stolons.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Stolons.ViewModels.News
 {
-    public class NewsViewModel
+    public class NewsViewModel : BaseViewModel
     {
-        public List<Models.Messages.News> News { get; set; }
-
-        public bool OldNews { get; set; }
         public NewsViewModel()
         {
 
         }
-        public NewsViewModel(List<Models.Messages.News> news, bool withOldNews = false)
+
+        public NewsViewModel(AdherentStolon activeAdherentStolon, Models.Messages.News news)
         {
+            ActiveAdherentStolon = activeAdherentStolon;
             News = news;
-            OldNews = withOldNews;
         }
+
+        public Models.Messages.News News { get; set; }
     }
 }

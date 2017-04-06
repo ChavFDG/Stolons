@@ -44,19 +44,11 @@ namespace Stolons.Models.Users
 
         public decimal GetSubscriptionAmount()
         {
-            return Stolon.GetSubscriptionAmount(this);
+            return Stolon.SympathizerSubscription;
         }
         public string GetStringSubscriptionAmount()
         {
-            return Stolon.GetStringSubscriptionAmount(this);
-        }
-
-        public Configurations.UserType[] UserType
-        {
-            get
-            {
-                return new Configurations.UserType[] { Configurations.UserType.Sympathizer };
-            }
+            return Stolon.SympathizerSubscription + "€";
         }
     }
 }

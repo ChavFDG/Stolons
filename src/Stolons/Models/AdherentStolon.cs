@@ -42,6 +42,7 @@ namespace Stolons.Models
         
         //
         public bool IsActiveStolon { get; protected set; }
+
         public void SetHasActiveStolon(ApplicationDbContext context)
         {
             foreach(var adherentStolon in context.AdherentStolons.Where(x=>x.AdherentId == AdherentId))
@@ -49,6 +50,14 @@ namespace Stolons.Models
                 adherentStolon.IsActiveStolon = adherentStolon.Id == Id;
             }
         }
+        //
+
+        [Display(Name = "Est un producteur")]
+        public bool IsProducer { get; set; }
+
+        [Display(Name = "Role de l'adhérent")]
+        public Role Role { get; set; } = Role.Adherent;
+
         //
         [Display(Name = "Actif / Inactif")]
         public bool Enable { get; set; } = true;
@@ -85,15 +94,47 @@ namespace Stolons.Models
         public bool SubscriptionPaid { get; set; } = false;
         public decimal GetSubscriptionAmount()
         {
-            return Stolon.GetSubscriptionAmount(Adherent);
+            return Configurations.GetSubscriptionAmount(this);
         }
         public string GetStringSubscriptionAmount()
         {
-            return Stolon.GetStringSubscriptionAmount(Adherent);
+            return Configurations.GetStringSubscriptionAmount(this);
         }
 
 
         #endregion Subscription
 
+        //
+        public bool Authorized(Role role)
+        {
+            if (role == Role.Adherent)
+                return true;
+            else
+            {
+                if (Adherent.IsWebAdmin)
+                    return true;
+                return role <= Role;
+            }
+        }
+    }
+
+
+    public enum Role
+    {
+        /// <summary>
+        /// Simple user 
+        /// </summary>
+        [Display(Name = "Adhérent")]
+        Adherent = 1,
+        /// <summary>
+        /// Volunteer
+        /// </summary>
+        [Display(Name = "Bénévole")]
+        Volunteer = 2,
+        /// <summary>
+        /// Admin of the stolon
+        /// </summary>
+        [Display(Name = "Administrateur")]
+        Admin = 3
     }
 }

@@ -4,7 +4,7 @@
 @using Stolons.Models.Messages
 @using Stolons.ViewModels.News
 
-@model NewsViewModel
+@model NewsListViewModel
 
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
@@ -13,10 +13,7 @@
 
 @if (SignInManager.IsSignedIn(User))
 {
-    if (User.IsInRole(Configurations.Role.WebAdmin.ToString())
-                        || User.IsInRole(Configurations.Role.StolonAdmin.ToString())
-                        || User.IsInRole(Configurations.Role.Volunteer.ToString())
-                        || User.IsInRole(Configurations.UserType.Producer.ToString()))
+    if (Model.ActiveAdherentStolon.IsProducer || Model.ActiveAdherentStolon.Authorized(Role.Volunteer))
     {
         <p>
             <a asp-action="Create" asp-controller="News" class="btn btn-small btn-default">Ajouter une nouvelle</a>
@@ -75,14 +72,11 @@
                         break;
                 }
                 @item.DateOfPublication.ToString("le dd/MM/yyyy à HH:mm:ss")
-                @if (User.Identity.Name == item.PublishBy.Adherent.Email
-                                || User.IsInRole(Configurations.Role.WebAdmin.ToString())
-                                || User.IsInRole(Configurations.Role.Volunteer.ToString())
-                                || User.IsInRole(Configurations.Role.StolonAdmin.ToString()))
+                @if (User.Identity.Name == item.PublishBy.Adherent.Email || Model.ActiveAdherentStolon.Authorized(Role.Volunteer))
                 {
                     <a asp-action="Edit" asp-controller="News" asp-route-id="@item.Id" class="btn btn-small btn-default">Modifier</a>
                 }
-                @if (User.IsInRole(Configurations.Role.WebAdmin.ToString()) || User.IsInRole(Configurations.Role.StolonAdmin.ToString()) || UserManager.GetUserId(User) == item.PublishBy.Adherent.Email)
+                @if (UserManager.GetUserId(User) == item.PublishBy.Adherent.Email || Model.ActiveAdherentStolon.Authorized(Role.Admin))
                 {
                     <a asp-action="Delete" asp-controller="News" asp-route-id="@item.Id" class="btn btn-small btn-default">Supprimer</a>
                 }

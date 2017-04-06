@@ -8,19 +8,20 @@ using System.Threading.Tasks;
 
 namespace Stolons.ViewModels.Token
 {
-    public class CreditTokenViewModel
+    public class CreditTokenViewModel : BaseViewModel
     {
         public CreditTokenViewModel()
         {
 
         }
-        public CreditTokenViewModel(Adherent consumer)
+        public CreditTokenViewModel(AdherentStolon activeAdherentStolon, AdherentStolon adherentStolon)
         {
-            Consumer = consumer;
+            ActiveAdherentStolon = activeAdherentStolon;
+            AdherentStolon = adherentStolon;
         }
-        public Adherent Consumer { get; set; }
+        public AdherentStolon AdherentStolon { get; set; }
 
-        [Display(Name ="Bogues à créditer :")]
+        [Display(Name = "Bogues à créditer :")]
         public decimal CreditedToken { get; set; } = 0;
     }
 }

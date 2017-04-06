@@ -11,8 +11,6 @@ namespace Stolons.Models.Messages
 {
     public class News : Message
     {
-        private AdherentStolon adherentStolon;
-
         public News()
         {
 

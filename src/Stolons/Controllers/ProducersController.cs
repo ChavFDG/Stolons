@@ -12,11 +12,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
-using Stolons.ViewModels.Producers;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using Stolons.Helpers;
 using Stolons.Models.Users;
+using Stolons.ViewModels.Adherents;
 
 namespace Stolons.Controllers
 {
@@ -30,173 +30,171 @@ namespace Stolons.Controllers
         {
 
         }
-
-        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
+        
         // GET: Producer
         public IActionResult Index()
         {
+            if (!Authorized(Role.Volunteer))
+                return Unauthorized();
+
             return View(_context.Adherents.Include(x=>x.AdherentStolons).Where(x => x.AdherentStolons.Any(prodStolon=>prodStolon.StolonId == GetCurrentStolon().Id)).ToList());
         }
-
-        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
+        
         // GET: Producer/Details/5
-        public async Task<IActionResult> Details(Guid id)
+        public IActionResult Details(Guid id)
         {
+            if (!Authorized(Role.Volunteer))
+                return Unauthorized();
+
             if (id == null)
             {
                 return NotFound();
             }
 
-            Adherent producer = _context.Adherents.Single(m => m.Id == id);
-            if (producer == null)
+            Adherent adherent = _context.Adherents.FirstOrDefault(x => x.Id == id);
+            if (adherent == null)
             {
                 return NotFound();
             }
-            ApplicationUser producerAppUser = _context.Users.First(x => x.Email == producer.Email);
-            return View(new ProducerViewModel(producer, await GetUserRole(producerAppUser)));
+            return View(new AdherentViewModel(GetActiveAdherentStolon(),adherent));
         }
 
-
-        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
+        
         // GET: Producer/PartialDetails/5
-        public async Task<IActionResult> PartialDetails(Guid id)
+        public IActionResult PartialDetails(Guid id)
         {
+            if (!Authorized(Role.Volunteer))
+                return Unauthorized();
+
             if (id == null)
             {
                 return NotFound();
             }
 
-            Adherent producer = _context.Adherents.Single(m => m.Id == id);
-            if (producer == null)
+            Adherent adherent = _context.Adherents.FirstOrDefault(x => x.Id == id);
+            if (adherent == null)
             {
                 return NotFound();
             }
-            ApplicationUser producerAppUser = _context.Users.First(x => x.Email == producer.Email);
-            return PartialView(new ProducerViewModel(producer, await GetUserRole(producerAppUser)));
+            return PartialView(new AdherentViewModel(GetActiveAdherentStolon(), adherent));
         }
-
-        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
+        
         // GET: Producer/Create
         public IActionResult Create()
         {
-            return View(new ProducerViewModel(new Adherent(),Configurations.Role.User));
+            if (!Authorized(Role.Volunteer))
+                return Unauthorized();
+
+            return View(new AdherentViewModel(GetActiveAdherentStolon(),new Adherent()));
         }
 
         // POST: Producer/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
-        public async Task<IActionResult> Create(ProducerViewModel vmProducer, IFormFile uploadFile)
+        public async Task<IActionResult> Create(AdherentViewModel vmAdherent, IFormFile uploadFile)
         {
+            if (!Authorized(Role.Volunteer))
+                return Unauthorized();
+
 
             if (ModelState.IsValid)
             {
                 #region Creating Producer
-                UploadAndSetAvatar(vmProducer.Producer, uploadFile);
-                AdherentStolon activeAdhrentStolon= GetActiveAdherentStolonOf(vmProducer.Producer);
+                UploadAndSetAvatar(vmAdherent.Adherent, uploadFile);
+                AdherentStolon activeAdhrentStolon= GetActiveAdherentStolonOf(vmAdherent.Adherent);
                 activeAdhrentStolon.RegistrationDate = DateTime.Now;
                 activeAdhrentStolon.StolonId = GetCurrentStolon().Id;
-                _context.Adherents.Add(vmProducer.Producer);
+                _context.Adherents.Add(vmAdherent.Adherent);
                 #endregion Creating Producer
 
                 #region Creating linked application data
-                var producerAppUser = new ApplicationUser { UserName = vmProducer.Producer.Email, Email = vmProducer.Producer.Email };
-                producerAppUser.User = vmProducer.Producer;
+                var producerAppUser = new ApplicationUser { UserName = vmAdherent.Adherent.Email, Email = vmAdherent.Adherent.Email };
+                producerAppUser.User = vmAdherent.Adherent;
 
-                var result = await _userManager.CreateAsync(producerAppUser, vmProducer.Producer.Email);
-                if (result.Succeeded)
-                {
-                    //Add user role
-                    result = await _userManager.AddToRoleAsync(producerAppUser, vmProducer.UserRole.ToString());
-                    //Add user type
-                    result = await _userManager.AddToRoleAsync(producerAppUser, Configurations.UserType.Producer.ToString());
-                }
+                var result = await _userManager.CreateAsync(producerAppUser, vmAdherent.Adherent.Email);
                 #endregion Creating linked application data
 
 
                 _context.SaveChanges();
                 //Send confirmation mail
-                Services.AuthMessageSender.SendEmail(vmProducer.Producer.Email, vmProducer.Producer.Name, "Creation de votre compte", base.RenderPartialViewToString("ProducerCreatedConfirmationMail", vmProducer));
+                Services.AuthMessageSender.SendEmail(vmAdherent.Adherent.Email, vmAdherent.Adherent.Name, "Creation de votre compte", base.RenderPartialViewToString("ProducerCreatedConfirmationMail", vmAdherent));
                 
                 return RedirectToAction("Index");
             }
 
-            return View(vmProducer);
+            return View(vmAdherent);
         }
 
         // GET: Producer/Edit/5
-        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
-        public async Task<IActionResult> Edit(Guid? id)
+        public IActionResult Edit(Guid? id)
         {
+            if (!Authorized(Role.Volunteer))
+                return Unauthorized();
+
             if (id == null)
             {
                 return NotFound();
             }
 
-            Adherent producer = _context.Adherents.Single(m => m.Id == id);
-            if (producer == null)
+            Adherent adherent = _context.Adherents.FirstOrDefault(x => x.Id == id);
+            if (adherent == null)
             {
                 return NotFound();
             }
-            ApplicationUser producerAppUser = _context.Users.First(x => x.Email == producer.Email);
 
-            return View(new ProducerViewModel(producer, await GetUserRole(producerAppUser)));
+            return View(new AdherentViewModel(GetActiveAdherentStolon(),adherent));
         }
 
         // POST: Producer/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
-        public async Task<IActionResult> Edit(ProducerViewModel vmProducer, IFormFile uploadFile, Configurations.Role UserRole)
+        public IActionResult Edit(AdherentViewModel vmAdherent, IFormFile uploadFile, Role role)
         {
+            if (!Authorized(Role.Volunteer))
+                return Unauthorized();
+
             if (ModelState.IsValid)
             {
-                UploadAndSetAvatar(vmProducer.Producer,uploadFile);
-                ApplicationUser producerAppUser = _context.Users.First(x => x.Email == vmProducer.OriginalEmail);
-                producerAppUser.Email = vmProducer.Producer.Email;
+                UploadAndSetAvatar(vmAdherent.Adherent,uploadFile);
+                ApplicationUser producerAppUser = _context.Users.First(x => x.Email == vmAdherent.OriginalEmail);
+                producerAppUser.Email = vmAdherent.Adherent.Email;
                 _context.Update(producerAppUser);
-                //Getting actual roles
-                IList<string> roles = await _userManager.GetRolesAsync(producerAppUser);
-                if (!roles.Contains(UserRole.ToString()))
-                {
-                    string roleToRemove = roles.FirstOrDefault(x => Configurations.GetRoles().Contains(x));
-                    await _userManager.RemoveFromRoleAsync(producerAppUser, roleToRemove);
-                    //Add user role
-                    await _userManager.AddToRoleAsync(producerAppUser, UserRole.ToString());
-                }
-                _context.Update(vmProducer.Producer);
+                _context.Update(vmAdherent.Adherent);
                 _context.SaveChanges();
                 return RedirectToAction("Index");
             }
-            return View(vmProducer);
+            return View(vmAdherent);
         }
 
         // GET: Producer/Delete/5
         [ActionName("Delete")]
-        [Authorize(Roles = Configurations.Role_WedAdmin)]
-        public async Task<IActionResult> Delete(Guid id)
+        public IActionResult Delete(Guid id)
         {
+            if (!Authorized(Role.Admin))
+                return Unauthorized();
+
             if (id == null)
             {
                 return NotFound();
             }
 
-            Adherent producer = _context.Adherents.Single(m => m.Id == id);
-            if (producer == null)
+            Adherent adherent = _context.Adherents.FirstOrDefault(x => x.Id == id);
+            if (adherent == null)
             {
                 return NotFound();
             }
-            ApplicationUser producerAppUser = _context.Users.First(x => x.Email == producer.Email);
-            return View(new ProducerViewModel(producer, await GetUserRole(producerAppUser)));
+            return View(new AdherentViewModel(GetActiveAdherentStolon(), adherent));
         }
 
         // POST: Producer/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = Configurations.Role_WedAdmin)]
         public IActionResult DeleteConfirmed(Guid id)
         {
-            Adherent adherent = _context.Adherents.Single(m => m.Id == id);
+            if (!Authorized(Role.Admin))
+                return Unauthorized();
+
+            Adherent adherent = _context.Adherents.FirstOrDefault(x => x.Id == id);
             //Deleting image
             string uploads = Path.Combine(_environment.WebRootPath, Configurations.AvatarStockagePath);
             string image = Path.Combine(uploads, adherent.AvatarFileName);

@@ -58,81 +58,6 @@ namespace Stolons
 
         #endregion Configuration
 
-        #region UserManagement
-
-        public const string Role_User = "User";
-        public const string Role_Volunteer = "Volunteer";
-        public const string Role_StolonAdmin = "StolonAdmin";
-        public const string Role_WedAdmin = "WebAdmin";
-
-        public enum Role
-        {
-            /// <summary>
-            /// Simple user 
-            /// </summary>
-            [Display(Name = "Adhérent")]
-            User = 1,
-            /// <summary>
-            /// Volunteer
-            /// </summary>
-            [Display(Name = "Bénévole")]
-            Volunteer = 2,
-            /// <summary>
-            /// Admin of the stolon
-            /// </summary>
-            [Display(Name = "Administrateur du stolon")]
-            StolonAdmin = 3,
-            /// <summary>
-            /// WebAdmin of the web site
-            /// </summary>
-            [Display(Name = "Administrateur du site")]
-            WebAdmin = 4
-        }
-
-        public const string UserType_SympathizerUser = "Sympathizer";
-        public const string UserType_Consumer = "Consumer";
-        public const string UserType_Producer  = "Producer";
-
-        public enum UserType
-        {
-            [Display(Name = "Adhérent Sympathisant")]
-            Sympathizer,
-            [Display(Name = "Adhérent consomateur")]
-            Consumer,
-            [Display(Name = "Adhérent producteur")]
-            Producer,
-        }
-
-        internal static IList<string> GetRoles()
-        {
-            return Enum.GetNames(typeof(Role));
-        }
-
-        internal static IList<string> GetUserTypes()
-        {
-            return Enum.GetNames(typeof(UserType));
-        }
-
-        public static IEnumerable<UserType> GetUserTypes(this IAdherent iAdherent)
-        {
-            if (iAdherent is Sympathizer)
-            {
-                yield return UserType.Sympathizer;
-            }
-            else
-            {
-                Adherent adherent = iAdherent as Adherent;
-                yield return UserType.Consumer;
-                if (adherent.IsProducer)
-                {
-                    yield return UserType.Producer;                    
-                }
-
-            }
-        }
-
-        #endregion UserManagement
-
         #region FileManagement
 
         public static string StolonLogoStockagePath = Path.Combine("uploads", "images","logos");
@@ -194,6 +119,27 @@ namespace Stolons
 
         #endregion FIleManagement
 
+
+
+        public static decimal GetSubscriptionAmount(AdherentStolon adherentStolon)
+        {
+            int currentMonth = DateTime.Now.Month - 6;
+            int subscriptionMonth = (int)adherentStolon.Stolon.SubscriptionStartMonth;
+            if (currentMonth < subscriptionMonth)
+                currentMonth += 12;
+            bool isHalfSubscription = currentMonth > (subscriptionMonth + 6);
+            //
+            if (adherentStolon.IsProducer)
+                return isHalfSubscription ? adherentStolon.Stolon.ProducerSubscription / 2 : adherentStolon.Stolon.ProducerSubscription;
+            else
+                return isHalfSubscription ? adherentStolon.Stolon.ConsumerSubscription / 2 : adherentStolon.Stolon.ConsumerSubscription;
+
+        }
+
+        public static string GetStringSubscriptionAmount(AdherentStolon adherentStolon)
+        {
+            return GetSubscriptionAmount(adherentStolon) + "€";
+        }
 
     }
 }

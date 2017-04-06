@@ -12,7 +12,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
-using Stolons.ViewModels.Consumers;
 using Microsoft.AspNetCore.Authorization;
 using Stolons.Helpers;
 using Stolons.Models.Users;
@@ -31,9 +30,11 @@ namespace Stolons.Controllers
 
         }
         
-        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
         public IActionResult PaySubscription(Guid id)
         {
+            if (!Authorized(Role.Volunteer))
+                return Unauthorized();
+
             Transaction transaction = new Transaction();
             IAdherent iAdherent = _context.Sympathizers.FirstOrDefault(x => x.Id == id);
             Stolon currentStolon = GetCurrentStolon();
@@ -46,10 +47,12 @@ namespace Stolons.Controllers
                 adherentStolon.SubscriptionPaid = true;
                 //Update
                 _context.AdherentStolons.Update(adherentStolon);
+                transaction.Amount = Configurations.GetSubscriptionAmount(adherentStolon);
             }
             else
             {
                 (iAdherent as Sympathizer).SubscriptionPaid = true;
+                transaction.Amount = currentStolon.SympathizerSubscription;
             }
             //Add a transaction
             transaction.Stolon = currentStolon;
@@ -57,7 +60,6 @@ namespace Stolons.Controllers
             transaction.Date = DateTime.Now;
             transaction.Type = Transaction.TransactionType.Inbound;
             transaction.Category = Transaction.TransactionCategory.Subscription;
-            transaction.Amount = currentStolon.GetSubscriptionAmount(iAdherent);
             transaction.Description = "Paiement de la cotisation de : "+ iAdherent.Name + " " + iAdherent.Surname;
             _context.Transactions.Add(transaction);
             //Save
@@ -65,9 +67,11 @@ namespace Stolons.Controllers
             return RedirectToAction("Index");
         }
         
-        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
         public IActionResult Enable(Guid id)
         {
+            if (!Authorized(Role.Volunteer))
+                return Unauthorized();
+
             AdherentStolon adherentStolon = GetActiveAdherentStolon();
             //
             adherentStolon.DisableReason = "";
@@ -79,10 +83,12 @@ namespace Stolons.Controllers
             return RedirectToAction("Index");
         }
 
-
-        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
+        
         public IActionResult Disable(Guid id, string comment)
         {
+            if (!Authorized(Role.Volunteer))
+                return Unauthorized();
+
             AdherentStolon adherentStolon = GetActiveAdherentStolon();
             //
             adherentStolon.DisableReason = comment;
@@ -92,29 +98,6 @@ namespace Stolons.Controllers
             //Save
             _context.SaveChanges();
             return RedirectToAction("Index");
-        }
-
-        /// <summary>
-        /// Return User Role of the specified application user
-        /// </summary>
-        /// <param name="user"></param>
-        /// <returns></returns>
-        protected async Task<Configurations.Role> GetUserRole(ApplicationUser user)
-        {
-
-            IList<string> roles = await _userManager.GetRolesAsync(user);
-            string role = roles.FirstOrDefault(x => Configurations.GetRoles().Contains(x));
-            return (Configurations.Role)Enum.Parse(typeof(Configurations.Role), role);
-        }
-
-        /// <summary>
-        /// Return the role of the current application user
-        /// </summary>
-        /// <returns></returns>
-        protected async Task<Configurations.Role> GetCurrentUserRole()
-        {
-            var user = await GetCurrentAppUserAsync();
-            return await GetUserRole(user);
         }
     }
 }

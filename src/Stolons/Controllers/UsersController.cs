@@ -12,7 +12,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
-using Stolons.ViewModels.Consumers;
 using Microsoft.AspNetCore.Authorization;
 using Stolons.Helpers;
 
@@ -30,9 +29,11 @@ namespace Stolons.Controllers
         }
 
         // GET: Consumers
-        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
         public IActionResult Index()
         {
+            if (!Authorized(Role.Volunteer))
+                return Unauthorized();
+
             return View(_context.AdherentStolons.Include(x=>x.Stolon).Include(x=>x.Adherent).Where(x=>x.StolonId== GetCurrentStolon().Id));
         }        
     }

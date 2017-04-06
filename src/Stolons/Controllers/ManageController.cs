@@ -10,13 +10,12 @@ using Microsoft.Extensions.Logging;
 using Stolons.Models;
 using Stolons.Services;
 using Stolons.ViewModels.Manage;
-using Stolons.ViewModels.Consumers;
 using Microsoft.AspNetCore.Http;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Net.Http.Headers;
-using Stolons.ViewModels.Producers;
 using Stolons.Models.Users;
+using Stolons.ViewModels.Adherents;
 
 namespace Stolons.Controllers
 {
@@ -106,38 +105,29 @@ namespace Stolons.Controllers
         public async Task<IActionResult> ChangeUserInformations()
         {
             var user = await GetCurrentAppUserAsync();
-            Adherent consumer = _context.Adherents.Single(m => m.Email == user.Email);
-            if (consumer == null)
+            Adherent adherent = _context.Adherents.Single(x => x.Email == user.Email);
+            if (adherent == null)
             {
                 return NotFound();
             }
             IList<string> roles = await _userManager.GetRolesAsync(user);
-            string role = roles.FirstOrDefault(x => Configurations.GetRoles().Contains(x));
-            return View(new ConsumerViewModel(consumer, (Configurations.Role)Enum.Parse(typeof(Configurations.Role), role)));
+            return View(new AdherentViewModel());
         }
 
         // POST: Consumers/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize()]
-        public async Task<IActionResult> ChangeUserInformations(ConsumerViewModel vmConsumer, IFormFile uploadFile, Configurations.Role UserRole)
+        public IActionResult ChangeUserInformations(AdherentViewModel vmConsumer, IFormFile uploadFile)
         {
             if (ModelState.IsValid)
             {
-                UploadAndSetAvatar(vmConsumer.Consumer, uploadFile);
+                UploadAndSetAvatar(vmConsumer.Adherent, uploadFile);
                 ApplicationUser appUser = _context.Users.First(x => x.Email == vmConsumer.OriginalEmail);
-                appUser.Email = vmConsumer.Consumer.Email;
+                appUser.Email = vmConsumer.Adherent.Email;
                 _context.Update(appUser);
-                //Getting actual roles
-                IList<string> roles = await _userManager.GetRolesAsync(appUser);
-                if (!roles.Contains(UserRole.ToString()))
-                {
-                    string roleToRemove = roles.FirstOrDefault(x => Configurations.GetRoles().Contains(x));
-                    await _userManager.RemoveFromRoleAsync(appUser, roleToRemove);
-                    //Add user role
-                    await _userManager.AddToRoleAsync(appUser, UserRole.ToString());
-                }
-                _context.Update(vmConsumer.Consumer);
+
+                _context.Update(vmConsumer.Adherent);
                 _context.SaveChanges();
                 return RedirectToAction("Index");
             }
@@ -153,38 +143,27 @@ namespace Stolons.Controllers
             {
                 return NotFound();
             }
-            IList<string> roles = await _userManager.GetRolesAsync(user);
-            string role = roles.FirstOrDefault(x => Configurations.GetRoles().Contains(x));
-            return View(new ProducerViewModel(producer, (Configurations.Role)Enum.Parse(typeof(Configurations.Role), role)));
+            return View(new AdherentViewModel());
         }
 
         // POST: Consumers/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize()]
-        public async Task<IActionResult> ChangeProducerInformations(ProducerViewModel vmProducer, IFormFile uploadFile, Configurations.Role UserRole)
+        public IActionResult ChangeProducerInformations(AdherentViewModel vmAdherent, IFormFile uploadFile)
         {
             if (ModelState.IsValid)
             {
-                UploadAndSetAvatar(vmProducer.Producer, uploadFile);
+                UploadAndSetAvatar(vmAdherent.Adherent, uploadFile);
                  
-                ApplicationUser appUser = _context.Users.First(x => x.Email == vmProducer.OriginalEmail);
-                appUser.Email = vmProducer.Producer.Email;
+                ApplicationUser appUser = _context.Users.First(x => x.Email == vmAdherent.OriginalEmail);
+                appUser.Email = vmAdherent.Adherent.Email;
                 _context.Update(appUser);
-                //Getting actual roles
-                IList<string> roles = await _userManager.GetRolesAsync(appUser);
-                if (!roles.Contains(UserRole.ToString()))
-                {
-                    string roleToRemove = roles.FirstOrDefault(x => Configurations.GetRoles().Contains(x));
-                    await _userManager.RemoveFromRoleAsync(appUser, roleToRemove);
-                    //Add user role
-                    await _userManager.AddToRoleAsync(appUser, UserRole.ToString());
-                }
-                _context.Update(vmProducer.Producer);
+                _context.Update(vmAdherent.Adherent);
                 _context.SaveChanges();
                 return RedirectToAction("Index");
             }
-            return View(vmProducer);
+            return View(vmAdherent);
         }
         
 

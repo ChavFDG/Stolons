@@ -2,8 +2,9 @@
 @using Stolons.Services
 @using Stolons.Models.Users
 @using Stolons.Models.Messages
+@using Stolons.ViewModels.News
 
-@model IEnumerable<News>
+@model NewsListViewModel
 
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
@@ -13,10 +14,7 @@
 
 @if (SignInManager.IsSignedIn(User))
 {
-    if (User.IsInRole(Configurations.Role.WebAdmin.ToString())
-                        || User.IsInRole(Configurations.Role.StolonAdmin.ToString())
-                        || User.IsInRole(Configurations.Role.Volunteer.ToString())
-                        || User.IsInRole(Configurations.UserType.Producer.ToString()))
+    if (Model.ActiveAdherentStolon.IsProducer || Model.ActiveAdherentStolon.Authorized(Role.Volunteer))
     {
         <p>
             <a asp-action="Create" class="btn btn-small btn-default">Ajouter une nouvelle</a>
@@ -44,9 +42,9 @@
 
     @{
         List<Tuple<string, List<News>>> group = new List<Tuple<string, List<News>>>();
-        group.Add(new Tuple<string, List<News>>("Nouvelles en attentes de publication", Model.Where(x => x.PublishStart > DateTime.Now).OrderByDescending(x => x.DateOfPublication).ToList()));
-        group.Add(new Tuple<string, List<News>>("Nouvelles en cours de publication", Model.Where(x => x.PublishStart < DateTime.Now && x.PublishEnd > DateTime.Now).OrderByDescending(x => x.DateOfPublication).ToList()));
-        group.Add(new Tuple<string, List<News>>("Nouvelles publiés dans le passé", Model.Where(x => x.PublishEnd < DateTime.Now).OrderByDescending(x => x.DateOfPublication).ToList()));
+        group.Add(new Tuple<string, List<News>>("Nouvelles en attentes de publication", Model.News.Where(x => x.PublishStart > DateTime.Now).OrderByDescending(x => x.DateOfPublication).ToList()));
+        group.Add(new Tuple<string, List<News>>("Nouvelles en cours de publication", Model.News.Where(x => x.PublishStart < DateTime.Now && x.PublishEnd > DateTime.Now).OrderByDescending(x => x.DateOfPublication).ToList()));
+        group.Add(new Tuple<string, List<News>>("Nouvelles publiés dans le passé", Model.News.Where(x => x.PublishEnd < DateTime.Now).OrderByDescending(x => x.DateOfPublication).ToList()));
 
     }
     @foreach (var tuple in group)
@@ -105,15 +103,13 @@
                                 </a>
                                 <ul class="dropdown-menu">
                                     @if (  User.Identity.Name == item.PublishBy.Adherent.Email
-                                        || User.IsInRole(Configurations.Role.WebAdmin.ToString())
-                                        || User.IsInRole(Configurations.Role.Volunteer.ToString())
-                                        || User.IsInRole(Configurations.Role.StolonAdmin.ToString()))
+                                        || Model.ActiveAdherentStolon.Authorized(Role.Volunteer))
                                     {
                                         <li>
                                             <a asp-action="Edit" asp-route-id="@item.Id">Modifier</a>
                                         </li>
                                     }
-                                    @if (User.IsInRole(Configurations.Role.WebAdmin.ToString()) || User.IsInRole(Configurations.Role.StolonAdmin.ToString()) || UserManager.GetUserId(User) == item.PublishBy.Adherent.Email)
+                                    @if (Model.ActiveAdherentStolon.Authorized(Role.Admin) || UserManager.GetUserId(User) == item.PublishBy.Adherent.Email)
                                     {
                                         <li>
                                             <a asp-action="Delete" asp-route-id="@item.Id">Supprimer</a>

@@ -29,16 +29,20 @@ namespace Stolons.Controllers
         }
 
         // GET: Stolons
-        [Authorize(Roles = Role_StolonAdmin + "," + Role_WedAdmin)]
         public async Task<IActionResult> Index()
         {
+            if (!Authorized(Role.Admin))
+                return Unauthorized();
+
             return View(await _context.Stolons.ToListAsync());
         }
 
         // GET: Stolons/Details/5
-        [Authorize(Roles = Role_StolonAdmin + "," + Role_WedAdmin)]
         public async Task<IActionResult> Details(Guid? id)
         {
+            if (!Authorized(Role.Admin))
+                return Unauthorized();
+
             if (id == null)
             {
                 return NotFound();
@@ -50,8 +54,8 @@ namespace Stolons.Controllers
             {
                 return NotFound();
             }
-
             return View(stolon);
+
         }
 
         // GET: Stolons/Create
@@ -64,10 +68,12 @@ namespace Stolons.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [Authorize(Roles = Role_WedAdmin)]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(StolonViewModel vm, IFormFile uploadFile)
         {
+            if (!AuthorizedWebAdmin())
+                return Unauthorized();
+
             if (ModelState.IsValid)
             {
                 vm.Stolon.Id = Guid.NewGuid();
@@ -81,9 +87,11 @@ namespace Stolons.Controllers
 
 
         // GET: Stolons/Edit/5
-        [Authorize(Roles = Role_StolonAdmin + "," + Role_WedAdmin)]
         public async Task<IActionResult> Edit(Guid? id, IFormFile uploadFile)
         {
+            if (!Authorized(Role.Admin))
+                return Unauthorized();
+
             if (id == null)
             {
                 return NotFound();
@@ -94,7 +102,7 @@ namespace Stolons.Controllers
             {
                 return NotFound();
             }
-            return View(new StolonViewModel(stolon));
+            return View(new StolonViewModel(GetActiveAdherentStolon(),stolon));
         }
 
         // POST: Stolons/Edit/5
@@ -102,9 +110,11 @@ namespace Stolons.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = Role_StolonAdmin + "," + Role_WedAdmin)]
         public async Task<IActionResult> Edit(Guid id, StolonViewModel vm, IFormFile uploadFile)
         {
+            if (!Authorized(Role.Admin))
+                return Unauthorized();
+
             if (id != vm.Stolon.Id)
             {
                 return NotFound();
@@ -135,9 +145,11 @@ namespace Stolons.Controllers
         }
 
         // GET: Stolons/Delete/5
-        [Authorize(Roles = Role_WedAdmin)]
         public async Task<IActionResult> Delete(Guid? id)
         {
+            if (!AuthorizedWebAdmin())
+                return Unauthorized();
+
             if (id == null)
             {
                 return NotFound();
@@ -155,10 +167,12 @@ namespace Stolons.Controllers
 
         // POST: Stolons/Delete/5
         [HttpPost, ActionName("Delete")]
-        [Authorize(Roles = Role_WedAdmin)]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
+            if (!AuthorizedWebAdmin())
+                return Unauthorized();
+
             var stolon = await _context.Stolons.SingleOrDefaultAsync(m => m.Id == id);
             _context.Stolons.Remove(stolon);
             await _context.SaveChangesAsync();
@@ -167,16 +181,18 @@ namespace Stolons.Controllers
 
 
 
-       
+
         [Route("Stolons/SwitchMode")]
-        [Authorize(Roles = Role_StolonAdmin + "," + Role_WedAdmin)]
         public IActionResult SwitchMode(Guid id)
         {
+            if (!Authorized(Role.Admin))
+                return Unauthorized();
+
             Stolon stolon = _context.Stolons.FirstOrDefault(x => x.Id == id);
             stolon.SimulationMode = stolon.GetMode() == Stolon.Modes.DeliveryAndStockUpdate ? Stolon.Modes.Order : Stolon.Modes.DeliveryAndStockUpdate;
             _context.Update(stolon);
             _context.SaveChanges();
-            return RedirectToAction("Details",new {id = id });
+            return RedirectToAction("Details", new { id = id });
         }
 
         private bool StolonExists(Guid id)

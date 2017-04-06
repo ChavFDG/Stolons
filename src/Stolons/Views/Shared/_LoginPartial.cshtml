@@ -10,7 +10,7 @@
     <div class="bannerAccount">
 
         @{
-            if (!Model.AdherentStolon.SubscriptionPaid)
+            if (!Model.ActiveAdherentStolon.SubscriptionPaid)
             {
                 <div id="warning-container">
                     <img id="warning" src="/images/warning.png" />
@@ -20,19 +20,16 @@
                 </div>
             }
         }
-        <div id="bogues">@(Model.AdherentStolon.Token) 𝞫</div>
+        <div id="bogues">@(Model.ActiveAdherentStolon.Token) 𝞫</div>
         <a class="dropdown-toggle" data-toggle="dropdown" href="#">
             <div class="bannerAvatar">
-                <img class="avatar" src="/@Model.AdherentStolon.Adherent.AvatarFilePath" />
+                <img class="avatar" src="/@Model.ActiveAdherentStolon.Adherent.AvatarFilePath" />
             </div>
             <span class="caret"></span>
         </a>
         <ul class="dropdown-menu">
             <li><a asp-controller="Manage" asp-action="Index" title="Manage">Mon compte</a></li>
-            @if (User.IsInRole(Configurations.UserType.Consumer.ToString()))
-            {
-                <li><a asp-controller="Bills" asp-action="Index">Mes factures</a></li>
-            }
+            <li><a asp-controller="Bills" asp-action="Index">Mes factures</a></li>
             <li>
                 <a href="#" onclick="document.forms['logoutForm'].submit();return false;">Déconnexion</a>
                 <form asp-controller="Account" asp-action="LogOff" method="post" id="logoutForm"></form>

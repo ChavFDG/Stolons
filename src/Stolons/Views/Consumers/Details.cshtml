@@ -1,7 +1,7 @@
-@model Stolons.ViewModels.Consumers.ConsumerViewModel
+@model Stolons.ViewModels.Adherents.AdherentStolonViewModel
 
 @{
-    ViewData["Title"] = "Details de " + Model.Consumer.Surname + " "+ Model.Consumer.Name;
+    ViewData["Title"] = "Details de " + Model.AdherentStolon.Adherent.Surname + " "+ Model.AdherentStolon.Adherent.Name;
 }
 
 <h2>@ViewData["Title"]</h2>
@@ -10,85 +10,79 @@
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.Consumer.Id)
+            @Html.DisplayNameFor(model => model.AdherentStolon.Adherent.Id)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Consumer.Id)
+            @Html.DisplayFor(model => model.AdherentStolon.Adherent.Id)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Consumer.Name)
+            @Html.DisplayNameFor(model => model.AdherentStolon.Adherent.Name)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Consumer.Name)
+            @Html.DisplayFor(model => model.AdherentStolon.Adherent.Name)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Consumer.Surname)
+            @Html.DisplayNameFor(model => model.AdherentStolon.Adherent.Surname)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Consumer.Surname)
+            @Html.DisplayFor(model => model.AdherentStolon.Adherent.Surname)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Consumer.Email)
+            @Html.DisplayNameFor(model => model.AdherentStolon.Adherent.Email)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Consumer.Email)
+            @Html.DisplayFor(model => model.AdherentStolon.Adherent.Email)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Consumer.RegistrationDate)
+            @Html.DisplayNameFor(model => model.AdherentStolon.RegistrationDate)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Consumer.RegistrationDate)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.UserRole)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.UserRole)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Consumer.PhoneNumber)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Consumer.PhoneNumber)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Consumer.Address)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Consumer.Address)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Consumer.PostCode)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Consumer.PostCode)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Consumer.City)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Consumer.City)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Consumer.Cotisation)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Consumer.Cotisation)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Consumer.Enable)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Consumer.Enable)
+            @Html.DisplayFor(model => model.AdherentStolon.RegistrationDate)
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.UserRole)
         </dt>
         <dd>
             @Html.DisplayFor(model => model.UserRole)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.AdherentStolon.Adherent.PhoneNumber)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AdherentStolon.Adherent.PhoneNumber)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.AdherentStolon.Adherent.Address)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AdherentStolon.Adherent.Address)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.AdherentStolon.Adherent.PostCode)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AdherentStolon.Adherent.PostCode)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.AdherentStolon.Adherent.City)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AdherentStolon.Adherent.City)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.AdherentStolon.SubscriptionPaid)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AdherentStolon.SubscriptionPaid)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.AdherentStolon.Enable)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AdherentStolon.Enable)
         </dd>
     </dl>
 </div>
 <p>
-    <a asp-action="Edit" asp-route-id="@Model.Consumer.Id" class="btn btn-small btn-default">Modifier @Model.Consumer.Surname @Model.Consumer.Name</a>
+    <a asp-action="Edit" asp-route-id="@Model.AdherentStolon.Adherent.Id" class="btn btn-small btn-default">Modifier @Model.AdherentStolon.Adherent.Surname @Model.AdherentStolon.Adherent.Name</a>
 </p>

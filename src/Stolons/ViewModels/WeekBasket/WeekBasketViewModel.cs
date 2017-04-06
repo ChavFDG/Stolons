@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 
 namespace Stolons.ViewModels.WeekBasket
 {
-    public class WeekBasketViewModel
+    public class WeekBasketViewModel : BaseViewModel
     {
 
-        public AdherentStolon UserStolon { get; set; }
+        public AdherentStolon AdherentStolon { get; set; }
 
         public List<ProductStockStolon> ProductsStocks { get; set; }
 
@@ -25,11 +25,12 @@ namespace Stolons.ViewModels.WeekBasket
         {
         }
 
-        public WeekBasketViewModel(AdherentStolon userStolon, TempWeekBasket tempWeekBasket, ValidatedWeekBasket validatedWeekBasket, ApplicationDbContext context)
+        public WeekBasketViewModel(AdherentStolon activeAdherentStolon,AdherentStolon adherentStolon, TempWeekBasket tempWeekBasket, ValidatedWeekBasket validatedWeekBasket, ApplicationDbContext context)
         {
+            ActiveAdherentStolon = activeAdherentStolon;
             TempWeekBasket = tempWeekBasket;
             ValidatedWeekBasket = validatedWeekBasket;
-            UserStolon = userStolon;
+            AdherentStolon = adherentStolon;
             ProductsStocks = context.ProductsStocks.Include(x => x.Product).Include(x=>x.AdherentStolon).Where(x => x.State == Product.ProductState.Enabled).Where(x=>x.Product.IsAvailable).ToList();
             ProductTypes = context.ProductTypes.Include(x => x.ProductFamilly).ToList();
         }

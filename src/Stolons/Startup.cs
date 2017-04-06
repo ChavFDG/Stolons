@@ -143,8 +143,7 @@ namespace Stolons
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
-
-            await CreateRoles(serviceProvider);
+            
             List<Stolon> stolons = CreateStolons(context);
             await CreateAdminAccount(context, userManager, stolons.First());
             CreateProductCategories(context);
@@ -241,6 +240,8 @@ namespace Stolons
         {
             if (context.Products.Any())
                 return;
+            Adherent producer = context.AdherentStolons.Include(x => x.Adherent).First(x => x.IsProducer).Adherent;
+
             Product pain = new Product();
             pain.Name = "Pain complet";
             pain.Description = "Pain farine complete T80";
@@ -249,7 +250,7 @@ namespace Stolons
             pain.WeightPrice = Convert.ToDecimal(15.5);
             pain.UnitPrice = 4;
             pain.TaxEnum = Product.TAX.Ten;
-            pain.Producer = context.Adherents.First(x=>x.IsProducer);
+            pain.Producer = producer;
             pain.ProductUnit = Product.Unit.Kg;
             pain.StockManagement = Product.StockType.Week;
             pain.Type = Product.SellType.Piece;
@@ -265,7 +266,7 @@ namespace Stolons
             tomate.TaxEnum = Product.TAX.FiveFive;
             tomate.UnitPrice = Convert.ToDecimal(1.5);
             tomate.QuantityStep = 500;
-            tomate.Producer = context.Adherents.First(x => x.IsProducer);
+            tomate.Producer = producer;
             tomate.ProductUnit = Product.Unit.Kg;
             tomate.StockManagement = Product.StockType.Week;
             AddStocks(tomate);
@@ -281,7 +282,7 @@ namespace Stolons
             pommedeterre.TaxEnum = Product.TAX.FiveFive;
             pommedeterre.UnitPrice = Convert.ToDecimal(1.99);
             pommedeterre.QuantityStep = 1000;
-            pommedeterre.Producer = context.Adherents.First(x => x.IsProducer);
+            pommedeterre.Producer = producer;
             pommedeterre.ProductUnit = Product.Unit.Kg;
             pommedeterre.StockManagement = Product.StockType.Week;
             AddStocks(pommedeterre);
@@ -296,7 +297,7 @@ namespace Stolons
             radis.WeightPrice = 0;
             radis.UnitPrice = 4;
             radis.TaxEnum = Product.TAX.FiveFive;
-            radis.Producer = context.Adherents.First(x => x.IsProducer);
+            radis.Producer = producer;
             radis.ProductUnit = Product.Unit.Kg;
             radis.StockManagement = Product.StockType.Week;
             AddStocks(radis);
@@ -311,7 +312,7 @@ namespace Stolons
             salade.UnitPrice = Convert.ToDecimal(0.80);
             salade.TaxEnum = Product.TAX.FiveFive;
             salade.WeightPrice = 0;
-            salade.Producer = context.Adherents.First(x => x.IsProducer);
+            salade.Producer = producer;
             salade.ProductUnit = Product.Unit.Kg;
             salade.StockManagement = Product.StockType.Week;
             AddStocks(salade);
@@ -325,7 +326,7 @@ namespace Stolons
             conserveTomate.UnitPrice = Convert.ToDecimal(4);
             conserveTomate.TaxEnum = Product.TAX.None;
             conserveTomate.WeightPrice = 0;
-            conserveTomate.Producer = context.Adherents.First(x => x.IsProducer);
+            conserveTomate.Producer = producer;
             conserveTomate.ProductUnit = Product.Unit.L;
             conserveTomate.StockManagement = Product.StockType.Fixed;
             AddStocks(salade, 30, 0);
@@ -349,27 +350,7 @@ namespace Stolons
                 productStock.WeekStock = weekStock;
             }
         }
-
-        private async Task CreateRoles(IServiceProvider serviceProvider)
-        {
-            var RoleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-
-            List<string> roleNames = new List<string>();
-            //Adding Role
-            roleNames.AddRange(Configurations.GetRoles());
-            //Adding UserType
-            roleNames.AddRange(Configurations.GetUserTypes());
-            IdentityResult roleResult;
-            foreach (var roleName in roleNames)
-            {
-                var roleExist = await RoleManager.RoleExistsAsync(roleName);
-                if (!roleExist)
-                {
-                    roleResult = await RoleManager.CreateAsync(new IdentityRole(roleName));
-                }
-            }
-        }
-
+        
 
         private List<Stolon> CreateStolons(ApplicationDbContext context)
         {
@@ -430,24 +411,27 @@ namespace Stolons
                     "Damien",
                     "damien.paravel@gmail.com",
                     "damien.paravel@gmail.com",
-                    Configurations.Role.WebAdmin,
-                    stolon);
+                    Role.Admin,
+                    stolon,
+                    true);
             await CreateAcount(context,
                     userManager,
                     "MICHON",
                     "Nicolas",
                     "nicolas.michon@zoho.com",
                     "nicolas.michon@zoho.com",
-                    Configurations.Role.WebAdmin,
-                    stolon);
+                    Role.Admin,
+                    stolon,
+                    true);
             await CreateAcount(context,
                     userManager,
                     "TESTON",
                     "Arnaud",
                     "arnaudteston@gmail.com",
                     "arnaudteston@gmail.com",
-                    Configurations.Role.WebAdmin,
-                    stolon);
+                    Role.Admin,
+                    stolon,
+                    true);
         }
 
         private async Task CreateTestAcount(ApplicationDbContext context, UserManager<ApplicationUser> userManager, Stolon stolon)
@@ -458,19 +442,20 @@ namespace Stolons
                     "Robert",
                     "chavrouxfdg@hotmail.com",
                     "chavrouxfdg@hotmail.com",
-                    Configurations.Role.User,
+                    Role.Adherent,
                     stolon,
+                    false,
                     true,
                     true);
         }
 
-        private async Task CreateAcount(ApplicationDbContext context, UserManager<ApplicationUser> userManager, string name, string surname, string email, string password, Configurations.Role role, Stolon stolon, bool isProducer = false, bool createOnlyIfTableEmpty = false)
+        private async Task CreateAcount(ApplicationDbContext context, UserManager<ApplicationUser> userManager, string name, string surname, string email, string password, Role role, Stolon stolon, bool isWebAdmin, bool isProducer = false, bool createOnlyIfTableEmpty = false)
         {
             if (createOnlyIfTableEmpty)
             {
                 if (isProducer)
                 {
-                    if (context.Adherents.Any(x => x.IsProducer))
+                    if (context.AdherentStolons.Any(x => x.IsProducer))
                     {
                         return;
                     }
@@ -484,20 +469,26 @@ namespace Stolons
             adherent.Surname = surname;
             adherent.Email = email;
             adherent.PostCode = "07000";
+            adherent.IsWebAdmin = isWebAdmin;
+
+            AdherentStolon adherentStolon = new AdherentStolon(adherent, stolon, true)
+            {
+                RegistrationDate = DateTime.Now,
+                Enable = true,
+                Role = role
+            };
+            adherentStolon.LocalId = context.AdherentStolons.Where(x => x.StolonId == stolon.Id).Max(x => x.LocalId) + 1;
 
             if (isProducer)
             {
                 adherent.CompanyName = "La ferme de " + adherent.Name;
                 adherent.Latitude = 44.7354673;
                 adherent.Longitude = 4.601407399999971;
-                adherent.IsProducer = true;
+                adherentStolon.IsProducer = true;
             }
 
-            AdherentStolon adherentStolon = new AdherentStolon(adherent, stolon, true)
-            {
-                RegistrationDate = DateTime.Now,
-                Enable = true,
-            };
+          
+
             context.Adherents.Add(adherent);
             context.AdherentStolons.Add(adherentStolon);
             context.SaveChanges();
@@ -507,14 +498,6 @@ namespace Stolons
             appUser.User = adherent;
 
             var result = await userManager.CreateAsync(appUser, password);
-            if (result.Succeeded)
-            {
-                //Add user role
-                result = await userManager.AddToRoleAsync(appUser, role.ToString());
-                //Add user type
-                foreach (UserType userType in adherent.GetUserTypes())
-                    result = await userManager.AddToRoleAsync(appUser, userType.ToString());
-            }
             #endregion Creating linked application data
 
 

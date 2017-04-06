@@ -12,12 +12,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
-using Stolons.ViewModels.Consumers;
 using Microsoft.AspNetCore.Authorization;
 using Stolons.Helpers;
 using Stolons.Models.Users;
 using Stolons.ViewModels.Token;
 using Stolons.Models.Transactions;
+using Stolons.ViewModels.Adherents;
 
 namespace Stolons.Controllers
 {
@@ -33,158 +33,155 @@ namespace Stolons.Controllers
         }
 
         // GET: Consumers
-        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
         public IActionResult Index()
         {
+            if (!Authorized(Role.Volunteer))
+                return Unauthorized();
+
             return View(_context.AdherentStolons.Include(x=>x.Adherent).Where(x => x.StolonId == GetCurrentStolon().Id).ToList());
         }
         
         // GET: Consumers/Details/5
-        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
-        public async Task<IActionResult> Details(Guid id)
+        public IActionResult Details(Guid id)
         {
+            if (!Authorized(Role.Volunteer))
+                return Unauthorized();
+
             if (id == null)
             {
                 return NotFound();
             }
 
-            Adherent consumer = _context.Adherents.Single(m => m.Id == id);
-            if (consumer == null)
+            AdherentStolon adherentStolon = _context.AdherentStolons.Include(x=>x.Adherent).Include(x=>x.Stolon).FirstOrDefault(x => x.Id == id);
+            if (adherentStolon == null)
             {
                 return NotFound();
             }
-            ApplicationUser appUser = _context.Users.First(x => x.Email == consumer.Email);
-            IList<string> roles = await _userManager.GetRolesAsync(appUser);
-            string role = roles.FirstOrDefault(x => Configurations.GetRoles().Contains(x));
-            return View(new ConsumerViewModel(consumer, (Configurations.Role)Enum.Parse(typeof(Configurations.Role), role)));
+
+            return View(new AdherentStolonViewModel(adherentStolon) { ActiveAdherentStolon = GetActiveAdherentStolon() });
         }
 
         // GET: Consumers/Create
-        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
         public IActionResult Create()
         {
-            return View(new ConsumerViewModel(new Adherent(),Configurations.Role.User));
+            if (!Authorized(Role.Volunteer))
+                return Unauthorized();
+
+            return View(new AdherentViewModel(GetActiveAdherentStolon(), new Adherent()));
         }
 
         // POST: Consumers/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
-        public async Task<IActionResult> Create(ConsumerViewModel vmConsumer, IFormFile uploadFile)
+        public async Task<IActionResult> Create(AdherentViewModel vmAdherent, IFormFile uploadFile)
         {
+            if (!Authorized(Role.Volunteer))
+                return Unauthorized();
+
             if (ModelState.IsValid)
             {
                 #region Creating Consumer
                 //Setting value for creation
-                UploadAndSetAvatar(vmConsumer.Consumer, uploadFile);
+                UploadAndSetAvatar(vmAdherent.Adherent, uploadFile);
 
-                vmConsumer.Consumer.Name = vmConsumer.Consumer.Name.ToUpper();
-                AdherentStolon consumerStolon = new AdherentStolon(vmConsumer.Consumer, GetCurrentStolon(), true);
-                consumerStolon.RegistrationDate = DateTime.Now;
-                _context.Adherents.Add(vmConsumer.Consumer);
-                _context.AdherentStolons.Add(consumerStolon);
+                vmAdherent.Adherent.Name = vmAdherent.Adherent.Name.ToUpper();
+                AdherentStolon adherentStolon = new AdherentStolon(vmAdherent.Adherent, GetCurrentStolon(), true);
+                adherentStolon.RegistrationDate = DateTime.Now;
+                adherentStolon.LocalId = _context.AdherentStolons.Where(x => x.StolonId == GetCurrentStolon().Id).Max(x => x.LocalId) + 1;
+                _context.Adherents.Add(vmAdherent.Adherent);
+                _context.AdherentStolons.Add(adherentStolon);
                 #endregion Creating Consumer
 
                 #region Creating linked application data
-                var appUser = new ApplicationUser { UserName = vmConsumer.Consumer.Email, Email = vmConsumer.Consumer.Email };
-                appUser.User = vmConsumer.Consumer;
+                var appUser = new ApplicationUser { UserName = vmAdherent.Adherent.Email, Email = vmAdherent.Adherent.Email };
+                appUser.User = vmAdherent.Adherent;
                 
-                var result = await _userManager.CreateAsync(appUser, vmConsumer.Consumer.Email);
-                if (result.Succeeded)
-                {
-                    //Add user role
-                    result = await _userManager.AddToRoleAsync(appUser, vmConsumer.UserRole.ToString());
-                    //Add user type
-                    result = await _userManager.AddToRoleAsync(appUser, Configurations.UserType.Consumer.ToString());
-                }
+                var result = await _userManager.CreateAsync(appUser, vmAdherent.Adherent.Email);
+                
                 #endregion Creating linked application data
-                
+                //
+                //
                 _context.SaveChanges();
                 //Send confirmation mail
-                Services.AuthMessageSender.SendEmail(vmConsumer.Consumer.Email, vmConsumer.Consumer.Name, "Creation de votre compte", base.RenderPartialViewToString("UserCreatedConfirmationMail", vmConsumer));
+                Services.AuthMessageSender.SendEmail(vmAdherent.Adherent.Email, vmAdherent.Adherent.Name, "Creation de votre compte", base.RenderPartialViewToString("UserCreatedConfirmationMail", adherentStolon));
 
                 return RedirectToAction("Index");
             }
-            return View(vmConsumer);
+            return View(vmAdherent);
         }
 
         // GET: Consumers/Edit/5
-        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
-        public async Task<IActionResult> Edit(Guid id)
+        public IActionResult Edit(Guid id)
         {
+            if (!Authorized(Role.Volunteer))
+                return Unauthorized();
+
             if (id == null)
             {
                 return NotFound();
             }
 
-            Adherent consumer = _context.Adherents.Single(m => m.Id == id);
-            if (consumer == null)
+            AdherentStolon adherentStolon = _context.AdherentStolons.Include(x => x.Adherent).Include(x => x.Stolon).FirstOrDefault(x => x.Id == id);
+            if (adherentStolon == null)
             {
                 return NotFound();
             }
-            ApplicationUser appUser = _context.Users.First(x => x.Email == consumer.Email);
-            IList<string> roles = await _userManager.GetRolesAsync(appUser);
-            string role = roles.FirstOrDefault(x => Configurations.GetRoles().Contains(x));
-            return View(new ConsumerViewModel(consumer, (Configurations.Role)Enum.Parse(typeof(Configurations.Role), role)));
+            ApplicationUser appUser = _context.Users.First(x => x.Email == adherentStolon.Adherent.Email);
+            return View(new AdherentViewModel(GetActiveAdherentStolon(), adherentStolon.Adherent));
         }
 
         // POST: Consumers/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
-        public async Task<IActionResult> Edit(ConsumerViewModel vmConsumer, IFormFile uploadFile, Configurations.Role UserRole)
+        public IActionResult Edit(AdherentViewModel vmAdherent, IFormFile uploadFile, Role role)
         {
+            if (!Authorized(Role.Volunteer))
+                return Unauthorized();
+
             if (ModelState.IsValid)
             {
-                UploadAndSetAvatar(vmConsumer.Consumer, uploadFile);
-                ApplicationUser appUser = _context.Users.First(x => x.Email == vmConsumer.OriginalEmail);
-                appUser.Email = vmConsumer.Consumer.Email;
-                vmConsumer.Consumer.Name = vmConsumer.Consumer.Name.ToUpper();
+                UploadAndSetAvatar(vmAdherent.Adherent, uploadFile);
+                ApplicationUser appUser = _context.Users.First(x => x.Email == vmAdherent.OriginalEmail);
+                appUser.Email = vmAdherent.Adherent.Email;
+                vmAdherent.Adherent.Name = vmAdherent.Adherent.Name.ToUpper();
                 _context.Update(appUser);
-                //Getting actual roles
-                IList<string> roles = await _userManager.GetRolesAsync(appUser);
-                if (!roles.Contains(UserRole.ToString()))
-                {
-                    string roleToRemove = roles.FirstOrDefault(x => Configurations.GetRoles().Contains(x));
-                    await _userManager.RemoveFromRoleAsync(appUser, roleToRemove);
-                    //Add user role
-                    await _userManager.AddToRoleAsync(appUser, UserRole.ToString());
-                }
-                _context.Update(vmConsumer.Consumer);
+                _context.Update(vmAdherent.Adherent);
                 _context.SaveChanges();
                 return RedirectToAction("Index");
             }
-            return View(vmConsumer);
+            return View(vmAdherent);
         }
 
         // GET: Consumers/Delete/5
         [ActionName("Delete")]
-        [Authorize(Roles = Configurations.Role_WedAdmin)]
-        public async Task<IActionResult> Delete(Guid id)
+        public IActionResult Delete(Guid id)
         {
+            if (!Authorized(Role.Admin))
+                return Unauthorized();
+
             if (id == null)
             {
                 return NotFound();
             }
 
-            Adherent consumer = _context.Adherents.Single(m => m.Id == id);
-            if (consumer == null)
+            AdherentStolon adherentStolon = _context.AdherentStolons.Include(x => x.Adherent).Include(x => x.Stolon).FirstOrDefault(x => x.Id == id);
+            if (adherentStolon == null)
             {
                 return NotFound();
             }
-            ApplicationUser appUser = _context.Users.First(x => x.Email == consumer.Email);
-            IList<string> roles = await _userManager.GetRolesAsync(appUser);
-            string role = roles.FirstOrDefault(x => Configurations.GetRoles().Contains(x));
-            return View(new ConsumerViewModel(consumer, (Configurations.Role)Enum.Parse(typeof(Configurations.Role), role)));
+            ApplicationUser appUser = _context.Users.First(x => x.Email == adherentStolon.Adherent.Email);
+            return View(new AdherentViewModel(GetActiveAdherentStolon(), adherentStolon.Adherent));
         }
 
         // POST: Consumers/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = Configurations.Role_WedAdmin)]
         public IActionResult DeleteConfirmed(Guid id)
         {
-            Adherent adherent = _context.Adherents.Single(m => m.Id == id);
+            if (!Authorized(Role.Admin))
+                return Unauthorized();
+
+            Adherent adherent = _context.Adherents.First(x => x.Id == id);
             //Deleting image
             string uploads = Path.Combine(_environment.WebRootPath, Configurations.AvatarStockagePath);
             string image = Path.Combine(uploads, adherent.AvatarFileName);
@@ -208,30 +205,34 @@ namespace Stolons.Controllers
 
         // GET: Consumers/CreditToken/5
         [ActionName("CreditToken")]
-        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
         public IActionResult CreditToken(Guid id)
         {
+            if (!Authorized(Role.Volunteer))
+                return Unauthorized();
+
             if (id == null)
             {
                 return NotFound();
             }
 
-            Adherent consumer = _context.Adherents.Single(m => m.Id == id);
-            if (consumer == null)
+            AdherentStolon adherentStolon = _context.AdherentStolons.Include(x => x.Adherent).Include(x => x.Stolon).FirstOrDefault(x => x.Id == id);
+            if (adherentStolon == null)
             {
                 return NotFound();
             }
 
-            return View(new CreditTokenViewModel(consumer));
+            return View(new CreditTokenViewModel(GetActiveAdherentStolon(), adherentStolon));
         }
 
         // POST: Consumers/CreditToken
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
         public IActionResult CreditToken(CreditTokenViewModel vmCreditToken)
         {
-            AdherentStolon adherentStolon = _context.AdherentStolons.Include(x=>x.Adherent).Single(x => x.AdherentId == vmCreditToken.Consumer.Id);
+            if (!Authorized(Role.Volunteer))
+                return Unauthorized();
+
+            AdherentStolon adherentStolon = _context.AdherentStolons.Include(x=>x.Adherent).First(x => x.AdherentId == vmCreditToken.AdherentStolon.Id);
             adherentStolon.Token += vmCreditToken.CreditedToken;
             _context.Add(new Transaction(
                 Transaction.TransactionType.Inbound,
@@ -243,5 +244,5 @@ namespace Stolons.Controllers
             return RedirectToAction("Index");
         }
 
-    }
+    }   
 }

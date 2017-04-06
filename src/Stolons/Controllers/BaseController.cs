@@ -132,5 +132,23 @@ namespace Stolons.Controllers
         {
             consumer.AvatarFileName = await UploadFile(uploadFile, Configurations.AvatarStockagePath, consumer.AvatarFilePath);
         }
+
+        public bool Authorized(Role role)
+        {
+            //Check if user is Authentified
+            if (!User.Identity.IsAuthenticated)
+                return false;
+            AdherentStolon adherentStolon = GetActiveAdherentStolon();
+            return adherentStolon.Authorized(role);
+        }
+        public bool AuthorizedWebAdmin()
+        {
+            return GetCurrentAdherentSync().IsWebAdmin;
+        }
+        public bool AuthorizedProducer()
+        {
+            return GetActiveAdherentStolon().IsProducer;
+        }
+
     }
 }

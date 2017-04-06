@@ -14,9 +14,9 @@ namespace Stolons.Models.Users
     {
         [Key]
         public Guid Id { get; set; }
-
-        [Display(Name = "Identifiant")]
-        public string DisplayId { get; set; }
+        
+        [Display(Name = "Est web admin")]
+        public bool IsWebAdmin { get; set; }
 
         public List<AdherentStolon> AdherentStolons { get; set; }
         public List<ConsumerBill> ConsumerBills{ get; set; }
@@ -67,8 +67,6 @@ namespace Stolons.Models.Users
 
         #region Producer
 
-        [Display(Name = "Est un producteur")]
-        public bool IsProducer { get; set; }
         [Display(Name = "Raison sociale")]
         public string CompanyName { get; set; }
         [Display(Name = "Superficie en m²")]

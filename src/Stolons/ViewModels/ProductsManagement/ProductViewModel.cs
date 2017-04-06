@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Stolons.ViewModels.ProductsManagement
 {
-    public class ProductViewModel
+    public class ProductViewModel : BaseViewModel
     {
 
         public Product Product { get; set; }
@@ -19,10 +19,11 @@ namespace Stolons.ViewModels.ProductsManagement
         {
         }
 
-        public ProductViewModel(Product product, int orderedQty)
+        public ProductViewModel(AdherentStolon activeAdherentStolon, Product product, int orderedQty)
         {
             Product = product;
             OrderedQuantityString = product.GetQuantityString(orderedQty);
+            ActiveAdherentStolon = activeAdherentStolon;
         }
     }
 }

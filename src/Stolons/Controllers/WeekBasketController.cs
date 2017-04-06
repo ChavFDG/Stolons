@@ -48,7 +48,8 @@ namespace Stolons.Controllers
                 _context.Add(tempWeekBasket);
                 _context.SaveChanges();
             }
-            return View(new WeekBasketViewModel(GetActiveAdherentStolon(), tempWeekBasket, validatedWeekBasket, _context));
+            AdherentStolon adherentStolon = GetActiveAdherentStolon();
+            return View(new WeekBasketViewModel(adherentStolon, adherentStolon, tempWeekBasket, validatedWeekBasket, _context));
         }
 
         [AllowAnonymous]
@@ -402,7 +403,7 @@ namespace Stolons.Controllers
                 {
                     subject = "Validation partielle de votre panier de la semaine";
                 }
-                ValidationSummaryViewModel validationSummaryViewModel = new ValidationSummaryViewModel(validatedWeekBasket, rejectedEntries) { Total = GetBasketPrice(validatedWeekBasket) };
+                ValidationSummaryViewModel validationSummaryViewModel = new ValidationSummaryViewModel(GetActiveAdherentStolon(), validatedWeekBasket, rejectedEntries) { Total = GetBasketPrice(validatedWeekBasket) };
                 Services.AuthMessageSender.SendEmail(validatedWeekBasket.Consumer.Email, validatedWeekBasket.Consumer.Name, subject, base.RenderPartialViewToString("Templates/ValidatedBasketTemplate", validationSummaryViewModel));
                 //Return view
                 return View("ValidateBasket", validationSummaryViewModel);

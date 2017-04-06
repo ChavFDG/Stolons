@@ -29,12 +29,12 @@ namespace Stolons.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                HomeViewModel vm = new HomeViewModel();
                 var adherentStolon = GetActiveAdherentStolon();
+                HomeViewModel vm = new HomeViewModel(adherentStolon);
                 if (showOldNews)
-                    vm.NewsVm = new ViewModels.News.NewsViewModel( _context.News.Include(x => x.PublishBy).Where(x => x.PublishBy.StolonId == adherentStolon.StolonId).Where(x => (x.PublishStart < DateTime.Now && x.PublishEnd > DateTime.Now) || (x.PublishEnd < DateTime.Now)).ToList(),true);
+                    vm.NewsVm = new ViewModels.News.NewsListViewModel(adherentStolon, _context.News.Include(x => x.PublishBy).Where(x => x.PublishBy.StolonId == adherentStolon.StolonId).Where(x => (x.PublishStart < DateTime.Now && x.PublishEnd > DateTime.Now) || (x.PublishEnd < DateTime.Now)).ToList(),true);
                 else
-                    vm.NewsVm = new ViewModels.News.NewsViewModel(_context.News.Include(x => x.PublishBy).Where(x => x.PublishBy.StolonId == adherentStolon.StolonId).Where(x => x.PublishStart < DateTime.Now && x.PublishEnd > DateTime.Now).ToList());
+                    vm.NewsVm = new ViewModels.News.NewsListViewModel(adherentStolon, _context.News.Include(x => x.PublishBy).Where(x => x.PublishBy.StolonId == adherentStolon.StolonId).Where(x => x.PublishStart < DateTime.Now && x.PublishEnd > DateTime.Now).ToList());
                 return View(vm);
             }
             else
@@ -85,9 +85,11 @@ namespace Stolons.Controllers
         }
 
         [Route("Home/ShowAllNews")]
-        [Authorize(Roles = Role_User +","+Role_Volunteer+","+ Role_StolonAdmin + "," + Role_WedAdmin)]
         public IActionResult ShowAllNews()
         {
+            if (!Authorized(Role.Adherent))
+                return Unauthorized();
+
             return RedirectToAction("Index", new { showOldNews = true });
         }
     }
