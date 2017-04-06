@@ -22,8 +22,9 @@ namespace Stolons.Models.Transactions
         /// <param name="amount"></param>
         /// <param name="description"></param>
         /// <param name="addedAutomaticly"></param>
-        public Transaction(TransactionType type, TransactionCategory category, decimal amount, string description, bool addedAutomaticly = true)
+        public Transaction(Stolon stolon,TransactionType type, TransactionCategory category, decimal amount, string description, bool addedAutomaticly = true)
         {
+            Stolon = stolon;
             AddedAutomaticly = addedAutomaticly;
             Date = DateTime.Now;
             Type = type;

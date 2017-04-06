@@ -10,10 +10,10 @@
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.AdherentStolon.Adherent.Id)
+            @Html.DisplayNameFor(model => model.AdherentStolon.LocalId)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.AdherentStolon.Adherent.Id)
+            @Html.DisplayFor(model => model.AdherentStolon.LocalId)
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.AdherentStolon.Adherent.Name)
@@ -38,12 +38,6 @@
         </dt>
         <dd>
             @Html.DisplayFor(model => model.AdherentStolon.RegistrationDate)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.UserRole)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.UserRole)
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.AdherentStolon.Adherent.PhoneNumber)
@@ -80,6 +74,21 @@
         </dt>
         <dd>
             @Html.DisplayFor(model => model.AdherentStolon.Enable)
+        </dd>
+        @if (!Model.AdherentStolon.Enable)
+        {
+            <dt>
+                @Html.DisplayNameFor(model => model.AdherentStolon.DisableReason)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.AdherentStolon.DisableReason)
+            </dd>
+        }
+        <dt>
+            @Html.DisplayNameFor(model => model.AdherentStolon.Role)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AdherentStolon.Role)
         </dd>
     </dl>
 </div>

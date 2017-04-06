@@ -47,8 +47,9 @@ namespace Stolons.Controllers
             //_context.Update(bill);
             //Transaction
             Transaction transaction = new Transaction(
-                Transaction.TransactionType.Inbound,
-                Transaction.TransactionCategory.BillPayement,
+                GetCurrentStolon(),
+                TransactionType.Inbound,
+                TransactionCategory.BillPayement,
                 paymentMode == PaymentMode.Token ? 0 : bill.OrderAmount,
                 "Paiement de la facture " + bill.BillNumber + " par " + bill.Adherent.Name + "( " + bill.Adherent.Id + " ) en " + EnumHelper<PaymentMode>.GetDisplayValue(paymentMode));
             //_context.Add(transaction);
@@ -66,12 +67,14 @@ namespace Stolons.Controllers
             {
                 //Transaction
                 Transaction prodRefound = new Transaction(
+                    GetCurrentStolon(),
                     Transaction.TransactionType.Outbound,
                     Transaction.TransactionCategory.ProducerRefound,
                     bill.BillAmount,
                     "Paiement de la facture " + bill.BillNumber + " à " + bill.Adherent.CompanyName + " ( " + bill.Adherent.Id + " )");
                 _context.Add(prodRefound);
                 Transaction comitionInbound = new Transaction(
+                    GetCurrentStolon(),
                     Transaction.TransactionType.Inbound,
                     Transaction.TransactionCategory.ProducersFee,
                     bill.FeeAmount,

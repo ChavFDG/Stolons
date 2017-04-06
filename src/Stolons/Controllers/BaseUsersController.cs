@@ -29,38 +29,60 @@ namespace Stolons.Controllers
         {
 
         }
-        
-        public IActionResult PaySubscription(Guid id)
+        /// <summary>
+        /// PaySympathiserSubscription
+        /// </summary>
+        /// <param name="id">Sympathizer ID</param>
+        /// <returns></returns>
+        public IActionResult PaySympathiserSubscription(Guid id)
         {
             if (!Authorized(Role.Volunteer))
                 return Unauthorized();
 
             Transaction transaction = new Transaction();
-            IAdherent iAdherent = _context.Sympathizers.FirstOrDefault(x => x.Id == id);
+            Sympathizer sympathizer = _context.Sympathizers.FirstOrDefault(x => x.Id == id);
             Stolon currentStolon = GetCurrentStolon();
-            if (iAdherent == null)
-            {
-                Adherent adherent = _context.Adherents.FirstOrDefault(x => x.Id == id);
-                transaction = new AdherentTransaction() { Adherent = adherent };
-                iAdherent = adherent;
-                AdherentStolon adherentStolon = _context.AdherentStolons.Include(x => x.Stolon).Include(x => x.Adherent).First(x => x.AdherentId == iAdherent.Id && x.StolonId == currentStolon.Id);
-                adherentStolon.SubscriptionPaid = true;
-                //Update
-                _context.AdherentStolons.Update(adherentStolon);
-                transaction.Amount = Configurations.GetSubscriptionAmount(adherentStolon);
-            }
-            else
-            {
-                (iAdherent as Sympathizer).SubscriptionPaid = true;
-                transaction.Amount = currentStolon.SympathizerSubscription;
-            }
+            sympathizer.SubscriptionPaid = true;
+            transaction.Amount = currentStolon.SympathizerSubscription;
             //Add a transaction
             transaction.Stolon = currentStolon;
             transaction.AddedAutomaticly = true;
             transaction.Date = DateTime.Now;
             transaction.Type = Transaction.TransactionType.Inbound;
             transaction.Category = Transaction.TransactionCategory.Subscription;
-            transaction.Description = "Paiement de la cotisation de : "+ iAdherent.Name + " " + iAdherent.Surname;
+            transaction.Description = "Paiement de la cotisation du sympathisant : " + sympathizer.Name + " " + sympathizer.Surname;
+            _context.Transactions.Add(transaction);
+            //Save
+            _context.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id">AdherentStolon id</param>
+        /// <returns></returns>
+        public IActionResult PaySubscription(Guid id)
+        {
+            if (!Authorized(Role.Volunteer))
+                return Unauthorized();
+            //Adherent stolon
+            AdherentStolon adherentStolon = _context.AdherentStolons.Include(x => x.Stolon).Include(x => x.Adherent).First(x => x.Id == id);
+
+            adherentStolon.SubscriptionPaid = true;
+            _context.AdherentStolons.Update(adherentStolon);
+            //Transaction
+            Transaction transaction = new Transaction();
+            transaction = new AdherentTransaction() { Adherent = adherentStolon.Adherent };
+            //Update
+            transaction.Amount = Configurations.GetSubscriptionAmount(adherentStolon);
+            //Add a transaction
+            transaction.Stolon = adherentStolon.Stolon;
+            transaction.AddedAutomaticly = true;
+            transaction.Date = DateTime.Now;
+            transaction.Type = Transaction.TransactionType.Inbound;
+            transaction.Category = Transaction.TransactionCategory.Subscription;
+            transaction.Description = "Paiement de la cotisation de l'adhérant "+ (adherentStolon.IsProducer?"producteur":"")+" : "+ adherentStolon.Adherent.Name + " " + adherentStolon.Adherent.Surname;
             _context.Transactions.Add(transaction);
             //Save
             _context.SaveChanges();
@@ -72,8 +94,8 @@ namespace Stolons.Controllers
             if (!Authorized(Role.Volunteer))
                 return Unauthorized();
 
-            AdherentStolon adherentStolon = GetActiveAdherentStolon();
-            //
+            AdherentStolon adherentStolon = _context.AdherentStolons.First(x=>x.Id == id);
+
             adherentStolon.DisableReason = "";
             adherentStolon.Enable = true;
             //Update
@@ -89,7 +111,7 @@ namespace Stolons.Controllers
             if (!Authorized(Role.Volunteer))
                 return Unauthorized();
 
-            AdherentStolon adherentStolon = GetActiveAdherentStolon();
+            AdherentStolon adherentStolon = _context.AdherentStolons.First(x => x.Id == id);
             //
             adherentStolon.DisableReason = comment;
             adherentStolon.Enable = false;

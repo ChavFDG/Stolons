@@ -8,19 +8,19 @@ using System.Threading.Tasks;
 
 namespace Stolons.ViewModels.Sympathizers
 {
-    public class SympathizerViewModel : BaseViewModel
+    public class SympathizersViewModel : BaseViewModel
     {
-        public SympathizerViewModel()
+        public SympathizersViewModel()
         {
 
         }
-        public SympathizerViewModel(AdherentStolon activeAdherentStolon, Sympathizer sympathizer)
+        public SympathizersViewModel(AdherentStolon activeAdherentStolon, List<Sympathizer> sympathizers)
         {
-            Sympathizer = sympathizer;
+            Sympathizers = sympathizers;
             ActiveAdherentStolon = activeAdherentStolon;
         }
         
 
-        public Sympathizer Sympathizer { get; set; }
+        public List<Sympathizer> Sympathizers { get; set; }
     }
 }

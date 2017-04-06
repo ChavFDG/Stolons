@@ -1,4 +1,5 @@
-﻿@model IEnumerable<Stolons.Models.AdherentStolon>
+﻿@using  Stolons.ViewModels.Adherents
+@model AdherentsStolonViewModel
 
 @{
     ViewData["Title"] = "Liste des consomateurs";
@@ -12,32 +13,35 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(item => item.Id)
+            @Html.DisplayNameFor(item => item.AdherentsStolon.First().LocalId)
         </th>
         <th>
-            @Html.DisplayNameFor(item => item.Adherent.AvatarFileName)
+            @Html.DisplayNameFor(item => item.AdherentsStolon.First().Adherent.AvatarFileName)
         </th>
         <th>
-            @Html.DisplayNameFor(item => item.Adherent.Name)
+            @Html.DisplayNameFor(item => item.AdherentsStolon.First().Adherent.Name)
         </th>
         <th>
-            @Html.DisplayNameFor(item => item.Adherent.Surname)
+            @Html.DisplayNameFor(item => item.AdherentsStolon.First().Adherent.Surname)
         </th>
         <th>
-            @Html.DisplayNameFor(item => item.Adherent.PhoneNumber)
+            @Html.DisplayNameFor(item => item.AdherentsStolon.First().Adherent.PhoneNumber)
         </th>
         <th>
-            @Html.DisplayNameFor(item => item.Token)
+            @Html.DisplayNameFor(item => item.AdherentsStolon.First().Token)
         </th>
         <th>
-            @Html.DisplayNameFor(item => item.SubscriptionPaid)
+            @Html.DisplayNameFor(item => item.AdherentsStolon.First().SubscriptionPaid)
         </th>
         <th>
-            @Html.DisplayNameFor(item => item.Enable)
+            @Html.DisplayNameFor(item => item.AdherentsStolon.First().Enable)
+        </th>
+        <th>
+            @Html.DisplayNameFor(item => item.AdherentsStolon.First().Role)
         </th>
         <th></th>
     </tr>
-    @foreach (var item in Model)
+    @foreach (var item in Model.AdherentsStolon)
     {
         <tr>
             <td>
@@ -85,6 +89,9 @@
                 </td>
             }
             <td>
+                @Html.DisplayFor(modelItem => item.Role)
+            </td>
+            <td>
                 <div class="dropdown">
                     <a class="dropdown-toggle btn btn-small btn-default" data-toggle="dropdown" href="#">
                         Actions
@@ -99,13 +106,13 @@
                         {
                             <li>
                                 @Html.ActionLink(
-                                   "Payer cotisation de : " + item.Stolon.GetStringSubscriptionAmount(item.Adherent),
+                                   "Payer cotisation de : " + item.GetStringSubscriptionAmount(),
                                    "PaySubscription",
                                     new { id = item.Id },
-                                    new { onclick = "return confirm('Valider le paiement de la cotisation de " + item.Adherent.Name + " pour un montant de : " + item.Stolon.GetStringSubscriptionAmount(item.Adherent) + "');" })
+                                    new { onclick = "return confirm('Valider le paiement de la cotisation de " + item.Adherent.Name + " pour un montant de : " + item.GetStringSubscriptionAmount() + "');" })
                             </li>
                         }
-                        @if (User.IsInRole(Configurations.Role.WebAdmin.ToString()))
+                        @if (Model.ActiveAdherentStolon.Authorized(Role.Admin))
                         {
                             @if (item.Enable == true)
                             {

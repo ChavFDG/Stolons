@@ -1,4 +1,6 @@
-﻿@model IEnumerable<Stolons.Models.Users.Sympathizer>
+﻿@using Stolons.Models.Users
+@using Stolons.ViewModels.Sympathizers
+@model SympathizersViewModel
 
 @{
     ViewData["Title"] = "Liste des sympathisants";
@@ -12,26 +14,26 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(item => item.RegistrationDate)
+            @Html.DisplayNameFor(item => item.Sympathizers.First().RegistrationDate)
         </th>
         <th>
-            @Html.DisplayNameFor(item => item.Name)
+            @Html.DisplayNameFor(item => item.Sympathizers.First().Name)
         </th>
         <th>
-            @Html.DisplayNameFor(item => item.Surname)
+            @Html.DisplayNameFor(item => item.Sympathizers.First().Surname)
         </th>
         <th>
-            @Html.DisplayNameFor(item => item.SubscriptionPaid)
+            @Html.DisplayNameFor(item => item.Sympathizers.First().SubscriptionPaid)
         </th>
         <th>
-            @Html.DisplayNameFor(item => item.ReceivedInformationsEmail)
+            @Html.DisplayNameFor(item => item.Sympathizers.First().ReceivedInformationsEmail)
         </th>
         <th>
-            @Html.DisplayNameFor(item => item.Email)
+            @Html.DisplayNameFor(item => item.Sympathizers.First().Email)
         </th>
         <th></th>
     </tr>
-    @foreach (var item in Model)
+    @foreach (var item in Model.Sympathizers)
     {
         <tr>
             <td>
@@ -75,12 +77,12 @@
                             <li>
                                 @Html.ActionLink(
                                    "Payer cotisation de : " + item.GetStringSubscriptionAmount(),
-                                   "PaySubscription",
+                                   "PaySympathiserSubscription",
                                     new { id = item.Id },
                                     new { onclick = "return confirm('Valider le paiement de la cotisation de " + item.Name + " pour un montant de : " + item.GetStringSubscriptionAmount() + "');" })
                             </li>
                         }
-                        @if (User.IsInRole(Configurations.Role.WebAdmin.ToString()))
+                        @if (Model.ActiveAdherentStolon.Authorized(Role.Admin))
                         {
                             <li><a asp-action="Delete" asp-route-id="@item.Id">Supprimer</a></li>
                         }

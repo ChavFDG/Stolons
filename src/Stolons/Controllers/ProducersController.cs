@@ -56,7 +56,7 @@ namespace Stolons.Controllers
             {
                 return NotFound();
             }
-            return View(new AdherentViewModel(GetActiveAdherentStolon(),adherent));
+            return View(new AdherentViewModel(GetActiveAdherentStolon(), adherent,AdherentEdition.Producer));
         }
 
         
@@ -76,7 +76,7 @@ namespace Stolons.Controllers
             {
                 return NotFound();
             }
-            return PartialView(new AdherentViewModel(GetActiveAdherentStolon(), adherent));
+            return PartialView(new AdherentViewModel(GetActiveAdherentStolon(), adherent, AdherentEdition.Producer));
         }
         
         // GET: Producer/Create
@@ -85,7 +85,7 @@ namespace Stolons.Controllers
             if (!Authorized(Role.Volunteer))
                 return Unauthorized();
 
-            return View(new AdherentViewModel(GetActiveAdherentStolon(),new Adherent()));
+            return View(new AdherentViewModel(GetActiveAdherentStolon(),new Adherent(), AdherentEdition.Producer));
         }
 
         // POST: Producer/Create
@@ -142,7 +142,7 @@ namespace Stolons.Controllers
                 return NotFound();
             }
 
-            return View(new AdherentViewModel(GetActiveAdherentStolon(),adherent));
+            return View(new AdherentViewModel(GetActiveAdherentStolon(),adherent, AdherentEdition.Producer));
         }
 
         // POST: Producer/Edit/5
@@ -183,7 +183,7 @@ namespace Stolons.Controllers
             {
                 return NotFound();
             }
-            return View(new AdherentViewModel(GetActiveAdherentStolon(), adherent));
+            return View(new AdherentViewModel(GetActiveAdherentStolon(), adherent, AdherentEdition.Producer));
         }
 
         // POST: Producer/Delete/5

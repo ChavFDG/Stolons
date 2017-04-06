@@ -36,7 +36,7 @@ namespace Stolons.Controllers
             if (!Authorized(Role.Volunteer))
                 return Unauthorized();
 
-            return View(_context.Sympathizers.Include(x=>x.Stolon).Where(x=>x.StolonId == GetCurrentStolon().Id) .ToList());
+            return View(new SympathizersViewModel(GetActiveAdherentStolon(), _context.Sympathizers.Include(x=>x.Stolon).Where(x=>x.StolonId == GetCurrentStolon().Id) .ToList()));
         }
         
         // GET: Sympathizer/Details/5

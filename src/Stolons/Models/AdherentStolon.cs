@@ -30,6 +30,7 @@ namespace Stolons.Models
         [Key]
         public Guid Id { get; set; }
         //
+        [Display(Name = "Identifiant")]
         public int LocalId { get; set; }
         //
         public Guid StolonId { get; set; }
@@ -59,7 +60,7 @@ namespace Stolons.Models
         public Role Role { get; set; } = Role.Adherent;
 
         //
-        [Display(Name = "Actif / Inactif")]
+        [Display(Name = "Activé")]
         public bool Enable { get; set; } = true;
 
         [Display(Name = "Date d'enregistrement")]
