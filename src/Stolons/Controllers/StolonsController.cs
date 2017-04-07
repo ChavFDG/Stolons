@@ -53,7 +53,7 @@ namespace Stolons.Controllers
             {
                 return NotFound();
             }
-            return View(new StolonViewModel(GetActiveAdherentStolon(), stolon));
+            return View(new StolonViewModel(stolon, GetCurrentAdherentSync().IsWebAdmin));
 
         }
 
@@ -101,7 +101,7 @@ namespace Stolons.Controllers
             {
                 return NotFound();
             }
-            return View(stolon);
+            return View(new StolonViewModel(stolon,GetCurrentAdherentSync().IsWebAdmin));
         }
 
         // POST: Stolons/Edit/5
@@ -109,18 +109,35 @@ namespace Stolons.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Stolon stolon, IFormFile uploadFile)
+        public async Task<IActionResult> Edit(Guid id, StolonViewModel vm, IFormFile uploadFile)
         {
-            if (!Authorized(Role.Admin))
-                return Unauthorized();
+            if (id != vm.Stolon.Id)
+            {
+                return NotFound();
+            }
+
             if (ModelState.IsValid)
             {
-                stolon.LogoFileName = await UploadFile(uploadFile, Configurations.AvatarStockagePath, stolon.LogoFileName);
-                _context.Update(stolon);
-                _context.SaveChanges();
-                return RedirectToAction("Details", new { id = stolon.Id });
+                try
+                {
+                    vm.Stolon.LogoFileName = await UploadFile(uploadFile, Configurations.AvatarStockagePath, vm.Stolon.LogoFileName);
+                    _context.Update(vm.Stolon);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!StolonExists(vm.Stolon.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction("Details", new { id = id });
             }
-            return View(stolon);
+            return View(vm.Stolon);
         }
 
         // GET: Stolons/Delete/5
@@ -139,7 +156,7 @@ namespace Stolons.Controllers
             {
                 return NotFound();
             }
-            return View(new StolonViewModel(GetActiveAdherentStolon(), stolon));
+            return View(new StolonViewModel( stolon, GetCurrentAdherentSync().IsWebAdmin));
         }
 
         // POST: Stolons/Delete/5

@@ -8,16 +8,18 @@ using System.Threading.Tasks;
 
 namespace Stolons.ViewModels.Stolons
 {
-    public class StolonViewModel :BaseViewModel
+    public class StolonViewModel 
     {
         public StolonViewModel()
         {
         }
-        public StolonViewModel(AdherentStolon activeAdherentStolon, Stolon stolon)
+        public StolonViewModel( Stolon stolon, bool isWebAdmin)
         {
             Stolon = stolon;
-            ActiveAdherentStolon = activeAdherentStolon;
+            IsWebAdmin = isWebAdmin;
         }
         public Stolon Stolon { get; set; }
+
+        public bool IsWebAdmin { get; set; }
     }
 }

@@ -4,7 +4,7 @@
 
 
 <h2>@Model.Stolon.Label</h2>
-@if (Model.ActiveAdherentStolon.Adherent.IsWebAdmin)
+@if (Model.IsWebAdmin)
 {
     <a asp-controller="Stolons" asp-action="Index"class="btn btn-small btn-default">Voir tous les Stolons</a>
 }
