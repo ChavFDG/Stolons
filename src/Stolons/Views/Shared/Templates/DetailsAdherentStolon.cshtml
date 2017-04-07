@@ -1,0 +1,47 @@
+@model Stolons.ViewModels.Adherents.AdherentStolonViewModel
+
+<div>
+    <hr />
+    <h3>Informations @Model.AdherentStolon.Stolon.Label</h3>
+    <dl>
+        <dt>
+            @Html.DisplayNameFor(model => model.AdherentStolon.RegistrationDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AdherentStolon.RegistrationDate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.AdherentStolon.LocalId)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AdherentStolon.LocalId)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.AdherentStolon.SubscriptionPaid)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AdherentStolon.SubscriptionPaid)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.AdherentStolon.Enable)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AdherentStolon.Enable)
+        </dd>
+        @if (!Model.AdherentStolon.Enable)
+        {
+            <dt>
+                @Html.DisplayNameFor(model => model.AdherentStolon.DisableReason)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.AdherentStolon.DisableReason)
+            </dd>
+        }
+        <dt>
+            @Html.DisplayNameFor(model => model.AdherentStolon.Role)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AdherentStolon.Role)
+        </dd>
+    </dl>
+</div>

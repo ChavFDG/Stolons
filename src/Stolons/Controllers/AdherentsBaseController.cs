@@ -110,8 +110,7 @@ namespace Stolons.Controllers
             }
             return View(vmAdherent);
         }
-
-        // GET: Consumers/Edit/5
+        
         public IActionResult Edit(Guid id)
         {
             if (!Authorized(Role.Volunteer))
@@ -130,10 +129,9 @@ namespace Stolons.Controllers
             return View(new AdherentViewModel(GetActiveAdherentStolon(), adherentStolon.Adherent, AdherentEdition.Adherent));
         }
 
-        // POST: Consumers/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(AdherentViewModel vmAdherent, IFormFile uploadFile, Role role)
+        public IActionResult Edit(AdherentViewModel vmAdherent, IFormFile uploadFile)
         {
             if (!Authorized(Role.Volunteer))
                 return Unauthorized();
@@ -141,15 +139,20 @@ namespace Stolons.Controllers
             if (ModelState.IsValid)
             {
                 UploadAndSetAvatar(vmAdherent.Adherent, uploadFile);
-                ApplicationUser appUser = _context.Users.First(x => x.Email == vmAdherent.OriginalEmail);
-                appUser.Email = vmAdherent.Adherent.Email;
-                vmAdherent.Adherent.Name = vmAdherent.Adherent.Name.ToUpper();
-                _context.Update(appUser);
-                _context.Update(vmAdherent.Adherent);
-                _context.SaveChanges();
+                UpdateAdherent(_context, vmAdherent, uploadFile);
                 return RedirectToAction("Index");
             }
             return View(vmAdherent);
+        }
+
+        public static void UpdateAdherent(ApplicationDbContext context, AdherentViewModel vmAdherent, IFormFile uploadFile)
+        {
+            ApplicationUser appUser = context.Users.First(x => x.Email == vmAdherent.OriginalEmail);
+            appUser.Email = vmAdherent.Adherent.Email;
+            vmAdherent.Adherent.Name = vmAdherent.Adherent.Name.ToUpper();
+            context.Update(appUser);
+            context.Update(vmAdherent.Adherent);
+            context.SaveChanges();
         }
 
         // GET: Consumers/Delete/5

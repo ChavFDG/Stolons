@@ -29,16 +29,16 @@ namespace Stolons.Controllers
         }
 
         // GET: Stolons
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            if (!Authorized(Role.Admin))
+            if (!AuthorizedWebAdmin())
                 return Unauthorized();
 
-            return View(await _context.Stolons.ToListAsync());
+            return View(new StolonsViewModel(GetActiveAdherentStolon(), _context.Stolons.ToList()));
         }
 
         // GET: Stolons/Details/5
-        public async Task<IActionResult> Details(Guid? id)
+        public IActionResult Details(Guid? id)
         {
             if (!Authorized(Role.Admin))
                 return Unauthorized();
@@ -48,13 +48,12 @@ namespace Stolons.Controllers
                 return NotFound();
             }
 
-            var stolon = await _context.Stolons
-                .SingleOrDefaultAsync(m => m.Id == id);
+            var stolon = _context.Stolons.FirstOrDefault(m => m.Id == id);
             if (stolon == null)
             {
                 return NotFound();
             }
-            return View(stolon);
+            return View(new StolonViewModel(GetActiveAdherentStolon(), stolon));
 
         }
 
@@ -87,7 +86,7 @@ namespace Stolons.Controllers
 
 
         // GET: Stolons/Edit/5
-        public async Task<IActionResult> Edit(Guid? id, IFormFile uploadFile)
+        public IActionResult Edit(Guid? id)
         {
             if (!Authorized(Role.Admin))
                 return Unauthorized();
@@ -97,12 +96,12 @@ namespace Stolons.Controllers
                 return NotFound();
             }
 
-            var stolon = await _context.Stolons.SingleOrDefaultAsync(m => m.Id == id);
+            var stolon = _context.Stolons.SingleOrDefault(x => x.Id == id);
             if (stolon == null)
             {
                 return NotFound();
             }
-            return View(new StolonViewModel(GetActiveAdherentStolon(),stolon));
+            return View(stolon);
         }
 
         // POST: Stolons/Edit/5
@@ -110,42 +109,22 @@ namespace Stolons.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, StolonViewModel vm, IFormFile uploadFile)
+        public async Task<IActionResult> Edit(Stolon stolon, IFormFile uploadFile)
         {
             if (!Authorized(Role.Admin))
                 return Unauthorized();
-
-            if (id != vm.Stolon.Id)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
-                try
-                {
-                    vm.Stolon.LogoFileName = await UploadFile(uploadFile, Configurations.AvatarStockagePath, vm.Stolon.LogoFileName);
-                    _context.Update(vm.Stolon);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!StolonExists(vm.Stolon.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction("Details", new { id = id });
+                stolon.LogoFileName = await UploadFile(uploadFile, Configurations.AvatarStockagePath, stolon.LogoFileName);
+                _context.Update(stolon);
+                _context.SaveChanges();
+                return RedirectToAction("Details", new { id = stolon.Id });
             }
-            return View(vm.Stolon);
+            return View(stolon);
         }
 
         // GET: Stolons/Delete/5
-        public async Task<IActionResult> Delete(Guid? id)
+        public IActionResult Delete(Guid? id)
         {
             if (!AuthorizedWebAdmin())
                 return Unauthorized();
@@ -155,14 +134,12 @@ namespace Stolons.Controllers
                 return NotFound();
             }
 
-            var stolon = await _context.Stolons
-                .SingleOrDefaultAsync(m => m.Id == id);
+            var stolon = _context.Stolons.FirstOrDefault(m => m.Id == id);
             if (stolon == null)
             {
                 return NotFound();
             }
-
-            return View(stolon);
+            return View(new StolonViewModel(GetActiveAdherentStolon(), stolon));
         }
 
         // POST: Stolons/Delete/5

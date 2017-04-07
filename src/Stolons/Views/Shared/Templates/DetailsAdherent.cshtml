@@ -1,139 +1,97 @@
-@model Stolons.ViewModels.Adherents.AdherentStolonViewModel
+@model Stolons.ViewModels.Adherents.AdherentViewModel
 
 <div>
     <hr />
-    <h3>Informations adhrérent</h3>
+    <h3>Informations personnelles</h3>
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.AdherentStolon.LocalId)
+            @Html.DisplayNameFor(model => model.Adherent.Name)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.AdherentStolon.LocalId)
+            @Html.DisplayFor(model => model.Adherent.Name)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.AdherentStolon.Adherent.Name)
+            @Html.DisplayNameFor(model => model.Adherent.Surname)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.AdherentStolon.Adherent.Name)
+            @Html.DisplayFor(model => model.Adherent.Surname)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.AdherentStolon.Adherent.Surname)
+            @Html.DisplayNameFor(model => model.Adherent.Email)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.AdherentStolon.Adherent.Surname)
+            @Html.DisplayFor(model => model.Adherent.Email)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.AdherentStolon.Adherent.Email)
+            @Html.DisplayNameFor(model => model.Adherent.PhoneNumber)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.AdherentStolon.Adherent.Email)
+            @Html.DisplayFor(model => model.Adherent.PhoneNumber)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.AdherentStolon.Adherent.PhoneNumber)
+            @Html.DisplayNameFor(model => model.Adherent.Address)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.AdherentStolon.Adherent.PhoneNumber)
+            @Html.DisplayFor(model => model.Adherent.Address)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.AdherentStolon.Adherent.Address)
+            @Html.DisplayNameFor(model => model.Adherent.PostCode)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.AdherentStolon.Adherent.Address)
+            @Html.DisplayFor(model => model.Adherent.PostCode)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.AdherentStolon.Adherent.PostCode)
+            @Html.DisplayNameFor(model => model.Adherent.City)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.AdherentStolon.Adherent.PostCode)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.AdherentStolon.Adherent.City)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.AdherentStolon.Adherent.City)
+            @Html.DisplayFor(model => model.Adherent.City)
         </dd>
     </dl>
-    <h3>Informations @Model.AdherentStolon.Stolon.Label</h3>
-    <dl>
-        <dt>
-            @Html.DisplayNameFor(model => model.AdherentStolon.RegistrationDate)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.AdherentStolon.RegistrationDate)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.AdherentStolon.SubscriptionPaid)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.AdherentStolon.SubscriptionPaid)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.AdherentStolon.Enable)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.AdherentStolon.Enable)
-        </dd>
-        @if (!Model.AdherentStolon.Enable)
-        {
-            <dt>
-                @Html.DisplayNameFor(model => model.AdherentStolon.DisableReason)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.AdherentStolon.DisableReason)
-            </dd>
-        }
-        <dt>
-            @Html.DisplayNameFor(model => model.AdherentStolon.Role)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.AdherentStolon.Role)
-        </dd>
-    </dl>
-    @if (Model.AdherentStolon.IsProducer)
+    @if (Model.Edition == Stolons.ViewModels.Adherents.AdherentEdition.Producer)
     {
         <h3>Informations producteur</h3>
         <dl class="dl-horizontal" title="Informations producteur">
             <dt>
-                @Html.DisplayNameFor(model => model.AdherentStolon.Adherent.Latitude)
+                @Html.DisplayNameFor(model => model.Adherent.Latitude)
             </dt>
             <dd>
-                @Html.DisplayFor(model => model.AdherentStolon.Adherent.Latitude)
+                @Html.DisplayFor(model => model.Adherent.Latitude)
             </dd>
             <dt>
-                @Html.DisplayNameFor(model => model.AdherentStolon.Adherent.Longitude)
+                @Html.DisplayNameFor(model => model.Adherent.Longitude)
             </dt>
             <dd>
-                @Html.DisplayFor(model => model.AdherentStolon.Adherent.Longitude)
+                @Html.DisplayFor(model => model.Adherent.Longitude)
             </dd>
             <dt>
-                @Html.DisplayNameFor(model => model.AdherentStolon.Adherent.Area)
+                @Html.DisplayNameFor(model => model.Adherent.Area)
             </dt>
             <dd>
-                @Html.DisplayFor(model => model.AdherentStolon.Adherent.Area)
+                @Html.DisplayFor(model => model.Adherent.Area)
             </dd>
             <dt>
-                @Html.DisplayNameFor(model => model.AdherentStolon.Adherent.OpenText)
+                @Html.DisplayNameFor(model => model.Adherent.OpenText)
             </dt>
             <dd>
-                @Html.DisplayFor(model => model.AdherentStolon.Adherent.OpenText)
+                @Html.DisplayFor(model => model.Adherent.OpenText)
             </dd>
             <dt>
-                @Html.DisplayNameFor(model => model.AdherentStolon.Adherent.Production)
+                @Html.DisplayNameFor(model => model.Adherent.Production)
             </dt>
             <dd>
-                @Html.DisplayFor(model => model.AdherentStolon.Adherent.Production)
+                @Html.DisplayFor(model => model.Adherent.Production)
             </dd>
             <dt>
-                @Html.DisplayNameFor(model => model.AdherentStolon.Adherent.StartDate)
+                @Html.DisplayNameFor(model => model.Adherent.StartDate)
             </dt>
             <dd>
-                @Html.DisplayFor(model => model.AdherentStolon.Adherent.StartDate)
+                @Html.DisplayFor(model => model.Adherent.StartDate)
             </dd>
             <dt>
-                @Html.DisplayNameFor(model => model.AdherentStolon.Adherent.WebSiteLink)
+                @Html.DisplayNameFor(model => model.Adherent.WebSiteLink)
             </dt>
             <dd>
-                @Html.DisplayFor(model => model.AdherentStolon.Adherent.WebSiteLink)
+                @Html.DisplayFor(model => model.Adherent.WebSiteLink)
             </dd>
         </dl>
     }

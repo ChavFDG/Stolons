@@ -8,16 +8,16 @@ using System.Threading.Tasks;
 
 namespace Stolons.ViewModels.Stolons
 {
-    public class StolonViewModel :BaseViewModel
+    public class StolonsViewModel : BaseViewModel
     {
-        public StolonViewModel()
+        public StolonsViewModel()
         {
         }
-        public StolonViewModel(AdherentStolon activeAdherentStolon, Stolon stolon)
+        public StolonsViewModel(AdherentStolon activeAdherentStolon, List<Stolon> stolons)
         {
-            Stolon = stolon;
+            Stolons = stolons;
             ActiveAdherentStolon = activeAdherentStolon;
         }
-        public Stolon Stolon { get; set; }
+        public List<Stolon> Stolons { get; set; }
     }
 }

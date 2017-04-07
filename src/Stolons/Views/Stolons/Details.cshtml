@@ -1,16 +1,17 @@
 @using Stolons.Helpers;
-@model Stolon
+@using Stolons.ViewModels.Stolons;
+@model StolonViewModel
 
 
-<h2>@Model.Label</h2>
-@if (User.IsInRole(Configurations.Role.WebAdmin.ToString()))
+<h2>@Model.Stolon.Label</h2>
+@if (Model.ActiveAdherentStolon.Adherent.IsWebAdmin)
 {
     <a asp-controller="Stolons" asp-action="Index"class="btn btn-small btn-default">Voir tous les Stolons</a>
 }
-<p>Mode actuel : <b>@(EnumHelper<Stolon.Modes>.GetDisplayValue(Model.GetMode()))</b></p>
-@if (Model.IsModeSimulated)
+<p>Mode actuel : <b>@(EnumHelper<Stolon.Modes>.GetDisplayValue(Model.Stolon.GetMode()))</b></p>
+@if (Model.Stolon.IsModeSimulated)
 {
-    <a asp-action="SwitchMode" asp-controller="Stolons" asp-route-id="@Model.Id" class="btn btn-small btn-default">@(Model.GetMode() == Stolon.Modes.DeliveryAndStockUpdate ? "Passer en mode Commande" : "Passer en mode Livraison et mise à jour des stocks")</a>
+    <a asp-action="SwitchMode" asp-controller="Stolons" asp-route-id="@Model.Stolon.Id" class="btn btn-small btn-default">@(Model.Stolon.GetMode() == Stolon.Modes.DeliveryAndStockUpdate ? "Passer en mode Commande" : "Passer en mode Livraison et mise à jour des stocks")</a>
 }
 
 <div>
@@ -18,249 +19,249 @@
     <h3>Informations</h3>
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.Label)
+            @Html.DisplayNameFor(model => model.Stolon.Label)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Label)
+            @Html.DisplayFor(model => model.Stolon.Label)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.LogoFileName)
+            @Html.DisplayNameFor(model => model.Stolon.LogoFileName)
         </dt>
         <dd>
             <div class="userListAvatar">
-                <img src="@Model.LogoFilePath" class="responsiveImage" />
+                <img src="@Model.Stolon.LogoFilePath" class="responsiveImage" />
             </div>
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Address)
+            @Html.DisplayNameFor(model => model.Stolon.Address)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Address)
+            @Html.DisplayFor(model => model.Stolon.Address)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.PhoneNumber)
+            @Html.DisplayNameFor(model => model.Stolon.PhoneNumber)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.PhoneNumber)
+            @Html.DisplayFor(model => model.Stolon.PhoneNumber)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.ContactMailAddress)
+            @Html.DisplayNameFor(model => model.Stolon.ContactMailAddress)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.ContactMailAddress)
+            @Html.DisplayFor(model => model.Stolon.ContactMailAddress)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Latitude)
+            @Html.DisplayNameFor(model => model.Stolon.Latitude)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Latitude)
+            @Html.DisplayFor(model => model.Stolon.Latitude)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Longitude)
+            @Html.DisplayNameFor(model => model.Stolon.Longitude)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Longitude)
+            @Html.DisplayFor(model => model.Stolon.Longitude)
         </dd>
     </dl>
     <h3>Configurations</h3>
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.UseSympathizer)
+            @Html.DisplayNameFor(model => model.Stolon.UseSympathizer)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.UseSympathizer)
+            @Html.DisplayFor(model => model.Stolon.UseSympathizer)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.IsModeSimulated)
+            @Html.DisplayNameFor(model => model.Stolon.IsModeSimulated)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.IsModeSimulated)
+            @Html.DisplayFor(model => model.Stolon.IsModeSimulated)
         </dd>
-        @if (Model.IsModeSimulated)
+        @if (Model.Stolon.IsModeSimulated)
         {
             <dt>
-                @Html.DisplayNameFor(model => model.SimulationMode)
+                @Html.DisplayNameFor(model => model.Stolon.SimulationMode)
             </dt>
             <dd>
-                @Html.DisplayFor(model => model.SimulationMode)
+                @Html.DisplayFor(model => model.Stolon.SimulationMode)
             </dd>
         }
         <dt>
-            @Html.DisplayNameFor(model => model.State)
+            @Html.DisplayNameFor(model => model.Stolon.State)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.State)
+            @Html.DisplayFor(model => model.Stolon.State)
         </dd>
-        @if (Model.State == Stolon.StolonState.Closed)
+        @if (Model.Stolon.State == Stolon.StolonState.Closed)
         {
             <dt>
-                @Html.DisplayNameFor(model => model.StolonStateMessage)
+                @Html.DisplayNameFor(model => model.Stolon.StolonStateMessage)
             </dt>
             <dd>
-                @Html.Raw(Model.StolonStateMessage)
+                @Html.Raw(Model.Stolon.StolonStateMessage)
             </dd>
         }
     </dl>
     <h3>Textes</h3>
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.AboutText)
+            @Html.DisplayNameFor(model => model.Stolon.AboutText)
         </dt>
         <dd>
-            @Html.Raw(Model.AboutText)
+            @Html.Raw(Model.Stolon.AboutText)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.JoinUsText)
+            @Html.DisplayNameFor(model => model.Stolon.JoinUsText)
         </dt>
         <dd>
-            @Html.Raw(Model.JoinUsText)
+            @Html.Raw(Model.Stolon.JoinUsText)
         </dd>
     </dl>
     <h3>Comissions</h3>
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.UseProducersFee)
+            @Html.DisplayNameFor(model => model.Stolon.UseProducersFee)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.UseProducersFee)
+            @Html.DisplayFor(model => model.Stolon.UseProducersFee)
         </dd>
-        @if (Model.UseProducersFee)
+        @if (Model.Stolon.UseProducersFee)
         {
             <dt>
-                @Html.DisplayNameFor(model => model.ProducersFee)
+                @Html.DisplayNameFor(model => model.Stolon.ProducersFee)
             </dt>
             <dd>
-                @Html.DisplayFor(model => model.ProducersFee)
+                @Html.DisplayFor(model => model.Stolon.ProducersFee)
             </dd>
         }
     </dl>
     <h3>Cotisation</h3>
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.UseSubscipstion)
+            @Html.DisplayNameFor(model => model.Stolon.UseSubscipstion)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.UseSubscipstion)
+            @Html.DisplayFor(model => model.Stolon.UseSubscipstion)
         </dd>
-        @if (Model.UseSubscipstion)
+        @if (Model.Stolon.UseSubscipstion)
         {
             <dt>
-                @Html.DisplayNameFor(model => model.SympathizerSubscription)
+                @Html.DisplayNameFor(model => model.Stolon.SympathizerSubscription)
             </dt>
             <dd>
-                @Html.DisplayFor(model => model.SympathizerSubscription)
+                @Html.DisplayFor(model => model.Stolon.SympathizerSubscription)
             </dd>
             <dt>
-                @Html.DisplayNameFor(model => model.ConsumerSubscription)
+                @Html.DisplayNameFor(model => model.Stolon.ConsumerSubscription)
             </dt>
             <dd>
-                @Html.DisplayFor(model => model.ConsumerSubscription)
+                @Html.DisplayFor(model => model.Stolon.ConsumerSubscription)
             </dd>
             <dt>
-                @Html.DisplayNameFor(model => model.ProducerSubscription)
+                @Html.DisplayNameFor(model => model.Stolon.ProducerSubscription)
             </dt>
             <dd>
-                @Html.DisplayFor(model => model.ProducerSubscription)
+                @Html.DisplayFor(model => model.Stolon.ProducerSubscription)
             </dd>
             <dt>
-                @Html.DisplayNameFor(model => model.SubscriptionStartMonth)
+                @Html.DisplayNameFor(model => model.Stolon.SubscriptionStartMonth)
             </dt>
             <dd>
-                @Html.DisplayFor(model => model.SubscriptionStartMonth)
+                @Html.DisplayFor(model => model.Stolon.SubscriptionStartMonth)
             </dd>
         }
     </dl>
     <h3>Paniers</h3>
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.OrderDeliveryMessage)
+            @Html.DisplayNameFor(model => model.Stolon.OrderDeliveryMessage)
         </dt>
         <dd>
-            @Html.Raw(Model.OrderDeliveryMessage)
+            @Html.Raw(Model.Stolon.OrderDeliveryMessage)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.OrderDayStartDate)
+            @Html.DisplayNameFor(model => model.Stolon.OrderDayStartDate)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.OrderDayStartDate)
+            @Html.DisplayFor(model => model.Stolon.OrderDayStartDate)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.OrderHourStartDate)
+            @Html.DisplayNameFor(model => model.Stolon.OrderHourStartDate)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.OrderHourStartDate)
+            @Html.DisplayFor(model => model.Stolon.OrderHourStartDate)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.OrderMinuteStartDate)
+            @Html.DisplayNameFor(model => model.Stolon.OrderMinuteStartDate)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.OrderMinuteStartDate)
+            @Html.DisplayFor(model => model.Stolon.OrderMinuteStartDate)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.DeliveryAndStockUpdateDayStartDate)
+            @Html.DisplayNameFor(model => model.Stolon.DeliveryAndStockUpdateDayStartDate)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.DeliveryAndStockUpdateDayStartDate)
+            @Html.DisplayFor(model => model.Stolon.DeliveryAndStockUpdateDayStartDate)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.DeliveryAndStockUpdateDayStartDateHourStartDate)
+            @Html.DisplayNameFor(model => model.Stolon.DeliveryAndStockUpdateDayStartDateHourStartDate)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.DeliveryAndStockUpdateDayStartDateHourStartDate)
+            @Html.DisplayFor(model => model.Stolon.DeliveryAndStockUpdateDayStartDateHourStartDate)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.DeliveryAndStockUpdateDayStartDateMinuteStartDate)
+            @Html.DisplayNameFor(model => model.Stolon.DeliveryAndStockUpdateDayStartDateMinuteStartDate)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.DeliveryAndStockUpdateDayStartDateMinuteStartDate)
+            @Html.DisplayFor(model => model.Stolon.DeliveryAndStockUpdateDayStartDateMinuteStartDate)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.BasketPickUpStartDay)
+            @Html.DisplayNameFor(model => model.Stolon.BasketPickUpStartDay)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.BasketPickUpStartDay)
+            @Html.DisplayFor(model => model.Stolon.BasketPickUpStartDay)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.BasketPickUpStartHour)
+            @Html.DisplayNameFor(model => model.Stolon.BasketPickUpStartHour)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.BasketPickUpStartHour)
+            @Html.DisplayFor(model => model.Stolon.BasketPickUpStartHour)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.BasketPickUpStartMinute)
+            @Html.DisplayNameFor(model => model.Stolon.BasketPickUpStartMinute)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.BasketPickUpStartMinute)
+            @Html.DisplayFor(model => model.Stolon.BasketPickUpStartMinute)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.BasketPickEndUpDay)
+            @Html.DisplayNameFor(model => model.Stolon.BasketPickEndUpDay)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.BasketPickEndUpDay)
+            @Html.DisplayFor(model => model.Stolon.BasketPickEndUpDay)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.BasketPickUpEndHour)
+            @Html.DisplayNameFor(model => model.Stolon.BasketPickUpEndHour)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.BasketPickUpEndHour)
+            @Html.DisplayFor(model => model.Stolon.BasketPickUpEndHour)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.BasketPickUpEndMinute)
+            @Html.DisplayNameFor(model => model.Stolon.BasketPickUpEndMinute)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.BasketPickUpEndMinute)
+            @Html.DisplayFor(model => model.Stolon.BasketPickUpEndMinute)
         </dd>
     </dl>
     <h3>Bon plans</h3>
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.GoodPlan)
+            @Html.DisplayNameFor(model => model.Stolon.GoodPlan)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.GoodPlan)
+            @Html.DisplayFor(model => model.Stolon.GoodPlan)
         </dd>
     </dl>
 </div>
 <p>
-    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-small btn-default">Modifier @Model.Label</a>
+    <a asp-action="Edit" asp-route-id="@Model.Stolon.Id" class="btn btn-small btn-default">Modifier @Model.Stolon.Label</a>
 </p>

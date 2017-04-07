@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Net.Http.Headers;
 using Stolons.Models.Users;
 using Stolons.ViewModels.Adherents;
+using Microsoft.EntityFrameworkCore;
 
 namespace Stolons.Controllers
 {
@@ -35,7 +36,7 @@ namespace Stolons.Controllers
         // GET: /Manage/Index
         [HttpGet]
         [Authorize()]
-        public async Task<IActionResult> Index(ManageMessageId? message = null)
+        public IActionResult Index(ManageMessageId? message = null)
         {
             ViewData["StatusMessage"] =
                 message == ManageMessageId.ChangePasswordSuccess ? "Votre mot de passe a été changé avec succès."
@@ -45,25 +46,35 @@ namespace Stolons.Controllers
                 : message == ManageMessageId.AddPhoneSuccess ? "Your phone number was added."
                 : message == ManageMessageId.RemovePhoneSuccess ? "Your phone number was removed."
                 : "";
+            var adherentStolon = GetActiveAdherentStolon();
 
-            var user = await GetCurrentAppUserAsync();
-            Adherent stolonsUser = _context.Adherents.FirstOrDefault(m => m.Email == user.Email);
-            if (stolonsUser == null)
+            return View(new ManageViewModel(adherentStolon, _context.AdherentStolons.Include(x=>x.Adherent).Include(x=>x.Stolon).Where(x=>x.AdherentId == adherentStolon.AdherentId).ToList()));
+        }
+
+        // GET: Consumers/Edit/5
+        public IActionResult Edit()
+        {
+            AdherentStolon adherentStolon = GetActiveAdherentStolon();
+            if (adherentStolon == null)
             {
-                //It's a producer
-                stolonsUser = _context.Adherents.FirstOrDefault(m => m.Email == user.Email);
+                return NotFound();
             }
+            bool isProducer = _context.AdherentStolons.Any(x => x.IsProducer && x.AdherentId == adherentStolon.AdherentId);
+            return View(new AdherentViewModel(adherentStolon, adherentStolon.Adherent,isProducer? AdherentEdition.Producer: AdherentEdition.Adherent));
+        }
 
-            var model = new IndexViewModel
+        // POST: Consumers/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(AdherentViewModel vmAdherent, IFormFile uploadFile)
+        {
+            if (ModelState.IsValid)
             {
-                AvatarFilePath = stolonsUser.AvatarFilePath,
-                HasPassword = await _userManager.HasPasswordAsync(user),
-                PhoneNumber = await _userManager.GetPhoneNumberAsync(user),
-                TwoFactor = await _userManager.GetTwoFactorEnabledAsync(user),
-                Logins = await _userManager.GetLoginsAsync(user),
-                BrowserRemembered = await _signInManager.IsTwoFactorClientRememberedAsync(user)
-            };
-            return View(model);
+                UploadAndSetAvatar(vmAdherent.Adherent, uploadFile);
+                AdherentsBaseController.UpdateAdherent(_context, vmAdherent, uploadFile);
+                return RedirectToAction("Index");
+            }
+            return View(vmAdherent);
         }
 
         //

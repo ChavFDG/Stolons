@@ -3,21 +3,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
+using Stolons.Models;
 
 namespace Stolons.ViewModels.Manage
 {
-    public class IndexViewModel
+    public class ManageViewModel : BaseViewModel
     {
-        public string AvatarFilePath { get; set; }
+        public ManageViewModel()
+        {
 
-        public bool HasPassword { get; set; }
+        }
+        public ManageViewModel(AdherentStolon activeAdherentStolon, List<AdherentStolon> adherentsStolon)
+        {
+            ActiveAdherentStolon = activeAdherentStolon;
+            AdherentsStolon = adherentsStolon;
+        }
 
-        public IList<UserLoginInfo> Logins { get; set; }
+        public List<AdherentStolon> AdherentsStolon { get; set; }
 
-        public string PhoneNumber { get; set; }
-
-        public bool TwoFactor { get; set; }
-
-        public bool BrowserRemembered { get; set; }
+        public bool IsProducer
+        {
+            get
+            {
+                return AdherentsStolon.Any(x => x.IsProducer);
+            }
+        }
     }
 }

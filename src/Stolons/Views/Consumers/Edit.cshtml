@@ -1,10 +1,7 @@
 @model Stolons.ViewModels.Adherents.AdherentViewModel
 
-@{
-    ViewData["Title"] = "Edition de " + Model.Adherent.Surname + " " + Model.Adherent.Name;
-}
 
-<h2>@ViewData["Title"]</h2>
+<h2>@("Edition de " + Model.Adherent.Surname + " " + Model.Adherent.Name)</h2>
 
 <form asp-action="Edit" enctype="multipart/form-data">
     @Html.Partial("Templates/EditAdherent")

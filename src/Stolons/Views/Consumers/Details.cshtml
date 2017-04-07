@@ -2,7 +2,7 @@
 
 <h2>@("Details de " + Model.AdherentStolon.Adherent.Surname + " "+ Model.AdherentStolon.Adherent.Name)</h2>
 
-@Html.Partial("Templates/DetailsAdherent",Model)
+@Html.Partial("Templates/DetailsAdherentAndStolon",Model)
 <p>
     <a asp-action="Edit" asp-route-id="@Model.AdherentStolon.Id" class="btn btn-small btn-default">Modifier @Model.AdherentStolon.Adherent.Surname @Model.AdherentStolon.Adherent.Name</a>
 </p>
