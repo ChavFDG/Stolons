@@ -36,8 +36,13 @@ namespace Stolons.Controllers
                 return Unauthorized();
 
             Adherent producer = await GetCurrentAdherentAsync() as Adherent;
-            var products = _context.Products.Include(m => m.Familly).Include(m => m.Familly.Type).Where(x => x.Producer == producer);
-            ProductsViewModel vm = new ProductsViewModel(GetActiveAdherentStolon(), products, GetCurrentStolon());
+            producer = _context.Adherents
+                .Include(x => x.Products).ThenInclude(x => x.ProductStocks).ThenInclude(x => x.AdherentStolon).ThenInclude(x => x.Stolon)
+                .Include(x => x.Products).ThenInclude(x=>x.Familly)
+                .Include(x => x.Products).ThenInclude(x => x.Familly.Type)
+                .Include(x => x.AdherentStolons).FirstOrDefault(x => x.Id == producer.Id);
+            var products = _context.Products.Include(x=>x.ProductStocks).Include(m => m.Familly).Include(m => m.Familly.Type).Where(x => x.Producer == producer);
+            ProductsViewModel vm = new ProductsViewModel(GetActiveAdherentStolon(), products, producer);
             return View(vm);
         }
         

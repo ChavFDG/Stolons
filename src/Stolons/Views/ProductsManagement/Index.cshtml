@@ -8,10 +8,9 @@
 
 <p>
     <a asp-action="Manage" class="btn btn-small btn-default">Ajouter un produit</a>
-    <a asp-action="ManageFamilies" class="btn btn-small btn-default">Gérer les familles de produits</a>
     @if (Model.Stolon.GetMode() == Stolon.Modes.DeliveryAndStockUpdate)
     {
-        if (Model.Products.Any(x => x.State == Product.ProductState.Stock))
+        if (Model.Products.Any(x => x.ProductStocks.Any(prodStock => prodStock.State == Product.ProductState.Stock)))
         {
             <a asp-action="EnableAllStockProduct" class="btn btn-small btn-default">Rendre disponible tout les produits en attente de stock</a>
         }
@@ -23,32 +22,33 @@
             Image
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Products.First().Name)
+            @Html.DisplayNameFor(model => model.Producer.Products.First().Name)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Products.First().UnitPrice)
+            @Html.DisplayNameFor(model => model.Producer.Products.First().UnitPrice)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Products.First().Price)
+            @Html.DisplayNameFor(model => model.Producer.Products.First().WeightPrice)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Products.First().Type)
+            @Html.DisplayNameFor(model => model.Producer.Products.First().Type)
         </th>
+
+        @foreach (var adherentStolon in Model.Producer.AdherentStolons.Where(x => x.IsProducer).OrderBy(x => x.Id))
+        {
+            <th>
+                @adherentStolon.Stolon.Label;
+                @if (adherentStolon.Stolon.GetMode() == Stolon.Modes.DeliveryAndStockUpdate)
+                {
+                    <a asp-action="DisableAllProduct">Désactiver tout les produits</a>
+                }
+            </th>
+        }
         <th>
-            Stocks
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Products.First().State)
-        </th>
-        <th>
-            @if (Model.Stolon.GetMode() == Stolon.Modes.DeliveryAndStockUpdate)
-            {
-                <a asp-action="DisableAllProduct">Désactiver tout les produits</a>
-            }
         </th>
     </tr>
 
-    @foreach (var item in Model.Products)
+    @foreach (var item in Model.Producer.Products)
     {
         <tr>
             <td class="productMgtImage">
@@ -82,13 +82,23 @@
             <td>
                 @if (item.QuantityStep != 0)
                 {
-                    @Html.DisplayFor(model => item.Price)@("€/")
+                    @Html.DisplayFor(model => item.WeightPrice)@("€/")
                     @Html.DisplayFor(model => item.ProductUnit)
                 }
             </td>
             <td>
                 @(EnumHelper<Product.SellType>.GetDisplayValue(@item.Type))
             </td>
+
+            @foreach (var productStock in item.ProductStocks.OrderBy(x=>x.AdherentStolonId))
+            {
+                <th>
+
+                </th>
+            }
+
+
+
             <td>
                 @if (Model.Stolon.GetMode() == Stolon.Modes.Order || item.StockManagement == Product.StockType.Fixed)
                 {
@@ -125,6 +135,10 @@
                     </td>
                     break;
             }
+
+
+
+
             <td>
                 <div class="dropdown">
                     <a class="dropdown-toggle btn btn-small btn-default" data-toggle="dropdown" href="#">
@@ -136,25 +150,25 @@
                         {
                             if (@item.State == Product.ProductState.Enabled)
                             {
-                                <li>
-                                    <a asp-action="Disable" asp-route-id="@item.Id">Rendre indisponible</a>
-                                </li>
+                        <li>
+                            <a asp-action="Disable" asp-route-id="@item.Id">Rendre indisponible</a>
+                        </li>
                             }
                         }
                         @if (@item.State != Product.ProductState.Enabled)
                         {
-                            <li>
-                                <a asp-action="Enable" asp-route-id="@item.Id">Rendre disponible</a>
-                            </li>
+                        <li>
+                            <a asp-action="Enable" asp-route-id="@item.Id">Rendre disponible</a>
+                        </li>
                         }
                         @if (Model.Stolon.GetMode() == Stolon.Modes.DeliveryAndStockUpdate)
                         {
-                            <li>
-                                <a asp-action="Manage" asp-route-id="@item.Id"> Modifier</a>
-                            </li>
-                            <li>
-                                <a asp-action="Delete" asp-route-id="@item.Id"> Supprimer</a>
-                            </li>
+                        <li>
+                            <a asp-action="Manage" asp-route-id="@item.Id"> Modifier</a>
+                        </li>
+                        <li>
+                            <a asp-action="Delete" asp-route-id="@item.Id"> Supprimer</a>
+                        </li>
                         }
                     </ul>
                 </div>
