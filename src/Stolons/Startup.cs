@@ -329,7 +329,7 @@ namespace Stolons
             conserveTomate.Producer = producer;
             conserveTomate.ProductUnit = Product.Unit.L;
             conserveTomate.StockManagement = Product.StockType.Fixed;
-            AddStocks(salade, 30, 0);
+            AddStocks(conserveTomate, 30, 0);
             conserveTomate.Familly = context.ProductFamillys.First(x => x.FamillyName == "Légumes");
             conserveTomate.Type = Product.SellType.Piece;
             context.Add(conserveTomate);

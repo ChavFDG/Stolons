@@ -305,7 +305,7 @@ namespace Stolons.Models
         }
 
 
-        public string GetQuantityString(int quantity)
+        public string GetQuantityString(decimal quantity)
         {
             if (Type == SellType.Piece)
             {
@@ -320,7 +320,7 @@ namespace Stolons.Models
             }
             else
             {
-                float qty = (quantity * QuantityStep);
+                decimal qty = (quantity * QuantityStep);
                 string strUnit;
                 if (ProductUnit == Product.Unit.Kg)
                 {

@@ -32,9 +32,9 @@ namespace Stolons.Controllers
                 var adherentStolon = GetActiveAdherentStolon();
                 HomeViewModel vm = new HomeViewModel(adherentStolon);
                 if (showOldNews)
-                    vm.NewsVm = new ViewModels.News.NewsListViewModel(adherentStolon, _context.News.Include(x => x.PublishBy).Where(x => x.PublishBy.StolonId == adherentStolon.StolonId).Where(x => (x.PublishStart < DateTime.Now && x.PublishEnd > DateTime.Now) || (x.PublishEnd < DateTime.Now)).ToList(),true);
+                    vm.NewsVm = new ViewModels.News.NewsListViewModel(adherentStolon, _context.News.Include(x => x.PublishBy).ThenInclude(x => x.Adherent).Where(x => x.PublishBy.StolonId == adherentStolon.StolonId).Where(x => (x.PublishStart < DateTime.Now && x.PublishEnd > DateTime.Now) || (x.PublishEnd < DateTime.Now)).ToList(),true);
                 else
-                    vm.NewsVm = new ViewModels.News.NewsListViewModel(adherentStolon, _context.News.Include(x => x.PublishBy).Where(x => x.PublishBy.StolonId == adherentStolon.StolonId).Where(x => x.PublishStart < DateTime.Now && x.PublishEnd > DateTime.Now).ToList());
+                    vm.NewsVm = new ViewModels.News.NewsListViewModel(adherentStolon, _context.News.Include(x => x.PublishBy).ThenInclude(x=>x.Adherent).Where(x => x.PublishBy.StolonId == adherentStolon.StolonId).Where(x => x.PublishStart < DateTime.Now && x.PublishEnd > DateTime.Now).ToList());
                 return View(vm);
             }
             else

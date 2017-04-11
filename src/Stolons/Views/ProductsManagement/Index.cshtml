@@ -8,13 +8,22 @@
 
 <p>
     <a asp-action="Manage" class="btn btn-small btn-default">Ajouter un produit</a>
-    @if (Model.Stolon.GetMode() == Stolon.Modes.DeliveryAndStockUpdate)
-    {
+    @{
+        /*
+
+         @if (Model.Stolon.GetMode() == Stolon.Modes.DeliveryAndStockUpdate)
+        {
         if (Model.Products.Any(x => x.ProductStocks.Any(prodStock => prodStock.State == Product.ProductState.Stock)))
         {
             <a asp-action="EnableAllStockProduct" class="btn btn-small btn-default">Rendre disponible tout les produits en attente de stock</a>
         }
+        }
+
+
+         */
+
     }
+   
 </p>
 <table class="table productsMgtTable">
     <tr>
@@ -37,7 +46,7 @@
         @foreach (var adherentStolon in Model.Producer.AdherentStolons.Where(x => x.IsProducer).OrderBy(x => x.Id))
         {
             <th>
-                @adherentStolon.Stolon.Label;
+                @adherentStolon.Stolon.Label
                 @if (adherentStolon.Stolon.GetMode() == Stolon.Modes.DeliveryAndStockUpdate)
                 {
                     <a asp-action="DisableAllProduct">Désactiver tout les produits</a>
@@ -90,89 +99,75 @@
                 @(EnumHelper<Product.SellType>.GetDisplayValue(@item.Type))
             </td>
 
-            @foreach (var productStock in item.ProductStocks.OrderBy(x=>x.AdherentStolonId))
+            @foreach (var productStock in item.ProductStocks.OrderBy(x => x.AdherentStolonId))
             {
-                <th>
-
-                </th>
-            }
-
-
-
-            <td>
-                @if (Model.Stolon.GetMode() == Stolon.Modes.Order || item.StockManagement == Product.StockType.Fixed)
+                string color = "";
+                switch (productStock.State)
                 {
-                    @Html.DisplayNameFor(model => item.RemainingStock)
-                    @(" : ")
-                    @Html.DisplayFor(model => item.RemainingStock)
-                    @item.GetStockUnit()
+                    case Product.ProductState.Disabled:
+                        color = "#ff0000";
+                        break;
+                    case Product.ProductState.Enabled:
+                        color = "#00ff00";
+                        break;
+                    case Product.ProductState.Stock:
+                        color = "#ff8000";
+                        break;
+                }
+                string stockManagementLabel = "";
+                @if (productStock.AdherentStolon.Stolon.GetMode() == Stolon.Modes.Order || item.StockManagement == Product.StockType.Fixed)
+                {
+                    stockManagementLabel =  Html.DisplayNameFor(model => productStock.RemainingStock)
+                                            + " : "
+                                            + productStock.Product.GetQuantityString(productStock.RemainingStock);
+
                 }
                 else
                 {
-                    @Html.DisplayNameFor(model => item.WeekStock)
-                    @(" : ")
-                    @Html.DisplayFor(model => item.WeekStock)
-                    @item.GetStockUnit()
+                    stockManagementLabel = Html.DisplayNameFor(model => productStock.WeekStock)
+                                           + " : "
+                                           + productStock.Product.GetQuantityString(productStock.WeekStock);
                 }
-                <br />
-                <input class="btn-small btn-default" type="submit" value="Gérer les stocks" onclick="StockMgtViewModal.open('@item.Id')" />
-            </td>
-            @switch (@item.State)
-                {
-                    case Product.ProductState.Disabled:
-                    <td bgcolor="#ff0000">
-                        @(EnumHelper<Product.ProductState>.GetDisplayValue(@item.State))
-                    </td>
-                    break;
-                case Product.ProductState.Enabled:
-                    <td bgcolor="#00ff00">
-                        @(EnumHelper<Product.ProductState>.GetDisplayValue(@item.State))
-                    </td>
-                    break;
-                case Product.ProductState.Stock:
-                    <td bgcolor="#ff8000">
-                        @(EnumHelper<Product.ProductState>.GetDisplayValue(@item.State))
-                    </td>
-                    break;
-            }
+
+                <td  bgcolor="@(color)">
 
 
-
-
-            <td>
-                <div class="dropdown">
-                    <a class="dropdown-toggle btn btn-small btn-default" data-toggle="dropdown" href="#">
-                        Actions
-                        <span class="caret"></span>
-                    </a>
-                    <ul class="dropdown-menu">
-                        @if (Model.Stolon.GetMode() == Stolon.Modes.DeliveryAndStockUpdate)
-                        {
-                            if (@item.State == Product.ProductState.Enabled)
+                    <input class="btn - small btn - default\" type="submit" value="@stockManagementLabel" onclick="StockMgtViewModal.open('@productStock.Id')" />
+                    <br />
+                    <div class="dropdown">
+                        <a class="dropdown-toggle btn btn-small btn-default" data-toggle="dropdown" href="#">
+                           @(EnumHelper<Product.ProductState>.GetDisplayValue(productStock.State))
+                            <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            @if (productStock.AdherentStolon.Stolon.GetMode() == Stolon.Modes.DeliveryAndStockUpdate)
                             {
-                        <li>
-                            <a asp-action="Disable" asp-route-id="@item.Id">Rendre indisponible</a>
-                        </li>
+                                if (productStock.State == Product.ProductState.Enabled)
+                                {
+                                            <li>
+                                                <a asp-action="Disable" asp-route-id="@item.Id">Rendre indisponible</a>
+                                            </li>
+                                        }
+                                    }
+                                    @if (productStock.State != Product.ProductState.Enabled)
+                            {
+                                        <li>
+                                            <a asp-action="Enable" asp-route-id="@item.Id">Rendre disponible</a>
+                                        </li>
+                                    }
+                                    @if (productStock.AdherentStolon.Stolon.GetMode() == Stolon.Modes.DeliveryAndStockUpdate)
+                            {
+                                        <li>
+                                            <a asp-action="Manage" asp-route-id="@item.Id"> Modifier</a>
+                                        </li>
+                                        <li>
+                                            <a asp-action="Delete" asp-route-id="@item.Id"> Supprimer</a>
+                                        </li>
                             }
-                        }
-                        @if (@item.State != Product.ProductState.Enabled)
-                        {
-                        <li>
-                            <a asp-action="Enable" asp-route-id="@item.Id">Rendre disponible</a>
-                        </li>
-                        }
-                        @if (Model.Stolon.GetMode() == Stolon.Modes.DeliveryAndStockUpdate)
-                        {
-                        <li>
-                            <a asp-action="Manage" asp-route-id="@item.Id"> Modifier</a>
-                        </li>
-                        <li>
-                            <a asp-action="Delete" asp-route-id="@item.Id"> Supprimer</a>
-                        </li>
-                        }
-                    </ul>
-                </div>
-            </td>
+                        </ul>
+                    </div>
+                </td>
+            }
         </tr>
                     }
 </table>
