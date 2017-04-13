@@ -129,7 +129,8 @@ namespace Stolons
                 }
                 catch { }
             }
-            //app.UseIISPlatformHandler(options => options.AuthenticationDescriptions.Clear());
+            //app.UseIISPlatformHandler(options => options.AuthenticationDescriptions.Clear());  
+            app.UseStatusCodePagesWithReExecute("/StatusCode/{0}");
 
             app.UseStaticFiles();
 

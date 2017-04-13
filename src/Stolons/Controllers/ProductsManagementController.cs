@@ -41,7 +41,8 @@ namespace Stolons.Controllers
                 .Include(x => x.Products).ThenInclude(x=>x.Familly)
                 .Include(x => x.Products).ThenInclude(x => x.Familly.Type)
                 .Include(x => x.AdherentStolons).FirstOrDefault(x => x.Id == producer.Id);
-            var products = _context.Products.Include(x=>x.ProductStocks).Include(m => m.Familly).Include(m => m.Familly.Type).Where(x => x.Producer == producer);
+            var products = _context.Products.Include(x=>x.ProductStocks).Include(m => m.Familly).Include(m => m.Familly.Type).Where(x => x.Producer == producer).ToList();
+            products.ForEach(prod => prod.ProductStocks.ForEach(stock => stock.Product = prod));
             ProductsViewModel vm = new ProductsViewModel(GetActiveAdherentStolon(), products, producer);
             return View(vm);
         }
@@ -53,19 +54,20 @@ namespace Stolons.Controllers
                 return "401";
 
             Adherent producer = GetCurrentAdherentSync() as Adherent;
-            List<ProductViewModel> vmProducts = new List<ProductViewModel>();
-            var products = _context.Products.Include(m => m.Familly).Include(m => m.Familly.Type).Where(x => x.Producer == producer).ToList();
-            foreach (var product in products)
+            List<ProductStockViewModel> vmProductsStock = new List<ProductStockViewModel>();
+            var productsStock = _context.ProductsStocks.Include(x=>x.AdherentStolon).ThenInclude(x=>x.Stolon).Include(x=>x.Product).ThenInclude(m => m.Familly).ThenInclude(m => m.Type).Where(x => x.AdherentStolon.AdherentId== producer.Id).ToList();
+           
+            foreach (var productStock in productsStock)
             {
                 int orderedQty = 0;
                 List<BillEntry> billEntries = new List<BillEntry>();
                 foreach (var validateWeekBasket in _context.ValidatedWeekBaskets.Include(x => x.Products))
                 {
-                    validateWeekBasket.Products.Where(x => x.ProductId == product.Id).ToList().ForEach(x => orderedQty += x.Quantity);
+                    validateWeekBasket.Products.Where(x => x.ProductId == productStock.Id).ToList().ForEach(x => orderedQty += x.Quantity);
                 }
-                vmProducts.Add(new ProductViewModel(GetActiveAdherentStolon(), product, orderedQty));
+                vmProductsStock.Add(new ProductStockViewModel(GetActiveAdherentStolon(), productStock, orderedQty));
             }
-            return JsonConvert.SerializeObject(vmProducts, Formatting.Indented, new JsonSerializerSettings()
+            return JsonConvert.SerializeObject(vmProductsStock, Formatting.Indented, new JsonSerializerSettings()
             {
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore
             });
@@ -116,9 +118,11 @@ namespace Stolons.Controllers
                 vmProduct.Product.SetLabels(vmProduct.SelectedLabels);
                 //Set Product familly (si ça retourne null c'est que la famille selectionnée n'existe pas, alors on est dans la merde)
                 vmProduct.Product.Familly = _context.ProductFamillys.FirstOrDefault(x => x.FamillyName == vmProduct.FamillyName);
+                vmProduct.Product.FamillyId = vmProduct.Product.Familly.Id;
                 //Set Producer (si ça retourne null, c'est que c'est pas un producteur qui est logger, alors on est dans la merde)
                 Adherent producer = await GetCurrentAdherentAsync() as Adherent;
                 vmProduct.Product.Producer = producer;
+                vmProduct.Product.ProducerId = producer.Id;
                 //On s'occupe des images du produit
                 if (!String.IsNullOrWhiteSpace(vmProduct.MainPictureLight))
                 {
@@ -177,34 +181,14 @@ namespace Stolons.Controllers
                     }
                 }
 
-
-                /*
-                //OLD CODE
-                int cpt = 0;
-                foreach (IFormFile uploadFile in new List<IFormFile>() { vmProduct.UploadFile1, vmProduct.UploadFile2, vmProduct.UploadFile3 })
-                {
-                    if (uploadFile != null)
-                    {
-                        //Image uploading
-                        string fileName = await Configurations.UploadImageFile(_environment, uploadFile, Configurations.ProductsStockagePath);
-                        if(!vmProduct.IsNew && vmProduct.Product.Pictures.Count > cpt)
-                        {
-                            //Replace
-                            vmProduct.Product.Pictures[cpt] = fileName;
-                        }
-                        else
-                        {
-                            //Add
-                            vmProduct.Product.Pictures.Add(fileName);
-                        }
-                    }
-                    cpt++;
-                }*/
-
                 if (vmProduct.IsNew)
                 {
-                    vmProduct.Product.Id = Guid.NewGuid();
                     _context.Products.Add(vmProduct.Product);
+                    //Add it to all Stolon
+                    foreach (var adhrentStolon in _context.AdherentStolons.Where(x => x.AdherentId == vmProduct.Product.ProducerId && x.IsProducer))
+                    {
+                        _context.ProductsStocks.Add(new ProductStockStolon(vmProduct.Product.Id, adhrentStolon.Id));
+                    }
                 }
                 else
                 {
@@ -305,22 +289,28 @@ namespace Stolons.Controllers
             return RedirectToAction("Index");
         }
         
-        public IActionResult EnableForSpecified(Guid? productStockId)
+        public IActionResult Enable(Guid? id)
         {
             if (!AuthorizedProducer())
                 return Unauthorized();
 
-            _context.ProductsStocks.First(x => x.Id == productStockId).State = Product.ProductState.Enabled;
+            ProductStockStolon productStock = _context.ProductsStocks.FirstOrDefault(x => x.Id == id);
+            if (productStock == null)
+                return NotFound();
+            productStock.State = Product.ProductState.Enabled;
             _context.SaveChanges();
             return RedirectToAction("Index");
 
         }
-        public IActionResult DisableForSpecified(Guid? productStockId)
+        public IActionResult Disable(Guid? id)
         {
             if (!AuthorizedProducer())
                 return Unauthorized();
 
-            _context.ProductsStocks.First(x => x.Id == productStockId).State = Product.ProductState.Disabled;
+            ProductStockStolon productStock = _context.ProductsStocks.FirstOrDefault(x => x.Id == id);
+            if (productStock == null)
+                return NotFound();
+            productStock.State = Product.ProductState.Disabled;
             _context.SaveChanges();
             return RedirectToAction("Index");
         }
@@ -355,23 +345,23 @@ namespace Stolons.Controllers
 
         
         [HttpPost, ActionName("ChangeStock")]
-        public IActionResult ChangeStock(Guid productStockId, decimal newStock)
+        public IActionResult ChangeStock(Guid id, decimal newStock)
         {
             if (!AuthorizedProducer())
                 return Unauthorized();
 
-            _context.ProductsStocks.First(x => x.Id == productStockId).WeekStock = newStock;
-            _context.ProductsStocks.First(x => x.Id == productStockId).RemainingStock = newStock;
+            _context.ProductsStocks.First(x => x.Id == id).WeekStock = newStock;
+            _context.ProductsStocks.First(x => x.Id == id).RemainingStock = newStock;
             _context.SaveChanges();
             return Ok();
         }
         
         [HttpPost, ActionName("ChangeCurrentStock")]
-        public string ChangeCurrentStock(Guid productStockId, decimal newStock)
+        public string ChangeCurrentStock(Guid id, decimal newStock)
         {
             if (!AuthorizedProducer())
                 return "401";
-            var productStock = _context.ProductsStocks.First(x => x.Id == productStockId);
+            var productStock = _context.ProductsStocks.First(x => x.Id == id);
             productStock.RemainingStock = newStock;
             _context.SaveChanges();
             return "ok";

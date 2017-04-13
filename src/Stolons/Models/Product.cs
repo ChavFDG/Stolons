@@ -23,7 +23,7 @@ namespace Stolons.Models
         [ForeignKey(nameof(ProducerId))]
         public virtual Adherent Producer { get; set; }
 
-	    [Display(Name = "Famille de produit")]
+        [Display(Name = "Famille de produit")]
         public Guid FamillyId { get; set; }
         [ForeignKey(nameof(FamillyId))]
         public virtual ProductFamilly Familly { get; set; }
@@ -106,60 +106,65 @@ namespace Stolons.Models
         [Display(Name = "Type de vente")]
         [Required]
         public SellType Type { get; set; }
+
+        [Display(Name = "Masquer le prix au Kilo")]
+        [Required]
+        public bool HideWeightPrice { get; set; }
+
         [Display(Name = "Prix (kg ou l)")]
         [Required]
         public decimal WeightPrice { get; set; }
-        
+
         [Display(Name = "Prix unitaire")]
-	    [Required]
-	    public decimal UnitPrice { get; set; }
+        [Required]
+        public decimal UnitPrice { get; set; }
 
         [Display(Name = "Gestion du stock")]
         public StockType StockManagement { get; set; } = StockType.Week;
 
         [Display(Name = "Palier de poids (g ou ml)")]
-	    [Required]
+        [Required]
         public int QuantityStep { get; set; }
-	    [NotMapped]
-	    public string QuantityStepString
-	    {
-	        get
-	        {
-		    if (QuantityStep == 0)
-		    {
-		        return " rien";
-		    }
-		    if (ProductUnit == Unit.Kg)
-		    {
-		        if (QuantityStep >= 1000)
-		        {
-			    return QuantityStep / 1000 + " kg";
-		        }
-		        else
-		        {
-			    return QuantityStep  + " g";
-		        }
-		    }
-		    else
-		    {
-		        if (QuantityStep >= 1000)
-		        {
-			    return QuantityStep / 1000 + " l";
-		        }
-		        else
-		        {
-			    return QuantityStep  + " ml";
-		        }
-		    }
-	        }
-	    }
-        
+        [NotMapped]
+        public string QuantityStepString
+        {
+            get
+            {
+                if (QuantityStep == 0)
+                {
+                    return " rien";
+                }
+                if (ProductUnit == Unit.Kg)
+                {
+                    if (QuantityStep >= 1000)
+                    {
+                        return QuantityStep / 1000 + " kg";
+                    }
+                    else
+                    {
+                        return QuantityStep + " g";
+                    }
+                }
+                else
+                {
+                    if (QuantityStep >= 1000)
+                    {
+                        return QuantityStep / 1000 + " l";
+                    }
+                    else
+                    {
+                        return QuantityStep + " ml";
+                    }
+                }
+            }
+        }
+
 
         [Display(Name = "Quantité moyenne")]
         public int AverageQuantity { get; set; }
         [Display(Name = "Unité de mesure")]
         public Unit ProductUnit { get; set; }
-        
+
         public decimal Tax { get; set; } = 5.5m;
 
         [NotMapped]
@@ -180,7 +185,7 @@ namespace Stolons.Models
             }
             set
             {
-                switch(value)
+                switch (value)
                 {
                     case TAX.None:
                         Tax = 0;
@@ -200,10 +205,10 @@ namespace Stolons.Models
                 }
             }
         }
-        
+
         public string GetFirstImage()
         {
-            if(_Pictures.Any())
+            if (_Pictures.Any())
             {
                 return _Pictures[0];
             }
@@ -242,7 +247,7 @@ namespace Stolons.Models
 
         public enum SellType
         {
-            [Display(Name ="Au poids")]
+            [Display(Name = "Au poids")]
             Weigh = 0,
             [Display(Name = "A la pièce")]
             Piece = 1,
@@ -296,7 +301,7 @@ namespace Stolons.Models
 
         public enum StockType
         {
-            [Display(Name = "Hebdomadaire", Description ="Le stock est remis à jour chaque semaine au stock initial, il peut évoluer durant la période de commande.")]
+            [Display(Name = "Hebdomadaire", Description = "Le stock est remis à jour chaque semaine au stock initial, il peut évoluer durant la période de commande.")]
             Week = 0,
             [Display(Name = "Fixe", Description = "Le stock est fixe et correspond au stock réel présent dans les locaux de la structure.")]
             Fixed = 1,

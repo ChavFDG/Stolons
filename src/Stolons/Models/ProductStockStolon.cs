@@ -26,7 +26,7 @@ namespace Stolons.Models
 
         public Guid ProductId { get; set; }
         [ForeignKey(nameof(ProductId))]
-        public virtual Product Product { get; set; }
+        public Product Product { get; set; }
 
         public Guid AdherentStolonId { get; set; }
         [ForeignKey(nameof(AdherentStolonId))]

@@ -66,6 +66,12 @@
 <form asp-action="Manage" enctype="multipart/form-data">
     <div class="form-horizontal">
         <hr />
+        <!--HIDDEN-->
+        <input asp-for="Product.PicturesSerialized" hidden="hidden" />
+        <input asp-for="Product.Id" hidden="hidden" />
+        <input asp-for="IsNew" hidden="hidden" />
+        <input asp-for="Product.ProducerId" hidden="hidden" />
+        <input asp-for="Product.Familly" hidden="hidden" />
         <!-- <div asp-validation-summary="All" class="text-danger"></div> -->
         <div class="form-group">
             <label asp-for="Product.Name" class="col-md-2 control-label"></label>
@@ -191,18 +197,18 @@
         <!--     </div> -->
         <!-- </div> -->
 
-        <div id="pieceHideVolumePrice" class="form-group hidden">
-            <label for="hideVolumePrice" class="col-md-2 control-label">Masquer prix au kg</label>
+        <div id="pieceHideWeightPrice" class="form-group hidden">
+            <label for="HideWeightPrice" asp-for="Product.HideWeightPrice" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <input id="hideVolumePrice" name="hideVolumePrice" type="checkbox" class="form-control" />
-                <span validation-for="hideVolumePrice" class="text-danger" />
+                <input id="HideWeightPrice" asp-for="Product.HideWeightPrice" name="HideWeightPrice" type="checkbox" class="form-control" />
+                <span validation-for="Product.HideWeightPrice" class="text-danger" />
             </div>
         </div>
         <div class="form-group">
-            <label id="priceLabel" asp-for="Product.Price" class="col-md-2 control-label"></label>
+            <label id="priceLabel" asp-for="Product.WeightPrice" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <input id="price" asp-for="Product.Price" class="form-control" data-val-number="Le prix doit être un nombre." />
-                <span asp-validation-for="Product.Price" class="text-danger" />
+                <input id="price" asp-for="Product.WeightPrice" class="form-control" data-val-number="Le prix doit être un nombre." />
+                <span asp-validation-for="Product.WeightPrice" class="text-danger" />
             </div>
         </div>
         <div class="form-group">
@@ -218,48 +224,11 @@
                 <select asp-for="Product.TaxEnum" asp-items="Html.GetEnumSelectList<Product.TAX>()" class="form-control"></select>
             </div>
         </div>
-        <!--HIDDEN-->
-        <div class="form-group" hidden="hidden">
-            <label asp-for="Product.Id" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Product.Id" class="form-control" />
-            </div>
-        </div>
-        <div class="form-group" hidden="hidden">
-            <label asp-for="Product.PicturesSerialized" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Product.PicturesSerialized" class="form-control" />
-            </div>
-        </div>
-        <div class="form-group" hidden="hidden">
-            <label asp-for="Product.RemainingStock" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Product.RemainingStock" class="form-control" />
-            </div>
-        </div>
         <div class="form-group">
             <label asp-for="Product.StockManagement" class="col-md-2 control-label"></label>
             <div class="col-md-10">
                 <select id="StockManagement" asp-for="Product.StockManagement" asp-items="Html.GetEnumSelectList<Product.StockType>()" class="form-control"></select>
                 <span asp-validation-for="Product.StockManagement" class="text-danger" />
-            </div>
-        </div>
-        <div class="form-group" hidden="hidden">
-            <label asp-for="Product.WeekStock" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Product.WeekStock" class="form-control" />
-            </div>
-        </div>
-        <div class="form-group" hidden="hidden">
-            <label asp-for="Product.State" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <select asp-for="Product.State" asp-items="Html.GetEnumSelectList<Product.ProductState>()" class="form-control"></select>
-            </div>
-        </div>
-        <div class="form-group" hidden="hidden">
-            <label asp-for="IsNew" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="IsNew" class="form-control" />
             </div>
         </div>
 

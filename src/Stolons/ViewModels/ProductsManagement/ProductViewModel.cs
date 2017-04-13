@@ -8,21 +8,21 @@ using System.Threading.Tasks;
 
 namespace Stolons.ViewModels.ProductsManagement
 {
-    public class ProductViewModel : BaseViewModel
+    public class ProductStockViewModel : BaseViewModel
     {
 
-        public Product Product { get; set; }
+        public ProductStockStolon ProductStock { get; set; }
 
         public string OrderedQuantityString;
 
-        public ProductViewModel()
+        public ProductStockViewModel()
         {
         }
 
-        public ProductViewModel(AdherentStolon activeAdherentStolon, Product product, int orderedQty)
+        public ProductStockViewModel(AdherentStolon activeAdherentStolon, ProductStockStolon productStock, int orderedQty)
         {
-            Product = product;
-            OrderedQuantityString = product.GetQuantityString(orderedQty);
+            ProductStock = productStock;
+            OrderedQuantityString = productStock.Product.GetQuantityString(orderedQty);
             ActiveAdherentStolon = activeAdherentStolon;
         }
     }

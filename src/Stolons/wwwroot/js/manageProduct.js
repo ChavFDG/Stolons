@@ -17,7 +17,7 @@ ManageProductView = Backbone.View.extend(
 	    "change #SellType": "sellTypeChanged",
 	    "input #Product_QuantityStep": "updatePriceField",
 	    "input #price": "updatePriceField",
-	    "change #hideVolumePrice": "toggleVolumePriceField"
+	    "change #HideWeightPrice": "toggleVolumePriceField"
 	},
 
 	initialize: function() {
@@ -32,12 +32,12 @@ ManageProductView = Backbone.View.extend(
 		$("#productWeightUnit").addClass("hidden");
 		$("#productQtyStep").addClass("hidden");
 		$("#productAvgWeight").addClass("hidden");
-		$("#pieceHideVolumePrice").removeClass("hidden");
+		$("#pieceHideWeightPrice").removeClass("hidden");
 	    } else {
 		$("#productWeightUnit").removeClass("hidden");
 		$("#productQtyStep").removeClass("hidden");
 		$("#productAvgWeight").removeClass("hidden");
-		$("#pieceHideVolumePrice").addClass("hidden");
+		$("#pieceHideWeightPrice").addClass("hidden");
 	    }
 	    this.updatePriceField();
 	    this.updateVolumePriceField();
@@ -61,22 +61,22 @@ ManageProductView = Backbone.View.extend(
 	},
 
 	updateVolumePriceField: function() {
-	    var selected = $("#hideVolumePrice").is(':checked');
+	    var selected = $("#HideWeightPrice").is(':checked');
 	    var sellType = $("#SellType").val();
 	    var price = $("#price").val();
 
 	    if (!selected && sellType == 1 && price == 0) {
-		$("#hideVolumePrice").prop("checked", true);
+		$("#HideWeightPrice").prop("checked", true);
 		$("#price").attr("readonly", true);
 	    } else {
-		$("#hideVolumePrice").prop("checked", false);
+		$("#HideWeightPrice").prop("checked", false);
 		$("#price").removeAttr("readonly");
 	    }
 	},
 
 	toggleVolumePriceField: function() {
 	    var sellType = $("#SellType").val();
-	    var selected = $("#hideVolumePrice").is(':checked');
+	    var selected = $("#HideWeightPrice").is(':checked');
 
 	    if (selected) {
 		$("#price").attr("readonly", true);
