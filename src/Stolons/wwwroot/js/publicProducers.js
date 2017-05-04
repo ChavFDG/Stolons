@@ -33,24 +33,24 @@ ProducerViewModal = Backbone.View.extend({
     },
 
     open: function(producerId) {
-	this.currentProducer = PublicProducers.ProducersModel.get(producerId);
-	this.renderModal();
+	    this.currentProducer = PublicProducers.ProducersModel.get(producerId);
+	    this.renderModal();
     },
 
     onClose: function() {
-	this.currentProducer = null;
-	this.$el.off('hide.bs.modal');
-	this.$el.empty();
+	    this.currentProducer = null;
+        this.$el.off('hidden.bs.modal');
+        this.close();
     },
 
     render: function() {
-	this.$el.html(this.template({producer: this.currentProducer.toJSON()}));
+	    this.$el.html(this.template({producer: this.currentProducer.toJSON()}));
     },
 
     renderModal: function() {
-	this.render();
-	this.$el.modal({keyboard: true, show: true});
-	this.$el.on('hide.bs.modal', _.bind(this.onClose, this));
+	    this.render();
+	    this.$el.modal();
+	    this.$el.on('hidden.bs.modal', _.bind(this.onClose, this));
     }
 });
 
@@ -77,10 +77,10 @@ function initMap(producersModel) {
 
     //Adding producers markers to the map
     producersModel.forEach(function(producer) {
-	var popup = L.popup().setContent("<b>" + producer.get("CompanyName") + "</b><br />Cliquer pour voir les détails.");
+	//var popup = L.popup().setContent("<b>" + producer.get("CompanyName") + "</b><br />Cliquer pour voir les détails.");
 
 	var marker = L.marker([producer.get("Latitude"), producer.get("Longitude")], {icon: producerIcon});
-	marker.bindPopup(popup);
+	//marker.bindPopup(popup);
 	marker.on("click", function() {
 	    ProducerModalView.open(producer.get("Id"));
 	    return false;
