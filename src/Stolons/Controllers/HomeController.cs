@@ -29,12 +29,12 @@ namespace Stolons.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                HomeViewModel vm = new HomeViewModel();
-                var user = GetCurrentStolonsUserSync();
+                var adherentStolon = GetActiveAdherentStolon();
+                HomeViewModel vm = new HomeViewModel(adherentStolon);
                 if (showOldNews)
-                    vm.News = _context.News.Include(x => x.User).Where(x => x.StolonId == user.StolonId).Where(x => (x.PublishStart < DateTime.Now && x.PublishEnd > DateTime.Now) || (x.PublishEnd < DateTime.Now)).ToList();
+                    vm.NewsVm = new ViewModels.News.NewsListViewModel(adherentStolon, _context.News.Include(x => x.PublishBy).ThenInclude(x => x.Adherent).Where(x => x.PublishBy.StolonId == adherentStolon.StolonId).Where(x => (x.PublishStart < DateTime.Now && x.PublishEnd > DateTime.Now) || (x.PublishEnd < DateTime.Now)).ToList(),true);
                 else
-                    vm.News = _context.News.Include(x => x.User).Where(x => x.StolonId == user.StolonId).Where(x => x.PublishStart < DateTime.Now && x.PublishEnd > DateTime.Now).ToList();
+                    vm.NewsVm = new ViewModels.News.NewsListViewModel(adherentStolon, _context.News.Include(x => x.PublishBy).ThenInclude(x=>x.Adherent).Where(x => x.PublishBy.StolonId == adherentStolon.StolonId).Where(x => x.PublishStart < DateTime.Now && x.PublishEnd > DateTime.Now).ToList());
                 return View(vm);
             }
             else
@@ -57,9 +57,9 @@ namespace Stolons.Controllers
         public IActionResult StolonContact(Guid id)
         {
             Stolon stolon = _context.Stolons.FirstOrDefault(x => x.Id == id);
-            Dictionary<Producer, List<Product>> prods = new Dictionary<Producer, List<Product>>();
+            Dictionary<Adherent, List<Product>> prods = new Dictionary<Adherent, List<Product>>();
 
-            foreach (var producer in _context.Producers.Include(x => x.Products))
+            foreach (var producer in _context.Adherents.Include(x => x.Products))
             {
                 prods.Add(producer, _context.Products.Include(x=>x.Familly).ThenInclude(x=>x.Type).Where(product => product.ProducerId == producer.Id).ToList());
             }
@@ -85,9 +85,11 @@ namespace Stolons.Controllers
         }
 
         [Route("Home/ShowAllNews")]
-        [Authorize(Roles = Role_User +","+Role_Volunteer+","+ Role_StolonAdmin + "," + Role_WedAdmin)]
         public IActionResult ShowAllNews()
         {
+            if (!Authorized(Role.Adherent))
+                return Unauthorized();
+
             return RedirectToAction("Index", new { showOldNews = true });
         }
     }

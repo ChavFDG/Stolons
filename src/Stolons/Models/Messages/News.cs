@@ -30,6 +30,11 @@ namespace Stolons.Models.Messages
             PublishEnd = publishEnd;
         }
 
+        public News(AdherentStolon adherentStolon): this(adherentStolon.Stolon)
+        {
+            this.PublishBy = adherentStolon;
+        }
+
         [Required]
         [Display(Name = "Titre")]
         public string Title { get; set; }
@@ -53,7 +58,7 @@ namespace Stolons.Models.Messages
         public NewsPublishAs PublishAs { get; set; }
 
     }
-       
+
 
     public enum NewsPublishAs
     {

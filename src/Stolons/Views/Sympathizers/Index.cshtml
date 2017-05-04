@@ -1,4 +1,6 @@
-﻿@model IEnumerable<Stolons.Models.Users.Sympathizer>
+﻿@using Stolons.Models.Users
+@using Stolons.ViewModels.Sympathizers
+@model SympathizersViewModel
 
 @{
     ViewData["Title"] = "Liste des sympathisants";
@@ -12,27 +14,30 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(item => item.Id)
+            @Html.DisplayNameFor(item => item.Sympathizers.First().RegistrationDate)
         </th>
         <th>
-            @Html.DisplayNameFor(item => item.Name)
+            @Html.DisplayNameFor(item => item.Sympathizers.First().Name)
         </th>
         <th>
-            @Html.DisplayNameFor(item => item.Surname)
+            @Html.DisplayNameFor(item => item.Sympathizers.First().Surname)
         </th>
         <th>
-            @Html.DisplayNameFor(item => item.Cotisation)
+            @Html.DisplayNameFor(item => item.Sympathizers.First().SubscriptionPaid)
         </th>
         <th>
-            @Html.DisplayNameFor(item => item.Enable)
+            @Html.DisplayNameFor(item => item.Sympathizers.First().ReceivedInformationsEmail)
+        </th>
+        <th>
+            @Html.DisplayNameFor(item => item.Sympathizers.First().Email)
         </th>
         <th></th>
     </tr>
-    @foreach (var item in Model)
+    @foreach (var item in Model.Sympathizers)
     {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Id)
+                @Html.DisplayFor(modelItem => item.RegistrationDate)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
@@ -40,30 +45,24 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Surname)
             </td>
-            @if (item.Cotisation)
+            @if (item.SubscriptionPaid)
             {
                 <td>
-                    @Html.DisplayFor(modelItem => item.Cotisation)
+                    @Html.DisplayFor(modelItem => item.SubscriptionPaid)
                 </td>
             }
             else
             {
                 <td bgcolor="#ff8000">
-                    @Html.DisplayFor(modelItem => item.Cotisation)
+                    @Html.DisplayFor(modelItem => item.SubscriptionPaid)
                 </td>
             }
-            @if (item.Enable)
-            {
-                <td>
-                    @Html.DisplayFor(modelItem => item.Enable)
-                </td>
-            }
-            else
-            {
-                <td bgcolor="#ff0000">
-                    @Html.DisplayFor(modelItem => item.Enable)
-                </td>
-            }
+            <td>
+                @Html.DisplayFor(modelItem => item.ReceivedInformationsEmail)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
             <td>
                 <div class="dropdown">
                     <a class="dropdown-toggle btn btn-small btn-default" data-toggle="dropdown" href="#">
@@ -73,38 +72,18 @@
                     <ul class="dropdown-menu">
                         <li><a asp-action="Edit" asp-route-id="@item.Id" >Modifier</a></li>
                         <li><a asp-action="Details" asp-route-id="@item.Id" >Voir détail</a></li>                       
-                        @if (item.Cotisation == false)
+                        @if (item.SubscriptionPaid == false)
                         {
                             <li>
                                 @Html.ActionLink(
-                                   "Payer cotisation de : " + Configurations.GetStringSubscriptionAmount(item),
-                                   "PaySubscription",
+                                   "Payer cotisation de : " + item.GetStringSubscriptionAmount(),
+                                   "PaySympathiserSubscription",
                                     new { id = item.Id },
-                                    new { onclick = "return confirm('Valider le paiement de la cotisation de " + item.Name + " pour un montant de : " + Configurations.GetStringSubscriptionAmount(item) + "');" })
+                                    new { onclick = "return confirm('Valider le paiement de la cotisation de " + item.Name + " pour un montant de : " + item.GetStringSubscriptionAmount() + "');" })
                             </li>
                         }
-                        @if (User.IsInRole(Configurations.Role.WebAdmin.ToString()))
+                        @if (Model.ActiveAdherentStolon.Authorized(Role.Admin))
                         {
-                            @if (item.Enable == true)
-                            {
-                                <li>
-                                    @Html.ActionLink(
-                                   "Désactiver le compte",
-                                   "Disable",
-                                    new { id = item.Id },
-                                    new { onclick = "return confirm('Entrer la raison de la désactivation du compte pour " + item.Name + "');" })
-                                </li>
-                            }
-                            else
-                            {
-                                <li>
-                                    @Html.ActionLink(
-                                   "Activer le compte",
-                                   "Enable",
-                                    new { id = item.Id },
-                                    new { onclick = "return confirm('Confirmation de l'activation du compte de " + item.Name + " ?');" })
-                                </li>
-                            }
                             <li><a asp-action="Delete" asp-route-id="@item.Id">Supprimer</a></li>
                         }
                     </ul>

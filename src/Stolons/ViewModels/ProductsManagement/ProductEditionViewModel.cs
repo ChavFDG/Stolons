@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Stolons.ViewModels.ProductsManagement
 {
-    public class ProductEditionViewModel
+    public class ProductEditionViewModel : BaseViewModel
     {
         public bool IsNew { get; set; }
 
@@ -30,8 +30,9 @@ namespace Stolons.ViewModels.ProductsManagement
         {
         }
 
-        public ProductEditionViewModel(Product product, ApplicationDbContext context, bool isNew)
+        public ProductEditionViewModel(AdherentStolon activeAdherentStolon, Product product, ApplicationDbContext context, bool isNew)
         {
+            ActiveAdherentStolon = activeAdherentStolon;
             Product = product;
             IsNew = isNew;
             RefreshTypes(context);

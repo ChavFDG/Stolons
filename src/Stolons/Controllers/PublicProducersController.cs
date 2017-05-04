@@ -19,24 +19,29 @@ namespace Stolons.Controllers
             SignInManager<ApplicationUser> signInManager,
             IServiceProvider serviceProvider) : base(serviceProvider, userManager, context, environment, signInManager)
         {
-              
+
         }
 
         // GET: PublicProducers
         [AllowAnonymous]
         public IActionResult Index()
         {
-            return View(_context.Producers.ToList());
+            Stolon stolon = GetCurrentStolon();
+            return View(_context.Adherents.Include(x => x.AdherentStolons).Where(x => x.AdherentStolons.Any(adhSto => adhSto.IsProducer && adhSto.StolonId == stolon.Id)).ToList());
         }
 
-	[AllowAnonymous]
-	[HttpGet, ActionName("Producers"), Route("api/producers")]
-	public string JsonProducts() {
-	    var producers = _context.Producers.ToList();
+        [AllowAnonymous]
+        [HttpGet, ActionName("Producers"), Route("api/producers")]
+        public string JsonProductsStocks()
+        {
+            Stolon stolon = GetCurrentStolon();
+            
+            var producers = _context.Adherents.Include(x => x.AdherentStolons).Where(x => x.AdherentStolons.Any(adhSto => adhSto.IsProducer && adhSto.StolonId == stolon.Id)).ToList(); ;
 
-	    return JsonConvert.SerializeObject(producers, Formatting.Indented, new JsonSerializerSettings() {
-		    ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-			});
-	}
+            return JsonConvert.SerializeObject(producers, Formatting.Indented, new JsonSerializerSettings()
+            {
+                ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            });
+        }
     }
 }

@@ -1,0 +1,98 @@
+@model Stolons.ViewModels.Adherents.AdherentViewModel
+
+<div>
+    <hr />
+    <h3>Informations personnelles</h3>
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Adherent.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Adherent.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Adherent.Surname)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Adherent.Surname)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Adherent.Email)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Adherent.Email)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Adherent.PhoneNumber)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Adherent.PhoneNumber)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Adherent.Address)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Adherent.Address)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Adherent.PostCode)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Adherent.PostCode)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Adherent.City)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Adherent.City)
+        </dd>
+    </dl>
+    @if (Model.Edition == Stolons.ViewModels.Adherents.AdherentEdition.Producer)
+    {
+        <h3>Informations producteur</h3>
+        <dl class="dl-horizontal" title="Informations producteur">
+            <dt>
+                @Html.DisplayNameFor(model => model.Adherent.Latitude)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Adherent.Latitude)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Adherent.Longitude)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Adherent.Longitude)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Adherent.Area)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Adherent.Area)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Adherent.OpenText)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Adherent.OpenText)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Adherent.Production)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Adherent.Production)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Adherent.StartDate)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Adherent.StartDate)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Adherent.WebSiteLink)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Adherent.WebSiteLink)
+            </dd>
+        </dl>
+    }
+</div>

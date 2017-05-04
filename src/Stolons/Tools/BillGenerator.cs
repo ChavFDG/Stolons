@@ -17,14 +17,14 @@ using static Stolons.Models.Product;
 
 namespace Stolons.Tools
 {
-    public static  class BillGenerator
+    public static class BillGenerator
     {
         public class BillEntryConsumer
         {
             public BillEntry BillEntry { get; set; }
-            public Consumer Consumer { get; set; }
+            public Adherent Consumer { get; set; }
 
-            public BillEntryConsumer(BillEntry billEntry, Consumer consumer)
+            public BillEntryConsumer(BillEntry billEntry, Adherent consumer)
             {
                 BillEntry = billEntry;
                 Consumer = consumer;
@@ -32,7 +32,7 @@ namespace Stolons.Tools
         }
 
         private static Dictionary<Guid, Stolon.Modes> lastModes = new Dictionary<Guid, Stolon.Modes>();
-
+        /*
         public static void ManageBills(ApplicationDbContext dbContext)
         {
             foreach (Stolon stolon in dbContext.Stolons)
@@ -41,7 +41,7 @@ namespace Stolons.Tools
             }
             do
             {
-                foreach(Stolon stolon in dbContext.Stolons)
+                foreach (Stolon stolon in dbContext.Stolons)
                 {
                     Stolon.Modes currentMode = stolon.GetMode();
                     if (lastModes[stolon.Id] == Stolon.Modes.Order && currentMode == Stolon.Modes.DeliveryAndStockUpdate)
@@ -49,12 +49,13 @@ namespace Stolons.Tools
                         //We moved form Order to Preparation, create and send bills
                         List<ConsumerBill> consumerBills = new List<ConsumerBill>();
                         List<ProducerBill> producerBills = new List<ProducerBill>();
-                        Dictionary<Producer, List<BillEntryConsumer>> brutProducerBills = new Dictionary<Producer, List<BillEntryConsumer>>();
+                        Dictionary<Adherent, List<BillEntryConsumer>> brutProducerBills = new Dictionary<Adherent, List<BillEntryConsumer>>();
 
                         #region Create bills
                         //Consumer (create bills)
-                        List<ValidatedWeekBasket> consumerWeekBaskets = dbContext.ValidatedWeekBaskets.Include(x => x.Products).Include(x => x.Consumer).ToList();
-                        StolonsBill stolonsBill = GenerateBill(stolon,consumerWeekBaskets, dbContext);
+                        List<ValidatedWeekBasket> consumerWeekBaskets = dbContext.ValidatedWeekBaskets.Include(x => x.Products).Include(x => x.ConsumerStolon).ThenInclude(x => x.Stolon).Include(x => x.ConsumerStolon).ThenInclude(x => x.Adherent)
+                                                                                                      .Where(x => x.ConsumerStolon.StolonId == stolon.Id).ToList();
+                        StolonsBill stolonsBill = GenerateBill(stolon, consumerWeekBaskets, dbContext);
                         dbContext.Add(stolonsBill);
                         foreach (var weekBasket in consumerWeekBaskets)
                         {
@@ -66,7 +67,7 @@ namespace Stolons.Tools
                             foreach (var tmpBillEntry in weekBasket.Products)
                             {
                                 var billEntry = dbContext.BillEntrys.Include(x => x.Product).ThenInclude(x => x.Producer).First(x => x.Id == tmpBillEntry.Id);
-                                Producer producer = billEntry.Product.Producer;
+                                Adherent producer = billEntry.Product.Producer;
                                 if (!brutProducerBills.ContainsKey(producer))
                                 {
                                     brutProducerBills.Add(producer, new List<BillEntryConsumer>());
@@ -78,7 +79,7 @@ namespace Stolons.Tools
                         foreach (var producerBill in brutProducerBills)
                         {
                             //Generate bill for producer
-                            ProducerBill bill = GenerateBill(producerBill.Key, producerBill.Value, dbContext);
+                            ProducerBill bill = GenerateBill(producerBill.Key.ProducerStolons.First(x=>x.StolonId == stolon.Id), producerBill.Value, dbContext);
                             producerBills.Add(bill);
                             dbContext.Add(bill);
                         }
@@ -93,12 +94,12 @@ namespace Stolons.Tools
                         //Move product to stock
                         dbContext.Products.ToList().Where(x => x.StockManagement == StockType.Week && x.State == ProductState.Enabled).ToList().ForEach(x => x.State = ProductState.Stock);
 
-                        #if (DEBUG)
-                            //For test, remove existing consumer bill and producer bill => That will never exist in normal mode cause they can only have one bill by week per user
-                            dbContext.RemoveRange(dbContext.ConsumerBills.Where(x => consumerBills.Any(y => y.BillNumber == x.BillNumber)));
-                            dbContext.RemoveRange(dbContext.ProducerBills.Where(x => producerBills.Any(y => y.BillNumber == x.BillNumber)));
-                            dbContext.RemoveRange(dbContext.StolonsBills.Where(x => x.BillNumber == stolonsBill.BillNumber));
-                        #endif
+#if (DEBUG)
+                        //For test, remove existing consumer bill and producer bill => That will never exist in normal mode cause they can only have one bill by week per user
+                        dbContext.RemoveRange(dbContext.ConsumerBills.Where(x => consumerBills.Any(y => y.BillNumber == x.BillNumber)));
+                        dbContext.RemoveRange(dbContext.ProducerBills.Where(x => producerBills.Any(y => y.BillNumber == x.BillNumber)));
+                        dbContext.RemoveRange(dbContext.StolonsBills.Where(x => x.BillNumber == stolonsBill.BillNumber));
+#endif
                         //
                         dbContext.SaveChanges();
                         //Set product remaining stock to week stock value
@@ -146,7 +147,7 @@ namespace Stolons.Tools
                         dbContext.SaveChanges();
                     }
                     lastModes[stolon.Id] = currentMode;
-                }                
+                }
                 Thread.Sleep(5000);
             } while (true);
         }
@@ -161,7 +162,7 @@ namespace Stolons.Tools
                 while (!File.Exists(bill.GetFilePath()))
                 {
                     cpt++;
-                   Thread.Sleep(500);
+                    Thread.Sleep(500);
                     if (cpt == 20)
                         return;
                 }
@@ -200,14 +201,14 @@ namespace Stolons.Tools
                         return;
                 }
                 //Send mail to user with bill
-                string message = "<h3>" + bill.User.Stolon.OrderDeliveryMessage + "</h3>";
+                string message = "<h3>" + bill.UserStolon.Stolon.OrderDeliveryMessage + "</h3>";
                 message += "<br/>";
                 message += "<h4>En pièce jointe votre commande de la semaine (Facture " + bill.BillNumber + ")</h4>";
-                if (bill.Consumer.Token > 0)
-                    message += "<p>Vous avez " + bill.Consumer.Token + "𝞫, pensez à payer vos bogues lors de la récupération de votre commande.</p>";
+                if (bill.UserStolon.Token > 0)
+                    message += "<p>Vous avez " + bill.UserStolon.Token + "𝞫, pensez à payer vos bogues lors de la récupération de votre commande.</p>";
 
-                AuthMessageSender.SendEmail(bill.User.Email,
-                                                bill.User.Name,
+                AuthMessageSender.SendEmail(bill.UserStolon.User.Email,
+                                                bill.UserStolon.User.Name,
                                                 "Votre commande de la semaine (Facture " + bill.BillNumber + ")",
                                                 message,
                                                 File.ReadAllBytes(bill.GetFilePath()),
@@ -217,7 +218,7 @@ namespace Stolons.Tools
             {
                 AuthMessageSender.SendEmail(Configurations.Application.ContactMailAddress,
                                                 "Stolons",
-                                                "Erreur lors de la génération de la facture " + bill.BillNumber + " à " + bill.User.Email,
+                                                "Erreur lors de la génération de la facture " + bill.BillNumber + " à " + bill.UserStolon.User.Email,
                                                 "Message d'erreur : " + exept.Message);
             }
 
@@ -226,24 +227,24 @@ namespace Stolons.Tools
         private static string GetFilePath(this IBill bill)
         {
             return Path.Combine(Configurations.Environment.WebRootPath,
-                                            bill.User is Producer ? Configurations.ProducersBillsStockagePath : Configurations.ConsumersBillsStockagePath,
-                                            bill.User.Id.ToString(),
+                                            bill.AdherentStolon.Adherent is Adherent ? Configurations.ProducersBillsStockagePath : Configurations.ConsumersBillsStockagePath,
+                                            bill.AdherentStolon.Id.ToString(),
                                             bill.GetFileName());
         }
         private static string GetFileName(this IBill bill)
         {
-            return  bill.BillNumber + ".pdf";
+            return bill.BillNumber + ".pdf";
         }
 
 
-        private static StolonsBill GenerateBill(Stolon stolon,List<ValidatedWeekBasket> consumerWeekBaskets, ApplicationDbContext dbContext)
+        private static StolonsBill GenerateBill(Stolon stolon, List<ValidatedWeekBasket> consumerWeekBaskets, ApplicationDbContext dbContext)
         {
             StringBuilder builder = new StringBuilder();
             string billNumber = DateTime.Now.Year + "_" + DateTime.Now.GetIso8601WeekOfYear();
             StolonsBill bill = new StolonsBill(billNumber);
             bill.Stolon = stolon;
             bill.Amount = 0;
-            bill.ProducersFee =  stolon.ProducersFee;
+            bill.ProducersFee = stolon.ProducersFee;
             if (!consumerWeekBaskets.Any())
             {
                 builder.AppendLine("Rien cette semaine !");
@@ -253,17 +254,17 @@ namespace Stolons.Tools
                 foreach (ValidatedWeekBasket tempWeekBasket in consumerWeekBaskets.OrderBy(x => x.Consumer.Id))
                 {
                     ValidatedWeekBasket weekBasket = dbContext.ValidatedWeekBaskets.Include(x => x.Products).First(x => x.Id == tempWeekBasket.Id);
-                    weekBasket.Products.ForEach(x => x = dbContext.BillEntrys.Include(b=>b.Product).First(b => b.Id == x.Id));
+                    weekBasket.Products.ForEach(x => x = dbContext.BillEntrys.Include(b => b.Product).First(b => b.Id == x.Id));
                     bill.Amount += weekBasket.TotalPrice;
                     //
-                    builder.AppendLine("<h1>Adhérent : "+weekBasket.Consumer.Id+ " / " + weekBasket.Consumer.Surname + " / " + weekBasket.Consumer.Name +"</h1>");
-                    builder.AppendLine("<p>Facture : " + billNumber+"_"+ weekBasket.Consumer.Id + "</p>");
+                    builder.AppendLine("<h1>Adhérent : " + weekBasket.Consumer.Id + " / " + weekBasket.Consumer.Surname + " / " + weekBasket.Consumer.Name + "</h1>");
+                    builder.AppendLine("<p>Facture : " + billNumber + "_" + weekBasket.Consumer.Id + "</p>");
                     builder.AppendLine("<p>Téléphone : " + weekBasket.Consumer.PhoneNumber + "</p>");
-                    builder.AppendLine("<p>Total à régler : " + weekBasket.TotalPrice+ " €</p>");
+                    builder.AppendLine("<p>Total à régler : " + weekBasket.TotalPrice + " €</p>");
 
 
                     //Create list of bill entry by product
-                    Dictionary<Producer, List<BillEntry>> producersProducts = new Dictionary<Producer, List<BillEntry>>();
+                    Dictionary<Adherent, List<BillEntry>> producersProducts = new Dictionary<Adherent, List<BillEntry>>();
                     foreach (var billEntryConsumer in weekBasket.Products)
                     {
                         var billEntry = dbContext.BillEntrys.Include(x => x.Product).ThenInclude(x => x.Producer).First(x => x.Id == billEntryConsumer.Id);
@@ -276,7 +277,7 @@ namespace Stolons.Tools
                     List<int> rowsTotal = new List<int>();
                     // - Add products by producer
                     builder.AppendLine("<h2>Commande par producteur</h2>");
-                    
+
                     builder.AppendLine("<table class=\"table\">");
                     builder.AppendLine("<tr>");
                     builder.AppendLine("<th>Producteur</th>");
@@ -306,17 +307,15 @@ namespace Stolons.Tools
             bill.HtmlBillContent = builder.ToString();
             return bill;
         }
-
-        /*
-        *BILL NAME INFORMATION
-        *Bills are stored like that : bills\UserId\Year_WeekNumber_UserId
-        */
+        
+        //BILL NAME INFORMATION
+        //Bills are stored like that : bills\UserId\Year_WeekNumber_UserId
 
         //PRODUCER BILL
-        private static ProducerBill GenerateBill(Producer producer, List<BillEntryConsumer> billEntries, ApplicationDbContext dbContext)
+        private static ProducerBill GenerateBill(AdherentStolon adherentStolon, List<BillEntryConsumer> billEntries, ApplicationDbContext dbContext)
         {
             //Create bill
-            ProducerBill bill = CreateBill<ProducerBill>(producer);
+            ProducerBill bill = CreateBill<ProducerBill>(adherentStolon);
             //Calcul total amount
             decimal totalAmount = 0;
             foreach (var billEntry in billEntries)
@@ -324,7 +323,7 @@ namespace Stolons.Tools
                 totalAmount += billEntry.BillEntry.Price;
             }
             bill.OrderAmount = totalAmount;
-            bill.ProducersFee = producer.Stolon.ProducersFee;
+            bill.ProducersFee = adherentStolon.Stolon.ProducersFee;
             //Create list of bill entry by product
             Dictionary<Product, List<BillEntryConsumer>> products = new Dictionary<Product, List<BillEntryConsumer>>();
             foreach (var billEntryConsumer in billEntries)
@@ -340,10 +339,10 @@ namespace Stolons.Tools
             StringBuilder billBuilder = new StringBuilder();
             //Entete de facture
             //  Producteur
-            billBuilder.AppendLine("<p>"+producer.CompanyName + "<p>");
-            billBuilder.AppendLine("<p>" + producer.Surname?.ToUpper()+ " " + producer.Name?.ToUpper() +"<p>");
-            billBuilder.AppendLine("<p>" + producer.Address+"</p>");
-            billBuilder.AppendLine("<p>" + producer.PostCode +" " +producer.City?.ToUpper()+ "</p>");
+            billBuilder.AppendLine("<p>" + adherentStolon.User.CompanyName + "<p>");
+            billBuilder.AppendLine("<p>" + adherentStolon.User.Surname?.ToUpper() + " " + adherentStolon.User.Name?.ToUpper() + "<p>");
+            billBuilder.AppendLine("<p>" + adherentStolon.User.Address + "</p>");
+            billBuilder.AppendLine("<p>" + adherentStolon.User.PostCode + " " + adherentStolon.User.City?.ToUpper() + "</p>");
             billBuilder.AppendLine("<br>");
             billBuilder.AppendLine("<p>Facture n° " + bill.BillNumber + "</p>");
             billBuilder.AppendLine("<p>Année : " + DateTime.Now.Year);
@@ -351,7 +350,7 @@ namespace Stolons.Tools
             //  Destinataire
 
             //
-            
+
             billBuilder.AppendLine("<br>");
             billBuilder.AppendLine("<table class=\"table\">");
             billBuilder.AppendLine("<tr>");
@@ -372,7 +371,7 @@ namespace Stolons.Tools
                 billBuilder.AppendLine("<tr>");
                 billBuilder.AppendLine("<td>" + product.Key.Name + "</td>");
                 billBuilder.AppendLine("<td>" + product.Key.GetQuantityString(quantity) + "</td>");
-                billBuilder.AppendLine("<td>" + (product.Key.TaxEnum == Product.TAX.None ? "NA": product.Key.Tax.ToString()) + " %</td>");
+                billBuilder.AppendLine("<td>" + (product.Key.TaxEnum == Product.TAX.None ? "NA" : product.Key.Tax.ToString()) + " %</td>");
                 billBuilder.AppendLine("<td>" + (product.Key.Type == SellType.Piece ? product.Key.UnitPriceWithoutFeeAndTax : product.Key.PriceWithoutFeeAndTax) + " €" + "</td>");
                 billBuilder.AppendLine("<td>" + productTotalWithoutTax + " €" + "</td>");
                 billBuilder.AppendLine("</tr>");
@@ -380,7 +379,7 @@ namespace Stolons.Tools
                 if (product.Key.TaxEnum != Product.TAX.None)
                 {
                     if (taxTotal.ContainsKey(product.Key.Tax))
-                        taxTotal[product.Key.Tax]+= productTotalWithoutTax;
+                        taxTotal[product.Key.Tax] += productTotalWithoutTax;
                     else
                         taxTotal.Add(product.Key.Tax, productTotalWithoutTax);
                 }
@@ -391,17 +390,17 @@ namespace Stolons.Tools
             billBuilder.AppendLine("<td></td>");
             billBuilder.AppendLine("<td></td>");
             billBuilder.AppendLine("<td>Total HT</td>");
-            billBuilder.AppendLine("<td>"+ totalWithoutTax + " €</td>");
+            billBuilder.AppendLine("<td>" + totalWithoutTax + " €</td>");
             billBuilder.AppendLine("</tr>");
             bill.TaxAmount = 0;
-            foreach(var tax in taxTotal)
+            foreach (var tax in taxTotal)
             {
-                decimal taxAmount = Math.Round(tax.Value / 100m * tax.Key,2);
+                decimal taxAmount = Math.Round(tax.Value / 100m * tax.Key, 2);
                 billBuilder.AppendLine("<tr>");
                 billBuilder.AppendLine("<td></td>");
                 billBuilder.AppendLine("<td></td>");
                 billBuilder.AppendLine("<td></td>");
-                billBuilder.AppendLine("<td>TAV "+ tax.Key +"%</td>");
+                billBuilder.AppendLine("<td>TAV " + tax.Key + "%</td>");
                 billBuilder.AppendLine("<td>" + taxAmount + " €</td>");
                 billBuilder.AppendLine("</tr>");
                 bill.TaxAmount += taxAmount;
@@ -414,7 +413,7 @@ namespace Stolons.Tools
             billBuilder.AppendLine("<td>" + bill.BillAmount + " €</td>");
             billBuilder.AppendLine("</tr>");
             billBuilder.AppendLine("</table>");
-            
+
             bill.HtmlBillContent = billBuilder.ToString();
 
 
@@ -430,7 +429,7 @@ namespace Stolons.Tools
             //Entete de facture
             //  Producteur
             orderBuilder.AppendLine("<h3> Commande n°" + bill.BillNumber + "</h3>");
-            orderBuilder.AppendLine("<p>" + producer.CompanyName + "<p>");
+            orderBuilder.AppendLine("<p>" + adherentStolon.User.CompanyName + "<p>");
             orderBuilder.AppendLine("<p>Année : " + DateTime.Now.Year);
             orderBuilder.AppendLine("<p>Semaine : " + DateTime.Now.GetIso8601WeekOfYear());
             orderBuilder.AppendLine("<br>");
@@ -484,13 +483,13 @@ namespace Stolons.Tools
 
             #endregion Par client
             bill.HtmlOrderContent = orderBuilder.ToString();
-            return bill;            
+            return bill;
         }
 
         //CONSUMER BILL
         private static ConsumerBill GenerateBill(ValidatedWeekBasket weekBasket, ApplicationDbContext dbContext)
         {
-            ConsumerBill bill = CreateBill<ConsumerBill>(weekBasket.Consumer);
+            ConsumerBill bill = CreateBill<ConsumerBill>(weekBasket.ConsumerStolon);
             StringBuilder builder = new StringBuilder();
             bill.OrderAmount = 0;
 
@@ -529,11 +528,11 @@ namespace Stolons.Tools
             return bill;
         }
 
-        private static T CreateBill<T>(StolonsUser user) where T : class, IBill , new()
+        private static T CreateBill<T>(AdherentStolon userStolon) where T : class, IBill, new()
         {
             IBill bill = new T();
-            bill.BillNumber = DateTime.Now.Year + "_" + DateTime.Now.GetIso8601WeekOfYear() +"_" + user.Id;
-            bill.User = user;
+            bill.BillNumber = DateTime.Now.Year + "_" + DateTime.Now.GetIso8601WeekOfYear() + "_" + userStolon.Id;
+            bill.AdherentStolon = userStolon;
             bill.State = BillState.Pending;
             bill.EditionDate = DateTime.Now;
             return bill as T;
@@ -541,7 +540,7 @@ namespace Stolons.Tools
 
         public static void GeneratePDF(IBill bill)
         {
-            string billWebAddress = Path.Combine("http://",Configurations.SiteUrl ,"Bills","ShowBill" ,bill.BillNumber).Replace("\\", "/");
+            string billWebAddress = Path.Combine("http://", Configurations.SiteUrl, "Bills", "ShowBill", bill.BillNumber).Replace("\\", "/");
             GeneratePDF(billWebAddress, bill.GetFilePath());
         }
 
@@ -566,6 +565,7 @@ namespace Stolons.Tools
             string arguments = "\"" + rasterizejs + "\" \"" + webAddress + "\" " + filePath;
             var proc = Process.Start(phantomjs, arguments);
         }
+        */
 
         public static int GetIso8601WeekOfYear(this DateTime time)
         {
@@ -581,6 +581,5 @@ namespace Stolons.Tools
             // Return the week of our adjusted day
             return CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(time, CalendarWeekRule.FirstFullWeek, DayOfWeek.Monday);
         }
-        
     }
 }

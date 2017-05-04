@@ -12,88 +12,97 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
-using Stolons.ViewModels.Producers;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using Stolons.Helpers;
 using Stolons.ViewModels.Sympathizers;
 using Stolons.Models.Users;
+using Stolons.Models.Transactions;
 
 namespace Stolons.Controllers
 {
-    public class SympathizersController : UsersBaseController
+    public class SympathizersController : BaseController
     {
         public SympathizersController(ApplicationDbContext context, IHostingEnvironment environment,
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            IServiceProvider serviceProvider) : base(context,environment,userManager,signInManager,serviceProvider)
+            IServiceProvider serviceProvider) : base(serviceProvider,userManager,context,environment,signInManager)
         {
 
         }
-
-        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
+        
         // GET: Sympathizer
         public IActionResult Index()
         {
-            return View(_context.Sympathizers.Where(x=>x.StolonId == GetCurrentStolon().Id) .ToList());
-        }
+            if (!Authorized(Role.Volunteer))
+                return Unauthorized();
 
-        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
+            return View(new SympathizersViewModel(GetActiveAdherentStolon(), _context.Sympathizers.Include(x=>x.Stolon).Where(x=>x.StolonId == GetCurrentStolon().Id) .ToList()));
+        }
+        
         // GET: Sympathizer/Details/5
-        public IActionResult Details(int? id)
+        public IActionResult Details(Guid id)
         {
+            if (!Authorized(Role.Volunteer))
+                return Unauthorized();
+
             if (id == null)
             {
                 return NotFound();
             }
 
-            Sympathizer sympathizer = _context.Sympathizers.Single(m => m.Id == id);
+            Sympathizer sympathizer = _context.Sympathizers.FirstOrDefault(x => x.Id == id);
             if (sympathizer == null)
             {
                 return NotFound();
             }
-            return View(new SympathizerViewModel(sympathizer));
+            return View(new SympathizerViewModel(GetActiveAdherentStolon(), sympathizer));
         }
-
-
-        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
+        
         // GET: Sympathizer/PartialDetails/5
-        public IActionResult PartialDetails(int? id)
+        public IActionResult PartialDetails(Guid id)
         {
+            if (!Authorized(Role.Volunteer))
+                return Unauthorized();
+
             if (id == null)
             {
                 return NotFound();
             }
 
-            Sympathizer Sympathizer = _context.Sympathizers.Single(m => m.Id == id);
+            Sympathizer Sympathizer = _context.Sympathizers.FirstOrDefault(x => x.Id == id);
             if (Sympathizer == null)
             {
                 return NotFound();
             }
-            return PartialView(new SympathizerViewModel(Sympathizer));
+            return PartialView(new SympathizerViewModel(GetActiveAdherentStolon(), Sympathizer));
         }
 
         // GET: Sympathizer/Create
-        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
         public IActionResult Create()
         {
-            return View(new SympathizerViewModel(new Sympathizer()));
+            if (!Authorized(Role.Volunteer))
+                return Unauthorized();
+
+            return View(new SympathizerViewModel(GetActiveAdherentStolon(), new Sympathizer()));
         }
 
         // POST: Sympathizer/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
         public IActionResult Create(SympathizerViewModel vmSympathizer)
         {
+            if (!Authorized(Role.Volunteer))
+                return Unauthorized();
+
             if (ModelState.IsValid)
             {
                 #region Creating Sympathizer
                 string fileName = Configurations.DefaultFileName;
 
                 //Setting value for creation
-                vmSympathizer.Sympathizer.RegistrationDate = DateTime.Now;
                 vmSympathizer.Sympathizer.StolonId = GetCurrentStolon().Id;
+                vmSympathizer.Sympathizer.RegistrationDate = DateTime.Now;
                 _context.Sympathizers.Add(vmSympathizer.Sympathizer);
                 #endregion Creating Sympathizer
 
@@ -105,29 +114,33 @@ namespace Stolons.Controllers
         }
 
         // GET: Sympathizer/Edit/5
-        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
-        public IActionResult Edit(int? id)
+        public IActionResult Edit(Guid id)
         {
+            if (!Authorized(Role.Volunteer))
+                return Unauthorized();
+
             if (id == null)
             {
                 return NotFound();
             }
 
-            Sympathizer sympathizer = _context.Sympathizers.Single(m => m.Id == id);
+            Sympathizer sympathizer = _context.Sympathizers.FirstOrDefault(x => x.Id == id);
             if (sympathizer == null)
             {
                 return NotFound();
             }
 
-            return View(new SympathizerViewModel(sympathizer));
+            return View(new SympathizerViewModel(GetActiveAdherentStolon(), sympathizer));
         }
 
         // POST: Sympathizer/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
         public IActionResult Edit(SympathizerViewModel vmSympathizer)
         {
+            if (!Authorized(Role.Volunteer))
+                return Unauthorized();
+
             if (ModelState.IsValid)
             {        
                 _context.Update(vmSympathizer.Sympathizer);
@@ -139,34 +152,66 @@ namespace Stolons.Controllers
 
         // GET: Sympathizer/Delete/5
         [ActionName("Delete")]
-        [Authorize(Roles = Configurations.Role_WedAdmin)]
-        public IActionResult Delete(int? id)
+        public IActionResult Delete(Guid id)
         {
+            if (!Authorized(Role.Admin))
+                return Unauthorized();
+
             if (id == null)
             {
                 return NotFound();
             }
 
-            Sympathizer sympathizer = _context.Sympathizers.Single(m => m.Id == id);
+            Sympathizer sympathizer = _context.Sympathizers.FirstOrDefault(x => x.Id == id);
             if (sympathizer == null)
             {
                 return NotFound();
             }
-            return View(new SympathizerViewModel(sympathizer));
+            return View(new SympathizerViewModel(GetActiveAdherentStolon(), sympathizer));
         }
 
         // POST: Sympathizer/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = Configurations.Role_WedAdmin)]
-        public IActionResult DeleteConfirmed(int id)
+        public IActionResult DeleteConfirmed(Guid id)
         {
-            Sympathizer sympathizer = _context.Sympathizers.Single(m => m.Id == id);           
+            if (!Authorized(Role.Admin))
+                return Unauthorized();
+
+            Sympathizer sympathizer = _context.Sympathizers.FirstOrDefault(x => x.Id == id);           
             _context.Sympathizers.Remove(sympathizer);
             //Save
             _context.SaveChanges();
             return RedirectToAction("Index");
         }
-        
+
+        /// <summary>
+        /// PaySympathiserSubscription
+        /// </summary>
+        /// <param name="id">Sympathizer ID</param>
+        /// <returns></returns>
+        public IActionResult PaySympathiserSubscription(Guid id)
+        {
+            if (!Authorized(Role.Volunteer))
+                return Unauthorized();
+
+            Transaction transaction = new Transaction();
+            Sympathizer sympathizer = _context.Sympathizers.FirstOrDefault(x => x.Id == id);
+            Stolon currentStolon = GetCurrentStolon();
+            sympathizer.SubscriptionPaid = true;
+            transaction.Amount = currentStolon.SympathizerSubscription;
+            //Add a transaction
+            transaction.Stolon = currentStolon;
+            transaction.AddedAutomaticly = true;
+            transaction.Date = DateTime.Now;
+            transaction.Type = Transaction.TransactionType.Inbound;
+            transaction.Category = Transaction.TransactionCategory.Subscription;
+            transaction.Description = "Paiement de la cotisation du sympathisant : " + sympathizer.Name + " " + sympathizer.Surname;
+            _context.Transactions.Add(transaction);
+            //Save
+            _context.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
     }
 }

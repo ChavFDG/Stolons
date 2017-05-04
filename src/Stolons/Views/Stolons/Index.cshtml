@@ -1,5 +1,5 @@
-@using Stolons.Models;
-@model IEnumerable<Stolon>
+ï»¿@using Stolons.ViewModels.Stolons;
+@model StolonsViewModel
 
 
 <h2>Stolons</h2>
@@ -17,10 +17,10 @@
                 Logo
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.PhoneNumber)
+                @Html.DisplayNameFor(model => model.Stolons.First().PhoneNumber)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ContactMailAddress)
+                @Html.DisplayNameFor(model => model.Stolons.First().ContactMailAddress)
             </th>
             <th>
                 Etat
@@ -31,7 +31,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var item in Model.Stolons)
         {
             <tr>
                 <td>
@@ -53,7 +53,7 @@
                             <td>Ouvert</td>
                             break;
                         case Stolon.StolonState.Closed:
-                            <td>Fermé</td>
+                            <td>FermÃ©</td>
                             break;
                     }                
                 <td>
@@ -65,7 +65,7 @@
                         </a>
                         <ul class="dropdown-menu">
                             <li><a asp-action="Edit" asp-route-id="@item.Id">Modifer</a></li>
-                            <li><a asp-action="Details" asp-route-id="@item.Id">Voir détail</a></li>
+                            <li><a asp-action="Details" asp-route-id="@item.Id">Voir dÃ©tail</a></li>
                             <li><a asp-action="Delete" asp-route-id="@item.Id">Supprimer</a></li>
                         </ul>
                     </div>

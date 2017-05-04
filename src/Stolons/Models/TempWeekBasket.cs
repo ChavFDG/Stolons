@@ -12,9 +12,21 @@ namespace Stolons.Models
     {
         [Key]
         public Guid Id { get; set; }
-        
+
+        public AdherentStolon ConsumerStolon { get; set; }
+
         [Display(Name = "Consomateur")]
-        public Consumer Consumer { get; set; }
+        public Adherent Consumer
+        {
+            get
+            {
+                return ConsumerStolon.Adherent;
+            }
+            set
+            {
+                ConsumerStolon.Adherent = value;
+            }
+        }
 
         [Display(Name = "Produits")]
         public List<BillEntry> Products { get; set; }

@@ -10,11 +10,11 @@ namespace Stolons.ViewModels.Home
     public class StolonContactViewModel
     {
         public Stolon Stolon { get; }
-        public Dictionary<Producer,List<Product>> ProducersProd { get;}
+        public Dictionary<Adherent,List<Product>> ProducersProd { get;}
 
         public Dictionary<ProductType, List<ProductFamilly>> AvailableProductFamillyAndType { get; } = new Dictionary<ProductType, List<ProductFamilly>>();
 
-        public StolonContactViewModel(Stolon stolon , Dictionary<Producer, List<Product>> producersProd )
+        public StolonContactViewModel(Stolon stolon , Dictionary<Adherent, List<Product>> producersProd )
         {
             Stolon = stolon;
             ProducersProd = producersProd;

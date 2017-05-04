@@ -58,63 +58,6 @@ namespace Stolons
 
         #endregion Configuration
 
-        #region UserManagement
-
-        public const string Role_User = "User";
-        public const string Role_Volunteer = "Volunteer";
-        public const string Role_StolonAdmin = "StolonAdmin";
-        public const string Role_WedAdmin = "WebAdmin";
-
-        public enum Role
-        {
-            /// <summary>
-            /// Simple user 
-            /// </summary>
-            [Display(Name = "Adhérent")]
-            User = 1,
-            /// <summary>
-            /// Volunteer
-            /// </summary>
-            [Display(Name = "Bénévole")]
-            Volunteer = 2,
-            /// <summary>
-            /// Admin of the stolon
-            /// </summary>
-            [Display(Name = "Administrateur du stolon")]
-            StolonAdmin = 3,
-            /// <summary>
-            /// WebAdmin of the web site
-            /// </summary>
-            [Display(Name = "Administrateur du site")]
-            WebAdmin = 4
-        }
-
-        public const string UserType_SympathizerUser = "Sympathizer";
-        public const string UserType_Consumer = "Consumer";
-        public const string UserType_Producer  = "Producer";
-
-        public enum UserType
-        {
-            [Display(Name = "Adhérent Sympathisant")]
-            Sympathizer,
-            [Display(Name = "Adhérent consomateur")]
-            Consumer,
-            [Display(Name = "Adhérent producteur")]
-            Producer,
-        }
-
-        internal static IList<string> GetRoles()
-        {
-            return Enum.GetNames(typeof(Role));
-        }
-
-        internal static IList<string> GetUserTypes()
-        {
-            return Enum.GetNames(typeof(UserType));
-        }
-
-        #endregion UserManagement
-
         #region FileManagement
 
         public static string StolonLogoStockagePath = Path.Combine("uploads", "images","logos");
@@ -142,8 +85,8 @@ namespace Stolons
 
         public static string GetUrl(IBill bill)
         {
-            string url = GetUrl(bill.User is Consumer ? Configurations.ConsumersBillsStockagePath : Configurations.ProducersBillsStockagePath);
-            url += "/" + bill.User.Id + "/" + bill.BillNumber + ".pdf";
+            string url = GetUrl(bill.AdherentStolon is Adherent ? Configurations.ConsumersBillsStockagePath : Configurations.ProducersBillsStockagePath);
+            url += "/" + bill.AdherentStolon.LocalId + "/" + bill.BillNumber + ".pdf";
             return url;
         }
 
@@ -176,51 +119,27 @@ namespace Stolons
 
         #endregion FIleManagement
 
-        #region Subscription
 
-        public static decimal GetSubscriptionAmount(StolonsUser user)
-        {
-            if(user is Sympathizer)
-                return user.Stolon.GetSubscriptionAmount(UserType.Sympathizer);
-            if (user is Consumer)
-                return user.Stolon.GetSubscriptionAmount(UserType.Consumer);
-            if (user is Producer)
-                return user.Stolon.GetSubscriptionAmount(UserType.Producer);
-            return -1;
-        }
 
-        public static decimal GetSubscriptionAmount(this Stolon stolon,UserType userType)
+        public static decimal GetSubscriptionAmount(AdherentStolon adherentStolon)
         {
-            int currentMonth = DateTime.Now.Month -6;
-            int subscriptionMonth = (int)stolon.SubscriptionStartMonth;
+            int currentMonth = DateTime.Now.Month - 6;
+            int subscriptionMonth = (int)adherentStolon.Stolon.SubscriptionStartMonth;
             if (currentMonth < subscriptionMonth)
                 currentMonth += 12;
             bool isHalfSubscription = currentMonth > (subscriptionMonth + 6);
-
-            switch (userType)
-            {
-                case UserType.Sympathizer:
-                    return stolon.SympathizerSubscription;
-                case UserType.Consumer:
-                    return isHalfSubscription ? stolon.ConsumerSubscription /2 : stolon.ConsumerSubscription;
-                case UserType.Producer:
-                    return isHalfSubscription ? stolon.ProducerSubscription / 2 : stolon.ProducerSubscription;
-            }
-
-            return -1;
+            //
+            if (adherentStolon.IsProducer)
+                return isHalfSubscription ? adherentStolon.Stolon.ProducerSubscription / 2 : adherentStolon.Stolon.ProducerSubscription;
+            else
+                return isHalfSubscription ? adherentStolon.Stolon.ConsumerSubscription / 2 : adherentStolon.Stolon.ConsumerSubscription;
 
         }
-        public static string GetStringSubscriptionAmount(StolonsUser user)
+
+        public static string GetStringSubscriptionAmount(AdherentStolon adherentStolon)
         {
-            return GetSubscriptionAmount(user) + "€";
+            return GetSubscriptionAmount(adherentStolon) + "€";
         }
-
-        public static string GetStringSubscriptionAmount(this Stolon stolon,UserType userType)
-        {
-            return stolon.GetSubscriptionAmount(userType) + "€";
-        }
-
-        #endregion Subscription
 
     }
 }

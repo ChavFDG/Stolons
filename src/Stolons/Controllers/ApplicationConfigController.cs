@@ -24,18 +24,22 @@ namespace Stolons.Controllers
         {
 
         }
-
-        [Authorize(Roles = Role_WedAdmin)]
+        
         // GET: Stolon
         public IActionResult Index()
         {
+            if(!AuthorizedWebAdmin())
+                return Unauthorized();
+
             return View(_context.ApplicationConfig.First());
         }
-
-        [Authorize(Roles = Role_WedAdmin)]
+        
         // GET: Stolon/Edit/5
         public IActionResult Edit()
         {
+            if (!AuthorizedWebAdmin())
+                return Unauthorized();
+
             return View(_context.ApplicationConfig.First());
         }
 
@@ -49,9 +53,11 @@ namespace Stolons.Controllers
         // POST: Stolon/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = Role_WedAdmin)]
         public IActionResult Edit(ApplicationConfig applicationConfig)
         {
+            if (!AuthorizedWebAdmin())
+                return Unauthorized();
+
             if (ModelState.IsValid)
             {
                 //Configurations.Application = applicationConfig;

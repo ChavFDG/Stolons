@@ -11,17 +11,12 @@ namespace Stolons.Models.Messages
     public abstract class Message
     {
         [Key]
-        public Guid Id { get; set; }
+        public Guid Id { get; set; }        
 
-        public int UserKey { get; set; }
+        public Guid PublishByAdherentStolonId { get; set; }
         
-        [ForeignKey(nameof(UserKey))]
-        public StolonsUser User { get; set; }
-
-        public Guid StolonId { get; set; }
-        
-        [ForeignKey(nameof(StolonId))]
-        public Stolon Stolon{ get; set; }
+        [ForeignKey(nameof(PublishByAdherentStolonId))]
+        public AdherentStolon PublishBy{ get; set; }
         
         [Required]
         [Display(Name = "Contenu")]

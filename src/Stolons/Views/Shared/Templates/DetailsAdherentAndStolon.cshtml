@@ -1,0 +1,9 @@
+@using Stolons.ViewModels.Adherents;
+@model AdherentStolonViewModel
+
+<div>
+    <hr />
+    @Html.Partial("Templates/DetailsAdherent", new AdherentViewModel(Model.AdherentStolon, Model.AdherentStolon.Adherent,Model.AdherentStolon.IsProducer? AdherentEdition.Producer: AdherentEdition.Adherent))
+
+    @Html.Partial("Templates/DetailsAdherentStolon", Model)
+</div>

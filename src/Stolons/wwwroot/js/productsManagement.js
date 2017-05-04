@@ -1,194 +1,199 @@
 
 var CurrentModeModel = Backbone.Model.extend(
     {
-	default: {mode: 0},
-	/*
-	  0: commandes,
-	  1: livraisons et stocks
-	 */
+        default: { mode: 0 },
+        /*
+          0: commandes,
+          1: livraisons et stocks
+         */
 
-	url: "/api/currentMode",
+        url: "/api/currentMode",
 
-	initialize: function() {
-	    this.fetch();
-	},
+        initialize: function () {
+            this.fetch();
+        },
 
-	parse: function(data) {
-	    return {mode: data};
-	}
+        parse: function (data) {
+            return { mode: data };
+        }
     }
 );
 
 window.CurrentModeModel = new CurrentModeModel();
 
-var ProductsCollection = Backbone.Collection.extend(
+var ProductsStockCollection = Backbone.Collection.extend(
     {
-	defaults: [],
+        defaults: [],
 
-	model: ProductModel,
+        model: ProductStockModel,
 
-	url: "/api/producerProducts",
+        url: "/api/producerProducts",
 
-	initialize: function() {
-	    this.fetch();
-	},
+        initialize: function () {
+            this.fetch();
+        },
 
-	parse: function(data) {
-	    var products = [];
+        parse: function (data) {
+            var productsStock = [];
 
-	    _.forEach(data, function(productVm) {
-		var product = productVm.Product;
-		product["OrderedQuantityString"] = productVm.OrderedQuantityString;
-		products.push(product);
-	    });
-	    return products;
-	}
+            _.forEach(data, function (productStockVm) {
+                var productStock = productStockVm.ProductStock;
+                productsStock["OrderedQuantityString"] = productStockVm.OrderedQuantityString;
+                productsStock.push(productStock);
+            });
+            return productsStock;
+        }
     }
 );
 
-window.ProductsModel = new ProductsCollection();
+window.ProductsModel = new ProductsStockCollection();
 
 var StockMgtViewModal = Backbone.View.extend({
 
     el: "#stockMgt",
 
     events: {
-	"change #WeekStock": "validateWeekStock",
-	"change #RemainingStock": "validateRemainingStock",
-	"click #saveStocks" : "saveStocks",
-	"click #cancelEditStocks": "closeModal"
+        "change #WeekStock": "validateWeekStock",
+        "change #RemainingStock": "validateRemainingStock",
+        "click #saveStocks": "saveStocks",
+        "click #cancelEditStocks": "closeModal"
     },
 
     template: _.template($("#stockMgtTemplate").html()),
 
-    initialize: function() {
-	this.validation= {};
+    initialize: function () {
+        this.validation = {};
     },
 
-    open: function(productId) {
-	this.currentProduct = ProductsModel.get(productId);
-	console.log(this.currentProduct);
-	this.renderModal();
-	if (window.CurrentModeModel.get("mode") == 0) {
-	    this.validateRemainingStock();
-	} else {
-	    this.validateWeekStock();
-	}
+    open: function (productStockId) {
+        this.currentProductStock = ProductsModel.get(productStockId);
+        console.log(this.currentProductStock);
+        this.renderModal();
+        if (window.CurrentModeModel.get("mode") == 0) {
+            this.validateRemainingStock();
+        } else {
+            this.validateWeekStock();
+        }
     },
 
-    isInt: function(n) {
-	return n % 1 === 0;
+    isInt: function (n) {
+        return n % 1 === 0;
     },
 
-    validateWeekStock: function() {
-	var weekStock = Math.abs(parseFloat($("#WeekStock").val()));
-	this.currentProduct.set({WeekStock: weekStock});
+    validateWeekStock: function () {
+        console.log("validate week stock, field  =" + $("#WeekStock").val());
+        var weekStock = Math.abs(parseFloat($("#WeekStock").val()));
+        this.currentProductStock.set({ WeekStock: weekStock });
 
-	if (this.currentProduct.get("Type") != 1) {
-	    console.log("qtyStp = " + this.currentProduct.get("QuantityStep"));
-	    if ((weekStock * 1000) % this.currentProduct.get("QuantityStep") != 0) {
-		this.validation.weekStockError = "Le stock doit être divisible par le palier de vente (" + this.currentProduct.get("QuantityStepString") + ").";
-		this.render();
-		return;
-	    }
-	} else {
-	    if (!this.isInt(weekStock)) {
-		this.validation.weekStockError = "Le nombre de pièces doit être un nombre entier.";
-		this.render();
-		return;
-	    }
-	}
-	this.validation.weekStockError = "";
-	this.render();
+        if (this.currentProductStock.get("Product").get("Type") != 1) {
+            console.log("qtyStp = " + this.currentProductStock.get("Product").get("QuantityStep"));
+            if ((weekStock * 1000) % this.currentProductStock.get("Product").get("QuantityStep") != 0) {
+                this.validation.weekStockError = "Le stock doit être divisible par le palier de vente (" + this.currentProductStock.get("Product").get("QuantityStepString") + ").";
+                console.log("stock divisible...");
+                this.render();
+                return;
+            }
+        } else {
+            if (!this.isInt(weekStock)) {
+                this.validation.weekStockError = "Le nombre de pièces doit être un nombre entier.";
+                console.log("stock doit être entier stock = " + weekStock);
+                this.render();
+                return;
+            }
+        }
+        this.validation.weekStockError = "";
+        this.render();
     },
 
-    validateRemainingStock: function() {
-	var remainingStock = Math.
-	    abs(parseFloat($("#RemainingStock").val()));
-	this.currentProduct.set({RemainingStock: remainingStock});
+    validateRemainingStock: function () {
+        var remainingStock = Math.
+            abs(parseFloat($("#RemainingStock").val()));
+        this.currentProductStock.set({ RemainingStock: remainingStock });
 
-	if (this.currentProduct.get("Type") != 1) {
-	    console.log("qtyStp = " + this.currentProduct.get("QuantityStep"));
-	    if ((remainingStock * 1000) % this.currentProduct.get("QuantityStep") != 0) {
-		this.validation.remainingStockError = "Le stock doit être divisible par le palier de vente.";
- 		this.render();
-		return;
-	    }
-	} else {
-	    if (!this.isInt(remainingStock)) {
-		this.validation.remainingStockError = "Le nombre de pièces doit être un nombre entier.";
-		this.render();
-		return;
-	    }
-	}
-	this.validation.remainingStockError = "";
-	this.render();
+        if (this.currentProductStock.get("Product").get("Type") != 1) {
+            console.log("qtyStp = " + this.currentProductStock.get("Product").get("QuantityStep"));
+            if ((remainingStock * 1000) % this.currentProductStock.get("Product").get("QuantityStep") != 0) {
+                this.validation.remainingStockError = "Le stock doit être divisible par le palier de vente.";
+                console.log("Le stock doit être divisible par le palier de vente.");
+                this.render();
+                return;
+            }
+           
+        } else {
+            if (!this.isInt(remainingStock)) {
+                this.validation.remainingStockError = "Le nombre de pièces doit être un nombre entier.";
+                console.log("Le nombre de pièces doit être un nombre entier.");
+                this.render();
+                return;
+            }
+        }
+        this.validation.remainingStockError = "";
+        this.render();
     },
 
-    saveStocks: function() {
-	if ($("#saveStocks").attr("disabled") == "disabled") {
-	    return false;
-	}
-	var self = this;
-	var responseHandler = function(responseText) {
-	    // var data = JSON.parse(responseText);
-	    // if (data.error == "INVALID_STOCK") {
-	    // 	self.validation.remainingStockError = "TODO for error";
-	    // 	self.render();
-	    // } else {
-	    location.reload();
-	    //}
-	};
-	var promise;
-	if (window.CurrentModeModel.get("mode") == 0) {
-	    promise = $.ajax({
-		url: "/ProductsManagement/ChangeCurrentStock",
-		type: 'POST',
-		data: {
-		    id: self.currentProduct.get("Id"),
-		    newStock: self.currentProduct.get("RemainingStock"),
-		}
-	    });
-	} else {
-	    promise = $.ajax({
-		url: "/ProductsManagement/ChangeStock",
-		type: 'POST',
-		data: {
-		    id: self.currentProduct.get("Id"),
-		    newStock: self.currentProduct.get("WeekStock"),
-		}
-	    });
-	}
-	promise.then(responseHandler);
-	return false;
+    saveStocks: function () {
+        if ($("#saveStocks").attr("disabled") == "disabled") {
+            return false;
+        }
+        var self = this;
+        var responseHandler = function (responseText) {
+            // var data = JSON.parse(responseText);
+            // if (data.error == "INVALID_STOCK") {
+            // 	self.validation.remainingStockError = "TODO for error";
+            // 	self.render();
+            // } else {
+            location.reload();
+            //}
+        };
+        var promise;
+        if (window.CurrentModeModel.get("mode") == 0) {
+            promise = $.ajax({
+                url: "/ProductsManagement/ChangeCurrentStock",
+                type: 'POST',
+                data: {
+                    id: self.currentProductStock.get("Id"),
+                    newStock: self.currentProductStock.get("RemainingStock"),
+                }
+            });
+        } else {
+            promise = $.ajax({
+                url: "/ProductsManagement/ChangeStock",
+                type: 'POST',
+                data: {
+                    id: self.currentProductStock.get("Id"),
+                    newStock: self.currentProductStock.get("WeekStock"),
+                }
+            });
+        }
+        promise.then(responseHandler);
+        return false;
     },
 
-    closeModal: function() {
-	this.$el.modal('hide');
+    closeModal: function () {
+        this.$el.modal('hide');
     },
 
-    onClose: function() {
-	this.currentProduct = null;
-	this.$el.off('hide.bs.modal');
-	this.$el.empty();
+    onClose: function () {
+        this.currentProductStock = null;
+        this.$el.off('hide.bs.modal');
+        this.$el.empty();
     },
 
-    render: function() {
-	this.$el.html(this.template(
-	    {
-		currentMode: window.CurrentModeModel.toJSON(),
-		productModel: this.currentProduct,
-		product: this.currentProduct.toJSON(),
-		validation: this.validation
-	    }
-	));
+    render: function () {
+        this.$el.html(this.template(
+            {
+                //productModel: new ProductModel(this.currentProductStock.get("Product")),
+                productStock: this.currentProductStock.toJSON(),
+                validation: this.validation
+            }
+        ));
     },
 
-    renderModal: function() {
-	this.render();
-	this.$el.modal({keyboard: true, show: true});
-	this.$el.on('hide.bs.modal', _.bind(this.onClose, this));
+    renderModal: function () {
+        this.render();
+        this.$el.modal({ keyboard: true, show: true });
+        this.$el.on('hide.bs.modal', _.bind(this.onClose, this));
     }
 });
 
-window.StockMgtViewModal = new StockMgtViewModal({model: window.ProductsModel});
+window.StockMgtViewModal = new StockMgtViewModal({ model: window.ProductsModel });

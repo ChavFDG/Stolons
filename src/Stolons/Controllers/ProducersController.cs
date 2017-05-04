@@ -12,16 +12,23 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
-using Stolons.ViewModels.Producers;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using Stolons.Helpers;
 using Stolons.Models.Users;
+using Stolons.ViewModels.Adherents;
 
 namespace Stolons.Controllers
 {
-    public class ProducersController : UsersBaseController
+    public class ProducersController : AdherentsBaseController
     {
+        public override AdherentEdition EditionType
+        {
+            get
+            {
+                return AdherentEdition.Producer;
+            }
+        }
 
         public ProducersController(ApplicationDbContext context, IHostingEnvironment environment,
             UserManager<ApplicationUser> userManager,
@@ -30,187 +37,47 @@ namespace Stolons.Controllers
         {
 
         }
-
-        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
+        
         // GET: Producer
-        public IActionResult Index()
+        public override IActionResult Index()
         {
-            return View(_context.Producers.Where(x => x.StolonId == GetCurrentStolon().Id).ToList());
+            if (!Authorized(Role.Volunteer))
+                return Unauthorized();
+
+            return View(new AdherentsStolonViewModel(GetActiveAdherentStolon(), _context.AdherentStolons.Include(x=>x.Adherent).Include(x=>x.Stolon).Where(x => x.IsProducer).ToList()));
         }
-
-        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
-        // GET: Producer/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            Producer producer = _context.Producers.Single(m => m.Id == id);
-            if (producer == null)
-            {
-                return NotFound();
-            }
-            ApplicationUser producerAppUser = _context.Users.First(x => x.Email == producer.Email);
-            return View(new ProducerViewModel(producer, await GetUserRole(producerAppUser)));
-        }
-
-
-        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
+        
+               
         // GET: Producer/PartialDetails/5
-        public async Task<IActionResult> PartialDetails(int? id)
+        public IActionResult PartialDetails(Guid id)
         {
+            if (!Authorized(Role.Volunteer))
+                return Unauthorized();
+
             if (id == null)
             {
                 return NotFound();
             }
 
-            Producer producer = _context.Producers.Single(m => m.Id == id);
-            if (producer == null)
+            Adherent adherent = _context.Adherents.FirstOrDefault(x => x.Id == id);
+            if (adherent == null)
             {
                 return NotFound();
             }
-            ApplicationUser producerAppUser = _context.Users.First(x => x.Email == producer.Email);
-            return PartialView(new ProducerViewModel(producer, await GetUserRole(producerAppUser)));
-        }
-
-        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
-        // GET: Producer/Create
-        public IActionResult Create()
-        {
-            return View(new ProducerViewModel(new Producer(),Configurations.Role.User));
-        }
-
-        // POST: Producer/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
-        public async Task<IActionResult> Create(ProducerViewModel vmProducer, IFormFile uploadFile)
-        {
-
-            if (ModelState.IsValid)
-            {
-                #region Creating Producer
-                UploadAndSetAvatar(vmProducer.Producer, uploadFile);
-                vmProducer.Producer.RegistrationDate = DateTime.Now;
-                vmProducer.Producer.StolonId = GetCurrentStolon().Id;
-                _context.Producers.Add(vmProducer.Producer);
-                #endregion Creating Producer
-
-                #region Creating linked application data
-                var producerAppUser = new ApplicationUser { UserName = vmProducer.Producer.Email, Email = vmProducer.Producer.Email };
-                producerAppUser.User = vmProducer.Producer;
-
-                var result = await _userManager.CreateAsync(producerAppUser, vmProducer.Producer.Email);
-                if (result.Succeeded)
-                {
-                    //Add user role
-                    result = await _userManager.AddToRoleAsync(producerAppUser, vmProducer.UserRole.ToString());
-                    //Add user type
-                    result = await _userManager.AddToRoleAsync(producerAppUser, Configurations.UserType.Producer.ToString());
-                }
-                #endregion Creating linked application data
-
-
-                _context.SaveChanges();
-                //Send confirmation mail
-                Services.AuthMessageSender.SendEmail(vmProducer.Producer.Email, vmProducer.Producer.Name, "Creation de votre compte", base.RenderPartialViewToString("ProducerCreatedConfirmationMail", vmProducer));
-                
-                return RedirectToAction("Index");
-            }
-
-            return View(vmProducer);
-        }
-
-        // GET: Producer/Edit/5
-        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            Producer producer = _context.Producers.Single(m => m.Id == id);
-            if (producer == null)
-            {
-                return NotFound();
-            }
-            ApplicationUser producerAppUser = _context.Users.First(x => x.Email == producer.Email);
-
-            return View(new ProducerViewModel(producer, await GetUserRole(producerAppUser)));
-        }
-
-        // POST: Producer/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize(Roles = Configurations.Role_Volunteer + "," + Configurations.Role_WedAdmin)]
-        public async Task<IActionResult> Edit(ProducerViewModel vmProducer, IFormFile uploadFile, Configurations.Role UserRole)
-        {
-            if (ModelState.IsValid)
-            {
-                UploadAndSetAvatar(vmProducer.Producer,uploadFile);
-                ApplicationUser producerAppUser = _context.Users.First(x => x.Email == vmProducer.OriginalEmail);
-                producerAppUser.Email = vmProducer.Producer.Email;
-                _context.Update(producerAppUser);
-                //Getting actual roles
-                IList<string> roles = await _userManager.GetRolesAsync(producerAppUser);
-                if (!roles.Contains(UserRole.ToString()))
-                {
-                    string roleToRemove = roles.FirstOrDefault(x => Configurations.GetRoles().Contains(x));
-                    await _userManager.RemoveFromRoleAsync(producerAppUser, roleToRemove);
-                    //Add user role
-                    await _userManager.AddToRoleAsync(producerAppUser, UserRole.ToString());
-                }
-                _context.Update(vmProducer.Producer);
-                _context.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            return View(vmProducer);
-        }
-
-        // GET: Producer/Delete/5
-        [ActionName("Delete")]
-        [Authorize(Roles = Configurations.Role_WedAdmin)]
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            Producer producer = _context.Producers.Single(m => m.Id == id);
-            if (producer == null)
-            {
-                return NotFound();
-            }
-            ApplicationUser producerAppUser = _context.Users.First(x => x.Email == producer.Email);
-            return View(new ProducerViewModel(producer, await GetUserRole(producerAppUser)));
+            return PartialView(new AdherentViewModel(GetActiveAdherentStolon(), adherent, AdherentEdition.Producer));
         }
 
         // POST: Producer/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = Configurations.Role_WedAdmin)]
-        public IActionResult DeleteConfirmed(int id)
+        public override IActionResult DeleteConfirmed(Guid id)
         {
-            Producer producer = _context.Producers.Single(m => m.Id == id);
-            //Deleting image
-            string uploads = Path.Combine(_environment.WebRootPath, Configurations.AvatarStockagePath);
-            string image = Path.Combine(uploads, producer.AvatarFileName);
-            if (System.IO.File.Exists(image) && producer.AvatarFileName != Path.Combine(Configurations.AvatarStockagePath, Configurations.DefaultFileName))
-                System.IO.File.Delete(Path.Combine(uploads, producer.AvatarFileName));
-            //Delete App User
-            ApplicationUser producerAppUser = _context.Users.First(x => x.Email == producer.Email);
-            _context.Users.Remove(producerAppUser);
-            //Delete User => TODO voir mieux car la on supprime tout ce qui est dépendant avant de supprimer le producteur, on fait le job de EF soit un Cascade delete !
-            _context.News.RemoveRange(_context.News.Include(x => x.User).Where(x => x.User.Id == producer.Id));
-            _context.Products.RemoveRange(_context.Products.Include(x => x.Producer).Where(x => x.Producer.Id == producer.Id));
-            _context.ProducerBills.RemoveRange(_context.ProducerBills.Include(x => x.Producer).Where(x => x.Producer.Id == producer.Id));
-            _context.Producers.Remove(producer);
-            //Save
-            _context.SaveChanges();
+
+            if (!Authorized(Role.Admin))
+                return Unauthorized();
+            //Faut voir comment on fait, on vire tout les produits, on les désactive tous et on garde une sortie d'historique ?
+            //Le mieux c'est pour une suppression final de cacher le producteur comme pour les vielles news
+
             return RedirectToAction("Index");
         }
     }

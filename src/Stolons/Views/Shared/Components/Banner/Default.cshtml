@@ -25,12 +25,12 @@
         <li><a asp-controller="PublicProducers" asp-action="Index">Nos producteurs</a></li>
         -->
                         <li><a asp-controller="WeekBasket" asp-action="Index">Mon panier</a></li>
-                        @if (User.IsInRole(Configurations.UserType.Producer.ToString()))
+                        @if (Model.ActiveAdherentStolon.IsProducer)
                         {
                             <li><a asp-controller="ProductsManagement" asp-action="Index">Mes produits et mes stocks</a></li>
                             <li><a asp-controller="News" asp-action="Index">Mes nouvelles</a></li>
                         }
-                        @if (User.IsInRole(Configurations.Role.Volunteer.ToString()) || User.IsInRole(Configurations.Role.WebAdmin.ToString()) || User.IsInRole(Configurations.Role.StolonAdmin.ToString()))
+                        @if (Model.ActiveAdherentStolon.Authorized(Role.Volunteer))
                         {
                             <li><a asp-controller="WeekBasketManagement" asp-action="Index">Gérer les paniers</a></li>
                             <li class="dropdown">
@@ -40,7 +40,10 @@
                                 </a>
                                 <ul class="dropdown-menu">
                                     <li><a asp-controller="Users" asp-action="Index">Tous les adhérents</a></li>
-                                    <li><a asp-controller="Sympathizers" asp-action="Index">Sympathisants</a></li>
+                                    @if (Model.ActiveAdherentStolon.Stolon.UseSympathizer)
+                                    {
+                                        <li><a asp-controller="Sympathizers" asp-action="Index">Sympathisants</a></li>
+                                    }
                                     <li><a asp-controller="Consumers" asp-action="Index">Consomateurs</a></li>
                                     <li><a asp-controller="Producers" asp-action="Index">Producteurs</a></li>
                                 </ul>
@@ -54,11 +57,11 @@
                                     <li><a asp-controller="Mails" asp-action="Index">Courriels</a></li>
                                     <li><a asp-controller="Transactions" asp-action="Index">Transactions</a></li>
                                     <li><a asp-controller="News" asp-action="Index">Les nouvelles</a></li>
-                                    @if (User.IsInRole(Configurations.Role.WebAdmin.ToString()) || User.IsInRole(Configurations.Role.StolonAdmin.ToString()))
+                                    @if (Model.ActiveAdherentStolon.Authorized(Role.Admin))
                                     {
-                                        <li><a asp-controller="Stolons" asp-route-id="@Model.User.Stolon.Id" asp-action="Details">@Model.User.Stolon.Label</a></li>
+                                        <li><a asp-controller="Stolons" asp-route-id="@Model.ActiveAdherentStolon.Stolon.Id" asp-action="Details">@Model.ActiveAdherentStolon.Stolon.Label</a></li>
                                     }
-                                    @if (User.IsInRole(Configurations.Role.WebAdmin.ToString()))
+                                    @if (Model.ActiveAdherentStolon.Adherent.IsWebAdmin)
                                     {
                                         <li><a asp-controller="ApplicationConfig" asp-action="Index">Le site</a></li>
                                         <li><a asp-controller="Stolons" asp-action="Index">Les Stolons</a></li>
@@ -67,7 +70,7 @@
                                 </ul>
                             </li>
                         }
-                        <li><a asp-controller="Home" asp-action="StolonContact" asp-route-id="@Model.User.Stolon.Id">@(Model.User.Stolon.Label +"TODO changer de place")</a></li>
+                        <li><a asp-controller="Home" asp-action="StolonContact" asp-route-id="@Model.ActiveAdherentStolon.Stolon.Id">@(Model.ActiveAdherentStolon.Stolon.Label +"TODO changer de place")</a></li>
                     </ul>
                 </div>
                 <div class="navbar-right">

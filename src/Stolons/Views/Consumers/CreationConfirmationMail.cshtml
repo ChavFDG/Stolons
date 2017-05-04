@@ -1,7 +1,7 @@
-﻿@model Stolons.ViewModels.Consumers.ConsumerViewModel
+﻿@model AdherentStolon
 
 @{
-    ViewData["Title"] = "Bienvenue "+ Model.Consumer.Surname +" "+ Model.Consumer.Name +" chez " + Configurations.Stolon.Label;
+    ViewData["Title"] = "Bienvenue "+ Model.Adherent.Surname +" "+ Model.Adherent.Name +" chez " + Model.Stolon.Label;
 }
 
 <h2>@ViewData["Title"]</h2>

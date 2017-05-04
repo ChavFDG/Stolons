@@ -10,7 +10,8 @@ namespace Stolons.Models
     public interface IWeekBasket
     {
         Guid Id { get; set; }
-        Consumer Consumer { get; set; }
+        AdherentStolon ConsumerStolon { get; set; }
+        Adherent Consumer { get; set; }
         List<BillEntry> Products { get; set; }
     }
 
@@ -22,7 +23,7 @@ namespace Stolons.Models
             {
                 if (billEntry.Product == null)
                 {
-                    billEntry.Product = context.Products.Include(x=>x.Producer).ThenInclude(x=>x.Stolon).First(x => x.Id == billEntry.ProductId);
+                    billEntry.Product = context.Products.Include(x=>x.Producer).First(x => x.Id == billEntry.ProductId);
                 }
             }
         }

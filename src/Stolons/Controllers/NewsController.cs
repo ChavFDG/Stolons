@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Authorization;
 using Stolons.Helpers;
 using Stolons.Models.Users;
 using Stolons.Models.Messages;
+using Stolons.ViewModels.News;
 
 namespace Stolons.Controllers
 {
@@ -34,7 +35,7 @@ namespace Stolons.Controllers
         // GET: News
         public IActionResult Index()
         {
-            return View(_context.News.Include(x => x.User).Where(x=>x.StolonId == GetCurrentStolon().Id).ToList());
+            return View(new NewsListViewModel(GetActiveAdherentStolon(), _context.News.Include(x => x.PublishBy).ThenInclude(x => x.Adherent).Include(x => x.PublishBy).ThenInclude(x => x.Stolon).Where(x => x.PublishBy.StolonId == GetCurrentStolon().Id).ToList()));
         }
 
         // GET: News/Details/5
@@ -45,7 +46,7 @@ namespace Stolons.Controllers
                 return NotFound();
             }
 
-            News news = _context.News.Include(x => x.User).Single(x => x.Id == id);
+            News news = _context.News.Include(x => x.PublishBy).ThenInclude(x => x.Adherent).Include(x => x.PublishBy).ThenInclude(x => x.Stolon).Single(x => x.Id == id);
             if (news == null)
             {
                 return NotFound();
@@ -55,100 +56,111 @@ namespace Stolons.Controllers
         }
 
         // GET: News/Create
-        [Authorize(Roles = Configurations.Role_WedAdmin + "," + Configurations.Role_Volunteer + "," +Configurations.UserType_Producer)]
         public IActionResult Create()
         {
-            return View(new News(GetCurrentStolon()));
+            if (Authorized(Role.Volunteer) || AuthorizedProducer())
+                return View(new NewsViewModel(GetActiveAdherentStolon(), new News(GetActiveAdherentStolon())));
+            return Unauthorized();
+
         }
 
         // POST: News/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = Configurations.Role_WedAdmin + "," + Configurations.Role_Volunteer + "," +Configurations.UserType_Producer)]
-        public async Task<IActionResult> Create(News news, IFormFile uploadFile)
+        public async Task<IActionResult> Create(NewsViewModel newsVm, IFormFile uploadFile)
         {
-            if (ModelState.IsValid)
+            if (Authorized(Role.Volunteer) || AuthorizedProducer())
             {
-                string fileName = Configurations.DefaultFileName;
-                if (uploadFile != null)
+                if (ModelState.IsValid)
                 {
-                    //Image uploading
-                    string uploads = Path.Combine(_environment.WebRootPath, Configurations.NewsImageStockagePath);
-                    fileName = Guid.NewGuid().ToString() + "_" + ContentDispositionHeaderValue.Parse(uploadFile.ContentDisposition).FileName.Trim('"');
-                    await uploadFile.SaveImageAsAsync(Path.Combine(uploads, fileName));
-                    news.ImageLink = Path.Combine(Configurations.NewsImageStockagePath, fileName);
+                    string fileName = Configurations.DefaultFileName;
+                    if (uploadFile != null)
+                    {
+                        //Image uploading
+                        string uploads = Path.Combine(_environment.WebRootPath, Configurations.NewsImageStockagePath);
+                        fileName = Guid.NewGuid().ToString() + "_" + ContentDispositionHeaderValue.Parse(uploadFile.ContentDisposition).FileName.Trim('"');
+                        await uploadFile.SaveImageAsAsync(Path.Combine(uploads, fileName));
+                        newsVm.News.ImageLink = Path.Combine(Configurations.NewsImageStockagePath, fileName);
+                    }
+                    //Setting value for creation
+                    newsVm.News.Id = Guid.NewGuid();
+                    newsVm.News.DateOfPublication = DateTime.Now;
+                    //TODO Get logged in User and add it to the news
+                    newsVm.News.PublishBy = GetActiveAdherentStolon();
+                    _context.News.Add(newsVm.News);
+                    _context.SaveChanges();
+                    return RedirectToAction("Index");
                 }
-                //Setting value for creation
-                news.Id = Guid.NewGuid();
-                news.DateOfPublication = DateTime.Now;
-                //TODO Get logged in User and add it to the news
-                StolonsUser user = await GetCurrentStolonsUserAsync();
-                news.User = user;
-                news.Stolon = user.Stolon;
-                _context.News.Add(news);
-                _context.SaveChanges();
-                return RedirectToAction("Index");
             }
-            return View(news);
+            return Unauthorized();
         }
 
         // GET: News/Edit/5
-        [Authorize(Roles = Configurations.Role_WedAdmin + "," + Configurations.Role_Volunteer + "," +Configurations.UserType_Producer)]
         public IActionResult Edit(Guid? id)
         {
-            if (id == null)
+            if (Authorized(Role.Volunteer) || AuthorizedProducer())
             {
-                return NotFound();
-            }
+                if (id == null)
+                {
+                    return NotFound();
+                }
 
-            News news = _context.News.Include(m => m.User).Single(m => m.Id == id);
-            if (news == null)
-            {
-                return NotFound();
+                News news = _context.News.Include(m => m.PublishBy).ThenInclude(x => x.Adherent).Include(x => x.PublishBy).ThenInclude(x => x.Stolon).FirstOrDefault(x => x.Id == id);
+                if (news == null)
+                {
+                    return NotFound();
+                }
+                return View(new NewsViewModel(GetActiveAdherentStolon(), news));
+
             }
-            return View(news);
+            return Unauthorized();
         }
 
         // POST: News/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = Configurations.Role_WedAdmin + "," + Configurations.Role_Volunteer + "," +Configurations.UserType_Producer)]
-        public async Task<IActionResult> Edit(News news,IFormFile uploadFile)
+        public async Task<IActionResult> Edit(NewsViewModel newsVm, IFormFile uploadFile)
         {
-            if (ModelState.IsValid)
+            if (Authorized(Role.Volunteer) || AuthorizedProducer())
             {
-                if (uploadFile != null)
+                if (ModelState.IsValid)
                 {
-                    string uploads = Path.Combine(_environment.WebRootPath, Configurations.NewsImageStockagePath);
-                    //Deleting old image
-                    DeleteImage(news.ImageLink);
-                    //Image uploading
-                    string fileName = Guid.NewGuid().ToString() + "_" + ContentDispositionHeaderValue.Parse(uploadFile.ContentDisposition).FileName.Trim('"');
-                    await uploadFile.SaveImageAsAsync(Path.Combine(uploads, fileName));
-                    //Setting new value, saving
-                    news.ImageLink = Path.Combine(Configurations.NewsImageStockagePath, fileName);
+                    if (uploadFile != null)
+                    {
+                        string uploads = Path.Combine(_environment.WebRootPath, Configurations.NewsImageStockagePath);
+                        //Deleting old image
+                        if(!String.IsNullOrWhiteSpace(newsVm.News.ImageLink))
+                            DeleteImage(newsVm.News.ImageLink);
+                        //Image uploading
+                        string fileName = Guid.NewGuid().ToString() + "_" + ContentDispositionHeaderValue.Parse(uploadFile.ContentDisposition).FileName.Trim('"');
+                        await uploadFile.SaveImageAsAsync(Path.Combine(uploads, fileName));
+                        //Setting new value, saving
+                        newsVm.News.ImageLink = Path.Combine(Configurations.NewsImageStockagePath, fileName);
+                    }
+                    newsVm.News.PublishBy = GetActiveAdherentStolon();
+                    _context.Update(newsVm.News);
+                    _context.SaveChanges();
+                    return RedirectToAction("Index");
                 }
-                StolonsUser user = await GetCurrentStolonsUserAsync();
-                news.User = user;
-                news.Stolon = user.Stolon;
-                _context.Update(news);
-                _context.SaveChanges();
-                return RedirectToAction("Index");
+                return View(newsVm);
+
             }
-            return View(news);
+            return Unauthorized();
         }
 
         // GET: News/Delete/5
         [ActionName("Delete")]
-        [Authorize(Roles = Configurations.Role_WedAdmin)]
         public IActionResult Delete(Guid? id)
         {
+            if (!AuthorizedWebAdmin())
+                return Unauthorized();
+
             if (id == null)
             {
                 return NotFound();
             }
 
-            News news = _context.News.Include(m => m.User).Single(m => m.Id == id);
+            News news = _context.News.Include(m => m.PublishBy).ThenInclude(x => x.Adherent).Include(x => x.PublishBy).ThenInclude(x => x.Stolon).FirstOrDefault(x => x.Id == id);
             if (news == null)
             {
                 return NotFound();
@@ -159,11 +171,13 @@ namespace Stolons.Controllers
 
         // POST: News/Delete/5
         [HttpPost, ActionName("Delete")]
-        [Authorize(Roles = Configurations.Role_WedAdmin)]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(Guid id)
         {
-            News news = _context.News.Single(m => m.Id == id);
+            if (!AuthorizedWebAdmin())
+                return Unauthorized();
+
+            News news = _context.News.FirstOrDefault(x => x.Id == id);
             DeleteImage(news.ImageLink);
             _context.News.Remove(news);
             _context.SaveChanges();
@@ -172,6 +186,8 @@ namespace Stolons.Controllers
 
         private void DeleteImage(string imagePath)
         {
+            if (String.IsNullOrWhiteSpace(imagePath))
+                return;
             //Deleting image
             string image = Path.Combine(_environment.WebRootPath, imagePath);
             string defaultImage = Path.Combine(Configurations.NewsImageStockagePath, Configurations.DefaultFileName);

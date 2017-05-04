@@ -1,33 +1,28 @@
 ﻿Info :
 Paiement en ligne par "morning" : https://up.morning.com/
 
+//TODO IMPORTANT
+- pouvoir ajouter des adhérents d'autre stolons à son stolon !
+- pouvoir changer le role d'un adhérent
+
+
 A faire :
 
 - Ajouter par factures stolons le total gagné et le total total
-- "Valider les payements de facture" accessible qu'aux admins 
-
-
+- Ajout un moyen de laisser des comtpes rendu ou autre  (fichier pdf ...)
+- stocker l'addresse dans bill
 
 
 FEATURES
 - Gestion des structures 
-	- pouvoir créer un Stolon avec type de structure, mail admin, nom de la structure, lieux, horraires, photos
-	- création des comptes lié à la structure
-	- compte admin lié à la structure
 	- possibilité de voir / faire des actions sur les producteurs de ça structure
 - Planning de permanence
-- Producteur est adhérent automatiquement
-- Gestion des stocks sur place
 - Bon plan
-- Revoir news producteur
-- Voir chat box utilisateur
+- Faire chat box utilisateur
 - Option de rapport sur facture ( voir la quantité vendu de chaque produit sur un temps donnés ....)
-- Option des structures :
-	- même que application config
-	- choisir si % aux producteur
-	- choisir si création de compte en ligne ?
-	- ajouter un mode maintenance
 - Gérer les mails à envoyer par un pool de mail. Si erreur on passe au suivant et on peut revenir, avec nombre de tentative et erreur remonté si impossible d'envoyer un mail
+
+
 
 
 

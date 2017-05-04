@@ -10,8 +10,9 @@ using System.Security.Claims;
 using Stolons.ViewModels.WeekBasketManagement;
 using System;
 using Stolons.Tools;
-using static Stolons.Models.Transaction;
 using Stolons.Helpers;
+using static Stolons.Models.Transactions.Transaction;
+using Stolons.Models.Transactions;
 
 namespace Stolons.Controllers
 {
@@ -28,12 +29,12 @@ namespace Stolons.Controllers
         // GET: Bills
         public IActionResult Index()
         {
-            Stolon stolons = GetCurrentStolon();
+            Stolon stolon = GetCurrentStolon();
             VmWeekBasketManagement vm = new VmWeekBasketManagement();
             vm.Stolon = GetCurrentStolon();
-            vm.ConsumerBills = _context.ConsumerBills.Include(x=>x.Consumer).Where(x => x.State == BillState.Pending && x.Consumer.StolonId == stolons.Id).OrderBy(x=>x.Consumer.Id).ToList();
-            vm.ProducerBills = _context.ProducerBills.Include(x => x.Producer).Where(x => x.State != BillState.Paid && x.Producer.StolonId == stolons.Id).OrderBy(x => x.Producer.Id).ToList();
-            vm.StolonsBills = _context.StolonsBills.Where(x => x.StolonId == stolons.Id).ToList();
+            vm.ConsumerBills = _context.ConsumerBills.Include(x=>x.AdherentStolon).ThenInclude(x=>x.Adherent).Include(x=>x.AdherentStolon).ThenInclude(x=>x.Stolon).Where(x => x.State == BillState.Pending && x.AdherentStolon.StolonId == stolon.Id).OrderBy(x=>x.Adherent.Id).ToList();
+            vm.ProducerBills = _context.ProducerBills.Include(x => x.AdherentStolon).ThenInclude(x => x.Adherent).Include(x => x.AdherentStolon).ThenInclude(x => x.Stolon).Where(x => x.State != BillState.Paid && x.AdherentStolon.StolonId == stolon.Id).OrderBy(x => x.Adherent.Id).ToList();
+            vm.StolonsBills = _context.StolonsBills.Include(x=>x.Stolon).Where(x => x.StolonId == stolon.Id).ToList();
             vm.WeekStolonsBill = vm.StolonsBills.FirstOrDefault(x => x.BillNumber == DateTime.Now.Year + "_" + DateTime.Now.GetIso8601WeekOfYear());
             return View(vm);
         }
@@ -41,15 +42,16 @@ namespace Stolons.Controllers
         // GET: UpdateConsumerBill
         public IActionResult UpdateConsumerBill(string billNumber, PaymentMode paymentMode)
         {
-            ConsumerBill bill = _context.ConsumerBills.Include(x => x.Consumer).First(x => x.BillNumber == billNumber);
+            ConsumerBill bill = _context.ConsumerBills.Include(x => x.Adherent).First(x => x.BillNumber == billNumber);
             bill.State = BillState.Paid;
             //_context.Update(bill);
             //Transaction
             Transaction transaction = new Transaction(
-                Transaction.TransactionType.Inbound,
-                Transaction.TransactionCategory.BillPayement,
+                GetCurrentStolon(),
+                TransactionType.Inbound,
+                TransactionCategory.BillPayement,
                 paymentMode == PaymentMode.Token ? 0 : bill.OrderAmount,
-                "Paiement de la facture " + bill.BillNumber + " par " + bill.Consumer.Name + "( " + bill.Consumer.Id + " ) en " + EnumHelper<PaymentMode>.GetDisplayValue(paymentMode));
+                "Paiement de la facture " + bill.BillNumber + " par " + bill.Adherent.Name + "( " + bill.Adherent.Id + " ) en " + EnumHelper<PaymentMode>.GetDisplayValue(paymentMode));
             //_context.Add(transaction);
             //Save
            // _context.SaveChanges();
@@ -58,23 +60,25 @@ namespace Stolons.Controllers
         // GET: UpdateProducerBill
         public IActionResult UpdateProducerBill(string billNumber)
         {
-            ProducerBill bill = _context.ProducerBills.Include(x=>x.Producer).First(x => x.BillNumber == billNumber);
+            ProducerBill bill = _context.ProducerBills.Include(x=>x.Adherent).First(x => x.BillNumber == billNumber);
             bill.State++;
             _context.Update(bill);
             if(bill.State == BillState.Paid)
             {
                 //Transaction
                 Transaction prodRefound = new Transaction(
+                    GetCurrentStolon(),
                     Transaction.TransactionType.Outbound,
                     Transaction.TransactionCategory.ProducerRefound,
                     bill.BillAmount,
-                    "Paiement de la facture " + bill.BillNumber + " à " + bill.Producer.CompanyName + " ( " + bill.Producer.Id + " )");
+                    "Paiement de la facture " + bill.BillNumber + " à " + bill.Adherent.CompanyName + " ( " + bill.Adherent.Id + " )");
                 _context.Add(prodRefound);
                 Transaction comitionInbound = new Transaction(
+                    GetCurrentStolon(),
                     Transaction.TransactionType.Inbound,
                     Transaction.TransactionCategory.ProducersFee,
                     bill.FeeAmount,
-                    "Encaissement de la commission de la facture " + bill.BillNumber + " de " + bill.Producer.CompanyName+ " ( " + bill.Producer.Id + " )");
+                    "Encaissement de la commission de la facture " + bill.BillNumber + " de " + bill.Adherent.CompanyName+ " ( " + bill.Adherent.Id + " )");
                 _context.Add(comitionInbound);
             }
             //Save

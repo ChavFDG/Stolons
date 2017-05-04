@@ -13,10 +13,13 @@ namespace Stolons.ViewModels.Stolons
         public StolonViewModel()
         {
         }
-        public StolonViewModel(Stolon stolons)
+        public StolonViewModel( Stolon stolon, bool isWebAdmin)
         {
-            Stolon = stolons;
+            Stolon = stolon;
+            IsWebAdmin = isWebAdmin;
         }
         public Stolon Stolon { get; set; }
+
+        public bool IsWebAdmin { get; set; }
     }
 }

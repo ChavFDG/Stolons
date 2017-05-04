@@ -74,3 +74,17 @@ ProductModel = Backbone.Model.extend({
 	return weight + " " + productUnit;
     }
 });
+
+ProductStockModel = Backbone.Model.extend({
+
+    //Products id key is 'Id'
+    idAttribute: "Id",
+
+    defaults: {},
+
+    //Si tu as besoin de faire des changements sur les données sur le JSON avant de les rentrer dans le model
+    parse: function (data) {
+        data.Product = new ProductModel(data.Product);
+        return data;
+    }
+});

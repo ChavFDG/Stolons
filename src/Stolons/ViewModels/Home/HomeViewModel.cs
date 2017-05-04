@@ -1,17 +1,23 @@
-﻿using System;
+﻿using Stolons.Models;
+using Stolons.ViewModels.News;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Stolons.Models.Messages;
 
 namespace Stolons.ViewModels.Home
 {
-    public class HomeViewModel
+    public class HomeViewModel : BaseViewModel
     {
-        public List<News> News { get; set; }
+        public NewsListViewModel NewsVm { get; set; }
         public HomeViewModel()
         {
 
+        }
+
+        public HomeViewModel(AdherentStolon adherentStolon)
+        {
+            ActiveAdherentStolon = adherentStolon;
         }
     }
 }

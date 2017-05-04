@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Stolons.ViewModels.WeekBasket
 {
-    public class ValidationSummaryViewModel
+    public class ValidationSummaryViewModel : BaseViewModel
     {
         public ValidatedWeekBasket ValidatedWeekBasket { get; set; }
         public List<BillEntry> UnValidBillEntry { get; set; }
@@ -25,10 +25,11 @@ namespace Stolons.ViewModels.WeekBasket
 
         }
 
-        public ValidationSummaryViewModel(ValidatedWeekBasket validatedWeekBasket, List<BillEntry> unvalidBillEntry)
+        public ValidationSummaryViewModel(AdherentStolon activeAdherentStolon ,ValidatedWeekBasket validatedWeekBasket, List<BillEntry> unvalidBillEntry)
         {
             ValidatedWeekBasket = validatedWeekBasket;
             UnValidBillEntry = unvalidBillEntry;
+            ActiveAdherentStolon = activeAdherentStolon;
         }
     }
 }

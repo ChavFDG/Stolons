@@ -76,21 +76,35 @@ namespace Stolons.Controllers
             return _userManager.FindByIdAsync(_userManager.GetUserId(HttpContext.User)).GetAwaiter().GetResult();
         }
 
-        protected async Task<StolonsUser> GetCurrentStolonsUserAsync()
+        protected async Task<Adherent> GetCurrentAdherentAsync()
         {
             ApplicationUser user = await _userManager.FindByIdAsync(_userManager.GetUserId(HttpContext.User));
-            return _context.StolonsUsers.Include(x => x.Stolon).FirstOrDefault(x => x.Email == user.Email);
+            
+            return _context.Adherents.Include(x => x.AdherentStolons).FirstOrDefault(x => x.Email == user.Email);
         }
-        protected StolonsUser GetCurrentStolonsUserSync()
+        protected Adherent GetCurrentAdherentSync()
         {
             ApplicationUser user = _userManager.FindByIdAsync(_userManager.GetUserId(HttpContext.User)).GetAwaiter().GetResult();
-            return _context.StolonsUsers.Include(x => x.Stolon).FirstOrDefault(x => x.Email == user.Email);
+            return _context.Adherents.Include(x => x.AdherentStolons).FirstOrDefault(x => x.Email == user.Email);
         }
 
         protected Stolon GetCurrentStolon()
         {
-            return GetCurrentStolonsUserSync().Stolon;
+            return _context.Stolons.First(stolon=>stolon.Id ==  GetCurrentAdherentSync().AdherentStolons.First(x=>x.IsActiveStolon).StolonId);
         }
+
+
+        protected AdherentStolon GetActiveAdherentStolonOf(Adherent adherent)
+        {
+            return _context.AdherentStolons.Include(x => x.Stolon).Include(x => x.Adherent).First(x => x.AdherentId == adherent.Id && x.IsActiveStolon);
+
+        }
+
+        protected AdherentStolon GetActiveAdherentStolon()
+        {
+            Adherent adherent = GetCurrentAdherentSync();
+            return GetActiveAdherentStolonOf(adherent);
+         }
 
 
         /// <summary>
@@ -114,9 +128,27 @@ namespace Stolons.Controllers
             await uploadFile.SaveAsAsync(Path.Combine(uploads, fileName));
             return fileName;
         }
-        protected async void UploadAndSetAvatar(Consumer consumer, IFormFile uploadFile)
+        protected async void UploadAndSetAvatar(Adherent consumer, IFormFile uploadFile)
         {
             consumer.AvatarFileName = await UploadFile(uploadFile, Configurations.AvatarStockagePath, consumer.AvatarFilePath);
         }
+
+        public bool Authorized(Role role)
+        {
+            //Check if user is Authentified
+            if (!User.Identity.IsAuthenticated)
+                return false;
+            AdherentStolon adherentStolon = GetActiveAdherentStolon();
+            return adherentStolon.Authorized(role);
+        }
+        public bool AuthorizedWebAdmin()
+        {
+            return GetCurrentAdherentSync().IsWebAdmin;
+        }
+        public bool AuthorizedProducer()
+        {
+            return GetActiveAdherentStolon().IsProducer;
+        }
+
     }
 }

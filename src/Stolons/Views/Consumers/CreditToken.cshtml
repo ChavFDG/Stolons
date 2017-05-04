@@ -1,13 +1,13 @@
 ﻿@model Stolons.ViewModels.Token.CreditTokenViewModel
 
 
-<h2>Créditer des bogues à @Model.Consumer.Surname @Model.Consumer.Name</h2>
+<h2>Créditer des bogues à @Model.AdherentStolon.Adherent.Surname @Model.AdherentStolon.Adherent.Name</h2>
 <div id="dialog-confirm"></div>
 
 
 <form asp-action="CreditToken">
     <div class="form-horizontal">
-        <input asp-for="Consumer.Id" hidden="hidden" />
+        <input asp-for="AdherentStolon.Id" hidden="hidden" />
         <div class="form-group">
             <label asp-for="CreditedToken" class="col-md-2 control-label"></label>
             <div class="col-md-10">

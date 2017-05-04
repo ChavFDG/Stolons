@@ -1,39 +1,40 @@
-@model Stolons.Models.Stolon
+@using Stolons.ViewModels.Stolons;
+@model StolonViewModel
 
 
-<h3>Êtes vous sur de vouloir supprimer @Model.Label</h3>
+<h3>Êtes vous sur de vouloir supprimer @Model.Stolon.Label</h3>
 <div>
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.Label)
+            @Html.DisplayNameFor(model => model.Stolon.Label)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Label)
+            @Html.DisplayFor(model => model.Stolon.Label)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.LogoFileName)
+            @Html.DisplayNameFor(model => model.Stolon.LogoFileName)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.LogoFileName)
+            @Html.DisplayFor(model => model.Stolon.LogoFileName)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Address)
+            @Html.DisplayNameFor(model => model.Stolon.Address)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Address)
+            @Html.DisplayFor(model => model.Stolon.Address)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.PhoneNumber)
+            @Html.DisplayNameFor(model => model.Stolon.PhoneNumber)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.PhoneNumber)
+            @Html.DisplayFor(model => model.Stolon.PhoneNumber)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.ContactMailAddress)
+            @Html.DisplayNameFor(model => model.Stolon.ContactMailAddress)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.ContactMailAddress)
+            @Html.DisplayFor(model => model.Stolon.ContactMailAddress)
         </dd>
     </dl>
     <form asp-action="Delete">

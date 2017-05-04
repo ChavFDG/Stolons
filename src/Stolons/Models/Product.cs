@@ -9,19 +9,29 @@ using System.Threading.Tasks;
 
 namespace Stolons.Models
 {
-    public class Product
+    public class Product : IProduct
     {
         [Key]
         public Guid Id { get; set; }
+
+        public List<ProductStockStolon> ProductStocks { get; set; } = new List<ProductStockStolon>();
+
+        public List<BillEntry> BillEntries { get; set; }
+
         [Display(Name = "Producteur")]
-        public int ProducerId { get; set; }
+        public Guid ProducerId { get; set; }
         [ForeignKey(nameof(ProducerId))]
-        public virtual Producer Producer { get; set; }
-	    [Display(Name = "Famille de produit")]
+        public virtual Adherent Producer { get; set; }
+
+        [Display(Name = "Famille de produit")]
+        public Guid FamillyId { get; set; }
+        [ForeignKey(nameof(FamillyId))]
         public virtual ProductFamilly Familly { get; set; }
+
         [Display(Name = "Nom")]
         [Required]
         public string Name { get; set; }
+
         [Display(Name = "Description")]
         public string Description { get; set; }
 
@@ -96,139 +106,65 @@ namespace Stolons.Models
         [Display(Name = "Type de vente")]
         [Required]
         public SellType Type { get; set; }
+
+        [Display(Name = "Masquer le prix au Kilo")]
+        [Required]
+        public bool HideWeightPrice { get; set; }
+
         [Display(Name = "Prix (kg ou l)")]
         [Required]
-        public decimal Price { get; set; }
-
-        [NotMapped]
-        public decimal PriceWithoutFee
-        {
-            get
-            {
-                return Price - (Price / 100 * Producer.Stolon.ProducersFee);
-            }
-        }
+        public decimal WeightPrice { get; set; }
 
         [Display(Name = "Prix unitaire")]
-	    [Required]
-	    public decimal UnitPrice { get; set; }
-        [NotMapped]
-        public decimal UnitPriceWithoutFee
-        {
-            get
-            {
-                return UnitPrice - (UnitPrice / 100 * Producer.Stolon.ProducersFee);
-            }
-        }
-        [NotMapped]
-        public decimal UnitPriceWithoutFeeAndTax
-        {
-            get
-            {
-                if (Tax == 0)
-                    return UnitPriceWithoutFee;
-                return Math.Round(UnitPriceWithoutFee /(1+Tax/100),2);
-            }
-        }
-        [NotMapped]
-        public decimal PriceWithoutFeeAndTax
-        {
-            get
-            {
-                if (Tax == 0)
-                    return PriceWithoutFee;
-                return Math.Round(PriceWithoutFee / (1 + Tax / 100), 2);
-            }
-        }
+        [Required]
+        public decimal UnitPrice { get; set; }
 
         [Display(Name = "Gestion du stock")]
         public StockType StockManagement { get; set; } = StockType.Week;
 
-        [Display(Name = "Stock de la semaine")]
-        public decimal WeekStock { get; set; }
-        [Display(Name = "Stock restant")]
-        public decimal RemainingStock { get; set; }
         [Display(Name = "Palier de poids (g ou ml)")]
-	    [Required]
+        [Required]
         public int QuantityStep { get; set; }
-	    [NotMapped]
-	    public string QuantityStepString
-	    {
-	        get
-	        {
-		    if (QuantityStep == 0)
-		    {
-		        return " rien";
-		    }
-		    if (ProductUnit == Unit.Kg)
-		    {
-		        if (QuantityStep >= 1000)
-		        {
-			    return QuantityStep / 1000 + " kg";
-		        }
-		        else
-		        {
-			    return QuantityStep  + " g";
-		        }
-		    }
-		    else
-		    {
-		        if (QuantityStep >= 1000)
-		        {
-			    return QuantityStep / 1000 + " l";
-		        }
-		        else
-		        {
-			    return QuantityStep  + " ml";
-		        }
-		    }
-	        }
-	    }
-
-	    public string GetQuantityString(int quantity)
+        [NotMapped]
+        public string QuantityStepString
         {
-            if (Type == Product.SellType.Piece)
+            get
             {
-                if (quantity == 1)
+                if (QuantityStep == 0)
                 {
-                    return quantity + " pièce";
+                    return " rien";
+                }
+                if (ProductUnit == Unit.Kg)
+                {
+                    if (QuantityStep >= 1000)
+                    {
+                        return QuantityStep / 1000 + " kg";
+                    }
+                    else
+                    {
+                        return QuantityStep + " g";
+                    }
                 }
                 else
                 {
-                    return quantity + " pièces";
-                }
-            }
-            else
-            {
-                float qty = (quantity * QuantityStep);
-                if (ProductUnit == Product.Unit.Kg)
-                {
-                    string unit = " g";
-                    if (qty >= 1000)
+                    if (QuantityStep >= 1000)
                     {
-                        qty /= 1000;
-                        unit = " Kg";
+                        return QuantityStep / 1000 + " l";
                     }
-                    return qty + unit;
-                }
-                else
-                {
-                    string unit = " mL";
-                    if (qty >= 1000)
+                    else
                     {
-                        qty /= 1000;
-                        unit = " L";
+                        return QuantityStep + " ml";
                     }
-                    return qty + unit;
                 }
             }
         }
+
 
         [Display(Name = "Quantité moyenne")]
         public int AverageQuantity { get; set; }
         [Display(Name = "Unité de mesure")]
         public Unit ProductUnit { get; set; }
-        
+
         public decimal Tax { get; set; } = 5.5m;
 
         [NotMapped]
@@ -249,7 +185,7 @@ namespace Stolons.Models
             }
             set
             {
-                switch(value)
+                switch (value)
                 {
                     case TAX.None:
                         Tax = 0;
@@ -270,12 +206,9 @@ namespace Stolons.Models
             }
         }
 
-        [Display(Name = "Etat")]
-        public ProductState State { get; set; }
-
         public string GetFirstImage()
         {
-            if(_Pictures.Any())
+            if (_Pictures.Any())
             {
                 return _Pictures[0];
             }
@@ -302,9 +235,19 @@ namespace Stolons.Models
             }
         }
 
+        public bool IsModified { get; set; } = false;
+        [NotMapped]
+        public bool IsAvailable
+        {
+            get
+            {
+                return !IsModified;
+            }
+        }
+
         public enum SellType
         {
-            [Display(Name ="Au poids")]
+            [Display(Name = "Au poids")]
             Weigh = 0,
             [Display(Name = "A la pièce")]
             Piece = 1,
@@ -358,10 +301,52 @@ namespace Stolons.Models
 
         public enum StockType
         {
-            [Display(Name = "Hebdomadaire", Description ="Le stock est remis à jour chaque semaine au stock initial, il peut évoluer durant la période de commande")]
+            [Display(Name = "Hebdomadaire", Description = "Le stock est remis à jour chaque semaine au stock initial, il peut évoluer durant la période de commande.")]
             Week = 0,
-            [Display(Name = "Fixe", Description = "Le stock est fixe et correspond au stock réel présent dans les locaux de la structure")]
-            Fixed = 1
+            [Display(Name = "Fixe", Description = "Le stock est fixe et correspond au stock réel présent dans les locaux de la structure.")]
+            Fixed = 1,
+            [Display(Name = "Illimité", Description = "Le stock est illimité et n'a pas besoin d'être remis à jour chaque semaine.")]
+            Unlimited = 2
+        }
+
+        public string GetQuantityString(decimal quantity)
+        {
+            if (Type == SellType.Piece)
+            {
+                if (quantity == 1)
+                {
+                    return quantity + " pièce";
+                }
+                else
+                {
+                    return quantity + " pièces";
+                }
+            }
+            else
+            {
+                decimal qty = (quantity * QuantityStep);
+                string strUnit;
+                if (ProductUnit == Product.Unit.Kg)
+                {
+                    strUnit = " g";
+                    if (qty >= 1000)
+                    {
+                        qty /= 1000;
+                        strUnit = " Kg";
+                    }
+                    return qty + strUnit;
+                }
+                else
+                {
+                    strUnit = " mL";
+                    if (qty >= 1000)
+                    {
+                        qty /= 1000;
+                        strUnit = " L";
+                    }
+                    return qty + strUnit;
+                }
+            }
         }
     }
 }
