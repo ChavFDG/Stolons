@@ -1,18 +1,86 @@
 ﻿@using Stolons.ViewModels.Home
+
 @model HomeViewModel
 
 <div class="row">
-    <div class="col-md-8">
-        <h2>Les nouvelles</h2>
-        @{
-            Html.RenderPartial("../News/ShowNews", Model.News);
-        }
+    <div class="col-lg-6 text-left" id="logo">
+        <img src="~/images/logos/Logo_HD.png" style="max-width: 400px;" />
     </div>
-
-    <div class="col-md-4">
-        <h2>Chat box / Messages</h2>
+    <div class="col-lg-offset-2 col-lg-4">
+        <h2>Les stolons de Privas</h2>
+        <p class="information">10 place de l'hôtel de ville 07000 Privas</p>
+        <h1>Horaires</h1>
+        <p class="information">Récupération panier: Jeudi de 15h00 à 18h30</p>
+        <p class="information">Bar: Jeudi de 15h00 à 18h30</p>
     </div>
-
 </div>
+
+<div class="row">
+    <ul class="nav nav-tabs">
+        <li role="presentation" class="active"><a href="#">Accueil</a></li>
+        <li role="presentation"><a href="#">Les nouvelles</a></li>
+        <li role="presentation"><a href="#">Bons Plans</a></li>
+        <li role="presentation"><a href="#">Mon panier</a></li>
+        <li role="presentation"><a href="#">Mes factures</a></li>
+    </ul>
+</div>
+
+<div class="row">
+    <div class="col-lg-9">
+        coucou
+    </div>
+    <div class="col-lg-3">
+        <div class="col-md-12">Chat box / Messages</div>
+        <div class="col-lg-12">
+            <div class="col-lg-12 comment">lala</div>
+            <div class="col-lg-12 comment">lili</div>
+        </div>
+        <div class="col-lg-12">
+            <textarea name="comment"></textarea>
+            <a href="#" id="add-comment">Ajouter un commentaire</a>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('a#add-comment').on('click', function () {
+            var comment = $('textarea[name=comment]').val();
+            $('<div class="col-lg-12 comment">' + comment + '</div>').insertAfter('div.comment:last');
+            return false;
+        });
+
+    });
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class="row">
+        <div class="col-md-8">
+            <h2>Les nouvelles</h2>
+            @{
+                Html.RenderPartial("../News/ShowNews", Model.News);
+            }
+        </div>
+
+
+
+    </div>
 
 
