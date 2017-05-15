@@ -2,18 +2,7 @@
 
 @model HomeViewModel
 
-<div class="row">
-    <div class="col-lg-6 text-left" id="logo">
-        <img src="~/images/logos/Logo_HD.png" style="max-width: 400px;" />
-    </div>
-    <div class="col-lg-offset-2 col-lg-4">
-        <h2>Les stolons de Privas</h2>
-        <p class="information">10 place de l'hôtel de ville 07000 Privas</p>
-        <h1>Horaires</h1>
-        <p class="information">Récupération panier: Jeudi de 15h00 à 18h30</p>
-        <p class="information">Bar: Jeudi de 15h00 à 18h30</p>
-    </div>
-</div>
+
 
 <div class="row">
     <ul class="nav nav-tabs">
@@ -26,10 +15,13 @@
 </div>
 
 <div class="row">
-    <div class="col-lg-9">
-        coucou
+    <div class="col-lg-8">
+        <h2>Les nouvelles</h2>
+        @{
+            Html.RenderPartial("../News/ShowNews", Model.NewsVm);
+        }
     </div>
-    <div class="col-lg-3">
+    <div class="col-lg-4">
         <div class="col-md-12">Chat box / Messages</div>
         <div class="col-lg-12">
             <div class="col-lg-12 comment">lala</div>
@@ -52,35 +44,5 @@
 
     });
 </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <div class="row">
-        <div class="col-md-8">
-            <h2>Les nouvelles</h2>
-            @{
-                Html.RenderPartial("../News/ShowNews", Model.NewsVm);
-            }
-        </div>
-
-
-
-    </div>
 
 

@@ -1,7 +1,4 @@
-﻿Info :
-Paiement en ligne par "morning" : https://up.morning.com/
-
-//TODO IMPORTANT
+﻿//TODO IMPORTANT
 - pouvoir ajouter des adhérents d'autre stolons à son stolon !
 - pouvoir changer le role d'un adhérent
 
@@ -11,6 +8,7 @@ A faire :
 - Ajouter par factures stolons le total gagné et le total total
 - Ajout un moyen de laisser des comtpes rendu ou autre  (fichier pdf ...)
 - stocker l'addresse dans bill
+- Réinitialisation du mot de passe par les adhérents
 
 
 FEATURES

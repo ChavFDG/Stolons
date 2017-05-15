@@ -6,6 +6,19 @@
 
 @if (User.Identity.IsAuthenticated)
 {
+    <div class="row">
+        <div class="col-lg-6 text-left" id="logo">
+            <a asp-controller="Home" asp-action="Index">
+                <img src="~/images/logos/Logo_HD.png" style="max-width: 400px;" />
+            </a>            
+        </div>
+        <div class="col-lg-offset-2 col-lg-4">
+            <h1>@Model.ActiveAdherentStolon.Stolon.Label</h1>
+            <p class="information">@Model.ActiveAdherentStolon.Stolon.Address</p>
+            <h2>Horaires paniers</h2>
+            <p class="information">@Model.ActiveAdherentStolon.Stolon.GetStringPickUpTime()</p>
+        </div>
+    </div>
     <div class="nav container">
         <nav class="navbar navbar-default">
             <div class="container-fluid">
@@ -19,11 +32,10 @@
                 </div>
                 <div id="navbar" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
-                        <li><a asp-controller="Home" asp-action="Index">Index</a></li>
                         <!--
-        <li><a asp-controller="PublicProducts" asp-action="Index">Nos produits</a></li>
-        <li><a asp-controller="PublicProducers" asp-action="Index">Nos producteurs</a></li>
-        -->
+                            <li><a asp-controller="PublicProducts" asp-action="Index">Nos produits</a></li>
+                            <li><a asp-controller="PublicProducers" asp-action="Index">Nos producteurs</a></li>
+                        -->
                         <li><a asp-controller="WeekBasket" asp-action="Index">Mon panier</a></li>
                         @if (Model.ActiveAdherentStolon.IsProducer)
                         {

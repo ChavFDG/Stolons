@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Stolons.Models.Users;
 using System.IO;
+using Stolons.Helpers;
 
 namespace Stolons.Models
 {
@@ -30,7 +31,7 @@ namespace Stolons.Models
         {
             get
             {
-                if(String.IsNullOrWhiteSpace(LogoFileName))
+                if (String.IsNullOrWhiteSpace(LogoFileName))
                     return Path.Combine(Configurations.StolonLogoStockagePath, Configurations.DefaultFileName);
                 return Path.Combine(Configurations.StolonLogoStockagePath, LogoFileName);
             }
@@ -40,9 +41,9 @@ namespace Stolons.Models
         public string PhoneNumber { get; set; } = "";
         [Display(Name = "Courriel de contact")]
         public string ContactMailAddress { get; set; } = "";
- 
+
         [Display(Name = "Avoir une comission sur les producteurs")]
-        public bool UseProducersFee {get;set;} = true;        
+        public bool UseProducersFee { get; set; } = true;
         [Display(Name = "Montant de la comission sur les producteurs en %")]
         public int ProducersFee { get; set; } = 5;
 
@@ -67,7 +68,7 @@ namespace Stolons.Models
         public decimal ProducerSubscription { get; set; } = 20;
         [Display(Name = "Mois de départ des cotisations")]
         public Month SubscriptionStartMonth { get; set; } = Month.September;
-        
+
 
         //Site page text
         [Display(Name = "Message de récupération du panier (jour, lieu, plage horraire)")]
@@ -123,7 +124,7 @@ namespace Stolons.Models
         public List<Service> Services { get; set; } = new List<Service>();
 
         [Display(Name = "Bon plan")]
-        public bool GoodPlan { get; set; }        
+        public bool GoodPlan { get; set; }
 
         public enum StolonState
         {
@@ -138,10 +139,10 @@ namespace Stolons.Models
             [Display(Name = "Livraison et mise à jour des stocks")]
             DeliveryAndStockUpdate = 1
         }
-    
+
         public enum Month
         {
-            [Display(Name ="Janvier")]
+            [Display(Name = "Janvier")]
             January = 1,
             [Display(Name = "Février")]
             February = 2,
@@ -166,8 +167,20 @@ namespace Stolons.Models
             [Display(Name = "Decembre")]
             December = 12
         }
-        
-        public  Modes GetMode()
+
+        public string GetStringPickUpTime()
+        {
+            string toReturn = BasketPickUpStartDay.ToFrench() + " de " + String.Format("{0:00}", BasketPickUpStartHour) + "h" + String.Format("{0:00}", BasketPickUpStartMinute);
+
+            if (BasketPickEndUpDay != BasketPickUpStartDay)
+            {
+                toReturn += " au " + BasketPickEndUpDay.ToFrench();
+            }
+            toReturn += " à " + String.Format("{0:00}", BasketPickUpEndHour) + "h" + String.Format("{0:00}", BasketPickUpEndMinute);
+            return toReturn;
+        }
+
+        public Modes GetMode()
         {
             if (IsModeSimulated)
             {
@@ -208,7 +221,7 @@ namespace Stolons.Models
                 }
             }
         }
-        
+
 
     }
 }
