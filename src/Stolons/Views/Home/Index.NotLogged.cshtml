@@ -1,13 +1,8 @@
-﻿@{
-    ViewData["Title"] = "Index";
-}
-
-<link rel="stylesheet" href="~/css/leaflet.css" />
+﻿<link rel="stylesheet" href="~/css/leaflet.css" />
 
 <div class="row">
-    <a asp-controller="Account" asp-action="Login" class="btn btn-link navbar-btn navbar-link">Se connecter</a>
     <div class="col-lg-12" id="logo">
-        <img src="~/images/logos/Logo_HD.png" class="responsiveImage" style="max-width: 300px;" />
+        <img src="~/images/logos/Logo_HD.png" class="responsiveImage" style="max-width: 500px;" />
     </div>
 </div>
 
@@ -78,21 +73,9 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title">Connectez-vous !</h4>
                 </div>
-                <div class="modal-body">
-                    <p id="text-forgotten-password" style="display: none;">Veuillez renseigner votre e-mail dans le champs ci-dessous. Nous vous enverrons immédiatement un nouveau mot de passe.</p>
-                    <div class="form-group">
-                        <label for="email">Votre adresse e-mail</label>
-                        <input type="email" class="form-control" name="email" placeholder="e-mail">
-                    </div>
-                    <div class="form-group" id="password-container">
-                        <label for="password">Votre mot de passe</label>
-                        <input type="password" class="form-control" name="password" placeholder="mot de passe">
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default pull-left" id="forgot-password">Mot de passe oublié</button>
-                    <button type="button" class="btn btn-primary" id="connexion">Connexion</button>
-                </div>
+                @{
+                    Html.RenderPartial("../Account/Login");
+                }
             </div>
         </div>
     </div>
@@ -118,28 +101,3 @@
 
 <script src="~/lib/leaflet.js"></script>
 <script src="~/js/publicProducers.js"></script>
-<script type="text/javascript">
-    $(document).ready(function () {
-        $('button#connexion').on('click', function () {
-            var email = $('input[name=email]').val();
-            var password = $('input[name=password]').val();
-
-            $.ajax({
-                url: '/Account/Login',
-                method:'POST',
-                data: { Email: email, Password: password },
-                success: function (data) {
-                    alert(data);
-                }
-            })
-            return false;
-        });
-
-        $('button#forgot-password').on('click', function () {
-            $('div#password-container').hide();
-            $('p#text-forgotten-password').show();
-            $('input[name=email]').focus();
-            return false;
-        });
-    });
-</script>

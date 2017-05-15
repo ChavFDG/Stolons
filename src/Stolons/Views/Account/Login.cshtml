@@ -4,46 +4,33 @@
 @model LoginViewModel
 @inject SignInManager<ApplicationUser> SignInManager
 
-  @{
-     ViewData["Title"] = "Identification";
-  }
-
-  <h2>@ViewData["Title"].</h2>
-  <p></p>
-  <div class="row">
-    <div class="col-md-8">
-      <section>
-        <form asp-controller="Account" asp-action="Login" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal" role="form">
-          <hr />
-          <div class="form-group">
-            <label asp-for="Email" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-              <input asp-for="Email" class="form-control" data-val-required="L'adresse email est requise." data-val-email="L'adresse email doit être valide." />
-              <span asp-validation-for="Email" class="text-danger"></span>
+<form asp-controller="Account" asp-action="Login" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal" role="form">
+    <div class="modal-body">
+        <div class="form-group">
+            <label asp-for="Email" class=" control-label"></label>
+            <div class="">
+                <input asp-for="Email" class="form-control" data-val-required="L'adresse email est requise." data-val-email="L'adresse email doit être valide." placeholder="Votre courriel" />
+                <span asp-validation-for="Email" class="text-danger"></span>
             </div>
-          </div>
-          <div class="form-group">
-            <label asp-for="Password" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-              <input asp-for="Password" class="form-control" data-val-required="Le mot de passe doit être renseigné." />
-              <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Password" class=" control-label"></label>
+            <div class="">
+                <input asp-for="Password" class="form-control" data-val-required="Le mot de passe doit être renseigné." placeholder="Votre mot de passe" />
+                <span asp-validation-for="Password" class="text-danger"></span>
             </div>
-          </div>
-	  <span asp-validation-for="LoginFailed" class="text-danger"></span>
-	  <!-- <div asp-validation-for="LoginFailed" class="text-danger"></div> -->
-          <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-              <button type="submit" class="btn btn-small btn-default">Se connecter</button>
-            </div>
-          </div>
-          <p>
+        </div>
+        <span asp-validation-for="LoginFailed" class="text-danger"></span>
+        <p>
             <a asp-action="ForgotPassword">J'ai oublié mon mot de passe</a>
-          </p>
-        </form>
-      </section>
+        </p>
     </div>
-  </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Se connecter</button>
+    </div>
+</form>
 
-  @section Scripts {
-  @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
-  }
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

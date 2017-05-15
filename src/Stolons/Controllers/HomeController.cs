@@ -63,7 +63,7 @@ namespace Stolons.Controllers
             {
                 prods.Add(producer, _context.Products.Include(x=>x.Familly).ThenInclude(x=>x.Type).Where(product => product.ProducerId == producer.Id).ToList());
             }
-            return View(new StolonContactViewModel(stolon, prods));
+            return View(new StolonContactViewModel(stolon, prods, User.Identity.IsAuthenticated?GetActiveAdherentStolon():null));
         }
 
         [AllowAnonymous]

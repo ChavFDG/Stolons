@@ -6,20 +6,26 @@
 
 @if (User.Identity.IsAuthenticated)
 {
-    <div class="row">
-        <div class="col-lg-6 text-left" id="logo">
-            <a asp-controller="Home" asp-action="Index">
-                <img src="~/images/logos/Logo_HD.png" style="max-width: 400px;" />
-            </a>            
-        </div>
-        <div class="col-lg-offset-2 col-lg-4">
-            <h1>@Model.ActiveAdherentStolon.Stolon.Label</h1>
-            <p class="information">@Model.ActiveAdherentStolon.Stolon.Address</p>
-            <h2>Horaires paniers</h2>
-            <p class="information">@Model.ActiveAdherentStolon.Stolon.GetStringPickUpTime()</p>
-        </div>
-    </div>
+    
     <div class="nav container">
+        <div class="row">
+            <div class="col-lg-6 text-left" id="logo">
+                <a asp-controller="Home" asp-action="Index">
+                    <img src="~/images/logos/Logo_HD.png" style="max-width: 300px;" />
+                </a>
+            </div>
+            <div class="col-lg-2" id="logo-stolon">
+
+            </div>
+            <div class=" col-lg-4 text-center">
+                    <a asp-controller="Home" asp-action="StolonContact" asp-route-id="@Model.ActiveAdherentStolon.Stolon.Id">
+                        <h1>@Model.ActiveAdherentStolon.Stolon.Label</h1>
+                    </a>
+                <p class="information">@Model.ActiveAdherentStolon.Stolon.Address</p>
+                <h2>Horaires paniers</h2>
+                <p class="information">@Model.ActiveAdherentStolon.Stolon.GetStringPickUpTime()</p>
+            </div>
+        </div>
         <nav class="navbar navbar-default">
             <div class="container-fluid">
                 <div class="navbar-header">
@@ -82,7 +88,6 @@
                                 </ul>
                             </li>
                         }
-                        <li><a asp-controller="Home" asp-action="StolonContact" asp-route-id="@Model.ActiveAdherentStolon.Stolon.Id">@(Model.ActiveAdherentStolon.Stolon.Label +"TODO changer de place")</a></li>
                     </ul>
                 </div>
                 <div class="navbar-right">

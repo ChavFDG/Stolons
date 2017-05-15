@@ -27,7 +27,11 @@
 </head>
 <body>
     <div id="wrapper">
-        @await Component.InvokeAsync("Banner")
+        @if (User.Identity.IsAuthenticated)
+        {
+            @await Component.InvokeAsync("Banner")
+
+        }
         <div class="container body-content">
             @RenderBody()
         </div>

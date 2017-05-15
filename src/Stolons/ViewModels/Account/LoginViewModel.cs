@@ -10,12 +10,12 @@ namespace Stolons.ViewModels.Account
     {
         [Required]
         [EmailAddress]
-        [Display(Name = "Courriel")]
+        [Display(Name = "Votre courriel")]
         public string Email { get; set; }
 
         [Required]
         [DataType(DataType.Password)]
-        [Display(Name = "Mot de passe")]
+        [Display(Name = "Votre mot de passe")]
         public string Password { get; set; }
 
         [Display(Name = "Se souvenir de moi ?")]
