@@ -1,20 +1,7 @@
 @model Stolons.ViewModels.Sympathizers.SympathizerViewModel
 
-@{
-    ViewData["Title"] = "Details de " + Model.Sympathizer.Surname + " "+ Model.Sympathizer.Name;
-}
-
-<h2>@ViewData["Title"]</h2>
-
 <div>
-    <hr />
     <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Sympathizer.Id)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Sympathizer.Id)
-        </dd>
         <dt>
             @Html.DisplayNameFor(model => model.Sympathizer.Name)
         </dt>
@@ -53,6 +40,3 @@
         </dd>       
     </dl>
 </div>
-<p>
-    <a asp-action="Edit" asp-route-id="@Model.Sympathizer.Id" class="btn btn-small btn-default">Modifier @Model.Sympathizer.Surname @Model.Sympathizer.Name</a>
-</p>

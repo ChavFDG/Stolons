@@ -1,13 +1,11 @@
 ﻿@model Stolons.ViewModels.Sympathizers.SympathizerViewModel
 
-<h2>Ajouter un nouveau sympathisant</h2>
-
-<form asp-action="Create" enctype="multipart/form-data">
-    @Html.Partial("Templates/EditSympathizer")
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" value="Créer" class="btn btn-small btn-default" />
-        </div>
+<form asp-action="CreateSympathizer" enctype="multipart/form-data">
+     <div class="modal-body">
+         @Html.Partial("Adherents/EditSympathizer")
+    </div>
+    <div class="modal-footer">
+        <input type="submit" value="Créer le nouveau sympathisant" class="btn btn-small btn-default" />
     </div>
 </form>
 

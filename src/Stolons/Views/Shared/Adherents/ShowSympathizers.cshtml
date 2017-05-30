@@ -2,10 +2,10 @@
 @using Stolons.ViewModels.Sympathizers
 @model SympathizersViewModel
 
-
 <p>
-    <a asp-action="Create" class="btn btn-small btn-default" >Ajouter un nouveau sympathisant</a>
+    <a href="#" onclick="showCreateSympathizer(this);" data-id="@Model.Stolon.Id" data-title="Ajout d'un nouveau sympathisant" class="btn btn-small btn-default">Ajouter un nouveau sympathisant</a>
 </p>
+
 <table class="table">
     <tr>
         <th>
@@ -65,9 +65,9 @@
                         <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a asp-action="Edit" asp-route-id="@item.Id" >Modifier</a></li>
-                        <li><a asp-action="Details" asp-route-id="@item.Id" >Voir détail</a></li>                       
-                        @if (item.SubscriptionPaid == false)
+                        <li><a href="#" onclick="showDetailsSympathizer(this);" data-id="@item.Id" data-title="@("Détail de " + item.Surname +" "+item.Name)">Voir détail</a></li>
+                        <li><a href="#" onclick="showEditSympathizer(this);" data-id="@item.Id" data-title="@("Modification de " + item.Surname +" "+item.Name)">Modifier</a></li>
+                       @if (item.SubscriptionPaid == false)
                         {
                             <li>
                                 @Html.ActionLink(

@@ -3,7 +3,7 @@
 
 
 <p>
-    <a href="#" onclick="showCreateAdherent(this);" data-id="@Model.Stolon" data-title="Ajout d'un nouveau producteur" class="btn btn-small btn-default">Ajouter un nouveau producteur</a>
+    <a href="#" onclick="showCreateAdherent(this);" data-id="@Model.Stolon.Id" data-edition="@((int)AdherentEdition.Producer)" data-title="Ajout d'un nouveau producteur" class="btn btn-small btn-default">Ajouter un nouveau producteur</a>
 </p>
 
 <table class="table">
@@ -95,8 +95,8 @@
                 </a>
                 <ul class="dropdown-menu">
                     <li><a asp-action="ShowBills" asp-route-id="@item.Id" >Voir factures</a></li>
-                    <li><a href="#" onclick="showDetails(this);" data-id="@item.Id" data-title="@("Détail de " + item.Adherent.CompanyName)">Voir détail</a></li>
-                    <li><a href="#" onclick="showEditAdherent(this);" data-id="@item.Id" data-title="@("Modification de " + item.Adherent.CompanyName)" class="btn btn-small btn-default">Modifier</a></li>
+                    <li><a href="#" onclick="showDetailsAdherent(this);" data-id="@item.Id" data-title="@("Détail de " + item.Adherent.CompanyName)">Voir détail</a></li>
+                    <li><a href="#" onclick="showEditAdherent(this);" data-id="@item.Id" data-title="@("Modification de " + item.Adherent.CompanyName)" >Modifier</a></li>
                     @if (item.SubscriptionPaid == false)
                     {
                         <li>

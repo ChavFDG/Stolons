@@ -1,11 +1,11 @@
 ﻿@model Stolons.ViewModels.Adherents.AdherentViewModel
 
-<form asp-action="CreateAdherent" enctype="multipart/form-data">
+<form asp-action="EditAdherent" enctype="multipart/form-data">
     <div class="modal-body">
         @Html.Partial("Adherents/EditAdherent")
     </div>
     <div class="modal-footer">
-        <input type="submit" value="Créer le nouvelle adhérent" class="btn btn-small btn-default" />
+        <input type="submit" value="Enregistrer les modifications" class="btn btn-small btn-default" />
     </div>
 </form>
 

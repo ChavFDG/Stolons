@@ -3,49 +3,61 @@
 
 <h1>Adhérents</h1>
 
-<div class="tabs">
-    <ul class="tab-links">
-        <li class="active"><a href="#AllUsers">Tous les adhérents</a></li>
-        <li><a href="#Sympathizers">Sympathisants</a></li>
-        <li><a href="#Consumers">Consomateurs</a></li>
-        <li><a href="#Producers">Producteurs</a></li>
-    </ul>
+@if (Model.ActiveAdherentStolon.Stolon.StolonType == Stolon.OrganisationType.Association)
+{
+    <div class="tabs">
+        <ul class="tab-links">
+            <li class="active"><a href="#AllUsers">Tous les adhérents</a></li>
+            <li><a href="#Sympathizers">Sympathisants</a></li>
+            <li><a href="#Consumers">Consomateurs</a></li>
+            <li><a href="#Producers">Producteurs</a></li>
+        </ul>
 
-    <div class="tab-content">
-        <div id="AllUsers" class="tab active">
-            @{
-                Html.RenderPartial("../Shared/Adherents/ShowUsers", Model.IAdherents);
-            }
-        </div>
+        <div class="tab-content">
+            <div id="AllUsers" class="tab active">
+                @{
+                    Html.RenderPartial("../Shared/Adherents/ShowUsers", Model.IAdherents);
+                }
+            </div>
 
-        <div id="Sympathizers" class="tab">
-            @{
-                Html.RenderPartial("../Shared/Adherents/ShowSympathizers", Model.SympathizersViewModel);
-            }
-        </div>
+            <div id="Sympathizers" class="tab">
+                @{
+                    Html.RenderPartial("../Shared/Adherents/ShowSympathizers", Model.SympathizersViewModel);
+                }
+            </div>
 
-        <div id="Consumers" class="tab">
-            @{
-                Html.RenderPartial("../Shared/Adherents/ShowConsumers", Model.AdherentsStolonViewModel);
-            }
-        </div>
+            <div id="Consumers" class="tab">
+                @{
+                    Html.RenderPartial("../Shared/Adherents/ShowConsumers", Model.AdherentsStolonViewModel);
+                }
+            </div>
 
-        <div id="Producers" class="tab">
-            @{
-                Html.RenderPartial("../Shared/Adherents/ShowProducers", Model.AdherentsStolonViewModel);
-            }
+            <div id="Producers" class="tab">
+                @{
+                    Html.RenderPartial("../Shared/Adherents/ShowProducers", Model.AdherentsStolonViewModel);
+                }
+            </div>
         </div>
     </div>
-</div>
+                    }
+
+@if (Model.ActiveAdherentStolon.Stolon.StolonType == Stolon.OrganisationType.Producer)
+{
+    Html.RenderPartial("../Shared/Adherents/ShowConsumers", Model.AdherentsStolonViewModel);
+}
+
+
+
 
 <script>
-    function showDetails(clickedElement) {
+
+    function showDetailsAdherent(clickedElement) {
         $("#detailsModal .modal-title").html($(clickedElement).attr("data-title"));
         var dataid = $(clickedElement).attr("data-id");
-        showDetailsAjax(dataid);
+        showDetailsAdherentAjax(dataid);
     }
 
-    function showDetailsAjax(activityAdID) {
+    function showDetailsAdherentAjax(activityAdID) {
         var link = '@Url.Action("_PartialDetailsAdherent", "Users", new { id = "-1"})'
         link = link.replace("-1", activityAdID);
 
@@ -61,15 +73,18 @@
         });
     }
 
+
     function showCreateAdherent(clickedElement) {
         $("#createAdherentModal .modal-title").html($(clickedElement).attr("data-title"));
         var dataid = $(clickedElement).attr("data-id");
-        showCreateAdherentAjax(dataid);
+        var edition = $(clickedElement).attr("data-edition");
+        showCreateAdherentAjax(edition,dataid);
     }
 
-    function showCreateAdherentAjax(activityAdID) {
-        var link = '@Url.Action("_PartialCreateAdherent", "Users", new { id = "-1"})'
-        link = link.replace("-1", activityAdID);
+    function showCreateAdherentAjax(edition,dataid) {
+        var link = '@Url.Action("_PartialCreateAdherent", "Users", new { edition ="-1", stolonId = "-2" })'
+        link = link.replace("-1", edition);
+        link = link.replace("-2", dataid);
 
         $.ajax({
             type: "GET",
@@ -82,6 +97,124 @@
             },
         });
     }
+
+    function showEditAdherent(clickedElement) {
+        $("#editAdherentModal .modal-title").html($(clickedElement).attr("data-title"));
+        var dataid = $(clickedElement).attr("data-id");
+        showEditAdherentAjax(dataid);
+    }
+
+    function showEditAdherentAjax(dataId) {
+        var link = '@Url.Action("_PartialEditAdherent", "Users", new { id ="-1"})'
+        link = link.replace("-1", dataId);
+
+        $.ajax({
+            type: "GET",
+            url: link,
+            error: function(data)
+            {},
+            success: function (data) {
+                $("#editAdherentModal .modal-bodyAndFooter").html(data);
+                $('#editAdherentModal').modal('show');
+            },
+        });
+    }
+
+
+    function showCreditToken(clickedElement) {
+        $("#creditTokenModal .modal-title").html($(clickedElement).attr("data-title"));
+        var dataid = $(clickedElement).attr("data-id");
+        showCreditTokenAjax(dataid);
+    }
+
+
+    function showCreditTokenAjax(dataId) {
+        var link = '@Url.Action("_PartialCreditToken", "Users", new { id ="-1"})'
+        link = link.replace("-1", dataId);
+
+        $.ajax({
+            type: "GET",
+            url: link,
+            error: function(data)
+            {},
+            success: function (data) {
+                $("#creditTokenModal .modal-bodyAndFooter").html(data);
+                $('#creditTokenModal').modal('show');
+            },
+        });
+    }
+
+
+    function showDetailsSympathizer(clickedElement) {
+        $("#detailsModal .modal-title").html($(clickedElement).attr("data-title"));
+        var dataid = $(clickedElement).attr("data-id");
+        showDetailsSympathizerAjax(dataid);
+    }
+
+    function showDetailsSympathizerAjax(activityAdID) {
+        var link = '@Url.Action("_PartialDetailsSympathizer", "Users", new { id = "-1"})'
+        link = link.replace("-1", activityAdID);
+
+        $.ajax({
+            type: "GET",
+            url: link,
+            error: function(data)
+            {},
+            success: function (data) {
+                $("#detailsModal .modal-body").html(data);
+                $('#detailsModal').modal('show');
+            },
+        });
+    }
+
+
+    function showCreateSympathizer(clickedElement) {
+        $("#createAdherentModal .modal-title").html($(clickedElement).attr("data-title"));
+        var dataid = $(clickedElement).attr("data-id");
+        showCreateSympathizerAjax(dataid);
+    }
+
+    function showCreateSympathizerAjax(dataid) {
+        var link = '@Url.Action("_PartialCreateSympathizer", "Users", new { stolonId = "-1"})'
+        link = link.replace("-1", dataid);
+
+        $.ajax({
+            type: "GET",
+            url: link,
+            error: function(data)
+            {},
+            success: function (data) {
+                $("#createAdherentModal .modal-bodyAndFooter").html(data);
+                $('#createAdherentModal').modal('show');
+            },
+        });
+    }
+
+
+    function showEditSympathizer(clickedElement) {
+        $("#editAdherentModal .modal-title").html($(clickedElement).attr("data-title"));
+        var dataid = $(clickedElement).attr("data-id");
+        showEditSympathizerAjax(dataid);
+    }
+
+     function showEditSympathizerAjax(dataId) {
+        var link = '@Url.Action("_PartialEditSympathizer", "Users", new { id ="-1"})'
+        link = link.replace("-1", dataId);
+
+        $.ajax({
+            type: "GET",
+            url: link,
+            error: function(data)
+            {},
+            success: function (data) {
+                $("#editAdherentModal .modal-bodyAndFooter").html(data);
+                $('#editAdherentModal').modal('show');
+            },
+        });
+    }
+    
+
+
 </script>
 
 <div class="modal fade" id="detailsModal" tabindex="-1" role="dialog">
@@ -99,6 +232,34 @@
 </div>
 
 <div class="modal fade" id="createAdherentModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"></h4>
+            </div>
+            <div class="modal-bodyAndFooter">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editAdherentModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"></h4>
+            </div>
+            <div class="modal-bodyAndFooter">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="creditTokenModal" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">

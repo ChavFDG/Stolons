@@ -1,4 +1,4 @@
-using System.Linq;
+﻿using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +17,8 @@ using Stolons.Helpers;
 using Stolons.Models.Users;
 using Stolons.ViewModels.Adherents;
 using Stolons.Models.Transactions;
+using Stolons.ViewModels.Token;
+using Stolons.ViewModels.Sympathizers;
 
 namespace Stolons.Controllers
 {
@@ -60,7 +62,7 @@ namespace Stolons.Controllers
         // POST: Consumers/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public virtual async Task<IActionResult> _PartialCreateAdherent(AdherentEdition edition, AdherentViewModel vmAdherent, IFormFile uploadFile)
+        public virtual async Task<IActionResult> CreateAdherent(AdherentEdition edition, AdherentViewModel vmAdherent, IFormFile uploadFile)
         {
             if (!Authorized(Role.Volunteer))
                 return Unauthorized();
@@ -100,22 +102,11 @@ namespace Stolons.Controllers
             return View(vmAdherent);
         }
 
-        public IActionResult EditAdherent(Guid id)
+        public PartialViewResult _PartialEditAdherent(Guid id)
         {
-            if (!Authorized(Role.Volunteer))
-                return Unauthorized();
-
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             AdherentStolon adherentStolon = _context.AdherentStolons.Include(x => x.Adherent).Include(x => x.Stolon).FirstOrDefault(x => x.Id == id);
-            if (adherentStolon == null)
-            {
-                return NotFound();
-            }
-            return View(new AdherentViewModel(GetActiveAdherentStolon(), adherentStolon.Adherent, adherentStolon.Stolon, AdherentEdition.Consumer));
+
+            return PartialView(new AdherentViewModel(GetActiveAdherentStolon(), adherentStolon.Adherent, adherentStolon.Stolon, adherentStolon.IsProducer ? AdherentEdition.Producer: AdherentEdition.Consumer));
         }
 
         [HttpPost]
@@ -128,20 +119,20 @@ namespace Stolons.Controllers
             if (ModelState.IsValid)
             {
                 UploadAndSetAvatar(vmAdherent.Adherent, uploadFile);
-                UpdateAdherent(_context, vmAdherent, uploadFile);
+                UpdateAdherent( vmAdherent, uploadFile);
                 return RedirectToAction("Index");
             }
             return View(vmAdherent);
         }
 
-        public static void UpdateAdherent(ApplicationDbContext context, AdherentViewModel vmAdherent, IFormFile uploadFile)
+        public void UpdateAdherent( AdherentViewModel vmAdherent, IFormFile uploadFile)
         {
-            ApplicationUser appUser = context.Users.First(x => x.Email == vmAdherent.OriginalEmail);
+            ApplicationUser appUser = _context.Users.First(x => x.Email == vmAdherent.OriginalEmail);
             appUser.Email = vmAdherent.Adherent.Email;
             vmAdherent.Adherent.Name = vmAdherent.Adherent.Name.ToUpper();
-            context.Update(appUser);
-            context.Update(vmAdherent.Adherent);
-            context.SaveChanges();
+            _context.Update(appUser);
+            _context.Update(vmAdherent.Adherent);
+            _context.SaveChanges();
         }
 
         // GET: Consumers/Delete/5
@@ -211,7 +202,7 @@ namespace Stolons.Controllers
             transaction.Date = DateTime.Now;
             transaction.Type = Transaction.TransactionType.Inbound;
             transaction.Category = Transaction.TransactionCategory.Subscription;
-            transaction.Description = "Paiement de la cotisation de l'adh�rant " + (adherentStolon.IsProducer ? "producteur" : "") + " : " + adherentStolon.Adherent.Name + " " + adherentStolon.Adherent.Surname;
+            transaction.Description = "Paiement de la cotisation de l'adhérant " + (adherentStolon.IsProducer ? "producteur" : "") + " : " + adherentStolon.Adherent.Name + " " + adherentStolon.Adherent.Surname;
             _context.Transactions.Add(transaction);
             //Save
             _context.SaveChanges();
@@ -250,5 +241,168 @@ namespace Stolons.Controllers
             _context.SaveChanges();
             return RedirectToAction("Index");
         }
+        
+
+        public PartialViewResult _PartialCreditToken(Guid id)
+        {
+            AdherentStolon adherentStolon = _context.AdherentStolons.Include(x => x.Adherent).Include(x => x.Stolon).FirstOrDefault(x => x.Id == id);
+            return PartialView(new CreditTokenViewModel(GetActiveAdherentStolon(), adherentStolon));
+        }
+
+        // POST: Consumers/CreditToken
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult CreditToken(CreditTokenViewModel vmCreditToken)
+        {
+            if (!Authorized(Role.Volunteer))
+                return Unauthorized();
+
+            AdherentStolon adherentStolon = _context.AdherentStolons.Include(x => x.Adherent).First(x => x.Id == vmCreditToken.AdherentStolon.Id);
+            adherentStolon.Token += vmCreditToken.CreditedToken;
+            _context.Add(new AdherentTransaction(
+                adherentStolon.Adherent,
+                adherentStolon.Stolon,
+                Transaction.TransactionType.Inbound,
+                Transaction.TransactionCategory.TokenCredit,
+                vmCreditToken.CreditedToken,
+                "Encaissement de "+ vmCreditToken.CreditedToken + "€, pour créditage du compte de " + adherentStolon.Adherent.Name + "( " + adherentStolon.LocalId + " ) de " + vmCreditToken.CreditedToken + "β"));
+            _context.Update(adherentStolon);
+            _context.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+
+
+
+
+        #region Sympathizers
+
+
+        public PartialViewResult _PartialDetailsSympathizer(Guid id)
+        {           
+            Sympathizer sympathizer = _context.Sympathizers.FirstOrDefault(x => x.Id == id);
+            return PartialView(new SympathizerViewModel(GetActiveAdherentStolon(), sympathizer));
+        }
+
+        
+        public PartialViewResult _PartialCreateSympathizer(Guid stolonId)
+        {
+            return PartialView(new SympathizerViewModel(GetActiveAdherentStolon(), new Sympathizer() { StolonId = stolonId }));
+        }
+        
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult CreateSympathizer(SympathizerViewModel vmSympathizer)
+        {
+            if (!Authorized(Role.Volunteer))
+                return Unauthorized();
+
+            if (ModelState.IsValid)
+            {
+                #region Creating Sympathizer
+                string fileName = Configurations.DefaultFileName;
+
+                //Setting value for creation
+                vmSympathizer.Sympathizer.RegistrationDate = DateTime.Now;
+                _context.Sympathizers.Add(vmSympathizer.Sympathizer);
+                #endregion Creating Sympathizer
+
+                _context.SaveChanges();
+                return RedirectToAction("Index");
+            }
+
+            return View(vmSympathizer);
+        }
+
+
+        public PartialViewResult _PartialEditSympathizer(Guid id)
+        {
+            Sympathizer sympathizer = _context.Sympathizers.FirstOrDefault(x => x.Id == id);
+
+            return PartialView(new SympathizerViewModel(GetActiveAdherentStolon(), sympathizer));
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult EditSympathizer(SympathizerViewModel vmSympathizer)
+        {
+            if (!Authorized(Role.Volunteer))
+                return Unauthorized();
+
+            if (ModelState.IsValid)
+            {
+                _context.Update(vmSympathizer.Sympathizer);
+                _context.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            return View(vmSympathizer);
+        }
+
+        [ActionName("Delete")]
+        public IActionResult DeleteSympathizer(Guid id)
+        {
+            if (!Authorized(Role.Admin))
+                return Unauthorized();
+
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            Sympathizer sympathizer = _context.Sympathizers.FirstOrDefault(x => x.Id == id);
+            if (sympathizer == null)
+            {
+                return NotFound();
+            }
+            return View(new SympathizerViewModel(GetActiveAdherentStolon(), sympathizer));
+        }
+
+
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteSympathizerConfirmed(Guid id)
+        {
+            if (!Authorized(Role.Admin))
+                return Unauthorized();
+
+            Sympathizer sympathizer = _context.Sympathizers.FirstOrDefault(x => x.Id == id);
+            _context.Sympathizers.Remove(sympathizer);
+            //Save
+            _context.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        /// <summary>
+        /// PaySympathiserSubscription
+        /// </summary>
+        /// <param name="id">Sympathizer ID</param>
+        /// <returns></returns>
+        public IActionResult PaySympathiserSubscription(Guid id)
+        {
+            if (!Authorized(Role.Volunteer))
+                return Unauthorized();
+
+            Transaction transaction = new Transaction();
+            Sympathizer sympathizer = _context.Sympathizers.FirstOrDefault(x => x.Id == id);
+            Stolon currentStolon = GetCurrentStolon();
+            sympathizer.SubscriptionPaid = true;
+            transaction.Amount = currentStolon.SympathizerSubscription;
+            //Add a transaction
+            transaction.Stolon = currentStolon;
+            transaction.AddedAutomaticly = true;
+            transaction.Date = DateTime.Now;
+            transaction.Type = Transaction.TransactionType.Inbound;
+            transaction.Category = Transaction.TransactionCategory.Subscription;
+            transaction.Description = "Paiement de la cotisation du sympathisant : " + sympathizer.Name + " " + sympathizer.Surname;
+            _context.Transactions.Add(transaction);
+            //Save
+            _context.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        #endregion Sympathizers
+
     }
 }

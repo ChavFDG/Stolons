@@ -18,7 +18,7 @@ namespace Stolons.ViewModels.Adherents
         {
             AdherentsStolonViewModel = new AdherentsStolonViewModel(activeAdherentStolon,stolon, adherentsStolon);
             ActiveAdherentStolon = activeAdherentStolon;
-            SympathizersViewModel = new SympathizersViewModel(activeAdherentStolon, sympathizers);
+            SympathizersViewModel = new SympathizersViewModel(activeAdherentStolon,stolon, sympathizers);
             Stolon = stolon;
         }
 

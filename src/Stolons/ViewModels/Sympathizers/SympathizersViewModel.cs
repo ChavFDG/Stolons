@@ -14,13 +14,15 @@ namespace Stolons.ViewModels.Sympathizers
         {
 
         }
-        public SympathizersViewModel(AdherentStolon activeAdherentStolon, List<Sympathizer> sympathizers)
+        public SympathizersViewModel(AdherentStolon activeAdherentStolon,Stolon stolon, List<Sympathizer> sympathizers)
         {
             Sympathizers = sympathizers;
             ActiveAdherentStolon = activeAdherentStolon;
+            Stolon = stolon;
         }
         
 
         public List<Sympathizer> Sympathizers { get; set; }
+        public Stolon Stolon { get; set; }
     }
 }

@@ -65,28 +65,7 @@
                         @if (Model.ActiveAdherentStolon.Authorized(Role.Volunteer))
                         {
                             <li><a asp-controller="WeekBasketManagement" asp-action="Index">Gérer les paniers</a></li>
-                            <li class="dropdown">
-                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                                    Adhérents
-                                    <span class="caret"></span>
-                                </a>
-                                <ul class="dropdown-menu">
-                                    @if (Model.ActiveAdherentStolon.Stolon.StolonType == Stolon.OrganisationType.Association)
-                                    {
-                                        <li><a asp-controller="Users" asp-action="Index">Tous les adhérents</a></li>
-                                        @if (Model.ActiveAdherentStolon.Stolon.UseSympathizer)
-                                        {
-                                            <li><a asp-controller="Sympathizers" asp-action="Index">Sympathisants</a></li>
-                                        }
-                                        <li><a asp-controller="Consumers" asp-action="Index">Consomateurs</a></li>
-                                        <li><a asp-controller="Producers" asp-action="Index">Producteurs</a></li>
-                                    }
-                                    @if (Model.ActiveAdherentStolon.Stolon.StolonType == Stolon.OrganisationType.Producer)
-                                    {
-                                        <li><a asp-controller="Consumers" asp-action="Index">Consomateurs</a></li>
-                                    }
-                                </ul>
-                            </li>
+                            <li><a asp-controller="Users" asp-action="Index">Adhérents</a></li>                           
                             <li class="dropdown">
                                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                                     Administration

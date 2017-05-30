@@ -1,9 +1,0 @@
-﻿@model Stolons.ViewModels.Adherents.AdherentStolonViewModel
-
-<h2>@("Détails du producteur : " + Model.AdherentStolon.Adherent.CompanyName)</h2>
-
-@Html.Partial("Templates/DetailsAdherentAndStolon", Model)
-
-<p>
-    <a asp-action="Edit" asp-route-id="@Model.AdherentStolon.Id" class="btn btn-small btn-default">Modifier @Model.AdherentStolon.Adherent.CompanyName</a>
-</p>
