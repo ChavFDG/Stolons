@@ -79,7 +79,13 @@
                         }
                         @if (Model.ActiveAdherentStolon.Authorized(Role.Admin))
                         {
-                            <li><a asp-action="Delete" asp-route-id="@item.Id">Supprimer</a></li>
+                            <li>
+                                @Html.ActionLink(
+                                   "Supprimer",
+                                   "DeleteSympathizer",
+                                    new { id = item.Id },
+                                    new { onclick = "return confirm('Êtes vous sur de vouloir supprimer le comtpe de " + item.Name+ " ?');" })
+                            </li>
                         }
                     </ul>
                 </div>

@@ -128,7 +128,14 @@
                                     new { onclick = "return confirm('Confirmation de l'activation du compte de " + item.Adherent.Name + " ?');" })
                                 </li>
                             }
-                            <li><a asp-action="Delete" asp-route-id="@item.Id">Supprimer</a></li>
+
+                            <li>
+                                @Html.ActionLink(
+                                   "Supprimer",
+                                   "DeleteAdherent",
+                                    new { id = item.Id },
+                                    new { onclick = "return confirm('Êtes vous sur de vouloir supprimer le comtpe de " + item.Adherent.Name + " ?');" })
+                            </li>
                         }
                     </ul>
                 </div>

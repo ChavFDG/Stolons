@@ -135,30 +135,8 @@ namespace Stolons.Controllers
             _context.SaveChanges();
         }
 
-        // GET: Consumers/Delete/5
-        [ActionName("Delete")]
-        public IActionResult DeleteAdherent(Guid id)
-        {
-            if (!Authorized(Role.Admin))
-                return Unauthorized();
-
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            AdherentStolon adherentStolon = _context.AdherentStolons.Include(x => x.Adherent).Include(x => x.Stolon).FirstOrDefault(x => x.Id == id);
-            if (adherentStolon == null)
-            {
-                return NotFound();
-            }
-            return View(new AdherentStolonViewModel(GetActiveAdherentStolon(), adherentStolon));
-        }
-
-        // POST: Consumers/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public virtual IActionResult DeleteConfirmed(Guid id)
+      
+        public virtual IActionResult DeleteAdherent(Guid id)
         {
             if (!Authorized(Role.Admin))
                 return Unauthorized();
@@ -168,6 +146,7 @@ namespace Stolons.Controllers
             //Check if adherent is in an other Stolons
             if (_context.AdherentStolons.Any(x => x.AdherentId == adherentStolon.AdherentId && x.StolonId != adherentStolon.StolonId))
             {
+                //Useless ?
             }
             //Delete the adherent from this stolons
             _context.AdherentStolons.Remove(adherentStolon);
@@ -338,31 +317,8 @@ namespace Stolons.Controllers
             }
             return View(vmSympathizer);
         }
-
-        [ActionName("Delete")]
+        
         public IActionResult DeleteSympathizer(Guid id)
-        {
-            if (!Authorized(Role.Admin))
-                return Unauthorized();
-
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            Sympathizer sympathizer = _context.Sympathizers.FirstOrDefault(x => x.Id == id);
-            if (sympathizer == null)
-            {
-                return NotFound();
-            }
-            return View(new SympathizerViewModel(GetActiveAdherentStolon(), sympathizer));
-        }
-
-
-
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public IActionResult DeleteSympathizerConfirmed(Guid id)
         {
             if (!Authorized(Role.Admin))
                 return Unauthorized();

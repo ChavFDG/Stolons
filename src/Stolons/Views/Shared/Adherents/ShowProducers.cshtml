@@ -37,103 +37,110 @@
         </th>
         <th></th>
     </tr>
-    
-@foreach (var item in Model.AdherentsStolon.Where(x => x.IsProducer)) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.LocalId)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Adherent.CompanyName)
-        </td>
-        <td class="tdAvatarList">
-            <div class="userListAvatar">
-                <img src="@Html.DisplayFor(modelItem => item.Adherent.AvatarFilePath)" class="responsiveImage circleAvatarDiv" />
-            </div>
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Adherent.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Adherent.Surname)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Adherent.PhoneNumber)
-        </td>
-        @if (item.SubscriptionPaid)
-        {
+
+    @foreach (var item in Model.AdherentsStolon.Where(x => x.IsProducer))
+    {
+        <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.SubscriptionPaid)
+                @Html.DisplayFor(modelItem => item.LocalId)
             </td>
-        }
-        else
-        {
-            <td bgcolor="#ff8000">
-                @Html.DisplayFor(modelItem => item.SubscriptionPaid)
-            </td>
-        }
-        @if (item.Enable)
-        {
             <td>
-                @Html.DisplayFor(modelItem => item.Enable)
+                @Html.DisplayFor(modelItem => item.Adherent.CompanyName)
             </td>
-        }
-        else
-        {
-            <td bgcolor="#ff0000">
-                @Html.DisplayFor(modelItem => item.Enable)
+            <td class="tdAvatarList">
+                <div class="userListAvatar">
+                    <img src="@Html.DisplayFor(modelItem => item.Adherent.AvatarFilePath)" class="responsiveImage circleAvatarDiv" />
+                </div>
             </td>
-        }
-        <td>
-            @Html.DisplayFor(modelItem => item.Role)
-        </td>
-        <td>
-            <div class="dropdown">
-                <a class="dropdown-toggle btn btn-small btn-default" data-toggle="dropdown" href="#">
-                    Actions
-                    <span class="caret"></span>
-                </a>
-                <ul class="dropdown-menu">
-                    <li><a asp-action="ShowBills" asp-route-id="@item.Id" >Voir factures</a></li>
-                    <li><a href="#" onclick="showDetailsAdherent(this);" data-id="@item.Id" data-title="@("Détail de " + item.Adherent.CompanyName)">Voir détail</a></li>
-                    <li><a href="#" onclick="showEditAdherent(this);" data-id="@item.Id" data-title="@("Modification de " + item.Adherent.CompanyName)" >Modifier</a></li>
-                    @if (item.SubscriptionPaid == false)
-                    {
-                        <li>
-                            @Html.ActionLink(
+            <td>
+                @Html.DisplayFor(modelItem => item.Adherent.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Adherent.Surname)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Adherent.PhoneNumber)
+            </td>
+            @if (item.SubscriptionPaid)
+            {
+                <td>
+                    @Html.DisplayFor(modelItem => item.SubscriptionPaid)
+                </td>
+            }
+            else
+            {
+                <td bgcolor="#ff8000">
+                    @Html.DisplayFor(modelItem => item.SubscriptionPaid)
+                </td>
+            }
+            @if (item.Enable)
+            {
+                <td>
+                    @Html.DisplayFor(modelItem => item.Enable)
+                </td>
+            }
+            else
+            {
+                <td bgcolor="#ff0000">
+                    @Html.DisplayFor(modelItem => item.Enable)
+                </td>
+            }
+            <td>
+                @Html.DisplayFor(modelItem => item.Role)
+            </td>
+            <td>
+                <div class="dropdown">
+                    <a class="dropdown-toggle btn btn-small btn-default" data-toggle="dropdown" href="#">
+                        Actions
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a asp-action="ShowBills" asp-route-id="@item.Id">Voir factures</a></li>
+                        <li><a href="#" onclick="showDetailsAdherent(this);" data-id="@item.Id" data-title="@("Détail de " + item.Adherent.CompanyName)">Voir détail</a></li>
+                        <li><a href="#" onclick="showEditAdherent(this);" data-id="@item.Id" data-title="@("Modification de " + item.Adherent.CompanyName)">Modifier</a></li>
+                        @if (item.SubscriptionPaid == false)
+                        {
+                            <li>
+                                @Html.ActionLink(
                                    "Payer cotisation de : " + item.GetStringSubscriptionAmount(),
                                    "PaySubscription",
                                     new { id = item.Id },
-                                    new { onclick = "return confirm('Valider le paiement de la cotisation de " + item.Adherent.Name + " pour un montant de : " + item.GetStringSubscriptionAmount() + "');" })
-                        </li>
-                    }
-                    @if (Model.ActiveAdherentStolon.Authorized(Role.Admin))
-                    {
-                        @if (item.Enable == true)
+                                    new { onclick = "return confirm('Valider le paiement de la cotisation de " + item.Adherent.CompanyName + " pour un montant de : " + item.GetStringSubscriptionAmount() + "');" })
+                            </li>
+                        }
+                        @if (Model.ActiveAdherentStolon.Authorized(Role.Admin))
                         {
-                            <li>
-                                @Html.ActionLink(
+                            @if (item.Enable == true)
+                            {
+                                <li>
+                                    @Html.ActionLink(
                                    "Désactiver le compte",
                                    "Disable",
                                     new { id = item.Id },
-                                    new { onclick = "return confirm('Entrer la raison de la désactivation du compte pour " + item.Adherent.Name + "');" })
-                            </li>
-                        }
-                        else
-                        {
-                            <li>
-                                @Html.ActionLink(
+                                    new { onclick = "return confirm('Entrer la raison de la désactivation du compte pour " + item.Adherent.CompanyName + "');" })
+                                </li>
+                            }
+                            else
+                            {
+                                <li>
+                                    @Html.ActionLink(
                                    "Activer le compte",
                                    "Enable",
                                     new { id = item.Id },
-                                    new { onclick = "return confirm('Confirmation de l'activation du compte de " + item.Adherent.Name + " ?');" })
+                                    new { onclick = "return confirm('Confirmation de l'activation du compte de " + item.Adherent.CompanyName + " ?');" })
+                                </li>
+                            }
+                            <li>
+                                @Html.ActionLink(
+                                   "Supprimer",
+                                   "DeleteAdherent",
+                                    new { id = item.Id },
+                                    new { onclick = "return confirm('Êtes vous sur de vouloir supprimer le comtpe de " + item.Adherent.CompanyName + " ?');" })
                             </li>
                         }
-                        <li><a asp-action="Delete" asp-route-id="@item.Id">Supprimer</a></li>
-                    }
-                </ul>
-            </div>            
-        </td>
-    </tr>
-}
+                    </ul>
+                </div>
+            </td>
+        </tr>
+    }
 </table>
