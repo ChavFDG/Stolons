@@ -1,13 +1,13 @@
 @model Stolons.ViewModels.Stolons.StolonViewModel
 
 
-<h2>@("Edition de " + Model.Stolon.Label)</h2>
+<h2>Ajouter un nouveau stolon</h2>
 
-<form asp-action="Edit" enctype="multipart/form-data">
+<form asp-action="CreateStolon" enctype="multipart/form-data">
     @Html.Partial("Templates/EditStolon")
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
-            <input type="submit" value="Sauvegarder les modifications" class="btn btn-small btn-default" />
+            <input type="submit" value="Créer" class="btn btn-small btn-default" />
         </div>
     </div>
 </form>

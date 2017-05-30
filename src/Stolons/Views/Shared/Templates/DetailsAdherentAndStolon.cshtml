@@ -2,8 +2,7 @@
 @model AdherentStolonViewModel
 
 <div>
-    <hr />
-    @Html.Partial("Templates/DetailsAdherent", new AdherentViewModel(Model.AdherentStolon, Model.AdherentStolon.Adherent,Model.AdherentStolon.IsProducer? AdherentEdition.Producer: AdherentEdition.Adherent))
+    @Html.Partial("Templates/DetailsAdherent", new AdherentViewModel(Model.AdherentStolon, Model.AdherentStolon.Adherent,Model.AdherentStolon.Stolon,Model.AdherentStolon.IsProducer? AdherentEdition.Producer: AdherentEdition.Consumer))
 
     @Html.Partial("Templates/DetailsAdherentStolon", Model)
 </div>

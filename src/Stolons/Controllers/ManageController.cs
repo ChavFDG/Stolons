@@ -60,7 +60,7 @@ namespace Stolons.Controllers
                 return NotFound();
             }
             bool isProducer = _context.AdherentStolons.Any(x => x.IsProducer && x.AdherentId == adherentStolon.AdherentId);
-            return View(new AdherentViewModel(adherentStolon, adherentStolon.Adherent,isProducer? AdherentEdition.Producer: AdherentEdition.Adherent));
+            return View(new AdherentViewModel(adherentStolon, adherentStolon.Adherent, adherentStolon.Stolon, isProducer? AdherentEdition.Producer: AdherentEdition.Consumer));
         }
 
         // POST: Consumers/Edit/5

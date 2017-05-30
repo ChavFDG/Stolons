@@ -23,13 +23,6 @@ namespace Stolons.Controllers
 {
     public class ConsumersController : AdherentsBaseController
     {
-        public override AdherentEdition EditionType
-        {
-            get
-            {
-                return AdherentEdition.Adherent;
-            }
-        }
 
         public ConsumersController(ApplicationDbContext context, IHostingEnvironment environment,
             UserManager<ApplicationUser> userManager,

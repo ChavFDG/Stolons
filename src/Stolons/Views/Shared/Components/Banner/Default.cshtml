@@ -6,7 +6,6 @@
 
 @if (User.Identity.IsAuthenticated)
 {
-    
     <div class="nav container">
         <div class="row">
             <div class="col-lg-6 text-left" id="logo">
@@ -18,9 +17,24 @@
 
             </div>
             <div class=" col-lg-4 text-center">
-                    <a asp-controller="Home" asp-action="StolonContact" asp-route-id="@Model.ActiveAdherentStolon.Stolon.Id">
-                        <h1>@Model.ActiveAdherentStolon.Stolon.Label</h1>
+                <a asp-controller="Home" asp-action="StolonContact" asp-route-id="@Model.ActiveAdherentStolon.Stolon.Id">
+                    <h1>@Model.ActiveAdherentStolon.Stolon.Label</h1>
+                </a>
+                @if (Model.ActiveAdherentStolon.Adherent.AdherentStolons.Count != 1)
+                {
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <span class="caret"></span>
                     </a>
+                    <ul class="dropdown-menu">
+                        @foreach (var adherentStolon in Model.ActiveAdherentStolon.Adherent.AdherentStolons)
+                        {
+                            if (adherentStolon.IsActiveStolon)
+                            {
+                                <li><a asp-controller="Home" asp-action="ChangeActiveStolon" asp-route-id="@adherentStolon.StolonId">@adherentStolon.Stolon.Label</a></li>
+                            }
+                        }
+                    </ul>
+                }
                 <p class="information">@Model.ActiveAdherentStolon.Stolon.Address</p>
                 <h2>Horaires paniers</h2>
                 <p class="information">@Model.ActiveAdherentStolon.Stolon.GetStringPickUpTime()</p>
@@ -57,13 +71,20 @@
                                     <span class="caret"></span>
                                 </a>
                                 <ul class="dropdown-menu">
-                                    <li><a asp-controller="Users" asp-action="Index">Tous les adhérents</a></li>
-                                    @if (Model.ActiveAdherentStolon.Stolon.UseSympathizer)
+                                    @if (Model.ActiveAdherentStolon.Stolon.StolonType == Stolon.OrganisationType.Association)
                                     {
-                                        <li><a asp-controller="Sympathizers" asp-action="Index">Sympathisants</a></li>
+                                        <li><a asp-controller="Users" asp-action="Index">Tous les adhérents</a></li>
+                                        @if (Model.ActiveAdherentStolon.Stolon.UseSympathizer)
+                                        {
+                                            <li><a asp-controller="Sympathizers" asp-action="Index">Sympathisants</a></li>
+                                        }
+                                        <li><a asp-controller="Consumers" asp-action="Index">Consomateurs</a></li>
+                                        <li><a asp-controller="Producers" asp-action="Index">Producteurs</a></li>
                                     }
-                                    <li><a asp-controller="Consumers" asp-action="Index">Consomateurs</a></li>
-                                    <li><a asp-controller="Producers" asp-action="Index">Producteurs</a></li>
+                                    @if (Model.ActiveAdherentStolon.Stolon.StolonType == Stolon.OrganisationType.Producer)
+                                    {
+                                        <li><a asp-controller="Consumers" asp-action="Index">Consomateurs</a></li>
+                                    }
                                 </ul>
                             </li>
                             <li class="dropdown">

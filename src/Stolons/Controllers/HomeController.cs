@@ -92,5 +92,12 @@ namespace Stolons.Controllers
 
             return RedirectToAction("Index", new { showOldNews = true });
         }
+
+
+        public IActionResult ChangeActiveStolon(Guid id)
+        {
+            GetActiveAdherentStolon().Adherent.AdherentStolons.First(x => x.StolonId == id).SetHasActiveStolon(_context);
+            return RedirectToAction("Index");
+        }
     }
 }

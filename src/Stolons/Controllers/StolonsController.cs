@@ -15,15 +15,17 @@ using System.IO;
 using Microsoft.Net.Http.Headers;
 using Stolons.Helpers;
 using Stolons.ViewModels.Stolons;
+using Stolons.ViewModels.Adherents;
 
 namespace Stolons.Controllers
 {
-    public class StolonsController : BaseController
+    public class StolonsController : AdherentsBaseController
     {
+
         public StolonsController(ApplicationDbContext context, IHostingEnvironment environment,
-           UserManager<ApplicationUser> userManager,
-           SignInManager<ApplicationUser> signInManager,
-           IServiceProvider serviceProvider) : base(serviceProvider, userManager, context, environment, signInManager)
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
+            IServiceProvider serviceProvider) : base(context, environment, userManager, signInManager, serviceProvider)
         {
 
         }
@@ -38,7 +40,7 @@ namespace Stolons.Controllers
         }
 
         // GET: Stolons/Details/5
-        public IActionResult Details(Guid? id)
+        public IActionResult DetailsStolon(Guid? id)
         {
             if (!Authorized(Role.Admin))
                 return Unauthorized();
@@ -57,18 +59,90 @@ namespace Stolons.Controllers
 
         }
 
+        // GET: Stolons/Members
+        public IActionResult Members(Guid? id)
+        {
+            if (!Authorized(Role.Admin))
+                return Unauthorized();
+
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var stolon = _context.Stolons.FirstOrDefault(m => m.Id == id);
+            if (stolon == null)
+            {
+                return NotFound();
+            }
+            return View(new StolonMembersViewModel(stolon,_context.AdherentStolons.Include(x=>x.Adherent).Where(x=>x.StolonId == id).ToList(),_context.GetSympathizers(stolon), GetCurrentAdherentSync().IsWebAdmin));
+
+        }
+        public IActionResult CreateConsumer(Guid? id)
+        {
+            return base.CreateAdherent( AdherentEdition.Consumer, id);
+        }
+        public IActionResult CreateAddProducer(Guid? id)
+        {
+            return base.CreateAdherent(AdherentEdition.Producer, id);
+        }
+        public IActionResult AddExistingAdherent(Guid? id)
+        {
+            return View();
+        }
+
+        
+        public IActionResult SetAsAdherent(Guid? id)
+        {
+            AdherentStolon adherentStolon =_context.AdherentStolons.First(x => x.Id == id) ;
+            adherentStolon.Role = Role.Adherent;
+            _context.SaveChanges();
+            return RedirectToAction(nameof(Members), new { id = adherentStolon.StolonId });
+        }
+
+        public IActionResult SetAsVolunteer(Guid? id)
+        {
+            AdherentStolon adherentStolon = _context.AdherentStolons.First(x => x.Id == id);
+            adherentStolon.Role = Role.Volunteer;
+            _context.SaveChanges();
+            return RedirectToAction(nameof(Members), new { id = adherentStolon.StolonId });
+        }
+
+        public IActionResult SetAsAdmin(Guid? id)
+        {
+            AdherentStolon adherentStolon = _context.AdherentStolons.First(x => x.Id == id);
+            adherentStolon.Role = Role.Admin;
+            _context.SaveChanges();
+            return RedirectToAction(nameof(Members), new { id = adherentStolon.StolonId });
+        }
+
+        public IActionResult SetAsProducer(Guid? id)
+        {
+            AdherentStolon adherentStolon = _context.AdherentStolons.First(x => x.Id == id);
+            adherentStolon.IsProducer = true;
+            _context.SaveChanges();
+            return RedirectToAction(nameof(Members), new { id = adherentStolon.StolonId });
+        }
+
+        public IActionResult SetAsConsumer(Guid? id)
+        {
+            AdherentStolon adherentStolon = _context.AdherentStolons.First(x => x.Id == id);
+            adherentStolon.IsProducer = false;
+            _context.SaveChanges();
+            return RedirectToAction(nameof(Members), new { id = adherentStolon.StolonId });
+        }
+
+
         // GET: Stolons/Create
-        public IActionResult Create()
+        public IActionResult CreateStolon()
         {
             return View();
         }
 
         // POST: Stolons/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(StolonViewModel vm, IFormFile uploadFile)
+        public async Task<IActionResult> CreateStolon(StolonViewModel vm, IFormFile uploadFile)
         {
             if (!AuthorizedWebAdmin())
                 return Unauthorized();
@@ -86,7 +160,7 @@ namespace Stolons.Controllers
 
 
         // GET: Stolons/Edit/5
-        public IActionResult Edit(Guid? id)
+        public IActionResult EditStolon(Guid? id)
         {
             if (!Authorized(Role.Admin))
                 return Unauthorized();
@@ -105,11 +179,9 @@ namespace Stolons.Controllers
         }
 
         // POST: Stolons/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, StolonViewModel vm, IFormFile uploadFile)
+        public async Task<IActionResult> EditStolon(Guid id, StolonViewModel vm, IFormFile uploadFile)
         {
             if (id != vm.Stolon.Id)
             {
@@ -141,7 +213,7 @@ namespace Stolons.Controllers
         }
 
         // GET: Stolons/Delete/5
-        public IActionResult Delete(Guid? id)
+        public IActionResult DeleteStolon(Guid? id)
         {
             if (!AuthorizedWebAdmin())
                 return Unauthorized();
@@ -160,9 +232,9 @@ namespace Stolons.Controllers
         }
 
         // POST: Stolons/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost, ActionName("DeleteStolon")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(Guid id)
+        public async Task<IActionResult> DeleteStolonConfirmed(Guid id)
         {
             if (!AuthorizedWebAdmin())
                 return Unauthorized();

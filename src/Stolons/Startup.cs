@@ -413,7 +413,7 @@ namespace Stolons
                     "damien.paravel@gmail.com",
                     "damien.paravel@gmail.com",
                     Role.Admin,
-                    stolon,
+                    stolon, 
                     true);
             await CreateAcount(context,
                     userManager,

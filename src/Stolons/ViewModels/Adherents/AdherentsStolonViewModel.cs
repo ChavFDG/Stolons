@@ -12,12 +12,14 @@ namespace Stolons.ViewModels.Adherents
         {
 
         }
-        public AdherentsStolonViewModel(AdherentStolon activeAdherentStolon, List<AdherentStolon> adherentsStolon)
+        public AdherentsStolonViewModel(AdherentStolon activeAdherentStolon,Stolon stolon, List<AdherentStolon> adherentsStolon)
         {
             ActiveAdherentStolon = activeAdherentStolon;
             AdherentsStolon = adherentsStolon;
+            Stolon = stolon;
         }
 
         public List<AdherentStolon> AdherentsStolon { get; set; }
+        public Stolon Stolon { get; set; }
     }
 }

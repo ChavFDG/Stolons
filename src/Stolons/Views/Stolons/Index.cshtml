@@ -5,7 +5,7 @@
 <h2>Stolons</h2>
 
 <p>
-    <a asp-action="Create" class="btn btn-small btn-default">Ajouter un nouveau Stolon</a>
+    <a asp-action="CreateStolon" class="btn btn-small btn-default">Ajouter un nouveau Stolon</a>
 </p>
 <table class="table">
     <thead>
@@ -15,6 +15,9 @@
             </th>
             <th>
                 Logo
+            </th>
+            <th>
+                Type
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Stolons.First().PhoneNumber)
@@ -42,6 +45,9 @@
                         <img src="@item.LogoFilePath" class="responsiveImage" />
                     </div>
                 <td>
+                    @Html.DisplayFor(modelItem => item.StolonType)
+                </td>
+                <td>
                     @Html.DisplayFor(modelItem => item.PhoneNumber)
                 </td>
                 <td>
@@ -55,18 +61,18 @@
                         case Stolon.StolonState.Closed:
                             <td>Fermé</td>
                             break;
-                    }                
+                    }              
                 <td>
-
                     <div class="dropdown">
                         <a class="dropdown-toggle btn btn-small btn-default" data-toggle="dropdown" href="#">
                             Actions
                             <span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a asp-action="Edit" asp-route-id="@item.Id">Modifer</a></li>
-                            <li><a asp-action="Details" asp-route-id="@item.Id">Voir détail</a></li>
-                            <li><a asp-action="Delete" asp-route-id="@item.Id">Supprimer</a></li>
+                            <li><a asp-action="EditStolon" asp-route-id="@item.Id">Modifer</a></li>
+                            <li><a asp-action="DetailsStolon" asp-route-id="@item.Id">Voir détail</a></li>
+                            <li><a asp-action="Members" asp-route-id="@item.Id">Voir les membres</a></li>
+                            <li><a asp-action="DeleteStolon" asp-route-id="@item.Id">Supprimer</a></li>
                         </ul>
                     </div>
                 </td>

@@ -50,6 +50,7 @@ namespace Stolons.Models
             {
                 adherentStolon.IsActiveStolon = adherentStolon.Id == Id;
             }
+            context.SaveChanges();
         }
         //
 
@@ -102,8 +103,8 @@ namespace Stolons.Models
             return Configurations.GetStringSubscriptionAmount(this);
         }
 
-
         #endregion Subscription
+
 
         //
         public bool Authorized(Role role)

@@ -8,9 +8,8 @@
 @if (SignInManager.IsSignedIn(User))
 {
     <div class="bannerAccount">
-
         @{
-            if (!Model.ActiveAdherentStolon.SubscriptionPaid)
+            if (Model.ActiveAdherentStolon.Stolon.UseSubscipstion && !Model.ActiveAdherentStolon.SubscriptionPaid)
             {
                 <div id="warning-container">
                     <img id="warning" src="/images/warning.png" />
@@ -23,7 +22,7 @@
         <div id="bogues">@(Model.ActiveAdherentStolon.Token) 𝞫</div>
         <a class="dropdown-toggle" data-toggle="dropdown" href="#">
             <div class="bannerAvatar">
-                <img class="avatar" src="/@Model.ActiveAdherentStolon.Adherent.AvatarFilePath" />
+                <img class="avatar" src="@Model.ActiveAdherentStolon.Adherent.AvatarFilePath" />
             </div>
             <span class="caret"></span>
         </a>

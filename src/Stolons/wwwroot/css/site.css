@@ -82,6 +82,7 @@ input[type="file"] {
     text-decoration: none;
 }
 
+
 .bannerAccount .caret {
     margin-top: 15px;
 }
@@ -237,6 +238,9 @@ div#warning-informations{
 }
 
 
+
+
+/**/
 .circleAvatarDiv {
     border-radius: 50%;
     behavior: url(PIE.htc); /* remove if you don't care about IE8 */
@@ -618,7 +622,7 @@ div#warning-informations{
 }
 
 /*----- Tabs -----*/
-/* http://inspirationalpixels.com/tutorials/creating-tabs-with-html-css-and-jquery */
+/*  */
 .tabs {
     width:100%;
     display:inline-block;

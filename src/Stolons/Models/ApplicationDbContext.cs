@@ -77,6 +77,11 @@ namespace Stolons.Models
             modelBuilder.Entity<Product>()
                 .HasOne(x => x.Producer);
         }
+
+        public List<Sympathizer> GetSympathizers(Stolon stolon)
+        {
+            return this.Sympathizers.Include(x => x.Stolon).Where(x => x.StolonId == stolon.Id).ToList();
+        }
     }
 
     public static class DbTools

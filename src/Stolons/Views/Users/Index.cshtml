@@ -1,38 +1,113 @@
-﻿@model IEnumerable<Stolons.Models.Users.IAdherent>
+﻿@using Stolons.ViewModels.Adherents
+@model AdherentsViewModel
 
-<h2>Liste de tous les adhérents</h2>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(item => item.Name)
-        </th>
-        <th>
-            @Html.DisplayNameFor(item => item.Surname)
-        </th>
-        <th>
-            @Html.DisplayNameFor(item => item.PostCode)
-        </th>
-        <th>
-            @Html.DisplayNameFor(item => item.Email)
-        </th>
-        <th></th>
-    </tr>
-    @foreach (var item in Model)
-    {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Surname)
-            </td>
-            <th>
-                @Html.DisplayFor(modelItem => item.PostCode)
-            </th>
-            <th>
-                @Html.DisplayFor(modelItem => item.Email)
-            </th>
-        </tr>
+<h1>Adhérents</h1>
+
+<div class="tabs">
+    <ul class="tab-links">
+        <li class="active"><a href="#AllUsers">Tous les adhérents</a></li>
+        <li><a href="#Sympathizers">Sympathisants</a></li>
+        <li><a href="#Consumers">Consomateurs</a></li>
+        <li><a href="#Producers">Producteurs</a></li>
+    </ul>
+
+    <div class="tab-content">
+        <div id="AllUsers" class="tab active">
+            @{
+                Html.RenderPartial("../Shared/Adherents/ShowUsers", Model.IAdherents);
+            }
+        </div>
+
+        <div id="Sympathizers" class="tab">
+            @{
+                Html.RenderPartial("../Shared/Adherents/ShowSympathizers", Model.SympathizersViewModel);
+            }
+        </div>
+
+        <div id="Consumers" class="tab">
+            @{
+                Html.RenderPartial("../Shared/Adherents/ShowConsumers", Model.AdherentsStolonViewModel);
+            }
+        </div>
+
+        <div id="Producers" class="tab">
+            @{
+                Html.RenderPartial("../Shared/Adherents/ShowProducers", Model.AdherentsStolonViewModel);
+            }
+        </div>
+    </div>
+</div>
+
+<script>
+    function showDetails(clickedElement) {
+        $("#detailsModal .modal-title").html($(clickedElement).attr("data-title"));
+        var dataid = $(clickedElement).attr("data-id");
+        showDetailsAjax(dataid);
     }
-</table>
-       
+
+    function showDetailsAjax(activityAdID) {
+        var link = '@Url.Action("_PartialDetailsAdherent", "Users", new { id = "-1"})'
+        link = link.replace("-1", activityAdID);
+
+        $.ajax({
+            type: "GET",
+            url: link,
+            error: function(data)
+            {},
+            success: function (data) {
+                $("#detailsModal .modal-body").html(data);
+                $('#detailsModal').modal('show');
+            },
+        });
+    }
+
+    function showCreateAdherent(clickedElement) {
+        $("#createAdherentModal .modal-title").html($(clickedElement).attr("data-title"));
+        var dataid = $(clickedElement).attr("data-id");
+        showCreateAdherentAjax(dataid);
+    }
+
+    function showCreateAdherentAjax(activityAdID) {
+        var link = '@Url.Action("_PartialCreateAdherent", "Users", new { id = "-1"})'
+        link = link.replace("-1", activityAdID);
+
+        $.ajax({
+            type: "GET",
+            url: link,
+            error: function(data)
+            {},
+            success: function (data) {
+                $("#createAdherentModal .modal-bodyAndFooter").html(data);
+                $('#createAdherentModal').modal('show');
+            },
+        });
+    }
+</script>
+
+<div class="modal fade" id="detailsModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="createAdherentModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"></h4>
+            </div>
+            <div class="modal-bodyAndFooter">
+
+            </div>
+        </div>
+    </div>
+</div>

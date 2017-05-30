@@ -1,23 +1,23 @@
 @model Stolons.ViewModels.Adherents.AdherentViewModel
 
 <div class="form-horizontal">
-    <hr />
     <input asp-for="Adherent.Id" hidden="hidden" />
+    <input asp-for="Stolon.Id" hidden="hidden" />
     <input asp-for="OriginalEmail" hidden="hidden" />
     <input asp-for="Edition" hidden="hidden" />
     <input asp-for="Adherent.ExploitationPicuresSerialized" hidden="hidden" />
 
-    @if (Model.Edition == Stolons.ViewModels.Adherents.AdherentEdition.Adherent)
+    @if (Model.Edition == Stolons.ViewModels.Adherents.AdherentEdition.Consumer)
     {
         <input asp-for="Adherent.CompanyName" hidden="hidden" />
-        <input asp-for="Adherent.Area" hidden="hidden" />
-        <input asp-for="Adherent.ExploitationPicuresSerialized" hidden="hidden" />
-        <input asp-for="Adherent.Production" hidden="hidden" />
-        <input asp-for="Adherent.OpenText" hidden="hidden" />
-        <input asp-for="Adherent.StartDate" hidden="hidden" />
-        <input asp-for="Adherent.WebSiteLink" hidden="hidden" />
-        <input asp-for="Adherent.Latitude" hidden="hidden" />
-        <input asp-for="Adherent.Longitude" hidden="hidden" />
+            <input asp-for="Adherent.Area" hidden="hidden" />
+            <input asp-for="Adherent.ExploitationPicuresSerialized" hidden="hidden" />
+            <input asp-for="Adherent.Production" hidden="hidden" />
+            <input asp-for="Adherent.OpenText" hidden="hidden" />
+            <input asp-for="Adherent.StartDate" hidden="hidden" />
+            <input asp-for="Adherent.WebSiteLink" hidden="hidden" />
+            <input asp-for="Adherent.Latitude" hidden="hidden" />
+            <input asp-for="Adherent.Longitude" hidden="hidden" />
     }
     else
     {
@@ -44,13 +44,6 @@
         <div class="col-md-10">
             <input asp-for="Adherent.Email" class="form-control" />
             <span asp-validation-for="Adherent.Email" class="text-danger" />
-        </div>
-    </div>
-    <div class="form-group">
-        <label asp-for="Adherent.ReceivedInformationsEmail" class="col-md-2 control-label"></label>
-        <div class="col-md-10">
-            <input asp-for="Adherent.ReceivedInformationsEmail" class="form-control" />
-            <span asp-validation-for="Adherent.ReceivedInformationsEmail" class="text-danger" />
         </div>
     </div>
     <div class="form-group">
@@ -87,6 +80,38 @@
             <span asp-validation-for="Adherent.City" class="text-danger" />
         </div>
     </div>
+
+    <h3>Subscription aux mails : </h3>
+    <div class="form-group">
+        <label asp-for="Adherent.ReceivedInformationsEmail" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="Adherent.ReceivedInformationsEmail" class="form-control" />
+            <span asp-validation-for="Adherent.ReceivedInformationsEmail" class="text-danger" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="Adherent.ReceivedNewsByEmail" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="Adherent.ReceivedNewsByEmail" class="form-control" />
+            <span asp-validation-for="Adherent.ReceivedNewsByEmail" class="text-danger" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="Adherent.ReceivedProductListByEmail" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="Adherent.ReceivedProductListByEmail" class="form-control" />
+            <span asp-validation-for="Adherent.ReceivedProductListByEmail" class="text-danger" />
+        </div>
+    </div>
+    <!--
+    <div class="form-group">
+        <label asp-for="Adherent.ReceivedGoodPlanByEmail" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="Adherent.ReceivedGoodPlanByEmail" class="form-control" />
+            <span asp-validation-for="Adherent.ReceivedGoodPlanByEmail" class="text-danger" />
+        </div>
+    </div>
+    -->
 
     @if (Model.Edition == Stolons.ViewModels.Adherents.AdherentEdition.Producer)
     {

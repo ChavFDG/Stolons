@@ -32,8 +32,8 @@ namespace Stolons.Models
             get
             {
                 if (String.IsNullOrWhiteSpace(LogoFileName))
-                    return Path.Combine(Configurations.StolonLogoStockagePath, Configurations.DefaultFileName);
-                return Path.Combine(Configurations.StolonLogoStockagePath, LogoFileName);
+                    return "\\" + Path.Combine(Configurations.StolonLogoStockagePath, Configurations.DefaultFileName);
+                return "\\" + Path.Combine(Configurations.StolonLogoStockagePath, LogoFileName);
             }
         }
         public string Address { get; set; } = "";
@@ -125,6 +125,15 @@ namespace Stolons.Models
 
         [Display(Name = "Bon plan")]
         public bool GoodPlan { get; set; }
+
+        [Display(Name = "Type de stolon")]
+        public OrganisationType StolonType { get; set; } = OrganisationType.Association;
+
+        public enum OrganisationType
+        {
+            Association = 0,
+            Producer = 1
+        }
 
         public enum StolonState
         {

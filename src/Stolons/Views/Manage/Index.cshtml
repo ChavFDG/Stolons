@@ -1,85 +1,85 @@
 ﻿@using Stolons.ViewModels.Adherents
+@using Stolons.Helpers
 @model ManageViewModel
 
 
 <h1>Mes informations</h1>
 <a asp-controller="Manage" asp-action="ChangePassword" class="btn btn-small btn-default">Changer mon mot de passe</a>
+<br />
+<br />
+<a asp-controller="Manage" asp-action="Edit" class="btn btn-small btn-default">Modifier mes informations personnelles</a>
 <p class="text-success">@ViewData["StatusMessage"]</p>
 <div>
-    <hr />
-    @Html.Partial("Templates/DetailsAdherent", new AdherentViewModel(Model.ActiveAdherentStolon, Model.ActiveAdherentStolon.Adherent, Model.IsProducer?AdherentEdition.Producer:AdherentEdition.Adherent))
+    <div class="boxContainer">
+        @Html.Partial("Templates/DetailsAdherent", new AdherentViewModel(Model.ActiveAdherentStolon, Model.ActiveAdherentStolon.Adherent,Model.ActiveAdherentStolon.Stolon, Model.IsProducer ? AdherentEdition.Producer : AdherentEdition.Consumer))
+    </div>
 
-    <a asp-controller="Manage" asp-action="Edit" class="btn btn-small btn-default">Modifier mes informations personnelles</a>
+    <div class="boxContainer">
+        <h2>Stolon(s) dont je suis adhérent : </h2>
 
-    <h2>Stolon(s) dont je suis adhérent : </h2>
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.AdherentsStolon.First().RegistrationDate)
-                </th>
-                <th>
-                    Libelle
-                </th>
-                <th>
-                    Logo
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.AdherentsStolon.First().Stolon.PhoneNumber)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.AdherentsStolon.First().Stolon.ContactMailAddress)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.AdherentsStolon.First().Stolon.State)
-                </th>
-                <th>
-                    Paniers
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.AdherentsStolon.First().Role)
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.AdherentsStolon)
-            {
+        <table class="table">
+            <thead>
                 <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.RegistrationDate)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Stolon.Label)
-                    </td>
-                    <td class="tdAvatarList">
-                        <div class="userListAvatar">
-                            <img src="@item.Stolon.LogoFilePath" class="responsiveImage" />
-                        </div>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Stolon.PhoneNumber)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Stolon.ContactMailAddress)
-                    </td>
-                    @switch (item.Stolon.State)
-                    {
-                        case Stolon.StolonState.Open:
-                            <td>Ouvert</td>
-                            break;
-                        case Stolon.StolonState.Closed:
-                            <td>Fermé</td>
-                            break;
-                    }
-                    <td>
-                        <!--Ajouter ici la date des paniers-->
-                        @Html.DisplayFor(modelItem => item.Stolon.DeliveryAndStockUpdateDayStartDate)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Role)
-                    </td>
+                    <th>
+                        Libelle
+                    </th>
+                    <th>
+                        Logo
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.AdherentsStolon.First().Stolon.PhoneNumber)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.AdherentsStolon.First().Stolon.ContactMailAddress)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.AdherentsStolon.First().Stolon.State)
+                    </th>
+                    <th>
+                        Paniers
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.AdherentsStolon.First().Role)
+                    </th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.AdherentsStolon)
+            {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Stolon.Label)
+                        </td>
+                        <td class="tdAvatarList">
+                            <div class="userListAvatar">
+                                <img src="@item.Stolon.LogoFilePath" class="responsiveImage" />
+                            </div>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Stolon.PhoneNumber)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Stolon.ContactMailAddress)
+                        </td>
+                        @switch (item.Stolon.State)
+                        {
+                            case Stolon.StolonState.Open:
+                                <td>Ouvert</td>
+                                break;
+                            case Stolon.StolonState.Closed:
+                                <td>Fermé</td>
+                                break;
+                        }
+                        <td>
+                            <!--Ajouter ici la date des paniers-->
+                            @item.Stolon.GetStringPickUpTime()
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Role)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
 </div>

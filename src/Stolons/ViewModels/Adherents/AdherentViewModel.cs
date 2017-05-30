@@ -14,24 +14,25 @@ namespace Stolons.ViewModels.Adherents
         {
 
         }
-        public AdherentViewModel(AdherentStolon activeAdherentStolon, Adherent adherent, AdherentEdition edition)
+        public AdherentViewModel(AdherentStolon activeAdherentStolon,Adherent adherent, Stolon stolon, AdherentEdition edition)
         {
             Adherent = adherent;
             OriginalEmail = adherent.Email;
             ActiveAdherentStolon = activeAdherentStolon;
             Edition = edition;
+            Stolon = stolon;
         }
 
         public string OriginalEmail { get; set; }
 
         public Adherent Adherent { get; set; }
         public AdherentEdition Edition { get; set; }
-
+        public Stolon Stolon { get; set; }
 
     }
     public enum AdherentEdition
     {
-        Adherent,
+        Consumer,
         Producer
     }
 }

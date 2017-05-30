@@ -32,15 +32,15 @@ namespace Stolons.Models.Users
         public string Surname { get; set; }
 
         [Display(Name = "Avatar")]
-        public string AvatarFileName { get; set; } //Lien vers l'image sur le serveur
+        public string AvatarFileName { get; set; } //Nom de l'ilmage sur le server
 
         public string AvatarFilePath
         {
             get
             {
                 if (String.IsNullOrWhiteSpace(AvatarFileName))
-                    return Path.Combine(Configurations.AvatarStockagePath, Configurations.DefaultFileName);
-                return Path.Combine(Configurations.AvatarStockagePath, AvatarFileName);
+                    return "\\"+ Path.Combine(Configurations.AvatarStockagePath, Configurations.DefaultFileName);
+                return "\\" + Path.Combine(Configurations.AvatarStockagePath, AvatarFileName);
             }
         }
 
@@ -62,8 +62,20 @@ namespace Stolons.Models.Users
         [Phone]
         public string PhoneNumber { get; set; }
 
-        [Display(Name = "Recevoir les mails d'informations")]
+        #region MailSubscription
+        [Display(Name = "Informations importantes")]
         public bool ReceivedInformationsEmail { get; set; }
+
+        [Display(Name = "Nouvelles")]
+        public bool ReceivedNewsByEmail { get; set; } = false;
+
+        [Display(Name = "Rappel à l'ouverture des commandes")]
+        public bool ReceivedProductListByEmail { get; set; } = false;
+
+        [Display(Name = "Bons plans")]
+        public bool ReceivedGoodPlanByEmail { get; set; } = false;
+
+        #endregion MailSubscription
 
         #region Producer
 

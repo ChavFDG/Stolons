@@ -1,0 +1,89 @@
+﻿@using Stolons.Models.Users
+@using Stolons.ViewModels.Sympathizers
+@model SympathizersViewModel
+
+
+<p>
+    <a asp-action="Create" class="btn btn-small btn-default" >Ajouter un nouveau sympathisant</a>
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(item => item.Sympathizers.First().RegistrationDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(item => item.Sympathizers.First().Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(item => item.Sympathizers.First().Surname)
+        </th>
+        <th>
+            @Html.DisplayNameFor(item => item.Sympathizers.First().SubscriptionPaid)
+        </th>
+        <th>
+            @Html.DisplayNameFor(item => item.Sympathizers.First().ReceivedInformationsEmail)
+        </th>
+        <th>
+            @Html.DisplayNameFor(item => item.Sympathizers.First().Email)
+        </th>
+        <th></th>
+    </tr>
+    @foreach (var item in Model.Sympathizers)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.RegistrationDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Surname)
+            </td>
+            @if (item.SubscriptionPaid)
+            {
+                <td>
+                    @Html.DisplayFor(modelItem => item.SubscriptionPaid)
+                </td>
+            }
+            else
+            {
+                <td bgcolor="#ff8000">
+                    @Html.DisplayFor(modelItem => item.SubscriptionPaid)
+                </td>
+            }
+            <td>
+                @Html.DisplayFor(modelItem => item.ReceivedInformationsEmail)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                <div class="dropdown">
+                    <a class="dropdown-toggle btn btn-small btn-default" data-toggle="dropdown" href="#">
+                        Actions
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a asp-action="Edit" asp-route-id="@item.Id" >Modifier</a></li>
+                        <li><a asp-action="Details" asp-route-id="@item.Id" >Voir détail</a></li>                       
+                        @if (item.SubscriptionPaid == false)
+                        {
+                            <li>
+                                @Html.ActionLink(
+                                   "Payer cotisation de : " + item.GetStringSubscriptionAmount(),
+                                   "PaySympathiserSubscription",
+                                    new { id = item.Id },
+                                    new { onclick = "return confirm('Valider le paiement de la cotisation de " + item.Name + " pour un montant de : " + item.GetStringSubscriptionAmount() + "');" })
+                            </li>
+                        }
+                        @if (Model.ActiveAdherentStolon.Authorized(Role.Admin))
+                        {
+                            <li><a asp-action="Delete" asp-route-id="@item.Id">Supprimer</a></li>
+                        }
+                    </ul>
+                </div>
+            </td>
+        </tr>
+    }
+</table>

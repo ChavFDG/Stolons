@@ -22,8 +22,6 @@ namespace Stolons.Controllers
 {
     public abstract class AdherentsBaseController : BaseController
     {
-        public abstract AdherentEdition EditionType { get;}
-
         public AdherentsBaseController(ApplicationDbContext context, IHostingEnvironment environment,
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
@@ -31,17 +29,9 @@ namespace Stolons.Controllers
         {
 
         }
-        // GET: Consumers
-        public virtual IActionResult Index()
-        {
-            if (!Authorized(Role.Volunteer))
-                return Unauthorized();
 
-            return View(new AdherentsStolonViewModel(GetActiveAdherentStolon(), _context.AdherentStolons.Include(x => x.Adherent).Where(x => x.StolonId == GetCurrentStolon().Id).ToList()));
-        }
-
-        // GET: Consumers/Details/5
-        public virtual IActionResult Details(Guid id)
+        // GET: Consumers/DetailsAdherent/5
+        public virtual IActionResult DetailsAdherent(Guid id)
         {
             if (!Authorized(Role.Volunteer))
                 return Unauthorized();
@@ -62,33 +52,35 @@ namespace Stolons.Controllers
 
 
         // GET: Consumers/Create
-        public virtual IActionResult Create()
+        public virtual IActionResult CreateAdherent(AdherentEdition edition,Guid? stolonId = null)
         {
             if (!Authorized(Role.Volunteer))
                 return Unauthorized();
 
-            return View(new AdherentViewModel(GetActiveAdherentStolon(), new Adherent(), EditionType));
+            Stolon stolon = stolonId == null ? GetCurrentStolon() : _context.Stolons.First(x => x.Id == stolonId);
+            return View(new AdherentViewModel(GetActiveAdherentStolon(), new Adherent(), stolon, edition));
         }
 
         // POST: Consumers/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public virtual async Task<IActionResult> Create(AdherentViewModel vmAdherent, IFormFile uploadFile)
+        public virtual async Task<IActionResult> Create(AdherentEdition edition,AdherentViewModel vmAdherent, IFormFile uploadFile)
         {
             if (!Authorized(Role.Volunteer))
                 return Unauthorized();
 
             if (ModelState.IsValid)
             {
+                Stolon stolon = _context.Stolons.FirstOrDefault(x => x.Id == vmAdherent.Stolon.Id);
                 #region Creating Consumer
                 //Setting value for creation
                 UploadAndSetAvatar(vmAdherent.Adherent, uploadFile);
 
                 vmAdherent.Adherent.Name = vmAdherent.Adherent.Name.ToUpper();
-                AdherentStolon adherentStolon = new AdherentStolon(vmAdherent.Adherent, GetCurrentStolon(), true);
+                AdherentStolon adherentStolon = new AdherentStolon(vmAdherent.Adherent, stolon, true);
                 adherentStolon.RegistrationDate = DateTime.Now;
-                adherentStolon.LocalId = _context.AdherentStolons.Where(x => x.StolonId == GetCurrentStolon().Id).Max(x => x.LocalId) + 1;
-                adherentStolon.IsProducer = EditionType == AdherentEdition.Producer;
+                adherentStolon.LocalId = _context.AdherentStolons.Where(x => x.StolonId == stolon.Id).Max(x => x.LocalId) + 1;
+                adherentStolon.IsProducer = edition == AdherentEdition.Producer;
                 _context.Adherents.Add(vmAdherent.Adherent);
                 _context.AdherentStolons.Add(adherentStolon);
                 #endregion Creating Consumer
@@ -104,14 +96,15 @@ namespace Stolons.Controllers
                 //
                 _context.SaveChanges();
                 //Send confirmation mail
-                Services.AuthMessageSender.SendEmail(vmAdherent.Adherent.Email, vmAdherent.Adherent.Name, "Creation de votre compte", base.RenderPartialViewToString("CreationConfirmationMail", adherentStolon));
+                string confirmationViewName = edition == AdherentEdition.Consumer ? "AdherentConfirmationMail" : "ProducerConfirmationMail";
+                Services.AuthMessageSender.SendEmail(vmAdherent.Adherent.Email, vmAdherent.Adherent.Name, "Creation de votre compte", base.RenderPartialViewToString(confirmationViewName, adherentStolon));
 
                 return RedirectToAction("Index");
             }
             return View(vmAdherent);
         }
         
-        public IActionResult Edit(Guid id)
+        public IActionResult EditAdherent(Guid id)
         {
             if (!Authorized(Role.Volunteer))
                 return Unauthorized();
@@ -126,12 +119,12 @@ namespace Stolons.Controllers
             {
                 return NotFound();
             }
-            return View(new AdherentViewModel(GetActiveAdherentStolon(), adherentStolon.Adherent, AdherentEdition.Adherent));
+            return View(new AdherentViewModel(GetActiveAdherentStolon(), adherentStolon.Adherent, adherentStolon.Stolon, AdherentEdition.Consumer));
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(AdherentViewModel vmAdherent, IFormFile uploadFile)
+        public IActionResult EditAdherent(AdherentViewModel vmAdherent, IFormFile uploadFile)
         {
             if (!Authorized(Role.Volunteer))
                 return Unauthorized();
@@ -157,7 +150,7 @@ namespace Stolons.Controllers
 
         // GET: Consumers/Delete/5
         [ActionName("Delete")]
-        public IActionResult Delete(Guid id)
+        public IActionResult DeleteAdherent(Guid id)
         {
             if (!Authorized(Role.Admin))
                 return Unauthorized();
@@ -229,7 +222,7 @@ namespace Stolons.Controllers
             return RedirectToAction("Index");
         }
         
-        public IActionResult Enable(Guid id)
+        public IActionResult EnableAdherent(Guid id)
         {
             if (!Authorized(Role.Volunteer))
                 return Unauthorized();
@@ -246,7 +239,7 @@ namespace Stolons.Controllers
         }
 
         
-        public IActionResult Disable(Guid id, string comment)
+        public IActionResult DisableAdherent(Guid id, string comment)
         {
             if (!Authorized(Role.Volunteer))
                 return Unauthorized();
