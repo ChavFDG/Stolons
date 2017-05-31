@@ -360,5 +360,47 @@ namespace Stolons.Controllers
 
         #endregion Sympathizers
 
+        #region Roles
+        public IActionResult SetAsAdherent(Guid? id)
+        {
+            AdherentStolon adherentStolon = _context.AdherentStolons.First(x => x.Id == id);
+            adherentStolon.Role = Role.Adherent;
+            _context.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult SetAsVolunteer(Guid? id)
+        {
+            AdherentStolon adherentStolon = _context.AdherentStolons.First(x => x.Id == id);
+            adherentStolon.Role = Role.Volunteer;
+            _context.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult SetAsAdmin(Guid? id)
+        {
+            AdherentStolon adherentStolon = _context.AdherentStolons.First(x => x.Id == id);
+            adherentStolon.Role = Role.Admin;
+            _context.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult SetAsProducer(Guid? id)
+        {
+            AdherentStolon adherentStolon = _context.AdherentStolons.First(x => x.Id == id);
+            adherentStolon.IsProducer = true;
+            _context.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult SetAsConsumer(Guid? id)
+        {
+            AdherentStolon adherentStolon = _context.AdherentStolons.First(x => x.Id == id);
+            adherentStolon.IsProducer = false;
+            _context.SaveChanges();
+            return RedirectToAction("Index");
+        }
+        #endregion Roles
+
     }
 }

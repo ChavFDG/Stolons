@@ -1,10 +1,14 @@
 ﻿@using Stolons.ViewModels.Adherents
 @model AdherentsStolonViewModel
 
-
-<p>
-    <a href="#" onclick="showCreateAdherent(this);" data-id="@Model.Stolon.Id" data-edition="@((int)AdherentEdition.Producer)" data-title="Ajout d'un nouveau producteur" class="btn btn-small btn-default">Ajouter un nouveau producteur</a>
-</p>
+@if (Model.Stolon.StolonType == Stolon.OrganisationType.Association
+    ||
+    (Model.Stolon.StolonType == Stolon.OrganisationType.Producer && !Model.AdherentsStolon.Any(x => x.IsProducer)))
+{
+    <p>
+        <a href="#" onclick="showCreateAdherent(this);" data-id="@Model.Stolon.Id" data-edition="@((int)AdherentEdition.Producer)" data-title="Ajout d'un nouveau producteur" class="btn btn-small btn-default">Ajouter un nouveau producteur</a>
+    </p>
+}
 
 <table class="table">
     <tr>
@@ -86,60 +90,14 @@
                 </td>
             }
             <td>
-                @Html.DisplayFor(modelItem => item.Role)
+                @{
+                    Html.RenderPartial("../Shared/Adherents/RoleActions", new AdherentStolonViewModel(Model.ActiveAdherentStolon, item));
+                }
             </td>
             <td>
-                <div class="dropdown">
-                    <a class="dropdown-toggle btn btn-small btn-default" data-toggle="dropdown" href="#">
-                        Actions
-                        <span class="caret"></span>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a asp-action="ShowBills" asp-route-id="@item.Id">Voir factures</a></li>
-                        <li><a href="#" onclick="showDetailsAdherent(this);" data-id="@item.Id" data-title="@("Détail de " + item.Adherent.CompanyName)">Voir détail</a></li>
-                        <li><a href="#" onclick="showEditAdherent(this);" data-id="@item.Id" data-title="@("Modification de " + item.Adherent.CompanyName)">Modifier</a></li>
-                        @if (item.SubscriptionPaid == false)
-                        {
-                            <li>
-                                @Html.ActionLink(
-                                   "Payer cotisation de : " + item.GetStringSubscriptionAmount(),
-                                   "PaySubscription",
-                                    new { id = item.Id },
-                                    new { onclick = "return confirm('Valider le paiement de la cotisation de " + item.Adherent.CompanyName + " pour un montant de : " + item.GetStringSubscriptionAmount() + "');" })
-                            </li>
-                        }
-                        @if (Model.ActiveAdherentStolon.Authorized(Role.Admin))
-                        {
-                            @if (item.Enable == true)
-                            {
-                                <li>
-                                    @Html.ActionLink(
-                                   "Désactiver le compte",
-                                   "Disable",
-                                    new { id = item.Id },
-                                    new { onclick = "return confirm('Entrer la raison de la désactivation du compte pour " + item.Adherent.CompanyName + "');" })
-                                </li>
-                            }
-                            else
-                            {
-                                <li>
-                                    @Html.ActionLink(
-                                   "Activer le compte",
-                                   "Enable",
-                                    new { id = item.Id },
-                                    new { onclick = "return confirm('Confirmation de l'activation du compte de " + item.Adherent.CompanyName + " ?');" })
-                                </li>
-                            }
-                            <li>
-                                @Html.ActionLink(
-                                   "Supprimer",
-                                   "DeleteAdherent",
-                                    new { id = item.Id },
-                                    new { onclick = "return confirm('Êtes vous sur de vouloir supprimer le comtpe de " + item.Adherent.CompanyName + " ?');" })
-                            </li>
-                        }
-                    </ul>
-                </div>
+                @{
+                    Html.RenderPartial("../Shared/Adherents/AdherentActions", new AdherentStolonViewModel(Model.ActiveAdherentStolon, item));
+                }
             </td>
         </tr>
     }

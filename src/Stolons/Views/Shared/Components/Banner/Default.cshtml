@@ -77,7 +77,7 @@
                                     <li><a asp-controller="News" asp-action="Index">Les nouvelles</a></li>
                                     @if (Model.ActiveAdherentStolon.Authorized(Role.Admin))
                                     {
-                                        <li><a asp-controller="Stolons" asp-route-id="@Model.ActiveAdherentStolon.Stolon.Id" asp-action="Details">@Model.ActiveAdherentStolon.Stolon.Label</a></li>
+                                        <li><a asp-controller="Stolons" asp-route-id="@Model.ActiveAdherentStolon.Stolon.Id" asp-action="DetailsStolon">@Model.ActiveAdherentStolon.Stolon.Label</a></li>
                                     }
                                     @if (Model.ActiveAdherentStolon.Adherent.IsWebAdmin)
                                     {

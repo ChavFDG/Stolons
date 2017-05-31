@@ -75,8 +75,10 @@ namespace Stolons.Controllers
             {
                 return NotFound();
             }
-            return View(new StolonMembersViewModel(stolon,_context.AdherentStolons.Include(x=>x.Adherent).Where(x=>x.StolonId == id).ToList(),_context.GetSympathizers(stolon), GetCurrentAdherentSync().IsWebAdmin));
-
+            return View(new AdherentsViewModel(GetActiveAdherentStolon(), 
+                                                stolon,
+                                                _context.GetSympathizers(stolon),
+                                                _context.AdherentStolons.Include(x=>x.Adherent).Where(x=>x.StolonId == id).ToList()));
         }
         public IActionResult CreateConsumer(Guid? id)
         {
@@ -92,46 +94,7 @@ namespace Stolons.Controllers
         }
 
         
-        public IActionResult SetAsAdherent(Guid? id)
-        {
-            AdherentStolon adherentStolon =_context.AdherentStolons.First(x => x.Id == id) ;
-            adherentStolon.Role = Role.Adherent;
-            _context.SaveChanges();
-            return RedirectToAction(nameof(Members), new { id = adherentStolon.StolonId });
-        }
-
-        public IActionResult SetAsVolunteer(Guid? id)
-        {
-            AdherentStolon adherentStolon = _context.AdherentStolons.First(x => x.Id == id);
-            adherentStolon.Role = Role.Volunteer;
-            _context.SaveChanges();
-            return RedirectToAction(nameof(Members), new { id = adherentStolon.StolonId });
-        }
-
-        public IActionResult SetAsAdmin(Guid? id)
-        {
-            AdherentStolon adherentStolon = _context.AdherentStolons.First(x => x.Id == id);
-            adherentStolon.Role = Role.Admin;
-            _context.SaveChanges();
-            return RedirectToAction(nameof(Members), new { id = adherentStolon.StolonId });
-        }
-
-        public IActionResult SetAsProducer(Guid? id)
-        {
-            AdherentStolon adherentStolon = _context.AdherentStolons.First(x => x.Id == id);
-            adherentStolon.IsProducer = true;
-            _context.SaveChanges();
-            return RedirectToAction(nameof(Members), new { id = adherentStolon.StolonId });
-        }
-
-        public IActionResult SetAsConsumer(Guid? id)
-        {
-            AdherentStolon adherentStolon = _context.AdherentStolons.First(x => x.Id == id);
-            adherentStolon.IsProducer = false;
-            _context.SaveChanges();
-            return RedirectToAction(nameof(Members), new { id = adherentStolon.StolonId });
-        }
-
+       
 
         // GET: Stolons/Create
         public IActionResult CreateStolon()

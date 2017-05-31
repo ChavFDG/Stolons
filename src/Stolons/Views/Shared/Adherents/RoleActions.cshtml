@@ -1,0 +1,43 @@
+﻿@using Stolons.ViewModels.Adherents
+@model AdherentStolonViewModel
+
+@if (Model.ActiveAdherentStolon.Authorized(Role.Admin))
+{
+    <div class="dropdown">
+        <a class="dropdown-toggle btn btn-small btn-default" data-toggle="dropdown" href="#">
+            @Html.DisplayFor(x => x.AdherentStolon.Role)
+            <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu">
+            @if (Model.AdherentStolon.Role != Role.Adherent && Model.ActiveAdherentStolon.Authorized(Role.Admin))
+            {
+                <li><a asp-action="SetAsAdherent" asp-controller="Users" asp-route-id="@Model.AdherentStolon.Id">Passer adhérent</a></li>
+            }
+            @if (Model.AdherentStolon.Role != Role.Volunteer && Model.ActiveAdherentStolon.Authorized(Role.Admin))
+            {
+                <li><a asp-action="SetAsVolunteer" asp-controller="Users" asp-route-id="@Model.AdherentStolon.Id">Passer bénévole</a></li>
+            }
+            @if (Model.AdherentStolon.Role != Role.Admin && Model.ActiveAdherentStolon.Authorized(Role.Admin))
+            {
+                <li><a asp-action="SetAsAdmin" asp-controller="Users" asp-route-id="@Model.AdherentStolon.Id">Passer administrateur</a></li>
+            }
+            @if (!Model.AdherentStolon.IsProducer && Model.ActiveAdherentStolon.Authorized(Role.Admin))
+            {
+                <li><a asp-action="SetAsProducer" asp-controller="Users" asp-route-id="@Model.AdherentStolon.Id">Passer producteur</a></li>
+            }
+            @if (Model.AdherentStolon.IsProducer && Model.ActiveAdherentStolon.Authorized(Role.Admin))
+            {
+                <li><a asp-action="SetAsConsumer" asp-controller="Users" asp-route-id="@Model.AdherentStolon.Id">Passer producteur</a></li>
+            }
+        </ul>
+    </div>
+}
+else
+{
+    @Html.DisplayFor(x => x.AdherentStolon.Role)
+}
+
+
+
+
+    

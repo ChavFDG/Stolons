@@ -71,7 +71,7 @@
                         <ul class="dropdown-menu">
                             <li><a asp-action="EditStolon" asp-route-id="@item.Id">Modifer</a></li>
                             <li><a asp-action="DetailsStolon" asp-route-id="@item.Id">Voir détail</a></li>
-                            <li><a asp-action="Members" asp-route-id="@item.Id">Voir les membres</a></li>
+                            <li><a asp-action="Index" asp-controller="Users" asp-route-id="@item.Id">Voir les membres</a></li>
                             <li><a asp-action="DeleteStolon" asp-route-id="@item.Id">Supprimer</a></li>
                         </ul>
                     </div>
