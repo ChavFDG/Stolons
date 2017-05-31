@@ -55,7 +55,7 @@ namespace Stolons.Controllers
             {
                 return NotFound();
             }
-            return View(new StolonViewModel(stolon, GetCurrentAdherentSync().IsWebAdmin));
+            return View(new StolonViewModel(GetActiveAdherentStolon(), stolon));
 
         }
 
@@ -99,9 +99,9 @@ namespace Stolons.Controllers
         // GET: Stolons/Create
         public IActionResult CreateStolon()
         {
-            return View();
+            return View(new StolonViewModel(GetActiveAdherentStolon(),new Stolon()));
         }
-
+        
         // POST: Stolons/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -138,7 +138,7 @@ namespace Stolons.Controllers
             {
                 return NotFound();
             }
-            return View(new StolonViewModel(stolon,GetCurrentAdherentSync().IsWebAdmin));
+            return View(new StolonViewModel(GetActiveAdherentStolon(), stolon));
         }
 
         // POST: Stolons/Edit/5
@@ -191,7 +191,7 @@ namespace Stolons.Controllers
             {
                 return NotFound();
             }
-            return View(new StolonViewModel( stolon, GetCurrentAdherentSync().IsWebAdmin));
+            return View(new StolonViewModel(GetActiveAdherentStolon(), stolon));
         }
 
         // POST: Stolons/Delete/5
