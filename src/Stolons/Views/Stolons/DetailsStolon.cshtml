@@ -4,7 +4,7 @@
 
 
 <h2>@Model.Stolon.Label</h2>
-@if (Model.IsWebAdmin)
+@if (Model.ActiveAdherentStolon.Adherent.IsWebAdmin)
 {
     <a asp-controller="Stolons" asp-action="Index"class="btn btn-small btn-default">Voir tous les Stolons</a>
 }
@@ -263,5 +263,5 @@
     </dl>
 </div>
 <p>
-    <a asp-action="Edit" asp-route-id="@Model.Stolon.Id" class="btn btn-small btn-default">Modifier @Model.Stolon.Label</a>
+    <a asp-action="EditStolon" asp-route-id="@Model.Stolon.Id" class="btn btn-small btn-default">Modifier @Model.Stolon.Label</a>
 </p>

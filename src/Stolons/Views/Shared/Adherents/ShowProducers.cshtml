@@ -2,12 +2,19 @@
 @model AdherentsStolonViewModel
 
 @if (Model.Stolon.StolonType == Stolon.OrganisationType.Association
-    ||
-    (Model.Stolon.StolonType == Stolon.OrganisationType.Producer && !Model.AdherentsStolon.Any(x => x.IsProducer)))
+                ||
+                (Model.Stolon.StolonType == Stolon.OrganisationType.Producer && !Model.AdherentsStolon.Any(x => x.IsProducer)))
 {
-    <p>
-        <a href="#" onclick="showCreateAdherent(this);" data-id="@Model.Stolon.Id" data-edition="@((int)AdherentEdition.Producer)" data-title="Ajout d'un nouveau producteur" class="btn btn-small btn-default">Ajouter un nouveau producteur</a>
-    </p>
+        <div class="dropdown">
+            <a class="dropdown-toggle btn btn-small btn-default" data-toggle="dropdown" href="#">
+                Ajouter ...
+                <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+                <li><a href="#" onclick="showCreateAdherent(this);" data-Id="@Model.Stolon.Id" data-edition="@((int)AdherentEdition.Producer)" data-title="Ajout d'un nouveau producteur">... un nouveau producteur</a></li>
+                <li><a href="#" onclick="showAddAdherent(this);" data-id="@Model.Stolon.Id" data-edition="@((int)AdherentEdition.Producer)" data-title="Ajout d'un producteur existant">... un producteur existant d'un autre Stolon</a></li>
+            </ul>
+        </div>
 }
 
 <table class="table">

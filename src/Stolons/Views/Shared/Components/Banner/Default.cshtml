@@ -28,14 +28,14 @@
                     <ul class="dropdown-menu">
                         @foreach (var adherentStolon in Model.ActiveAdherentStolon.Adherent.AdherentStolons)
                         {
-                            if (adherentStolon.IsActiveStolon)
+                            if (!adherentStolon.IsActiveStolon)
                             {
                                 <li><a asp-controller="Home" asp-action="ChangeActiveStolon" asp-route-id="@adherentStolon.StolonId">@adherentStolon.Stolon.Label</a></li>
                             }
                         }
                     </ul>
                 }
-                <p class="information">@Model.ActiveAdherentStolon.Stolon.Address</p>
+                <p class="information">@Html.Raw(Model.ActiveAdherentStolon.Stolon.Address)</p>
                 <h2>Horaires paniers</h2>
                 <p class="information">@Model.ActiveAdherentStolon.Stolon.GetStringPickUpTime()</p>
             </div>

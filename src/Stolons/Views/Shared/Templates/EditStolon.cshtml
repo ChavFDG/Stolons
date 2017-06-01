@@ -15,11 +15,12 @@
     <input asp-for="Stolon.LogoFileName" hidden="hidden" />
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
+
     <h3>Informations</h3>
     <div class="form-group">
         <label asp-for="Stolon.StolonType" class="col-md-2 control-label"></label>
         <div class="col-md-10">
-            <input asp-for="Stolon.StolonType" asp-items="Html.GetEnumSelectList<Stolon.Modes>()" class="form-control" />
+            <select asp-for="Stolon.StolonType" asp-items="Html.GetEnumSelectList<Stolon.OrganisationType>()" class="form-control"></select>
             <span asp-validation-for="Stolon.StolonType" class="text-danger"></span>
         </div>
     </div>

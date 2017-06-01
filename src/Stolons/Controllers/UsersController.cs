@@ -33,7 +33,7 @@ namespace Stolons.Controllers
 
         }
 
-        // GET: Consumers
+
         public IActionResult Index(Guid? id = null)
         {
             if (!Authorized(Role.Volunteer))
@@ -44,22 +44,62 @@ namespace Stolons.Controllers
             return View(adherentsViewModel); 
         }
 
-        // GET: Consumers/DetailsAdherent/5
+
         public virtual PartialViewResult _PartialDetailsAdherent(Guid id)
         {
             AdherentStolon adherentStolon = _context.AdherentStolons.Include(x => x.Adherent).Include(x => x.Stolon).FirstOrDefault(x => x.Id == id);
             return PartialView(new AdherentStolonViewModel(GetActiveAdherentStolon(), adherentStolon));
         }
+        
 
 
-        // GET: Consumers/Create
+
+        public virtual PartialViewResult _PartialAddAdherent(AdherentEdition edition, Guid? stolonId = null)
+        {
+            Stolon stolon = stolonId == null ? GetCurrentStolon() : _context.Stolons.First(x => x.Id == stolonId);
+            List<string> emails;
+            if (edition == AdherentEdition.Producer)
+            {
+                emails = _context.Adherents.Include(x=>x.AdherentStolons).Where(x=>x.AdherentStolons.Any(prod=>prod.IsProducer)).Select(x => x.Email).ToList();
+            }
+            else
+            {
+                emails = _context.Adherents.Select(x => x.Email).ToList();
+            }
+            _context.AdherentStolons.Include(x=>x.Adherent).Where(x => x.StolonId == stolon.Id).ToList().ForEach(x => emails.Remove(x.Adherent.Email));
+            return PartialView(new SelectAdherentViewModel(GetActiveAdherentStolon(), stolon, emails));
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public virtual IActionResult AddAdherent(SelectAdherentViewModel selectAdherentViewModel)
+        {
+            if (!Authorized(Role.Volunteer))
+                return Unauthorized();
+
+            if (ModelState.IsValid)
+            {
+                AdherentStolon adherentStolon = new AdherentStolon(_context.Adherents.First(x => x.Email == selectAdherentViewModel.SelectedEmail), _context.Stolons.First(x=>x.Id == selectAdherentViewModel.Stolon.Id));
+                adherentStolon.RegistrationDate = DateTime.Now;
+                //adherentStolon.LocalId = _context.AdherentStolons.Where(x => x.StolonId == selectAdherentViewModel.Stolon.Id).Max(x => x.LocalId) + 1;
+                _context.AdherentStolons.Add(adherentStolon);
+                _context.SaveChanges();
+                //Send confirmation mail
+                Services.AuthMessageSender.SendEmail(adherentStolon.Adherent.Email, adherentStolon.Adherent.Name, "Adhésion à un nouveau Stolon", base.RenderPartialViewToString("AdherentConfirmationMail", adherentStolon));
+
+                return RedirectToAction("Index");
+            }
+            return View(selectAdherentViewModel);
+        }
+
         public virtual PartialViewResult _PartialCreateAdherent(AdherentEdition edition, Guid? stolonId = null)
         {
             Stolon stolon = stolonId == null ? GetCurrentStolon() : _context.Stolons.First(x => x.Id == stolonId);
             return PartialView(new AdherentViewModel(GetActiveAdherentStolon(), new Adherent(), stolon, edition));
         }
 
-        // POST: Consumers/Create
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public virtual async Task<IActionResult> CreateAdherent(AdherentEdition edition, AdherentViewModel vmAdherent, IFormFile uploadFile)

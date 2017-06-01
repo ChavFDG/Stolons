@@ -53,15 +53,19 @@
 
 <script>
 
-    function showDetailsAdherent(clickedElement) {
-        $("#detailsModal .modal-title").html($(clickedElement).attr("data-title"));
+    
+
+    function showAddAdherent(clickedElement) {
+        $("#bodyAndFooterModal .modal-title").html($(clickedElement).attr("data-title"));
         var dataid = $(clickedElement).attr("data-id");
-        showDetailsAdherentAjax(dataid);
+        var edition = $(clickedElement).attr("data-edition");
+        showAddAdherentAjax(dataid, edition);
     }
 
-    function showDetailsAdherentAjax(activityAdID) {
-        var link = '@Url.Action("_PartialDetailsAdherent", "Users", new { id = "-1"})'
-        link = link.replace("-1", activityAdID);
+    function showAddAdherentAjax(dataId, edition) {
+        var link = '@Html.Raw(Url.Action("_PartialAddAdherent", "Users", new {  edition ="-1", stolonId = "-2"}))'
+        link = link.replace("-1", edition);
+        link = link.replace("-2", dataId);
 
         $.ajax({
             type: "GET",
@@ -69,22 +73,45 @@
             error: function(data)
             {},
             success: function (data) {
-                $("#detailsModal .modal-body").html(data);
-                $('#detailsModal').modal('show');
+                $("#bodyAndFooterModal .modal-bodyAndFooter").html(data);
+                $('#bodyAndFooterModal').modal('show');
+            },
+        });
+    }
+
+
+    function showDetailsAdherent(clickedElement) {
+        $("#bodyModal .modal-title").html($(clickedElement).attr("data-title"));
+        var dataid = $(clickedElement).attr("data-id");
+        showDetailsAdherentAjax(dataid);
+    }
+
+    function showDetailsAdherentAjax(dataId) {
+        var link = '@Url.Action("_PartialDetailsAdherent", "Users", new { id = "-1"})'
+        link = link.replace("-1", dataId);
+
+        $.ajax({
+            type: "GET",
+            url: link,
+            error: function(data)
+            {},
+            success: function (data) {
+                $("#bodyModal .modal-body").html(data);
+                $('#bodyModal').modal('show');
             },
         });
     }
 
 
     function showCreateAdherent(clickedElement) {
-        $("#createAdherentModal .modal-title").html($(clickedElement).attr("data-title"));
+        $("#bodyAndFooterModal .modal-title").html($(clickedElement).attr("data-title"));
         var dataid = $(clickedElement).attr("data-id");
         var edition = $(clickedElement).attr("data-edition");
         showCreateAdherentAjax(edition,dataid);
     }
 
     function showCreateAdherentAjax(edition,dataid) {
-        var link = '@Url.Action("_PartialCreateAdherent", "Users", new { edition ="-1", stolonId = "-2" })'
+        var link = '@(Html.Raw(Url.Action("_PartialCreateAdherent", "Users", new { edition ="-1", stolonId = "-2" })))'
         link = link.replace("-1", edition);
         link = link.replace("-2", dataid);
 
@@ -94,14 +121,14 @@
             error: function(data)
             {},
             success: function (data) {
-                $("#createAdherentModal .modal-bodyAndFooter").html(data);
-                $('#createAdherentModal').modal('show');
+                $("#bodyAndFooterModal .modal-bodyAndFooter").html(data);
+                $('#bodyAndFooterModal').modal('show');
             },
         });
     }
 
     function showEditAdherent(clickedElement) {
-        $("#editAdherentModal .modal-title").html($(clickedElement).attr("data-title"));
+        $("#bodyAndFooterModal .modal-title").html($(clickedElement).attr("data-title"));
         var dataid = $(clickedElement).attr("data-id");
         showEditAdherentAjax(dataid);
     }
@@ -116,15 +143,15 @@
             error: function(data)
             {},
             success: function (data) {
-                $("#editAdherentModal .modal-bodyAndFooter").html(data);
-                $('#editAdherentModal').modal('show');
+                $("#bodyAndFooterModal .modal-bodyAndFooter").html(data);
+                $('#bodyAndFooterModal').modal('show');
             },
         });
     }
 
 
     function showCreditToken(clickedElement) {
-        $("#creditTokenModal .modal-title").html($(clickedElement).attr("data-title"));
+        $("#bodyAndFooterModal .modal-title").html($(clickedElement).attr("data-title"));
         var dataid = $(clickedElement).attr("data-id");
         showCreditTokenAjax(dataid);
     }
@@ -140,22 +167,22 @@
             error: function(data)
             {},
             success: function (data) {
-                $("#creditTokenModal .modal-bodyAndFooter").html(data);
-                $('#creditTokenModal').modal('show');
+                $("#bodyAndFooterModal .modal-bodyAndFooter").html(data);
+                $('#bodyAndFooterModal').modal('show');
             },
         });
     }
 
 
     function showDetailsSympathizer(clickedElement) {
-        $("#detailsModal .modal-title").html($(clickedElement).attr("data-title"));
+        $("#bodyModal .modal-title").html($(clickedElement).attr("data-title"));
         var dataid = $(clickedElement).attr("data-id");
         showDetailsSympathizerAjax(dataid);
     }
 
-    function showDetailsSympathizerAjax(activityAdID) {
+    function showDetailsSympathizerAjax(dataId) {
         var link = '@Url.Action("_PartialDetailsSympathizer", "Users", new { id = "-1"})'
-        link = link.replace("-1", activityAdID);
+        link = link.replace("-1", dataId);
 
         $.ajax({
             type: "GET",
@@ -163,15 +190,15 @@
             error: function(data)
             {},
             success: function (data) {
-                $("#detailsModal .modal-body").html(data);
-                $('#detailsModal').modal('show');
+                $("#bodyModal .modal-body").html(data);
+                $('#bodyModal').modal('show');
             },
         });
     }
 
 
     function showCreateSympathizer(clickedElement) {
-        $("#createAdherentModal .modal-title").html($(clickedElement).attr("data-title"));
+        $("#bodyAndFooterModal .modal-title").html($(clickedElement).attr("data-title"));
         var dataid = $(clickedElement).attr("data-id");
         showCreateSympathizerAjax(dataid);
     }
@@ -186,15 +213,15 @@
             error: function(data)
             {},
             success: function (data) {
-                $("#createAdherentModal .modal-bodyAndFooter").html(data);
-                $('#createAdherentModal').modal('show');
+                $("#bodyAndFooterModal .modal-bodyAndFooter").html(data);
+                $('#bodyAndFooterModal').modal('show');
             },
         });
     }
 
 
     function showEditSympathizer(clickedElement) {
-        $("#editAdherentModal .modal-title").html($(clickedElement).attr("data-title"));
+        $("#bodyAndFooterModal .modal-title").html($(clickedElement).attr("data-title"));
         var dataid = $(clickedElement).attr("data-id");
         showEditSympathizerAjax(dataid);
     }
@@ -209,8 +236,8 @@
             error: function(data)
             {},
             success: function (data) {
-                $("#editAdherentModal .modal-bodyAndFooter").html(data);
-                $('#editAdherentModal').modal('show');
+                $("#bodyAndFooterModal .modal-bodyAndFooter").html(data);
+                $('#bodyAndFooterModal').modal('show');
             },
         });
     }
@@ -219,7 +246,7 @@
 
 </script>
 
-<div class="modal fade" id="detailsModal" tabindex="-1" role="dialog">
+<div class="modal fade" id="bodyModal" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -233,35 +260,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="createAdherentModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title"></h4>
-            </div>
-            <div class="modal-bodyAndFooter">
-
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="editAdherentModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title"></h4>
-            </div>
-            <div class="modal-bodyAndFooter">
-
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="creditTokenModal" tabindex="-1" role="dialog">
+<div class="modal fade" id="bodyAndFooterModal" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">

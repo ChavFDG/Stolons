@@ -1,0 +1,48 @@
+﻿@model Stolons.ViewModels.Adherents.SelectAdherentViewModel
+
+<form asp-action="AddAdherent" asp-controller="Users" enctype="multipart/form-data">
+    <div class="modal-body">
+        <input asp-for="Stolon.Id" hidden="hidden" />
+        <p>Saisir le courriel de l'adhérent à ajouter à @Model.Stolon.Label:</p>
+        <div class="form-group">
+            <div class="col-md-12">
+                <input id="inputEmail" asp-for="SelectedEmail" class="form-control" />
+                <span asp-validation-for="SelectedEmail" class="text-danger" />
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <input type="submit" onclick="return ValidateEmail();"  value="Ajouter" class="btn btn-small btn-default" />
+    </div>
+</form>
+
+@{ 
+    string mails = "";
+    Model.AdherentsMails.ForEach(x => mails += "'" + x + "', ");
+    if (mails.Any())
+    {
+        mails = mails.Remove(mails.Count() - 2);
+    }
+}
+
+<script>
+    function ValidateEmail() {
+        var val = document.getElementById("inputEmail").value;
+
+        if ([@Html.Raw(mails)].indexOf(val) >= 0) {
+            return true;
+        }
+        else
+        {
+            alert('Le courriel saisie est invalide. Adhérent déjà membre où n existant pas.');
+            return false;
+        }
+    }
+   
+</script>
+
+@section Scripts {
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+}

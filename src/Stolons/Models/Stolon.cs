@@ -131,13 +131,17 @@ namespace Stolons.Models
 
         public enum OrganisationType
         {
+            [Display(Name = "Association")]
             Association = 0,
+            [Display(Name = "Producteur")]
             Producer = 1
         }
 
         public enum StolonState
         {
+            [Display(Name = "Fermer")]
             Closed = 0,
+            [Display(Name = "Ouvert")]
             Open = 1
         }
 
