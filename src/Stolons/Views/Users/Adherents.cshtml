@@ -4,42 +4,43 @@
 
 @if (Model.ActiveAdherentStolon.Stolon.StolonType == Stolon.OrganisationType.Association)
 {
-    <div class="tabs">
-        <ul class="tab-links">
-            <li class="active"><a href="#AllUsers">Tous les adhérents</a></li>
-            <li><a href="#Sympathizers">Sympathisants</a></li>
-            <li><a href="#Consumers">Consomateurs</a></li>
-            <li><a href="#Producers">Producteurs</a></li>
-        </ul>
+    <ul class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" href="#allUsers">Tous les adhérents</a></li>
+        @if (Model.Stolon.UseSympathizer)
+        {
+            <li><a data-toggle="tab" href="#sympathizers">Sympathisants</a></li>
+        }
+        <li><a data-toggle="tab" href="#consumers">Consomateurs</a></li>
+        <li><a data-toggle="tab" href="#producers">Producteurs</a></li>
+    </ul>
 
-        <div class="tab-content">
-            <div id="AllUsers" class="tab active">
-                @{
-                    Html.RenderPartial("../Shared/Adherents/ShowUsers", Model.IAdherents);
-                }
-            </div>
-            @if (Model.Stolon.UseSympathizer)
-            {
-                <div id="Sympathizers" class="tab">
-                    @{
-                        Html.RenderPartial("../Shared/Adherents/ShowSympathizers", Model.SympathizersViewModel);
-                    }
-                </div>
-            }
-            <div id="Consumers" class="tab">
-                @{
-                    Html.RenderPartial("../Shared/Adherents/ShowConsumers", Model.AdherentsStolonViewModel);
-                }
-            </div>
-            @if (Model.Stolon.StolonType == Stolon.OrganisationType.Association || Model.ActiveAdherentStolon.Adherent.IsWebAdmin)
-            {
-                <div id="Producers" class="tab">
-                    @{
-                        Html.RenderPartial("../Shared/Adherents/ShowProducers", Model.AdherentsStolonViewModel);
-                    }
-                </div>
+    <div class="tab-content">
+        <div id="allUsers" class="tab-pane active">
+            @{
+                Html.RenderPartial("../Shared/Adherents/ShowUsers", Model.IAdherents);
             }
         </div>
+        @if (Model.Stolon.UseSympathizer)
+        {
+            <div id="sympathizers" class="tab-pane">
+                @{
+                    Html.RenderPartial("../Shared/Adherents/ShowSympathizers", Model.SympathizersViewModel);
+                }
+            </div>
+        }
+        <div id="consumers" class="tab-pane">
+            @{
+                Html.RenderPartial("../Shared/Adherents/ShowConsumers", Model.AdherentsStolonViewModel);
+            }
+        </div>
+        @if (Model.Stolon.StolonType == Stolon.OrganisationType.Association || Model.ActiveAdherentStolon.Adherent.IsWebAdmin)
+        {
+            <div id="producers" class="tab-pane">
+                @{
+                    Html.RenderPartial("../Shared/Adherents/ShowProducers", Model.AdherentsStolonViewModel);
+                }
+            </div>
+        }
     </div>
 }
 

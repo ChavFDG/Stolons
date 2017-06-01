@@ -35,6 +35,7 @@
                         }
                     </ul>
                 }
+                <img src="@Model.ActiveAdherentStolon.Stolon.LogoFilePath" class="responsiveImage stolon-avatar" />
                 <p class="information">@Html.Raw(Model.ActiveAdherentStolon.Stolon.Address)</p>
                 <h2>Horaires paniers</h2>
                 <p class="information">@Model.ActiveAdherentStolon.Stolon.GetStringPickUpTime()</p>

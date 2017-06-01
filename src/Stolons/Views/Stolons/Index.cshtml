@@ -2,11 +2,78 @@
 @model StolonsViewModel
 
 
-<h2>Stolons</h2>
+<h1>Les Stolons</h1>
 
 <p>
     <a asp-action="CreateStolon" class="btn btn-small btn-default">Ajouter un nouveau Stolon</a>
 </p>
+
+<div class="tabbable tabs-left">
+    <ul class="nav nav-tabs">
+
+        @foreach (Stolon stolon in Model.Stolons.OrderBy(x => x.Label))
+        {
+            <li>
+                <a data-toggle="tab" href="#@stolon.Id">
+                <img src="@stolon.LogoFilePath" class="responsiveImage stolon-avatar" />
+                    @stolon.Label                
+                </a>
+            </li>
+        }
+    </ul>
+</div>
+
+<div class="tab-content">
+    @{
+        foreach (Stolon stolon in Model.Stolons)
+        {
+            <div id="@stolon.Id" class="tab-pane">
+                <h1>@stolon.Label</h1>
+                <h2>Contact</h2>
+                <div>
+                    <p class="information">@Html.Raw(stolon.Address)</p>
+                    <p>@stolon.ContactMailAddress</p>
+                    <p>@stolon.PhoneNumber</p>
+                </div>
+                <h2>Détails</h2>
+                <div>
+                    @Html.Partial("DetailsStolon", new StolonViewModel(Model.ActiveAdherentStolon, stolon))
+                </div>
+                <h2>Membres</h2>
+
+            </div>
+        }
+    }
+</div>
+
+
+
+<script>
+    function openStolon(evt, stolonId) {
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    document.getElementById(stolonId).style.display = "block";
+    evt.currentTarget.className += " active";
+}
+    
+document.getElementById("defaultOpen").click();
+</script>
+
+
+
+
+
+
+
+
+
 <table class="table">
     <thead>
         <tr>
