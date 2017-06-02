@@ -129,6 +129,12 @@ namespace Stolons.Models
         [Display(Name = "Type de stolon")]
         public OrganisationType StolonType { get; set; } = OrganisationType.Association;
 
+        [Display(Name = "Cotisation payée")]
+        public bool SubscriptionPaid { get; set; } = false;
+
+        [Display(Name = "Date de création")]
+        public DateTime CreationDate { get; set; }
+
         public enum OrganisationType
         {
             [Display(Name = "Association")]

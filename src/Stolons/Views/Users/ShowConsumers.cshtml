@@ -1,29 +1,23 @@
 ﻿@using Stolons.ViewModels.Adherents
 @model AdherentsStolonViewModel
 
-@if (Model.Stolon.StolonType == Stolon.OrganisationType.Association
-                ||
-                (Model.Stolon.StolonType == Stolon.OrganisationType.Producer && !Model.AdherentsStolon.Any(x => x.IsProducer)))
-{
-        <div class="dropdown">
-            <a class="dropdown-toggle btn btn-small btn-default" data-toggle="dropdown" href="#">
-                Ajouter ...
-                <span class="caret"></span>
-            </a>
-            <ul class="dropdown-menu">
-                <li><a href="#" onclick="showCreateAdherent(this);" data-Id="@Model.Stolon.Id" data-edition="@((int)AdherentEdition.Producer)" data-title="Ajout d'un nouveau producteur">... un nouveau producteur</a></li>
-                <li><a href="#" onclick="showAddAdherent(this);" data-id="@Model.Stolon.Id" data-edition="@((int)AdherentEdition.Producer)" data-title="Ajout d'un producteur existant">... un producteur existant d'un autre Stolon</a></li>
-            </ul>
-        </div>
-}
+    <div class="dropdown">
+        <a class="dropdown-toggle btn btn-small btn-default" data-toggle="dropdown" href="#">
+            Ajouter...
+            <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu">
+            <li><a href="#" onclick="showCreateAdherent(this);" data-id="@Model.Stolon.Id" data-edition="@((int)AdherentEdition.Consumer)" data-title="Ajout d'un nouveau consomateur">... un nouveau consomateur</a></li>
+            <li><a href="#" onclick="showAddAdherent(this);" data-id="@Model.Stolon.Id" data-edition="@((int)AdherentEdition.Consumer)" data-title="Ajout un consomateur d'un autre Stolon">... un consomateur existant d'un autre Stolon</a></li>
+        </ul>
+    </div>
+
+
 
 <table class="table">
     <tr>
         <th>
             @Html.DisplayNameFor(item => item.AdherentsStolon.First().LocalId)
-        </th>
-        <th>
-            @Html.DisplayNameFor(item => item.AdherentsStolon.First().Adherent.CompanyName)
         </th>
         <th>
             @Html.DisplayNameFor(item => item.AdherentsStolon.First().Adherent.AvatarFileName)
@@ -38,6 +32,9 @@
             @Html.DisplayNameFor(item => item.AdherentsStolon.First().Adherent.PhoneNumber)
         </th>
         <th>
+            @Html.DisplayNameFor(item => item.AdherentsStolon.First().Token)
+        </th>
+        <th>
             @Html.DisplayNameFor(item => item.AdherentsStolon.First().SubscriptionPaid)
         </th>
         <th>
@@ -48,15 +45,11 @@
         </th>
         <th></th>
     </tr>
-
-    @foreach (var item in Model.AdherentsStolon.Where(x => x.IsProducer))
+    @foreach (var item in Model.AdherentsStolon)
     {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.LocalId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Adherent.CompanyName)
             </td>
             <td class="tdAvatarList">
                 <div class="userListAvatar">
@@ -72,8 +65,11 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Adherent.PhoneNumber)
             </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Token)𝞫
+            </td>
             @if (item.SubscriptionPaid)
-            {
+                {
                 <td>
                     @Html.DisplayFor(modelItem => item.SubscriptionPaid)
                 </td>
@@ -85,7 +81,7 @@
                 </td>
             }
             @if (item.Enable)
-            {
+                {
                 <td>
                     @Html.DisplayFor(modelItem => item.Enable)
                 </td>
@@ -98,14 +94,18 @@
             }
             <td>
                 @{
-                    Html.RenderPartial("../Shared/Adherents/RoleActions", new AdherentStolonViewModel(Model.ActiveAdherentStolon, item));
+                    Html.RenderPartial("../Users/RoleActions", new AdherentStolonViewModel(Model.ActiveAdherentStolon, item));
                 }
             </td>
-            <td>
+            <td> 
                 @{
-                    Html.RenderPartial("../Shared/Adherents/AdherentActions", new AdherentStolonViewModel(Model.ActiveAdherentStolon, item));
+                    Html.RenderPartial("../Users/AdherentActions", new AdherentStolonViewModel(Model.ActiveAdherentStolon, item));
                 }
             </td>
         </tr>
     }
 </table>
+
+
+
+

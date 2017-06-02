@@ -4,19 +4,16 @@
 
 <h1>Les Stolons</h1>
 
-<p>
-    <a asp-action="CreateStolon" class="btn btn-small btn-default">Ajouter un nouveau Stolon</a>
-</p>
+<a href="#" onclick="showAddStolon(this);" data-title="Ajout d'un Stolon"  class="btn btn-small btn-default">Ajouter un nouveau Stolon</a>
 
 <div class="tabbable tabs-left">
     <ul class="nav nav-tabs">
-
-        @foreach (Stolon stolon in Model.Stolons.OrderBy(x => x.Label))
+        @foreach (var adherentStolon in Model.AdherentsViewModel.OrderBy(x => x.Stolon.Label))
         {
             <li>
-                <a data-toggle="tab" href="#@stolon.Id">
-                <img src="@stolon.LogoFilePath" class="responsiveImage stolon-avatar" />
-                    @stolon.Label                
+                <a data-toggle="tab" href="#@adherentStolon.Stolon.Id">
+                    @adherentStolon.Stolon.Label
+                    <img src="@adherentStolon.Stolon.LogoFilePath" class="responsiveImage stolon-avatar" />           
                 </a>
             </li>
         }
@@ -25,125 +22,48 @@
 
 <div class="tab-content">
     @{
-        foreach (Stolon stolon in Model.Stolons)
+        foreach (var adherentStolon in Model.AdherentsViewModel)
         {
-            <div id="@stolon.Id" class="tab-pane">
-                <h1>@stolon.Label</h1>
+            <div id="@adherentStolon.Stolon.Id" class="tab-pane">
+                <h1>@adherentStolon.Stolon.Label</h1>
+                @Html.Partial("StolonActions", new StolonViewModel(Model.ActiveAdherentStolon, adherentStolon.Stolon))
                 <h2>Contact</h2>
                 <div>
-                    <p class="information">@Html.Raw(stolon.Address)</p>
-                    <p>@stolon.ContactMailAddress</p>
-                    <p>@stolon.PhoneNumber</p>
+                    <p class="information">@Html.Raw(adherentStolon.Stolon.Address)</p>
+                    <p>@adherentStolon.Stolon.ContactMailAddress</p>
+                    <p>@adherentStolon.Stolon.PhoneNumber</p>
                 </div>
                 <h2>Détails</h2>
                 <div>
-                    @Html.Partial("DetailsStolon", new StolonViewModel(Model.ActiveAdherentStolon, stolon))
+                    @Html.Partial("PartialDetailsStolon", adherentStolon)
                 </div>
                 <h2>Membres</h2>
-
+                <div>
+                    @Html.Partial("../Users/Adherents", adherentStolon)
+                </div>
             </div>
         }
     }
 </div>
 
-
-
 <script>
-    function openStolon(evt, stolonId) {
-    var i, tabcontent, tablinks;
-    tabcontent = document.getElementsByClassName("tabcontent");
-    for (i = 0; i < tabcontent.length; i++) {
-        tabcontent[i].style.display = "none";
+    function showAddStolon(clickedElement) {
+        $("#bodyAndFooterModal .modal-title").html($(clickedElement).attr("data-title"));
+        showAddStolonAjax();
     }
-    tablinks = document.getElementsByClassName("tablinks");
-    for (i = 0; i < tablinks.length; i++) {
-        tablinks[i].className = tablinks[i].className.replace(" active", "");
+
+    function showAddStolonAjax() {
+        var link = '@Html.Raw(Url.Action("_PartialCreateStolon", "Stolons"))'
+
+        $.ajax({
+            type: "GET",
+            url: link,
+            error: function(data)
+            {},
+            success: function (data) {
+                $("#bodyAndFooterModal .modal-bodyAndFooter").html(data);
+                $('#bodyAndFooterModal').modal('show');
+            },
+        });
     }
-    document.getElementById(stolonId).style.display = "block";
-    evt.currentTarget.className += " active";
-}
-    
-document.getElementById("defaultOpen").click();
 </script>
-
-
-
-
-
-
-
-
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                Libelle
-            </th>
-            <th>
-                Logo
-            </th>
-            <th>
-                Type
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Stolons.First().PhoneNumber)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Stolons.First().ContactMailAddress)
-            </th>
-            <th>
-                Etat
-            </th>
-            <th>
-
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.Stolons)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Label)
-                </td>
-                <td class="tdAvatarList">
-                    <div class="userListAvatar">
-                        <img src="@item.LogoFilePath" class="responsiveImage" />
-                    </div>
-                <td>
-                    @Html.DisplayFor(modelItem => item.StolonType)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PhoneNumber)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ContactMailAddress)
-                </td>                
-                    @switch (item.State)
-                    {
-                        case Stolon.StolonState.Open:
-                            <td>Ouvert</td>
-                            break;
-                        case Stolon.StolonState.Closed:
-                            <td>Fermé</td>
-                            break;
-                    }              
-                <td>
-                    <div class="dropdown">
-                        <a class="dropdown-toggle btn btn-small btn-default" data-toggle="dropdown" href="#">
-                            Actions
-                            <span class="caret"></span>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a asp-action="EditStolon" asp-route-id="@item.Id">Modifer</a></li>
-                            <li><a asp-action="DetailsStolon" asp-route-id="@item.Id">Voir détail</a></li>
-                            <li><a asp-action="Index" asp-controller="Users" asp-route-id="@item.Id">Voir les membres</a></li>
-                            <li><a asp-action="DeleteStolon" asp-route-id="@item.Id">Supprimer</a></li>
-                        </ul>
-                    </div>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>

@@ -5,39 +5,39 @@
 @if (Model.ActiveAdherentStolon.Stolon.StolonType == Stolon.OrganisationType.Association)
 {
     <ul class="nav nav-tabs">
-        <li class="active"><a data-toggle="tab" href="#allUsers">Tous les adhérents</a></li>
+        <li class="active"><a data-toggle="tab" href="@("#allUsers"+Model.Stolon.Id)">Tous les adhérents</a></li>
         @if (Model.Stolon.UseSympathizer)
         {
-            <li><a data-toggle="tab" href="#sympathizers">Sympathisants</a></li>
+            <li><a data-toggle="tab" href="@("#sympathizers"+Model.Stolon.Id)">Sympathisants</a></li>
         }
-        <li><a data-toggle="tab" href="#consumers">Consomateurs</a></li>
-        <li><a data-toggle="tab" href="#producers">Producteurs</a></li>
+        <li><a data-toggle="tab" href="@("#consumers"+Model.Stolon.Id)">Consomateurs</a></li>
+        <li><a data-toggle="tab" href="@("#producers"+Model.Stolon.Id)">Producteurs</a></li>
     </ul>
 
     <div class="tab-content">
-        <div id="allUsers" class="tab-pane active">
+        <div id="@("allUsers"+Model.Stolon.Id)" class="tab-pane active">
             @{
-                Html.RenderPartial("../Shared/Adherents/ShowUsers", Model.IAdherents);
+                Html.RenderPartial("../Users/ShowUsers", Model.IAdherents);
             }
         </div>
         @if (Model.Stolon.UseSympathizer)
         {
-            <div id="sympathizers" class="tab-pane">
+            <div id="@("sympathizers"+Model.Stolon.Id)" class="tab-pane">
                 @{
-                    Html.RenderPartial("../Shared/Adherents/ShowSympathizers", Model.SympathizersViewModel);
+                    Html.RenderPartial("../Users/ShowSympathizers", Model.SympathizersViewModel);
                 }
             </div>
         }
-        <div id="consumers" class="tab-pane">
+        <div id="@("consumers"+Model.Stolon.Id)" class="tab-pane">
             @{
-                Html.RenderPartial("../Shared/Adherents/ShowConsumers", Model.AdherentsStolonViewModel);
+                Html.RenderPartial("../Users/ShowConsumers", Model.AdherentsStolonViewModel);
             }
         </div>
         @if (Model.Stolon.StolonType == Stolon.OrganisationType.Association || Model.ActiveAdherentStolon.Adherent.IsWebAdmin)
         {
-            <div id="producers" class="tab-pane">
+            <div id="@("producers"+Model.Stolon.Id)" class="tab-pane">
                 @{
-                    Html.RenderPartial("../Shared/Adherents/ShowProducers", Model.AdherentsStolonViewModel);
+                    Html.RenderPartial("../Users/ShowProducers", Model.AdherentsStolonViewModel);
                 }
             </div>
         }
@@ -46,15 +46,13 @@
 
 @if (Model.ActiveAdherentStolon.Stolon.StolonType == Stolon.OrganisationType.Producer)
 {
-    Html.RenderPartial("../Shared/Adherents/ShowConsumers", Model.AdherentsStolonViewModel);
+    Html.RenderPartial("../Users/ShowConsumers", Model.AdherentsStolonViewModel);
 }
 
 
 
 
-<script>
-
-    
+<script>   
 
     function showAddAdherent(clickedElement) {
         $("#bodyAndFooterModal .modal-title").html($(clickedElement).attr("data-title"));
@@ -82,7 +80,7 @@
 
 
     function showDetailsAdherent(clickedElement) {
-        $("#bodyModal .modal-title").html($(clickedElement).attr("data-title"));
+        $("#bodyAndFooterModal .modal-title").html($(clickedElement).attr("data-title"));
         var dataid = $(clickedElement).attr("data-id");
         showDetailsAdherentAjax(dataid);
     }
@@ -97,8 +95,8 @@
             error: function(data)
             {},
             success: function (data) {
-                $("#bodyModal .modal-body").html(data);
-                $('#bodyModal').modal('show');
+                $("#bodyAndFooterModal .modal-bodyAndFooter").html(data);
+                $('#bodyAndFooterModal').modal('show');
             },
         });
     }
@@ -191,7 +189,7 @@
             error: function(data)
             {},
             success: function (data) {
-                $("#bodyModal .modal-body").html(data);
+                $("#bodyModal .modal-bodyAndFooter").html(data);
                 $('#bodyModal').modal('show');
             },
         });
@@ -246,31 +244,3 @@
 
 
 </script>
-
-<div class="modal fade" id="bodyModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title"></h4>
-            </div>
-            <div class="modal-body">
-
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="bodyAndFooterModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title"></h4>
-            </div>
-            <div class="modal-bodyAndFooter">
-
-            </div>
-        </div>
-    </div>
-</div>

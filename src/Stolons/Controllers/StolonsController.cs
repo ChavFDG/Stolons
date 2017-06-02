@@ -19,13 +19,13 @@ using Stolons.ViewModels.Adherents;
 
 namespace Stolons.Controllers
 {
-    public class StolonsController : AdherentsBaseController
+    public class StolonsController : BaseController
     {
 
         public StolonsController(ApplicationDbContext context, IHostingEnvironment environment,
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            IServiceProvider serviceProvider) : base(context, environment, userManager, signInManager, serviceProvider)
+            IServiceProvider serviceProvider) : base(serviceProvider, userManager,context,environment, signInManager)
         {
 
         }
@@ -35,8 +35,13 @@ namespace Stolons.Controllers
         {
             if (!AuthorizedWebAdmin())
                 return Unauthorized();
-
-            return View(new StolonsViewModel(GetActiveAdherentStolon(), _context.Stolons.ToList()));
+            AdherentStolon activeAdherentStolon = GetActiveAdherentStolon();
+            List<AdherentsViewModel> adherentsViewModel = new List<AdherentsViewModel>();
+            foreach(var stolon in _context.Stolons)
+            {
+                adherentsViewModel.Add(new AdherentsViewModel(activeAdherentStolon, stolon, _context.Sympathizers.Where(x => x.StolonId == stolon.Id).ToList(), _context.AdherentStolons.Include(x=>x.Stolon).Include(x=>x.Adherent).Where(x => x.StolonId == stolon.Id).ToList()));
+            }
+            return View(new StolonsViewModel(GetActiveAdherentStolon(), adherentsViewModel));
         }
 
         // GET: Stolons/Details/5
@@ -80,26 +85,11 @@ namespace Stolons.Controllers
                                                 _context.GetSympathizers(stolon),
                                                 _context.AdherentStolons.Include(x=>x.Adherent).Where(x=>x.StolonId == id).ToList()));
         }
-        public IActionResult CreateConsumer(Guid? id)
-        {
-            return base.CreateAdherent( AdherentEdition.Consumer, id);
-        }
-        public IActionResult CreateAddProducer(Guid? id)
-        {
-            return base.CreateAdherent(AdherentEdition.Producer, id);
-        }
-        public IActionResult AddExistingAdherent(Guid? id)
-        {
-            return View();
-        }
-
-        
-       
 
         // GET: Stolons/Create
-        public IActionResult CreateStolon()
+        public PartialViewResult _PartialCreateStolon()
         {
-            return View(new StolonViewModel(GetActiveAdherentStolon(),new Stolon()));
+            return PartialView(new StolonViewModel(GetActiveAdherentStolon(),new Stolon()));
         }
         
         // POST: Stolons/Create
@@ -114,6 +104,7 @@ namespace Stolons.Controllers
             {
                 vm.Stolon.Id = Guid.NewGuid();
                 vm.Stolon.LogoFileName = await UploadFile(uploadFile, Configurations.StolonLogoStockagePath);
+                vm.Stolon.CreationDate = DateTime.Now;
                 _context.Add(vm.Stolon);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
@@ -123,22 +114,11 @@ namespace Stolons.Controllers
 
 
         // GET: Stolons/Edit/5
-        public IActionResult EditStolon(Guid? id)
+        public PartialViewResult _PartialEditStolon(Guid? id)
         {
-            if (!Authorized(Role.Admin))
-                return Unauthorized();
-
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var stolon = _context.Stolons.SingleOrDefault(x => x.Id == id);
-            if (stolon == null)
-            {
-                return NotFound();
-            }
-            return View(new StolonViewModel(GetActiveAdherentStolon(), stolon));
+
+            return PartialView(new StolonViewModel(GetActiveAdherentStolon(), stolon));
         }
 
         // POST: Stolons/Edit/5
@@ -174,30 +154,8 @@ namespace Stolons.Controllers
             }
             return View(vm.Stolon);
         }
-
-        // GET: Stolons/Delete/5
-        public IActionResult DeleteStolon(Guid? id)
-        {
-            if (!AuthorizedWebAdmin())
-                return Unauthorized();
-
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var stolon = _context.Stolons.FirstOrDefault(m => m.Id == id);
-            if (stolon == null)
-            {
-                return NotFound();
-            }
-            return View(new StolonViewModel(GetActiveAdherentStolon(), stolon));
-        }
-
-        // POST: Stolons/Delete/5
-        [HttpPost, ActionName("DeleteStolon")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteStolonConfirmed(Guid id)
+        
+        public async Task<IActionResult> DeleteStolon(Guid id)
         {
             if (!AuthorizedWebAdmin())
                 return Unauthorized();
@@ -205,6 +163,7 @@ namespace Stolons.Controllers
             var stolon = await _context.Stolons.SingleOrDefaultAsync(m => m.Id == id);
             _context.Stolons.Remove(stolon);
             await _context.SaveChangesAsync();
+            _context.RemoveRange(_context.AdherentStolons.Where(x => x.StolonId == stolon.Id));
             return RedirectToAction("Index");
         }
 

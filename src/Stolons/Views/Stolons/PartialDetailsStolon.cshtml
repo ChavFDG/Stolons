@@ -1,13 +1,8 @@
 @using Stolons.Helpers;
-@using Stolons.ViewModels.Stolons;
-@model StolonViewModel
+@using Stolons.ViewModels.Adherents
+@model AdherentsViewModel
 
 
-<h2>@Model.Stolon.Label</h2>
-@if (Model.ActiveAdherentStolon.Adherent.IsWebAdmin)
-{
-    <a asp-controller="Stolons" asp-action="Index" class="btn btn-small btn-default">Voir tous les Stolons</a>
-}
 <p>Mode actuel : <b>@(EnumHelper<Stolon.Modes>.GetDisplayValue(Model.Stolon.GetMode()))</b></p>
 @if (Model.Stolon.IsModeSimulated)
 {
@@ -278,10 +273,7 @@
                     @Html.DisplayFor(model => model.Stolon.BasketPickUpEndMinute)
                 </dd>
             </dl>
-
         </div>
     </div>
 </div>
-<p>
-    <a asp-action="EditStolon" asp-route-id="@Model.Stolon.Id" class="btn btn-small btn-default">Modifier @Model.Stolon.Label</a>
-</p>
+

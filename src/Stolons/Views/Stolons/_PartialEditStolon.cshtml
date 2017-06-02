@@ -1,8 +1,9 @@
-﻿@model Stolons.ViewModels.Adherents.AdherentViewModel
+@model Stolons.ViewModels.Stolons.StolonViewModel
 
-<form asp-action="EditAdherent" enctype="multipart/form-data">
+
+<form asp-action="EditStolon" enctype="multipart/form-data">
     <div class="modal-body">
-        @Html.Partial("Adherents/EditAdherent")
+        @Html.Partial("EditStolon")
     </div>
     <div class="modal-footer">
         <input type="submit" value="Enregistrer les modifications" class="btn btn-small btn-default" />
@@ -13,4 +14,5 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+    <script>tinymce.init({ selector: 'textarea', language: 'fr_FR', menubar: false });</script>
 }

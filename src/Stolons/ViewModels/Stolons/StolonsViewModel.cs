@@ -1,5 +1,6 @@
 ﻿using Stolons.Models;
 using Stolons.Models.Users;
+using Stolons.ViewModels.Adherents;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -13,11 +14,11 @@ namespace Stolons.ViewModels.Stolons
         public StolonsViewModel()
         {
         }
-        public StolonsViewModel(AdherentStolon activeAdherentStolon, List<Stolon> stolons)
+        public StolonsViewModel(AdherentStolon activeAdherentStolon, List<AdherentsViewModel> adherentsViewModel)
         {
-            Stolons = stolons;
+            AdherentsViewModel = adherentsViewModel;
             ActiveAdherentStolon = activeAdherentStolon;
         }
-        public List<Stolon> Stolons { get; set; }
+        public List<AdherentsViewModel> AdherentsViewModel { get; set; }
     }
 }

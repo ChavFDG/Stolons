@@ -361,6 +361,8 @@ namespace Stolons
             Stolon stolon = new Stolon();
             stolon.State = Stolon.StolonState.Open;
             stolon.IsModeSimulated = false;
+            stolon.CreationDate = DateTime.Now;
+
 
             stolon.Label = "Stolons de Privas";
             stolon.AboutText = "Les Stolons de Privas est une association loi 1901";

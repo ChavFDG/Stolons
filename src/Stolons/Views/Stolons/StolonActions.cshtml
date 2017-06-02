@@ -1,0 +1,54 @@
+@using Stolons.Helpers;
+@using Stolons.ViewModels.Stolons
+@model StolonViewModel
+
+@if (Model.ActiveAdherentStolon.Adherent.IsWebAdmin)
+{
+    <div class="dropdown">
+        <a class="dropdown-toggle btn btn-small btn-default" data-toggle="dropdown" href="#">
+            Actions
+            <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu">
+            <li><a href="#" onclick="showEditStolon(this);" data-id="@Model.Stolon.Id" data-title="@("Modification de " + Model.Stolon.Label)">Modifier</a></li>
+            <li>
+                @Html.ActionLink("Supprimer",
+                                "DeleteStolon",
+                                "Users",
+                                new { id = Model.Stolon.Id },
+                                new { onclick = "return confirm('Êtes vous sur de vouloir supprimer le Stolon " + Model.Stolon.Label + " ?');" })
+            </li>
+        </ul>
+    </div>
+}
+else
+{
+    <a href="#" onclick="showEditStolon(this);" data-id="@Model.Stolon.Id" data-title="@("Modification de " + Model.Stolon.Label)">Modifier</a>
+
+}
+
+
+
+<script>
+      function showEditStolon(clickedElement) {
+        $("#bodyAndFooterModal .modal-title").html($(clickedElement).attr("data-title"));
+        var dataid = $(clickedElement).attr("data-id");
+        showEditStolontAjax(dataid);
+    }
+
+      function showEditStolontAjax(dataId) {
+        var link = '@Url.Action("_PartialEditStolon", "Stolons", new { id ="-1"})'
+        link = link.replace("-1", dataId);
+
+        $.ajax({
+            type: "GET",
+            url: link,
+            error: function(data)
+            {},
+            success: function (data) {
+                $("#bodyAndFooterModal .modal-bodyAndFooter").html(data);
+                $('#bodyAndFooterModal').modal('show');
+            },
+        });
+    }
+</script>

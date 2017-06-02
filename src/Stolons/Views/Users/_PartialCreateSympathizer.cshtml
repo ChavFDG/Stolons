@@ -1,11 +1,11 @@
-﻿@model Stolons.ViewModels.Adherents.AdherentViewModel
+﻿@model Stolons.ViewModels.Sympathizers.SympathizerViewModel
 
-<form asp-action="CreateAdherent" enctype="multipart/form-data">
-    <div class="modal-body">
-        @Html.Partial("Adherents/EditAdherent")
+<form asp-action="CreateSympathizer" enctype="multipart/form-data">
+     <div class="modal-body">
+         @Html.Partial("EditSympathizer")
     </div>
     <div class="modal-footer">
-        <input type="submit" value="Créer le nouvelle adhérent" class="btn btn-small btn-default" />
+        <input type="submit" value="Créer le nouveau sympathisant" class="btn btn-small btn-default" />
     </div>
 </form>
 
