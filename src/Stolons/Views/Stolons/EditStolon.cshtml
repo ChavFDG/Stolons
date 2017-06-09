@@ -9,6 +9,28 @@
     }
 }
 
+<script type='text/javascript'>
+
+$(function() {
+    $('#StolonTypeSelection').change(function() {
+        // if changed to, for example, the last option, then
+        // $(this).find('option:selected').text() == D
+        // $(this).val() == 4
+        // get whatever value you want into a variable
+        var stolonType = $(this).val();
+
+        if (stolonType == @Convert.ToInt32(Stolon.OrganisationType.Association))
+        {
+            $('.associationOnly').show();
+
+        }
+        if (stolonType == @Convert.ToInt32(Stolon.OrganisationType.Producer))
+        {
+            $('.associationOnly').hide();
+        }
+    });
+});
+</script>
 <div class="form-horizontal">
     <hr />
     <input asp-for="Stolon.Id" hidden="hidden" />
@@ -18,11 +40,15 @@
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
 
+    <div>
+
+    </div>
+
     <h3>Informations</h3>
     <div class="form-group">
         <label asp-for="Stolon.StolonType" class="col-md-2 control-label"></label>
         <div class="col-md-10">
-            <select asp-for="Stolon.StolonType" asp-items="Html.GetEnumSelectList<Stolon.OrganisationType>()" class="form-control"></select>
+            <select id="StolonTypeSelection" asp-for="Stolon.StolonType" asp-items="Html.GetEnumSelectList<Stolon.OrganisationType>()" class="form-control"></select>
             <span asp-validation-for="Stolon.StolonType" class="text-danger"></span>
         </div>
     </div>
@@ -81,8 +107,7 @@
 
     <h3>Configurations</h3>
 
-
-    <div class="form-group">
+    <div  class="form-group associationOnly">
         <div class="col-md-offset-2 col-md-10">
             <div class="checkbox">
                 <input asp-for="Stolon.UseSympathizer" />
@@ -136,59 +161,63 @@
         </div>
     </div>
 
-    <h3>Comissions</h3>
+    <div id="Comissions" class="associationOnly">
+        <h3>Comissions</h3>
 
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <div class="checkbox">
-                <input asp-for="Stolon.UseProducersFee" />
-                <label asp-for="Stolon.UseProducersFee"></label>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <div class="checkbox">
+                    <input asp-for="Stolon.UseProducersFee" />
+                    <label asp-for="Stolon.UseProducersFee"></label>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="form-group">
-        <label asp-for="Stolon.ProducersFee" class="col-md-2 control-label"></label>
-        <div class="col-md-10">
-            <input asp-for="Stolon.ProducersFee" class="form-control" />
-            <span asp-validation-for="Stolon.ProducersFee" class="text-danger"></span>
-        </div>
-    </div>
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <div class="checkbox">
-                <input asp-for="Stolon.UseSubscipstion" />
-                <label asp-for="Stolon.UseSubscipstion"></label>
+        <div class="form-group">
+            <label asp-for="Stolon.ProducersFee" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Stolon.ProducersFee" class="form-control" />
+                <span asp-validation-for="Stolon.ProducersFee" class="text-danger"></span>
             </div>
         </div>
-    </div>
-    <div class="form-group">
-        <label asp-for="Stolon.SympathizerSubscription" class="col-md-2 control-label"></label>
-        <div class="col-md-10">
-            <input asp-for="Stolon.SympathizerSubscription" class="form-control" />
-            <span asp-validation-for="Stolon.SympathizerSubscription" class="text-danger"></span>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <div class="checkbox">
+                    <input asp-for="Stolon.UseSubscipstion" />
+                    <label asp-for="Stolon.UseSubscipstion"></label>
+                </div>
+            </div>
         </div>
-    </div>
-    <div class="form-group">
-        <label asp-for="Stolon.ConsumerSubscription" class="col-md-2 control-label"></label>
-        <div class="col-md-10">
-            <input asp-for="Stolon.ConsumerSubscription" class="form-control" />
-            <span asp-validation-for="Stolon.ConsumerSubscription" class="text-danger"></span>
+        <div class="form-group">
+            <label asp-for="Stolon.SympathizerSubscription" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Stolon.SympathizerSubscription" class="form-control" />
+                <span asp-validation-for="Stolon.SympathizerSubscription" class="text-danger"></span>
+            </div>
         </div>
-    </div>
-    <div class="form-group">
-        <label asp-for="Stolon.ProducerSubscription" class="col-md-2 control-label"></label>
-        <div class="col-md-10">
-            <input asp-for="Stolon.ProducerSubscription" class="form-control" />
-            <span asp-validation-for="Stolon.ProducerSubscription" class="text-danger"></span>
+        <div class="form-group">
+            <label asp-for="Stolon.ConsumerSubscription" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Stolon.ConsumerSubscription" class="form-control" />
+                <span asp-validation-for="Stolon.ConsumerSubscription" class="text-danger"></span>
+            </div>
         </div>
-    </div>
-    <div class="form-group">
-        <label asp-for="Stolon.SubscriptionStartMonth" class="col-md-2 control-label"></label>
-        <div class="col-md-10">
-            <select asp-for="Stolon.SubscriptionStartMonth" asp-items="Html.GetEnumSelectList<Stolon.Month>()" class="form-control"></select>
-            <span asp-validation-for="Stolon.SubscriptionStartMonth" class="text-danger"></span>
+        <div class="form-group">
+            <label asp-for="Stolon.ProducerSubscription" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Stolon.ProducerSubscription" class="form-control" />
+                <span asp-validation-for="Stolon.ProducerSubscription" class="text-danger"></span>
+            </div>
         </div>
+        <div class="form-group">
+            <label asp-for="Stolon.SubscriptionStartMonth" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <select asp-for="Stolon.SubscriptionStartMonth" asp-items="Html.GetEnumSelectList<Stolon.Month>()" class="form-control"></select>
+                <span asp-validation-for="Stolon.SubscriptionStartMonth" class="text-danger"></span>
+            </div>
+        </div>
+
     </div>
+   
 
 
     <h3>Paniers</h3>

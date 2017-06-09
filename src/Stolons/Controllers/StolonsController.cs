@@ -124,17 +124,20 @@ namespace Stolons.Controllers
         // POST: Stolons/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditStolon(Guid id, StolonViewModel vm, IFormFile uploadFile)
+        public async Task<IActionResult> EditStolon(StolonViewModel vm, IFormFile uploadFile)
         {
-            if (id != vm.Stolon.Id)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
                 try
                 {
+                    switch(vm.Stolon.StolonType)
+                    {
+                        case Stolon.OrganisationType.Producer:
+                            vm.Stolon.UseProducersFee = false;
+                            vm.Stolon.UseSubscipstion = false;
+                            vm.Stolon.UseSympathizer = false;
+                            break;
+                    }
                     vm.Stolon.LogoFileName = await UploadFile(uploadFile, Configurations.AvatarStockagePath, vm.Stolon.LogoFileName);
                     _context.Update(vm.Stolon);
                     await _context.SaveChangesAsync();
@@ -150,7 +153,7 @@ namespace Stolons.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction("Details", new { id = id });
+                return RedirectToAction("Index");
             }
             return View(vm.Stolon);
         }
@@ -180,7 +183,7 @@ namespace Stolons.Controllers
             stolon.SimulationMode = stolon.GetMode() == Stolon.Modes.DeliveryAndStockUpdate ? Stolon.Modes.Order : Stolon.Modes.DeliveryAndStockUpdate;
             _context.Update(stolon);
             _context.SaveChanges();
-            return RedirectToAction("Details", new { id = id });
+            return RedirectToAction("Index");
         }
 
         private bool StolonExists(Guid id)
