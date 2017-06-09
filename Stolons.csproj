@@ -12,9 +12,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="src\**" />
     <Compile Remove="Views\NewFolder\**" />
+    <Content Remove="src\**" />
     <Content Remove="Views\NewFolder\**" />
+    <EmbeddedResource Remove="src\**" />
     <EmbeddedResource Remove="Views\NewFolder\**" />
+    <None Remove="src\**" />
     <None Remove="Views\NewFolder\**" />
   </ItemGroup>
 
