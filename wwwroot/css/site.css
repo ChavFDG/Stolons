@@ -113,6 +113,10 @@ div#warning-container {
     position: relative;
 }
 
+div#login-wrapper {
+    margin: 10px;
+}
+
 img#warning {
     max-width: 25px;
 }
