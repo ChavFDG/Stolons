@@ -13,18 +13,18 @@ namespace Stolons.Models
         [Key]
         public Guid Id { get; set; }
 
-        public AdherentStolon ConsumerStolon { get; set; }
+        
+        public Guid AdherentStolonId { get; set; }
+        [ForeignKey(nameof(AdherentStolonId))]
+        public AdherentStolon AdherentStolon { get; set; }
 
-        [Display(Name = "Consomateur")]
-        public Adherent Consumer
+        [NotMapped]
+        [Display(Name = "Adherent")]
+        public Adherent Adherent
         {
             get
             {
-                return ConsumerStolon.Adherent;
-            }
-            set
-            {
-                ConsumerStolon.Adherent = value;
+                return AdherentStolon.Adherent;
             }
         }
 
