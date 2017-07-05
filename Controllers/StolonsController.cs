@@ -64,6 +64,13 @@ namespace Stolons.Controllers
 
         }
 
+        public PartialViewResult _PartialDetailsStolon(Guid? id)
+        {
+            var stolon = _context.Stolons.FirstOrDefault(m => m.Id == id);
+            return PartialView(new StolonViewModel(GetActiveAdherentStolon(), stolon));
+
+        }
+
         // GET: Stolons/Members
         public IActionResult Members(Guid? id)
         {

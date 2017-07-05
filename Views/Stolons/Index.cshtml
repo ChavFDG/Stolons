@@ -35,7 +35,7 @@
                 </div>
                 <h2>Détails</h2>
                 <div>
-                    @Html.Partial("PartialDetailsStolon", adherentStolon)
+                    @Html.Partial("DetailsStolon", new StolonViewModel(Model.ActiveAdherentStolon,adherentStolon.Stolon))
                 </div>
                 <h2>Membres</h2>
                 <div>

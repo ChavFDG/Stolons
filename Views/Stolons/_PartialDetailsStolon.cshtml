@@ -1,0 +1,272 @@
+@using Stolons.Helpers
+@using Stolons.ViewModels.Stolons
+@model StolonViewModel
+
+<div>
+    <hr />
+    <div class="row">
+        <div class="col-lg-4">
+            <h3>Informations</h3>
+            <dl class="dl-horizontal">
+                <dt>
+                    @Html.DisplayNameFor(model => model.Stolon.Label)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Stolon.Label)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Stolon.LogoFileName)
+                </dt>
+                <dd>
+                    <div class="userListAvatar">
+                        <img src="@Model.Stolon.LogoFilePath" class="responsiveImage" />
+                    </div>
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Stolon.Address)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Stolon.Address)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Stolon.PhoneNumber)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Stolon.PhoneNumber)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Stolon.ContactMailAddress)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Stolon.ContactMailAddress)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Stolon.Latitude)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Stolon.Latitude)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Stolon.Longitude)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Stolon.Longitude)
+                </dd>
+            </dl>
+        </div>
+        <div class="col-lg-4">
+            <h3>Configurations</h3>
+            <dl class="dl-horizontal">
+                <dt>
+                    @Html.DisplayNameFor(model => model.Stolon.UseSympathizer)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Stolon.UseSympathizer)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Stolon.IsModeSimulated)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Stolon.IsModeSimulated)
+                </dd>
+                @if (Model.Stolon.IsModeSimulated)
+                {
+                <dt>
+                    @Html.DisplayNameFor(model => model.Stolon.SimulationMode)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Stolon.SimulationMode)
+                </dd>
+                }
+                <dt>
+                    @Html.DisplayNameFor(model => model.Stolon.State)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Stolon.State)
+                </dd>
+                @if (Model.Stolon.State == Stolon.StolonState.Closed)
+                {
+                <dt>
+                    @Html.DisplayNameFor(model => model.Stolon.StolonStateMessage)
+                </dt>
+                <dd>
+                    @Html.Raw(Model.Stolon.StolonStateMessage)
+                </dd>
+                }
+            </dl>
+        </div>
+        <div class="col-lg-4">
+            <h3>Textes</h3>
+            <dl class="dl-horizontal">
+                <dt>
+                    @Html.DisplayNameFor(model => model.Stolon.AboutText)
+                </dt>
+                <dd>
+                    @Html.Raw(Model.Stolon.AboutText)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Stolon.JoinUsText)
+                </dt>
+                <dd>
+                    @Html.Raw(Model.Stolon.JoinUsText)
+                </dd>
+            </dl>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-lg-4">
+            <h3>Comissions</h3>
+            <dl class="dl-horizontal">
+                <dt>
+                    @Html.DisplayNameFor(model => model.Stolon.UseProducersFee)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Stolon.UseProducersFee)
+                </dd>
+                @if (Model.Stolon.UseProducersFee)
+            {
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Stolon.ProducersFee)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Stolon.ProducersFee)
+                    </dd>
+                }
+            </dl>
+            <h3>Bon plans</h3>
+            <dl class="dl-horizontal">
+                <dt>
+                    @Html.DisplayNameFor(model => model.Stolon.GoodPlan)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Stolon.GoodPlan)
+                </dd>
+            </dl>
+
+        </div>
+        <div class="col-lg-4">
+            <h3>Cotisation</h3>
+            <dl class="dl-horizontal">
+                <dt>
+                    @Html.DisplayNameFor(model => model.Stolon.UseSubscipstion)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Stolon.UseSubscipstion)
+                </dd>
+                @if (Model.Stolon.UseSubscipstion)
+            {
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Stolon.SympathizerSubscription)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Stolon.SympathizerSubscription)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Stolon.ConsumerSubscription)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Stolon.ConsumerSubscription)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Stolon.ProducerSubscription)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Stolon.ProducerSubscription)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Stolon.SubscriptionStartMonth)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Stolon.SubscriptionStartMonth)
+                    </dd>
+                }
+            </dl>
+
+        </div>
+        <div class="col-lg-4">
+            <h3>Paniers</h3>
+            <dl class="dl-horizontal">
+                <dt>
+                    @Html.DisplayNameFor(model => model.Stolon.OrderDeliveryMessage)
+                </dt>
+                <dd>
+                    @Html.Raw(Model.Stolon.OrderDeliveryMessage)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Stolon.OrderDayStartDate)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Stolon.OrderDayStartDate)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Stolon.OrderHourStartDate)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Stolon.OrderHourStartDate)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Stolon.OrderMinuteStartDate)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Stolon.OrderMinuteStartDate)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Stolon.DeliveryAndStockUpdateDayStartDate)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Stolon.DeliveryAndStockUpdateDayStartDate)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Stolon.DeliveryAndStockUpdateDayStartDateHourStartDate)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Stolon.DeliveryAndStockUpdateDayStartDateHourStartDate)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Stolon.DeliveryAndStockUpdateDayStartDateMinuteStartDate)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Stolon.DeliveryAndStockUpdateDayStartDateMinuteStartDate)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Stolon.BasketPickUpStartDay)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Stolon.BasketPickUpStartDay)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Stolon.BasketPickUpStartHour)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Stolon.BasketPickUpStartHour)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Stolon.BasketPickUpStartMinute)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Stolon.BasketPickUpStartMinute)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Stolon.BasketPickEndUpDay)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Stolon.BasketPickEndUpDay)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Stolon.BasketPickUpEndHour)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Stolon.BasketPickUpEndHour)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Stolon.BasketPickUpEndMinute)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Stolon.BasketPickUpEndMinute)
+                </dd>
+            </dl>
+        </div>
+    </div>
+</div>
+
