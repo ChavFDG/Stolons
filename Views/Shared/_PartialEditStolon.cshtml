@@ -1,13 +1,12 @@
 @model Stolons.ViewModels.Stolons.StolonViewModel
 
 
-
-<form asp-action="CreateStolon" enctype="multipart/form-data">
+<form asp-action="EditStolon" enctype="multipart/form-data">
     <div class="modal-body">
-        @Html.Partial("EditStolon")
+        @Html.Partial("_PartialEditStolonForm")
     </div>
     <div class="modal-footer">
-        <input type="submit" value="Créer le nouveau Stolon" class="btn btn-small btn-default" />
+        <input type="submit" value="Enregistrer les modifications" class="btn btn-small btn-default" />
     </div>
 </form>
 
@@ -17,3 +16,6 @@
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
     <script>tinymce.init({ selector: 'textarea', language: 'fr_FR', menubar: false });</script>
 }
+
+
+

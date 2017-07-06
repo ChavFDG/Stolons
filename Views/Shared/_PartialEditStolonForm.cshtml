@@ -1,12 +1,16 @@
+
+
+
 @model Stolons.ViewModels.Stolons.StolonViewModel
+
 
 @functions
 {
-    string DayToFrench(DayOfWeek dayOfWeekValue)
-    {
-        var culture = new System.Globalization.CultureInfo("fr-FR");
-        return culture.DateTimeFormat.GetDayName(dayOfWeekValue);
-    }
+        string DayToFrench(DayOfWeek dayOfWeekValue)
+        {
+            var culture = new System.Globalization.CultureInfo("fr-FR");
+            return culture.DateTimeFormat.GetDayName(dayOfWeekValue);
+        }
 }
 
 <script type='text/javascript'>
@@ -107,7 +111,7 @@ $(function() {
 
     <h3>Configurations</h3>
 
-    <div  class="form-group associationOnly">
+    <div class="form-group associationOnly">
         <div class="col-md-offset-2 col-md-10">
             <div class="checkbox">
                 <input asp-for="Stolon.UseSympathizer" />
@@ -217,7 +221,7 @@ $(function() {
         </div>
 
     </div>
-   
+
 
 
     <h3>Paniers</h3>
@@ -348,3 +352,4 @@ $(function() {
         </div>
     </div>
 </div>
+

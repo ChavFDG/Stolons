@@ -20,7 +20,7 @@
     }
 
       function showEditStolontAjax(dataId) {
-        var link = '@Url.Action("_PartialEditStolon", "Stolons", new { id ="-1"})'
+        var link = '@Url.Action("_PartialEditStolon",ViewData["Controller"].ToString(), new { id ="-1"})'
         link = link.replace("-1", dataId);
 
         $.ajax({

@@ -19,10 +19,10 @@ using Stolons.ViewModels.Adherents;
 
 namespace Stolons.Controllers
 {
-    public class StolonsController : StolonsAdministrationController
+    public class StolonController : StolonsAdministrationController
     {
 
-        public StolonsController(ApplicationDbContext context, IHostingEnvironment environment,
+        public StolonController(ApplicationDbContext context, IHostingEnvironment environment,
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             IServiceProvider serviceProvider) : base(context, environment, userManager, signInManager, serviceProvider)
@@ -30,19 +30,15 @@ namespace Stolons.Controllers
 
         }
 
-        // GET: Stolons
+
         public override IActionResult Index()
         {
-            if (!AuthorizedWebAdmin())
+            if (!Authorized(Role.Admin))
                 return Unauthorized();
-            AdherentStolon activeAdherentStolon = GetActiveAdherentStolon();
-            List<AdherentsViewModel> adherentsViewModel = new List<AdherentsViewModel>();
-            foreach(var stolon in _context.Stolons)
-            {
-                adherentsViewModel.Add(new AdherentsViewModel(activeAdherentStolon, stolon, _context.Sympathizers.Where(x => x.StolonId == stolon.Id).ToList(), _context.AdherentStolons.Include(x=>x.Stolon).Include(x=>x.Adherent).Where(x => x.StolonId == stolon.Id).ToList()));
-            }
-            ViewData["Controller"] = "Stolons";
-            return View(new StolonsViewModel(GetActiveAdherentStolon(), adherentsViewModel));
+
+            var activeAdherentStolon = GetActiveAdherentStolon();
+            ViewData["Controller"] = "Stolon";
+            return View(new StolonViewModel(activeAdherentStolon, activeAdherentStolon.Stolon));
         }
     }
 }

@@ -364,8 +364,8 @@ namespace Stolons
             stolon.CreationDate = DateTime.Now;
 
 
-            stolon.Label = "Stolons de Privas";
-            stolon.AboutText = "Les Stolons de Privas est une association loi 1901";
+            stolon.Label = "Stolon de Privas";
+            stolon.AboutText = "Le Stolon de Privas est une association loi 1901";
             stolon.JoinUsText = "Pour nous rejoindre contacter nous ! Ou venez nous rendre visite";
             stolon.Address = "07000 PRIVAS";
             stolon.PhoneNumber = "06 64 86 66 93";
