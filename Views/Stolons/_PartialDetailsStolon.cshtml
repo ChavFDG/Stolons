@@ -1,13 +1,6 @@
-@using Stolons.Helpers;
-@using Stolons.ViewModels.Adherents
-@model AdherentsViewModel
-
-
-<p>Mode actuel : <b>@(EnumHelper<Stolon.Modes>.GetDisplayValue(Model.Stolon.GetMode()))</b></p>
-@if (Model.Stolon.IsModeSimulated)
-{
-    <a asp-action="SwitchMode" asp-controller="Stolons" asp-route-id="@Model.Stolon.Id" class="btn btn-small btn-default">@(Model.Stolon.GetMode() == Stolon.Modes.DeliveryAndStockUpdate ? "Passer en mode Commande" : "Passer en mode Livraison et mise à jour des stocks")</a>
-}
+@using Stolons.Helpers
+@using Stolons.ViewModels.Stolons
+@model StolonViewModel
 
 <div>
     <hr />

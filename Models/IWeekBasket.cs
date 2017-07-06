@@ -10,8 +10,9 @@ namespace Stolons.Models
     public interface IWeekBasket
     {
         Guid Id { get; set; }
-        AdherentStolon ConsumerStolon { get; set; }
-        Adherent Consumer { get; set; }
+        Guid AdherentStolonId { get; set; }
+        AdherentStolon AdherentStolon { get; set; }
+        Adherent Adherent { get; }
         List<BillEntry> Products { get; set; }
     }
 

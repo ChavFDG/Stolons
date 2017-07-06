@@ -1,0 +1,37 @@
+@using Stolons.Helpers
+@using Stolons.ViewModels.Stolons
+@model StolonViewModel
+
+
+<p>Mode actuel : <b>@(EnumHelper<Stolon.Modes>.GetDisplayValue(Model.Stolon.GetMode()))</b></p>
+@if (Model.Stolon.IsModeSimulated)
+{
+    <a asp-action="SwitchMode" asp-controller="Stolons" asp-route-id="@Model.Stolon.Id" class="btn btn-small btn-default">@(Model.Stolon.GetMode() == Stolon.Modes.DeliveryAndStockUpdate ? "Passer en mode Commande" : "Passer en mode Livraison et mise à jour des stocks")</a>
+}
+<a href="#" onclick="showEditStolon(this);" data-id="@Model.Stolon.Id" data-title="@("Modification de " + Model.Stolon.Label)" class="btn btn-small btn-default">Modifier</a>
+
+@Html.Partial("_PartialDetailsStolon")
+
+<script>
+      function showEditStolon(clickedElement) {
+        $("#bodyAndFooterModal .modal-title").html($(clickedElement).attr("data-title"));
+        var dataid = $(clickedElement).attr("data-id");
+        showEditStolontAjax(dataid);
+    }
+
+      function showEditStolontAjax(dataId) {
+        var link = '@Url.Action("_PartialEditStolon", "Stolons", new { id ="-1"})'
+        link = link.replace("-1", dataId);
+
+        $.ajax({
+            type: "GET",
+            url: link,
+            error: function(data)
+            {},
+            success: function (data) {
+                $("#bodyAndFooterModal .modal-bodyAndFooter").html(data);
+                $('#bodyAndFooterModal').modal('show');
+            },
+        });
+    }
+</script>
