@@ -15,15 +15,14 @@ namespace Stolons.Models
 
         public AdherentStolon()
         {
-
         }
+
         public AdherentStolon(Adherent adherent, Stolon stolon, bool isActiveStolon = false)
         {
             Adherent = adherent;
             Stolon = stolon;
             IsActiveStolon = isActiveStolon;
         }
-
 
         //Triple clefs
         //

@@ -25,16 +25,16 @@
 #baskets {
     padding: 15px 0;
     position: fixed;
-    right: 12%;
-    top: 60px;
+    right: 5%;
+    top: 300px;
     width: auto; /* same as .content left */
     z-index: 1020;
 }
 
 #filters {
     position: fixed;
-    top: 60px;
-    left: 15%;
+    top: 285px;
+    left: 20%;
     z-index: 1020;
     max-width: 100px;
 }

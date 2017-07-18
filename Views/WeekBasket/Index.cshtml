@@ -6,11 +6,11 @@
    Layout = "_WeekBasketLayout";
 }
 
-@if (Model.Stolon.GetMode() == Stolon.Modes.DeliveryAndStockUpdate)
+@if (Model.AdherentStolon.Stolon.GetMode() == Stolon.Modes.DeliveryAndStockUpdate)
 {
     <h3>Commande indisponible</h3>
     <p>Les commandes seront à nouveau disponible : </p>
-    <p><b>@(Model.Stolon.OrderDayStartDate.ToFrench() + " à " + String.Format("{0:00}", Model.Stolon.OrderHourStartDate)  + ":" + String.Format("{0:00}", Model.Stolon.OrderMinuteStartDate))</b></p>
+    <p><b>@(Model.AdherentStolon.Stolon.OrderDayStartDate.ToFrench() + " à " + String.Format("{0:00}", Model.AdherentStolon.Stolon.OrderHourStartDate)  + ":" + String.Format("{0:00}", Model.AdherentStolon.Stolon.OrderMinuteStartDate))</b></p>
     <a asp-controller="Bills" asp-action="Index">(Cliquer ici pour voir vos commandes / factures)</a>
 
 }
@@ -200,7 +200,7 @@ else
             <tr class="billEntry">
                 <td>
                     <a href="#" onclick="ProductModalView.open('<%= entry.ProductId %>');return false;">
-                        <%= entry.Product.Name %>
+                        <%= entry.Name %>
                     </a>
                 </td>
                 <td>

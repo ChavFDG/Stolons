@@ -26,27 +26,23 @@ namespace Stolons.Models
             {
                 return AdherentStolon.Adherent;
             }
-            set
-            {
-                AdherentStolon.Adherent = value;
-            }
         }
-        [Display(Name = "Produits")]
 
+	[Display(Name = "Produits")]
         public List<BillEntry> Products { get; set; }
 
-	    [NotMapped]
-	    public Decimal TotalPrice
+	[NotMapped]
+	public Decimal TotalPrice
+	{
+	    get
 	    {
-	        get
-	        {
                 Decimal price = 0;
-		        foreach (BillEntry entry in Products)
-		        {
-		            price += entry.Price;
-		        }
-		        return price;
-	        }
+		foreach (BillEntry entry in Products)
+		{
+		    price += entry.Price;
+		}
+		return price;
 	    }
+	}
     }
 }

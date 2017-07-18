@@ -32,7 +32,7 @@ else
     {
         <p>
             Votre panier a été validé avec succès.
-            @Model.ValidatedWeekBasket.Consumer.Stolon.OrderDeliveryMessage
+            @Model.ValidatedWeekBasket.AdherentStolon.Stolon.OrderDeliveryMessage
         </p>
     }
     else
@@ -40,7 +40,7 @@ else
         <p>
             Votre panier a été partiellement validé.
             Certains produits ne sont plus disponibles dans la quantité demandée. Veuilliez en prendre connaissance sur le tableau ci-dessous puis ajuster vos besoins.
-            @Model.ValidatedWeekBasket.Consumer.Stolon.OrderDeliveryMessage
+            @Model.ValidatedWeekBasket.AdherentStolon.Stolon.OrderDeliveryMessage
         </p>
     }
 
@@ -67,16 +67,16 @@ else
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Product.Name)
+                    @Html.DisplayFor(modelItem => item.Name)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Product.UnitPrice) €
+                    @Html.DisplayFor(modelItem => item.UnitPrice) €
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.QuantityString)
                 </td>
                 <td>
-                    @(item.Quantity * item.Product.UnitPrice) €
+                    @(item.Quantity * item.UnitPrice) €
                 </td>
             </tr>
         }
@@ -104,16 +104,16 @@ else
             {
                 <tr>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Product.Name)
+                        @Html.DisplayFor(modelItem => item.Name)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Product.UnitPrice) €
+                        @Html.DisplayFor(modelItem => item.UnitPrice) €
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.QuantityString)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Product.RemainingStock)
+                        @Html.DisplayFor(modelItem => item.ProductStock.RemainingStock)
                     </td>
                 </tr>
             }

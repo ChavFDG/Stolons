@@ -38,8 +38,8 @@ namespace Stolons.Controllers
                 return NotFound();
             }
 
-            TempWeekBasket tempWeekBasket = _context.TempsWeekBaskets.Include(x => x.AdherentStolon).Include(x=>x.AdherentStolon.Adherent).Include(x => x.Products).FirstOrDefault(x => x.AdherentStolon.Id == adherentStolon.Id);
-            ValidatedWeekBasket validatedWeekBasket = _context.ValidatedWeekBaskets.Include(x => x.Adherent).Include(x => x.Products).FirstOrDefault(x => x.AdherentStolon.Id == adherentStolon.Id);
+            TempWeekBasket tempWeekBasket = _context.TempsWeekBaskets.Include(x => x.AdherentStolon).Include(x => x.AdherentStolon.Adherent).Include(x => x.Products).FirstOrDefault(x => x.AdherentStolon.Id == adherentStolon.Id);
+            ValidatedWeekBasket validatedWeekBasket = _context.ValidatedWeekBaskets.Include(x => x.AdherentStolon).Include(x => x.AdherentStolon.Adherent).Include(x => x.Products).FirstOrDefault(x => x.AdherentStolon.Id == adherentStolon.Id);
             if (tempWeekBasket == null)
             {
                 //Il n'a pas encore de panier de la semaine, on lui en crÃ©e un
@@ -49,7 +49,7 @@ namespace Stolons.Controllers
                 _context.Add(tempWeekBasket);
                 _context.SaveChanges();
             }
-            return View(new WeekBasketViewModel(adherentStolon, adherentStolon, tempWeekBasket, validatedWeekBasket, _context));
+            return View(new WeekBasketViewModel(adherentStolon, tempWeekBasket, validatedWeekBasket, _context));
         }
 
         [AllowAnonymous]
@@ -135,7 +135,7 @@ namespace Stolons.Controllers
             {
                 return null;
             }
-            ValidatedWeekBasket validatedWeekBasket = _context.ValidatedWeekBaskets.Include(x => x.Adherent).Include(x => x.Products).FirstOrDefault(x => x.Adherent.Id == consumer.Id);
+            ValidatedWeekBasket validatedWeekBasket = _context.ValidatedWeekBaskets.Include(x => x.AdherentStolon).Include(x => x.AdherentStolon.Adherent).Include(x => x.Products).FirstOrDefault(x => x.AdherentStolon.Id == consumer.Id);
             if (validatedWeekBasket != null)
             {
                 validatedWeekBasket.RetrieveProducts(_context);
@@ -149,11 +149,11 @@ namespace Stolons.Controllers
         [HttpPost, ActionName("AddToBasket"), Route("api/addToBasket")]
         public string AddToBasket(string weekBasketId, string productId)
         {
-            TempWeekBasket tempWeekBasket = _context.TempsWeekBaskets.Include(x => x.Adherent).Include(x => x.Products).First(x => x.Id.ToString() == weekBasketId);
+            TempWeekBasket tempWeekBasket = _context.TempsWeekBaskets.Include(x => x.AdherentStolon).Include(x => x.AdherentStolon.Adherent).Include(x => x.Products).First(x => x.Id.ToString() == weekBasketId);
             tempWeekBasket.RetrieveProducts(_context);
-            BillEntry billEntry = new BillEntry();
-            billEntry.Product = _context.Products.Include(x => x.Producer).ThenInclude(x => x.AdherentStolons).First(x => x.Id.ToString() == productId);
-            billEntry.ProductId = billEntry.Product.Id;
+	    ProductStockStolon ProductStock = _context.ProductsStocks.Include(x => x.Product).Single(x => x.Id.ToString() == productId);
+            BillEntry billEntry = BillEntry.fromProduct(ProductStock);
+            billEntry.ProductStock = _context.ProductsStocks.Include(x => x.AdherentStolon).Include(x => x.Product).First(x => x.Id.ToString() == productId);
             billEntry.Quantity = 1;
             tempWeekBasket.Products.Add(billEntry);
             tempWeekBasket.Validated = IsBasketValidated(tempWeekBasket);
@@ -184,9 +184,9 @@ namespace Stolons.Controllers
 
         private TempWeekBasket AddProductQuantity(string weekBasketId, string productStockId, int quantity)
         {
-            TempWeekBasket tempWeekBasket = _context.TempsWeekBaskets.Include(x => x.Adherent).Include(x => x.Products).First(x => x.Id.ToString() == weekBasketId);
+            TempWeekBasket tempWeekBasket = _context.TempsWeekBaskets.Include(x => x.AdherentStolon).Include(x => x.AdherentStolon.Adherent).Include(x => x.Products).First(x => x.Id.ToString() == weekBasketId);
             tempWeekBasket.RetrieveProducts(_context);
-            ValidatedWeekBasket validatedWeekBasket = _context.ValidatedWeekBaskets.Include(x => x.Adherent).Include(x => x.Products).FirstOrDefault(x => x.Adherent.Id == tempWeekBasket.Adherent.Id);
+            ValidatedWeekBasket validatedWeekBasket = _context.ValidatedWeekBaskets.Include(x => x.AdherentStolon).Include(x => x.AdherentStolon.Adherent).Include(x => x.Products).FirstOrDefault(x => x.Adherent.Id == tempWeekBasket.Adherent.Id);
 
             int validatedQuantity = 0;
             if (validatedWeekBasket != null)
@@ -225,7 +225,7 @@ namespace Stolons.Controllers
         [HttpPost, ActionName("RemoveBillEntry"), Route("api/removeBillEntry")]
         public string RemoveBillEntry(string weekBasketId, string productId)
         {
-            TempWeekBasket tempWeekBasket = _context.TempsWeekBaskets.Include(x => x.Adherent).Include(x => x.Products).First(x => x.Id.ToString() == weekBasketId);
+            TempWeekBasket tempWeekBasket = _context.TempsWeekBaskets.Include(x => x.AdherentStolon).Include(x => x.AdherentStolon.Adherent).Include(x => x.Products).First(x => x.Id.ToString() == weekBasketId);
             tempWeekBasket.RetrieveProducts(_context);
             BillEntry billEntry = tempWeekBasket.Products.First(x => x.ProductId.ToString() == productId);
             tempWeekBasket.Products.Remove(billEntry);
@@ -242,8 +242,8 @@ namespace Stolons.Controllers
         [HttpPost, ActionName("ResetBasket"), Route("api/resetBasket")]
         public string ResetBasket(string basketId)
         {
-            TempWeekBasket tempWeekBasket = _context.TempsWeekBaskets.Include(x => x.Products).Include(x => x.Adherent).First(x => x.Id.ToString() == basketId);
-            ValidatedWeekBasket validatedWeekBasket = _context.ValidatedWeekBaskets.Include(x => x.Adherent).Include(x => x.Products).FirstOrDefault(x => x.Adherent.Id == tempWeekBasket.Adherent.Id);
+            TempWeekBasket tempWeekBasket = _context.TempsWeekBaskets.Include(x => x.AdherentStolon).Include(x => x.AdherentStolon.Adherent).First(x => x.Id.ToString() == basketId);
+            ValidatedWeekBasket validatedWeekBasket = _context.ValidatedWeekBaskets.Include(x => x.AdherentStolon).Include(x => x.AdherentStolon.Adherent).Include(x => x.Products).FirstOrDefault(x => x.Adherent.Id == tempWeekBasket.Adherent.Id);
 
             if (validatedWeekBasket == null)
             {
@@ -289,23 +289,23 @@ namespace Stolons.Controllers
             if (stolon.GetMode() == Stolon.Modes.DeliveryAndStockUpdate)
                 return Redirect("Index");
 
-            TempWeekBasket tempWeekBasket = _context.TempsWeekBaskets.Include(x => x.Products).Include(x => x.Adherent).First(x => x.Id.ToString() == basketId);
+            TempWeekBasket tempWeekBasket = _context.TempsWeekBaskets.Include(x => x.Products).Include(x => x.AdherentStolon).Include(x => x.AdherentStolon.Adherent).First(x => x.Id.ToString() == basketId);
             tempWeekBasket.RetrieveProducts(_context);
-            ValidatedWeekBasket validatedWeekBasket = _context.ValidatedWeekBaskets.Include(x => x.Adherent).Include(x => x.Products).FirstOrDefault(x => x.Adherent.Id == tempWeekBasket.Adherent.Id);
+            ValidatedWeekBasket validatedWeekBasket = _context.ValidatedWeekBaskets.Include(x => x.AdherentStolon).Include(x => x.AdherentStolon.Adherent).Include(x => x.Products).FirstOrDefault(x => x.Adherent.Id == tempWeekBasket.Adherent.Id);
 
             if (validatedWeekBasket == null)
             {
                 //First validation of the week
                 validatedWeekBasket = new ValidatedWeekBasket();
                 validatedWeekBasket.Products = new List<BillEntry>();
-                validatedWeekBasket.Adherent = tempWeekBasket.Adherent;
+                validatedWeekBasket.AdherentStolon = tempWeekBasket.AdherentStolon;
                 _context.Add(validatedWeekBasket);
             }
             else
             {
                 validatedWeekBasket.RetrieveProducts(_context);
             }
-            //LOCK to prevent multi insert at this momment
+            //TODO LOCK to prevent multi insert at this moment ?
             if (tempWeekBasket.Products.Any())
             {
                 List<BillEntry> rejectedEntries = new List<BillEntry>();
@@ -322,8 +322,8 @@ namespace Stolons.Controllers
                 foreach (BillEntry prevEntry in previousBillEntries)
                 {
                     BillEntry newEntry = validatedWeekBasket.Products.FirstOrDefault(x => x.ProductId == prevEntry.ProductId);
-                    ProductStockStolon productStock = _context.ProductsStocks.Include(x => x.Product).Include(x => x.AdherentStolon).First(x => x.ProductId == prevEntry.ProductId && x.AdherentStolon.StolonId == GetCurrentStolon().Id);
-                    
+                    ProductStockStolon productStock = _context.ProductsStocks.Include(x => x.Product).Include(x => x.AdherentStolon).Single(x => x.Id == prevEntry.ProductId);
+
                     if (newEntry == null)
                     {
                         //produit supprimé du panier
@@ -335,6 +335,7 @@ namespace Stolons.Controllers
                         decimal stepStock = productStock.RemainingStock;
                         if (productStock.Product.Type != Product.SellType.Piece)
                         {
+			    //Actual remaining stock in terms of quantity step Kg/L for weight type products
                             stepStock = (productStock.RemainingStock / productStock.Product.QuantityStep) * 1000.0M;
                         }
                         if (stepStock < qtyDiff)
@@ -359,7 +360,7 @@ namespace Stolons.Controllers
                     if (prevEntry == null)
                     {
                         //Nouveau produit
-                        ProductStockStolon productStock = _context.ProductsStocks.Include(x => x.Product).Include(x => x.AdherentStolon).First(x => x.ProductId == newEntry.ProductId && x.AdherentStolon.StolonId == GetCurrentStolon().Id);
+                        ProductStockStolon productStock = _context.ProductsStocks.Include(x => x.Product).Include(x => x.AdherentStolon).Single(x => x.Id == newEntry.ProductId);
 
                         decimal stepStock = productStock.RemainingStock;
                         if (productStock.Product.Type != Product.SellType.Piece)
@@ -413,7 +414,7 @@ namespace Stolons.Controllers
                 //On annule tout le contenu du panier
                 foreach (BillEntry entry in validatedWeekBasket.Products)
                 {
-                    ProductStockStolon productStock = _context.ProductsStocks.Include(x => x.Product).Include(x => x.AdherentStolon).First(x => x.ProductId == entry.ProductId && x.AdherentStolon.StolonId == GetCurrentStolon().Id);
+                    ProductStockStolon productStock = _context.ProductsStocks.Include(x => x.Product).Include(x => x.AdherentStolon).Single(x => x.Id == entry.ProductId);
                     UpdateProductStock(productStock, entry.Quantity);
                     //entry.Product.RemainingStock += entry.Quantity;
                 }
@@ -438,15 +439,14 @@ namespace Stolons.Controllers
             Decimal price = 0;
             foreach (BillEntry entry in basket.Products)
             {
-                Product product = _context.Products.First(x => x.Id == entry.ProductId);
-                price += (product.UnitPrice * entry.Quantity);
+		price += entry.Price;
             }
             return price;
         }
 
         private bool IsBasketValidated(TempWeekBasket tmpBasket)
         {
-            ValidatedWeekBasket validatedBasket = _context.ValidatedWeekBaskets.Include(x => x.Adherent).Include(x => x.Products).FirstOrDefault(x => x.Adherent.Id == tmpBasket.Adherent.Id);
+            ValidatedWeekBasket validatedBasket = _context.ValidatedWeekBaskets.Include(x => x.AdherentStolon).Include(x => x.AdherentStolon.Adherent).Include(x => x.Products).FirstOrDefault(x => x.Adherent.Id == tmpBasket.Adherent.Id);
 
             if (validatedBasket == null)
             {

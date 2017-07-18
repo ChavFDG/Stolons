@@ -32,13 +32,14 @@ namespace Stolons.Models
 
         string HtmlBillContent { get; set; }
 
-        [Display(Name ="A été modifier")]
+        [Display(Name ="A été modifié")]
         bool HasBeenModified { get; set; }
         [Display(Name = "Raison de la modification")]
         string ModificationReason { get; set; }
         [Display(Name = "Montant")]
         DateTime ModifiedDate { get; set; }
     }
+
     public class ConsumerBill : IBill
     {
         [Key]

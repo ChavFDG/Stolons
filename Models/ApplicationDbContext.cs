@@ -48,13 +48,25 @@ namespace Stolons.Models
         public DbSet<AdherentStolon> AdherentStolons { get; set; }
 
 
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-            : base(options)
+	public ApplicationDbContext() : base()
         {
-
         }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+	public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+            : base(options)
+        {
+        }
+
+	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            // var connectionStringBuilder = new SqliteConnectionStringBuilder { DataSource = "Stolons.sqlite" };
+            // var connectionString = connectionStringBuilder.ToString();
+            // var connection = new SqliteConnection(connectionString);
+            optionsBuilder.UseSqlite("Data Source=Stolons.sqlite");
+	    optionsBuilder.EnableSensitiveDataLogging();
+        }
+
+ 	protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
@@ -71,9 +83,9 @@ namespace Stolons.Models
             modelBuilder.Entity<ProductStockStolon>()
                 .HasOne(x => x.Product);
             //Product
-            modelBuilder.Entity<Product>()
+            modelBuilder.Entity<ProductStockStolon>()
                 .HasMany(x => x.BillEntries)
-                    .WithOne(x => x.Product);
+		.WithOne(x => x.ProductStock);
             modelBuilder.Entity<Product>()
                 .HasOne(x => x.Producer);
         }

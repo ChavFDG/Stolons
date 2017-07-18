@@ -20,6 +20,8 @@ using Stolons.Models.Users;
 using Microsoft.Extensions.Configuration.UserSecrets;
 using static Stolons.Configurations;
 
+[assembly: UserSecretsId("aspnet-TestApp-ce345b64-19cf-4972-b34f-d16f2e7976ed")]
+
 namespace Stolons
 {
     public class Startup
@@ -51,25 +53,13 @@ namespace Stolons
         {
             try
             {
+		using (var db = new ApplicationDbContext())
+        	{
+		    db.Database.EnsureCreated();
+                    db.Database.Migrate();
+        	}
 
-                string test = Configuration["Data:DefaultConnection:SqLiteConnectionString"];
-
-                services.AddDbContext<ApplicationDbContext>(options =>
-                    options.UseSqlite("Data Source=" + Path.Combine(_environment.ContentRootPath, "Stolons.sqlite")));
-
-                /*
-                // Add framework services.
-                if (Configuration["Data:UseSqLite"] == "true")
-                {
-                    services.AddDbContext<ApplicationDbContext>(options =>
-                        options.UseSqlite("Data Source=" + Path.Combine(_environment.ContentRootPath, "Stolons.sqlite")));
-                    //options.UseSqlite(Configuration["Data:DefaultConnection:SqLiteConnectionString"]));
-                }
-                else
-                {
-                    services.AddDbContext<ApplicationDbContext>(options =>
-                        options.UseSqlServer(Configuration["Data:DefaultConnection:MsSqlConnectionString"]));
-                }*/
+ 		services.AddDbContext<ApplicationDbContext>();
 
                 services.AddIdentity<ApplicationUser, IdentityRole>()
                     .AddEntityFrameworkStores<ApplicationDbContext>()

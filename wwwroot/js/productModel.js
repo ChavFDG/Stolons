@@ -6,72 +6,15 @@ ProductModel = Backbone.Model.extend({
 
     defaults: {},
 
-    unitsEnum: ["Kg", "L"],
-
     getPictureUrl: function(type) {
-	    var pictures = this.get("Pictures");
-	    if (_.isEmpty(pictures) || _.isEmpty(pictures[0])) {
-	        return "/images/panier.jpg";
-	    }
-
-	    if (type == 'light') {
-	        return this.get("LightPath") + "\\" + pictures[0];
-	    }
-	    return this.get("HeavyPath")+ "\\" + pictures[0];
-    },
-
-    /*
-      return the html string according to this product's sell type
-     */
-    getSellTypeString: function() {
-	if (this.get("Type") == 0) {
-	    return "Au poids";
-	} else if (this.get("Type") == 1) {
-	    return "À la pièce";
-	} else if (this.get("Type") == 2) {
-	    return  "Emballé";
-	} else {
-	    return "Error";
+	var pictures = this.get("Pictures");
+	if (_.isEmpty(pictures) || _.isEmpty(pictures[0])) {
+	    return "/images/panier.jpg";
 	}
-    },
-
-    getStockUnitString: function() {
-	if (this.get("Type") == 1) {
-	    return "Pièces";
+	if (type == 'light') {
+	    return this.get("LightPath") + "\\" + pictures[0];
 	}
-	var productUnit = this.get("ProductUnit");
-	return this.unitsEnum[productUnit];
-    },
-
-    getUnitPriceString: function() {
-	if (this.get("Type") == 1) {
-	    return this.get("UnitPrice") + " € l'unité";
-	}
-	return this.get("UnitPrice") + " € pour " + this.get("QuantityStepString");
-    },
-
-    getVolumePriceString: function() {
-	var productUnit = this.get("ProductUnit");
-	if (this.get("Price") === 0 || this.get("QuantityStep") === 1000) {
-	    return "";
-	}
-	return "(" + this.get("Price") + " € / " +  this.unitsEnum[productUnit] + ")";
-    },
-
-    getSellStepString: function() {
-	if (this.get("Type") == 1) {
-	    return " Pièce(s)";
-	}
-	var productUnit = this.get("ProductUnit"); 
-    },
-
-    //retourne la string correctement formattee pour le poids donne en grammes
-    prettyPrintQuantity: function(weight) {
-	
-	if (weight >= 1000) {
-	    return (weight / 1000) + " " + largeunit;
-	}
-	return weight + " " + productUnit;
+	return this.get("HeavyPath")+ "\\" + pictures[0];
     }
 });
 
@@ -81,6 +24,63 @@ ProductStockModel = Backbone.Model.extend({
     idAttribute: "Id",
 
     defaults: {},
+
+    unitsEnum: ["Kg", "L"],
+
+    /*
+      return the html string according to this product's sell type
+     */
+    getSellTypeString: function() {
+	if (this.get("Product").get("Type") == 0) {
+	    return "Au poids";
+	} else if (this.get("Product").get("Type") == 1) {
+	    return "À la pièce";
+	} else if (this.get("Product").get("Type") == 2) {
+	    return  "Emballé";
+	} else {
+	    return "Erreur";
+	}
+    },
+
+    getStockUnitString: function() {
+	if (this.get("Product").get("Type") == 1) {
+	    return "Pièces";
+	}
+	var productUnit = this.get("Product").get("ProductUnit");
+	return this.unitsEnum[productUnit];
+    },
+
+    getUnitPriceString: function() {
+	if (this.get("Product").get("Type") == 1) {
+	    return this.get("Product").get("UnitPrice") + " € l'unité";
+	}
+	var weightStepPrice = parseFloat(this.get("Product").get("WeightPrice"));
+	weightStepPrice = weightStepPrice * (parseFloat(this.get("Product").get("QuantityStep")) / 1000);
+	return weightStepPrice.toFixed(2) + " € pour " + this.get("Product").get("QuantityStepString");
+    },
+
+    getVolumePriceString: function() {
+	var productUnit = this.get("Product").get("ProductUnit");
+	if (this.get("Product").get("WeightPrice") === 0 || this.get("Product").get("QuantityStep") === 1000) {
+	    return "";
+	}
+	return "(" + this.get("Product").get("WeightPrice") + " € / " +  this.unitsEnum[productUnit] + ")";
+    },
+
+    getSellStepString: function() {
+	if (this.get("Product").get("Type") == 1) {
+	    return " Pièce(s)";
+	}
+	var productUnit = this.get("Product").get("ProductUnit"); 
+    },
+
+    //retourne la string correctement formattee pour le poids donne en grammes
+    prettyPrintQuantity: function(weight) {	
+	if (weight >= 1000) {
+	    return (weight / 1000) + " " + largeunit;
+	}
+	return weight + " " + productUnit;
+    },
 
     //Si tu as besoin de faire des changements sur les données sur le JSON avant de les rentrer dans le model
     parse: function (data) {
