@@ -39,7 +39,7 @@ namespace Stolons.Controllers
             }
 
             TempWeekBasket tempWeekBasket = _context.TempsWeekBaskets.Include(x => x.AdherentStolon).Include(x=>x.AdherentStolon.Adherent).Include(x => x.Products).FirstOrDefault(x => x.AdherentStolon.Id == adherentStolon.Id);
-            ValidatedWeekBasket validatedWeekBasket = _context.ValidatedWeekBaskets.Include(x => x.Adherent).Include(x => x.Products).FirstOrDefault(x => x.AdherentStolon.Id == adherentStolon.Id);
+            ValidatedWeekBasket validatedWeekBasket = _context.ValidatedWeekBaskets.Include(x => x.AdherentStolon).Include(x => x.AdherentStolon.Adherent).Include(x => x.Products).FirstOrDefault(x => x.AdherentStolon.Id == adherentStolon.Id);
             if (tempWeekBasket == null)
             {
                 //Il n'a pas encore de panier de la semaine, on lui en crÃ©e un
