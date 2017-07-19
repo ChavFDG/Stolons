@@ -15,12 +15,16 @@ namespace Stolons.Models
         [Key]
         public Guid Id { get; set; }
 
-        // public Guid? BillId { get; set; }
+        public Guid? ConsumerBillId { get; set; }
 
-        public Guid ProductId { get; set; }
+        [ForeignKey(nameof(ConsumerBillId))]
+        public virtual ConsumerBill ConsumerBill { get; set; }
+
+
+        public Guid ProductStockId { get; set; }
 
         [Display(Name = "Fiche produit")]
-        [ForeignKey(nameof(ProductId))]
+        [ForeignKey(nameof(ProductStockId))]
         public ProductStockStolon ProductStock { get; set; }
 
         [Display(Name = "Quantité")]
@@ -42,12 +46,15 @@ namespace Stolons.Models
         {
             get
             {
-		decimal price = 0;
-		if (this.Type == Product.SellType.Piece) {
-		    price = Quantity * UnitPrice;
-		} else {
-		    price = WeightPrice * Quantity * QuantityStep;
-		}
+                decimal price = 0;
+                if (this.Type == Product.SellType.Piece)
+                {
+                    price = Quantity * UnitPrice;
+                }
+                else
+                {
+                    price = WeightPrice * Quantity * QuantityStep;
+                }
                 return Quantity * UnitPrice;
             }
         }
@@ -305,6 +312,9 @@ namespace Stolons.Models
             }
         }
 
+        [Display(Name = "A été modifier")]
+        public bool HasBeenModified { get; set; }
+
 
         public string GetQuantityString(decimal quantity)
         {
@@ -349,32 +359,33 @@ namespace Stolons.Models
         public BillEntry Clone()
         {
             BillEntry clonedBillEntry = new BillEntry();
-            clonedBillEntry.ProductId = this.ProductId;
-	    clonedBillEntry.FamillyId = this.FamillyId;
-	    clonedBillEntry.Familly = this.Familly;
-	    clonedBillEntry.Name = this.Name;
+            clonedBillEntry.ProductStockId = this.ProductStockId;
+            clonedBillEntry.FamillyId = this.FamillyId;
+            clonedBillEntry.Familly = this.Familly;
+            clonedBillEntry.Name = this.Name;
             clonedBillEntry.WeightPrice = this.WeightPrice;
-	    clonedBillEntry.UnitPrice = this.UnitPrice;
-	    clonedBillEntry.Tax = this.Tax;
-	    clonedBillEntry.TaxEnum = this.TaxEnum;
-	    clonedBillEntry.ProductUnit = this.ProductUnit;
+            clonedBillEntry.UnitPrice = this.UnitPrice;
+            clonedBillEntry.Tax = this.Tax;
+            clonedBillEntry.TaxEnum = this.TaxEnum;
+            clonedBillEntry.ProductUnit = this.ProductUnit;
             clonedBillEntry.Quantity = this.Quantity;
+            clonedBillEntry.HasBeenModified = this.HasBeenModified;
             return clonedBillEntry;
         }
 
-	public static BillEntry fromProduct(ProductStockStolon ProductStock)
-	{
-	    BillEntry billEntry = new BillEntry();
-            billEntry.ProductId = ProductStock.Id;
-	    billEntry.FamillyId = ProductStock.Product.FamillyId;
-	    billEntry.Familly = ProductStock.Product.Familly;
-	    billEntry.Name = ProductStock.Product.Name;
-            billEntry.WeightPrice = ProductStock.Product.WeightPrice;
-	    billEntry.UnitPrice = ProductStock.Product.UnitPrice;
-	    billEntry.Tax = ProductStock.Product.Tax;
-	    billEntry.TaxEnum = ProductStock.Product.TaxEnum;
-	    billEntry.ProductUnit = ProductStock.Product.ProductUnit;
+        public static BillEntry CloneFromProduct(ProductStockStolon productStock)
+        {
+            BillEntry billEntry = new BillEntry();
+            billEntry.ProductStockId = productStock.Id;
+            billEntry.FamillyId = productStock.Product.FamillyId;
+            billEntry.Familly = productStock.Product.Familly;
+            billEntry.Name = productStock.Product.Name;
+            billEntry.WeightPrice = productStock.Product.WeightPrice;
+            billEntry.UnitPrice = productStock.Product.UnitPrice;
+            billEntry.Tax = productStock.Product.Tax;
+            billEntry.TaxEnum = productStock.Product.TaxEnum;
+            billEntry.ProductUnit = productStock.Product.ProductUnit;
             return billEntry;
-	}
+        }
     }
 }

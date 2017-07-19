@@ -61,9 +61,9 @@ namespace Stolons.Controllers
             {
                 int orderedQty = 0;
                 List<BillEntry> billEntries = new List<BillEntry>();
-                foreach (var validateWeekBasket in _context.ValidatedWeekBaskets.Include(x => x.Products))
+                foreach (var validateWeekBasket in _context.ValidatedWeekBaskets.Include(x => x.BillEntries))
                 {
-                    validateWeekBasket.Products.Where(x => x.ProductId == productStock.Id).ToList().ForEach(x => orderedQty += x.Quantity);
+                    validateWeekBasket.BillEntries.Where(x => x.ProductStockId == productStock.Id).ToList().ForEach(x => orderedQty += x.Quantity);
                 }
                 vmProductsStock.Add(new ProductStockViewModel(GetActiveAdherentStolon(), productStock, orderedQty));
             }

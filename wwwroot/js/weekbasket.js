@@ -17,63 +17,63 @@ ProductTypesModel = Backbone.Collection.extend({
 
     model: ProductTypeModel,
 
-    initialize: function() {
-	this.fetch();
+    initialize: function () {
+        this.fetch();
     }
 });
 
 ProductsModel = Backbone.Collection.extend(
     {
-	defaults: [],
+        defaults: [],
 
-	model: ProductStockModel,
+        model: ProductStockModel,
 
-	url: "/api/Products",
+        url: "/api/Products",
 
-	initialize: function() {
-	    this.fetch();
-	}
+        initialize: function () {
+            this.fetch();
+        }
     }
 );
 
 TmpWeekBasketModel = Backbone.Model.extend(
     {
-	url: "/api/TmpWeekBasket",
+        url: "/api/TmpWeekBasket",
 
-	idAttribute: "Id",
+        idAttribute: "Id",
 
-	isEmpty: function() {
-	    return _.isEmpty(this.get("Products"));
-	},
+        isEmpty: function () {
+            return _.isEmpty(this.get("BillEntries"));
+        },
 
-	canPurchase: function() {
-	    //TODO move this elsewhere and handle the unconnected case
-	    //If there is no id, it means the user is not authenticated, so he can't purchase
-	    return ! _.isEmpty(this.get("Id"));
-	},
+        canPurchase: function () {
+            //TODO move this elsewhere and handle the unconnected case
+            //If there is no id, it means the user is not authenticated, so he can't purchase
+            return !_.isEmpty(this.get("Id"));
+        },
 
-	getTotal: function() {
-	    var total = 0;
-	    _.forEach(this.get("Products"), function(billEntry) {
-		total += billEntry.Price;
-	    });
-	    return total;
-	},
+        getTotal: function () {
+            var total = 0;
+            _.forEach(this.get("BillEntries"), function (billEntry) {
+                total += billEntry.Price;
+            });
+            return total;
+        },
 
-	getProductEntry: function(productId) {
-	    var productEntry;
-	    _.forEach(this.get("Products"), function(billEntry) {
-		if (billEntry.ProductId == productId) {
-		    productEntry = billEntry;
-		    return false;
-		}
-	    });
-	    return productEntry;
-	},
+        getProductEntry: function (productId) {
+            var productEntry;
+            _.forEach(this.get("BillEntries"), function (billEntry) {
+                if (billEntry.ProductId == productId) {
+                    productEntry = billEntry;
+                    return false;
+                }
+            });
+            return productEntry;
+        },
 
-	addProductToBasket: function(productId) {
-	    var self = this;
-	    return $.ajax({
+        addProductToBasket: function (productId) {
+            var self = this;
+            return $.ajax({
                 url: '/api/addtobasket',
                 data: {
                     productId: productId,
@@ -81,16 +81,16 @@ TmpWeekBasketModel = Backbone.Model.extend(
                 },
                 type: 'post',
                 success: function (response) {
-		    if (response) {
-			self.set(JSON.parse(response));
-		    }
-		}
-	    });
-	},
+                    if (response) {
+                        self.set(JSON.parse(response));
+                    }
+                }
+            });
+        },
 
-	incrementProduct: function(productId) {
-	    var self = this;
-	    return $.ajax({
+        incrementProduct: function (productId) {
+            var self = this;
+            return $.ajax({
                 url: '/api/incrementProduct',
                 data: {
                     productId: productId,
@@ -98,16 +98,16 @@ TmpWeekBasketModel = Backbone.Model.extend(
                 },
                 type: 'post',
                 success: function (response) {
-		    if (response) {
-			self.set(JSON.parse(response));
-		    }
-		}
-	    });
-	},
+                    if (response) {
+                        self.set(JSON.parse(response));
+                    }
+                }
+            });
+        },
 
-	decrementProduct: function(productId) {
-	    var self = this;
-	    return $.ajax({
+        decrementProduct: function (productId) {
+            var self = this;
+            return $.ajax({
                 url: '/api/decrementProduct',
                 data: {
                     productId: productId,
@@ -115,16 +115,16 @@ TmpWeekBasketModel = Backbone.Model.extend(
                 },
                 type: 'post',
                 success: function (response) {
-		    if (response) {
-			self.set(JSON.parse(response));
-		    }
-		}
-	    });
-	},
+                    if (response) {
+                        self.set(JSON.parse(response));
+                    }
+                }
+            });
+        },
 
-	removeBillEntry: function(productId) {
-	    var self = this;
-	    return $.ajax({
+        removeBillEntry: function (productId) {
+            var self = this;
+            return $.ajax({
                 url: '/api/removeBillEntry',
                 data: {
                     productId: productId,
@@ -132,73 +132,73 @@ TmpWeekBasketModel = Backbone.Model.extend(
                 },
                 type: 'post',
                 success: function (response) {
-		    if (response) {
-			self.set(JSON.parse(response));
-		    }
-		}
-	    });
-	},
+                    if (response) {
+                        self.set(JSON.parse(response));
+                    }
+                }
+            });
+        },
 
-	resetBasket: function() {
-	    var self = this;
-	    return $.ajax({
+        resetBasket: function () {
+            var self = this;
+            return $.ajax({
                 url: '/api/resetBasket',
                 data: {
                     weekBasketId: self.get("Id")
                 },
                 type: 'post',
                 success: function (response) {
-		    console.log("Reset basket response: ", response);
-		    self.set(JSON.parse(response));
-		}
-	    });
-	}
+                    console.log("Reset basket response: ", response);
+                    self.set(JSON.parse(response));
+                }
+            });
+        }
     });
 
 ValidatedWeekBasketModel = Backbone.Model.extend({
 
     url: "/api/validatedWeekBasket",
 
-    initialize: function() {
-	this.fetch();
+    initialize: function () {
+        this.fetch();
     },
 
-    getTotal: function() {
-	var total = 0;
-	_.forEach(this.get("Products"), function(billEntry) {
-	    total += billEntry.Price;
-	});
-	return total;
+    getTotal: function () {
+        var total = 0;
+        _.forEach(this.get("BillEntries"), function (billEntry) {
+            total += billEntry.Price;
+        });
+        return total;
     },
 
     //return true if the basket was validated this week
-    exists: function() {
-	return ! _.isEmpty(this.get("Products"));
+    exists: function () {
+        return !_.isEmpty(this.get("BillEntries"));
     },
 
-    isEmpty: function() {
-	return _.isEmpty(this.get("Products"));
+    isEmpty: function () {
+        return _.isEmpty(this.get("BillEntries"));
     },
 
-    getProductEntry: function(productId) {
-	var productEntry;
-	_.forEach(this.get("Products"), function(billEntry) {
-	    if (billEntry.ProductId == productId) {
-		productEntry = billEntry;
-		return false;
-	    }
-	});
-	return productEntry;
+    getProductEntry: function (productId) {
+        var productEntry;
+        _.forEach(this.get("BillEntries"), function (billEntry) {
+            if (billEntry.ProductId == productId) {
+                productEntry = billEntry;
+                return false;
+            }
+        });
+        return productEntry;
     }
 });
 
-var initModels = function() {
+var initModels = function () {
     WeekBasket.ProductsModel = new ProductsModel();
     WeekBasket.ProductTypesModel = new ProductTypesModel();
     WeekBasket.ValidatedWeekBasketModel = new ValidatedWeekBasketModel();
     WeekBasket.TmpWeekBasketModel = new TmpWeekBasketModel();
-    WeekBasket.ProductsModel.on("sync", function() {
-	WeekBasket.TmpWeekBasketModel.fetch();
+    WeekBasket.ProductsModel.on("sync", function () {
+        WeekBasket.TmpWeekBasketModel.fetch();
     });
 };
 
@@ -210,120 +210,120 @@ FiltersView = Backbone.View.extend({
 
     template: _.template($("#filtersTemplate").html()),
 
-    initialize: function(args) {
-	this.model = args.model;
-	this.productsModel = args.productsModel;
-	this.model.on('sync', this.initTreeData, this);
-	this.selectedFamily = "Tous";
+    initialize: function (args) {
+        this.model = args.model;
+        this.productsModel = args.productsModel;
+        this.model.on('sync', this.initTreeData, this);
+        this.selectedFamily = "Tous";
     },
 
-    initTreeData: function() {
-	this.treeData = this.model.toJSON();
-	data = this.treeData;
-	_.forEach(data, function(category, idx) {
-	    data[idx].id = category.Id;
-	    data[idx].text = category.Name;
-	    data[idx].icon = category.Image ? "/" + category.Image : "/images/productFamilies/default.jpg";
-	    data[idx].children = category.ProductFamilly;
-	    data[idx].category = true;
-	    _.forEach(data[idx].children, function(family, fIdx) {
-		data[idx].children[fIdx].id = family.Id;
-		data[idx].children[fIdx].text = family.FamillyName;
-		data[idx].children[fIdx].icon = family.Image ? "/" + family.Image : "/images/productFamilies/default.jpg";
-		data[idx].children[fIdx].category = false;
-	    });
-	});
-	this.treeData = [{
-	    id: "Tous",
-	    text: "Tous",
-	    icon: false,
-	    children: this.treeData,
-	    category: true,
-	    state: {
-		opened: true,
-		selected: false
-	    }
-	}];
-	this.render();
+    initTreeData: function () {
+        this.treeData = this.model.toJSON();
+        data = this.treeData;
+        _.forEach(data, function (category, idx) {
+            data[idx].id = category.Id;
+            data[idx].text = category.Name;
+            data[idx].icon = category.Image ? "/" + category.Image : "/images/productFamilies/default.jpg";
+            data[idx].children = category.ProductFamilly;
+            data[idx].category = true;
+            _.forEach(data[idx].children, function (family, fIdx) {
+                data[idx].children[fIdx].id = family.Id;
+                data[idx].children[fIdx].text = family.FamillyName;
+                data[idx].children[fIdx].icon = family.Image ? "/" + family.Image : "/images/productFamilies/default.jpg";
+                data[idx].children[fIdx].category = false;
+            });
+        });
+        this.treeData = [{
+            id: "Tous",
+            text: "Tous",
+            icon: false,
+            children: this.treeData,
+            category: true,
+            state: {
+                opened: true,
+                selected: false
+            }
+        }];
+        this.render();
     },
 
-    famillyMatch: function(product) {
-	if (!this.selectedNode) {
-	    return true;
-	} else {
-	    if (this.selectedNode.category) {
-		if (this.selectedNode.id === "Tous") {
-		    return true
-		}
-		if (!product.Familly || !product.Familly.Type) {
-		    return false;
-		}
-		return product.Familly.Type && product.Familly.Type.Name == this.selectedNode.text;
-	    } else {
-		if (!product.Familly) {
-		    return false;
-		}
-		return product.Familly.FamillyName === this.selectedNode.text;
-	    }
-	}
+    famillyMatch: function (product) {
+        if (!this.selectedNode) {
+            return true;
+        } else {
+            if (this.selectedNode.category) {
+                if (this.selectedNode.id === "Tous") {
+                    return true
+                }
+                if (!product.Familly || !product.Familly.Type) {
+                    return false;
+                }
+                return product.Familly.Type && product.Familly.Type.Name == this.selectedNode.text;
+            } else {
+                if (!product.Familly) {
+                    return false;
+                }
+                return product.Familly.FamillyName === this.selectedNode.text;
+            }
+        }
     },
 
-    productNameMatch: function(product, searchTerm) {
-	return _.isEmpty(searchTerm) || product.Name.toLowerCase().indexOf(searchTerm) != -1;
+    productNameMatch: function (product, searchTerm) {
+        return _.isEmpty(searchTerm) || product.Name.toLowerCase().indexOf(searchTerm) != -1;
     },
 
-    productDescMatch: function(product, searchTerm) {
-	if (_.isEmpty(product.Description)) {
-	    return false;
-	}
-	return _.isEmpty(searchTerm) || product.Description.toLowerCase().indexOf(searchTerm) != -1;
+    productDescMatch: function (product, searchTerm) {
+        if (_.isEmpty(product.Description)) {
+            return false;
+        }
+        return _.isEmpty(searchTerm) || product.Description.toLowerCase().indexOf(searchTerm) != -1;
     },
 
-    filterProducts: function() {
-	var searchTerm = this.$("#search").val() || "";
-	searchTerm = searchTerm.toLowerCase();
-	var nbMatch = 0;
-	this.productsModel.forEach(function(productStockModel) {
-	    var product = productStockModel.get("Product").toJSON();
+    filterProducts: function () {
+        var searchTerm = this.$("#search").val() || "";
+        searchTerm = searchTerm.toLowerCase();
+        var nbMatch = 0;
+        this.productsModel.forEach(function (productStockModel) {
+            var product = productStockModel.get("Product").toJSON();
 
-	    if (this.famillyMatch(product) && (this.productNameMatch(product, searchTerm) || this.productDescMatch(product, searchTerm))) {
-		$("#product-" + productStockModel.get("Id")).removeClass("hidden");
-		nbMatch++;
-	    } else {
-		$("#product-" + productStockModel.get("Id")).removeClass("hidden").addClass("hidden");
-	    }
-	}, this);
-	if (nbMatch === 0) {
-	    $("#emptyProducts").removeClass("hidden");
-	} else {
-	    $("#emptyProducts").addClass("hidden");
-	}
+            if (this.famillyMatch(product) && (this.productNameMatch(product, searchTerm) || this.productDescMatch(product, searchTerm))) {
+                $("#product-" + productStockModel.get("Id")).removeClass("hidden");
+                nbMatch++;
+            } else {
+                $("#product-" + productStockModel.get("Id")).removeClass("hidden").addClass("hidden");
+            }
+        }, this);
+        if (nbMatch === 0) {
+            $("#emptyProducts").removeClass("hidden");
+        } else {
+            $("#emptyProducts").addClass("hidden");
+        }
     },
 
-    render: function() {
-	this.$el.html(this.template({ productTypes: this.model.toJSON() }));
-	$("#tree").jstree({
-	    "core": {
-		"data": this.treeData,
-		"themes" : {
-		    "variant" : "responsive"
-		}
-	    }
-	});
-	this.instance = $("#tree").jstree(true);
-	this.registerEventsHandlers();
-	this.$('#search').on("input", _.bind(function() {
-	    this.filterProducts();
-	}, this));
+    render: function () {
+        this.$el.html(this.template({ productTypes: this.model.toJSON() }));
+        $("#tree").jstree({
+            "core": {
+                "data": this.treeData,
+                "themes": {
+                    "variant": "responsive"
+                }
+            }
+        });
+        this.instance = $("#tree").jstree(true);
+        this.registerEventsHandlers();
+        this.$('#search').on("input", _.bind(function () {
+            this.filterProducts();
+        }, this));
     },
 
-    registerEventsHandlers: function() {
-	$("#tree").on('changed.jstree', _.bind(this.nodeSelected, this));
+    registerEventsHandlers: function () {
+        $("#tree").on('changed.jstree', _.bind(this.nodeSelected, this));
     },
 
-    nodeSelected: function(event, data) {
-	this.selectedNode = data.node && data.node.original;
-	this.filterProducts();
+    nodeSelected: function (event, data) {
+        this.selectedNode = data.node && data.node.original;
+        this.filterProducts();
     }
 });
 
@@ -336,32 +336,32 @@ ProductModalView = Backbone.View.extend({
     initialize: function () {
     },
 
-    open: function(productId) {
-	this.currentProduct = WeekBasket.ProductsModel.get(productId);
-	WeekBasket.TmpWeekBasketModel.on("sync change", this.render, this);
-	this.renderModal();
+    open: function (productId) {
+        this.currentProduct = WeekBasket.ProductsModel.get(productId);
+        WeekBasket.TmpWeekBasketModel.on("sync change", this.render, this);
+        this.renderModal();
     },
 
-    onClose: function() {
-	this.currentProduct = null;
-	this.$el.off('hide.bs.modal');
-	this.$el.empty();
-	WeekBasket.TmpWeekBasketModel.off("sync change", this.render, this);
+    onClose: function () {
+        this.currentProduct = null;
+        this.$el.off('hide.bs.modal');
+        this.$el.empty();
+        WeekBasket.TmpWeekBasketModel.off("sync change", this.render, this);
     },
 
-    render: function() {
-	this.$el.html(this.template({
-	    product: this.currentProduct.get("Product").toJSON(),
-	    productModel: this.currentProduct.get("Product"),
-	    productStock: this.currentProduct.toJSON(),
-	    productStockModel: this.currentProduct
-	}));
+    render: function () {
+        this.$el.html(this.template({
+            product: this.currentProduct.get("Product").toJSON(),
+            productModel: this.currentProduct.get("Product"),
+            productStock: this.currentProduct.toJSON(),
+            productStockModel: this.currentProduct
+        }));
     },
 
-    renderModal: function() {
-	this.render();
-	this.$el.modal({keyboard: true, show: true});
-	this.$el.on('hide.bs.modal', _.bind(this.onClose, this));
+    renderModal: function () {
+        this.render();
+        this.$el.modal({ keyboard: true, show: true });
+        this.$el.on('hide.bs.modal', _.bind(this.onClose, this));
     }
 });
 
@@ -372,234 +372,233 @@ ProducerModalView = Backbone.View.extend({
 
     template: _.template($("#producerModalTemplate").html()),
 
-    open: function(productId) {
-	this.renderModal(WeekBasket.ProductsModel.get(productId).get("AdherentStolon").Adherent);
+    open: function (productId) {
+        this.renderModal(WeekBasket.ProductsModel.get(productId).get("AdherentStolon").Adherent);
     },
 
-    onClose: function() {
-	this.currentProduct = null;
-	this.$el.off('hide.bs.modal');
-	this.$el.empty();
+    onClose: function () {
+        this.currentProduct = null;
+        this.$el.off('hide.bs.modal');
+        this.$el.empty();
     },
 
-    renderModal: function(producer) {
-	this.$el.html(this.template({producer: producer}));
-	this.$el.modal({keyboard: true, show: true});
-	this.$el.on('hide.bs.modal', _.bind(this.onClose, this));
+    renderModal: function (producer) {
+        this.$el.html(this.template({ producer: producer }));
+        this.$el.modal({ keyboard: true, show: true });
+        this.$el.on('hide.bs.modal', _.bind(this.onClose, this));
     }
 });
 
 ProductView = Backbone.View.extend(
     {
-	template: _.template($("#productTemplate").html()),
+        template: _.template($("#productTemplate").html()),
 
-	initialize: function(args) {
-	    this.productId = args.productId;
-	    this.el = args.el;
-	    this.model = args.model;
-	    this.model.on("sync change", this.render, this);
-	},
+        initialize: function (args) {
+            this.productId = args.productId;
+            this.el = args.el;
+            this.model = args.model;
+            this.model.on("sync change", this.render, this);
+        },
 
-	render: function() {
-	    this.$el.html(this.template({
-		productStock: this.model.toJSON(),
-		productStockModel: this.model,
-		product: this.model.get("Product").toJSON(),
-		productModel: this.model.get("Product")
-	    }));
-	}
+        render: function () {
+            this.$el.html(this.template({
+                productStock: this.model.toJSON(),
+                productStockModel: this.model,
+                product: this.model.get("Product").toJSON(),
+                productModel: this.model.get("Product")
+            }));
+        }
     }
 );
 
 ProductActionView = Backbone.View.extend(
     {
-	template: _.template($("#productActionTemplate").html()),
+        template: _.template($("#productActionTemplate").html()),
 
-	events: {
-	    "click .minus": "decrement",
-	    "click .plus": "increment",
-	    "click .addProductBtn": "addToBasket"
-	},
+        events: {
+            "click .minus": "decrement",
+            "click .plus": "increment",
+            "click .addProductBtn": "addToBasket"
+        },
 
-	initialize: function(args) {
-	    this.el = args.el;
-	    this.productId = args.productId;
-	    this.model = args.model;
-	    this.model.on("sync change", this.basketChanged, this);
-	},
+        initialize: function (args) {
+            this.el = args.el;
+            this.productId = args.productId;
+            this.model = args.model;
+            this.model.on("sync change", this.basketChanged, this);
+        },
 
-	basketChanged: function() {
-	    this.billEntry = this.model.getProductEntry(this.productId);
-	    this.render();
-	},
+        basketChanged: function () {
+            this.billEntry = this.model.getProductEntry(this.productId);
+            this.render();
+        },
 
-	canIncrement: function() {
-	    if (!this.billEntry) {
-		return false;
-	    }
-	    var validatedBillEntry = WeekBasket.TmpWeekBasketModel.getProductEntry(this.productId);
-	    var validatedQty = (validatedBillEntry && validatedBillEntry.Quantity) || 0;
-	    var diffQty = this.billEntry.Quantity - validatedQty;
-	    var stepStock = this.billEntry.ProductStock.RemainingStock;
+        canIncrement: function () {
+            if (!this.billEntry) {
+                return false;
+            }
+            var validatedBillEntry = WeekBasket.TmpWeekBasketModel.getProductEntry(this.productId);
+            var validatedQty = (validatedBillEntry && validatedBillEntry.Quantity) || 0;
+            var diffQty = this.billEntry.Quantity - validatedQty;
+            var stepStock = this.billEntry.ProductStock.RemainingStock;
 
-	    if (this.billEntry.Type != 1)
-	    {
-		stepStock = (this.billEntry.ProductStock.RemainingStock * 1000) / this.billEntry.ProductStock.Product.QuantityStep;
-	    }
-	    return diffQty < stepStock;
-	},
+            if (this.billEntry.Type != 1) {
+                stepStock = (this.billEntry.ProductStock.RemainingStock * 1000) / this.billEntry.ProductStock.Product.QuantityStep;
+            }
+            return diffQty < stepStock;
+        },
 
-	canAddToBasket: function() {
-	    var validatedBillEntry = WeekBasket.TmpWeekBasketModel.getProductEntry(this.productId);
-	    var validatedQty = (validatedBillEntry && validatedBillEntry.Quantity) || 0;
-	    var productModel = WeekBasket.ProductsModel.get(this.productId);
-	    if (!this.billEntry) {
-		if (productModel.get("RemainingStock") + validatedQty> 0) {
-		    return true;
-		} else {
-		    return false;
-		}
-	    }
-	    return false;
-	},
+        canAddToBasket: function () {
+            var validatedBillEntry = WeekBasket.TmpWeekBasketModel.getProductEntry(this.productId);
+            var validatedQty = (validatedBillEntry && validatedBillEntry.Quantity) || 0;
+            var productModel = WeekBasket.ProductsModel.get(this.productId);
+            if (!this.billEntry) {
+                if (productModel.get("RemainingStock") + validatedQty > 0) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            return false;
+        },
 
-	addToBasket: function() {
-	    this.$(".productQuantityChanger").addClass("hidden");
-	    this.$(".productQuantityLoading").removeClass("hidden");
-	    WeekBasket.TmpWeekBasketModel.addProductToBasket(this.productId).then(_.bind(function() {
-		this.$(".productQuantityChanger").removeClass("hidden");
-		this.$(".productQuantityLoading").addClass("hidden");
-	    }, this));
-	    return false;
-	},
+        addToBasket: function () {
+            this.$(".productQuantityChanger").addClass("hidden");
+            this.$(".productQuantityLoading").removeClass("hidden");
+            WeekBasket.TmpWeekBasketModel.addProductToBasket(this.productId).then(_.bind(function () {
+                this.$(".productQuantityChanger").removeClass("hidden");
+                this.$(".productQuantityLoading").addClass("hidden");
+            }, this));
+            return false;
+        },
 
-	increment: function() {
-	    this.$(".productQuantityChanger").addClass("hidden");
-	    this.$(".productQuantityLoading").removeClass("hidden");
-	    WeekBasket.TmpWeekBasketModel.incrementProduct(this.productId).then(_.bind(function() {
-		this.$(".productQuantityLoading").addClass("hidden");
-		this.$(".productQuantityChanger").removeClass("hidden");
-	    }, this));
-	    return false;
-	},
+        increment: function () {
+            this.$(".productQuantityChanger").addClass("hidden");
+            this.$(".productQuantityLoading").removeClass("hidden");
+            WeekBasket.TmpWeekBasketModel.incrementProduct(this.productId).then(_.bind(function () {
+                this.$(".productQuantityLoading").addClass("hidden");
+                this.$(".productQuantityChanger").removeClass("hidden");
+            }, this));
+            return false;
+        },
 
-	decrement: function() {
-	    this.$(".productQuantityChanger").addClass("hidden");
-	    this.$(".productQuantityLoading").removeClass("hidden");
-	    WeekBasket.TmpWeekBasketModel.decrementProduct(this.productId).then(_.bind(function() {
-		this.$(".productQuantityLoading").addClass("hidden");
-		this.$(".productQuantityChanger").removeClass("hidden");
-	    }, this));
-	    return false;
-	},
+        decrement: function () {
+            this.$(".productQuantityChanger").addClass("hidden");
+            this.$(".productQuantityLoading").removeClass("hidden");
+            WeekBasket.TmpWeekBasketModel.decrementProduct(this.productId).then(_.bind(function () {
+                this.$(".productQuantityLoading").addClass("hidden");
+                this.$(".productQuantityChanger").removeClass("hidden");
+            }, this));
+            return false;
+        },
 
-	render: function() {
-	    this.$el.html(this.template({
-		billEntry: this.billEntry,
-		canAddToBasket: _.bind(this.canAddToBasket, this),
-		canIncrement: _.bind(this.canIncrement, this)
-	    }));
-	}
+        render: function () {
+            this.$el.html(this.template({
+                billEntry: this.billEntry,
+                canAddToBasket: _.bind(this.canAddToBasket, this),
+                canIncrement: _.bind(this.canIncrement, this)
+            }));
+        }
     }
 );
 
 ProductsView = Backbone.View.extend(
     {
-	el: "#products",
+        el: "#products",
 
-	template: _.template($("#productsTemplate").html()),
+        template: _.template($("#productsTemplate").html()),
 
-	initialize: function(args) {
-	    this.model = args.model;
-	    this.model.on("sync", this.render, this);
-	    this.tmpBasketModel = args.tmpBasketModel;
-	    this.views = {};
-	},
+        initialize: function (args) {
+            this.model = args.model;
+            this.model.on("sync", this.render, this);
+            this.tmpBasketModel = args.tmpBasketModel;
+            this.views = {};
+        },
 
-	render: function() {
-	    this.$el.html(this.template({products: this.model.models}));
-	    this.model.forEach(function(productModel) {
-		var productView = new ProductView({
-		    el: "#product-" + productModel.get("Id"),
-		    model: productModel
-		});
-		this.views[productModel.get("Id")] = productView;
-		productView.render();
+        render: function () {
+            this.$el.html(this.template({ products: this.model.models }));
+            this.model.forEach(function (productModel) {
+                var productView = new ProductView({
+                    el: "#product-" + productModel.get("Id"),
+                    model: productModel
+                });
+                this.views[productModel.get("Id")] = productView;
+                productView.render();
 
-		var productActionView = new ProductActionView(
-		    {
-			model: this.tmpBasketModel,
-			productId: productModel.get("Id"),
-			el: "#product-" + productModel.get("Id") + " .pr_actions"
-		    });
-		productActionView.render();
-	    }, this);
-	}
+                var productActionView = new ProductActionView(
+                    {
+                        model: this.tmpBasketModel,
+                        productId: productModel.get("Id"),
+                        el: "#product-" + productModel.get("Id") + " .pr_actions"
+                    });
+                productActionView.render();
+            }, this);
+        }
     }
 );
 
 TmpWeekBasketView = Backbone.View.extend(
     {
-	el: "#tmpBasket",
+        el: "#tmpBasket",
 
-	template: _.template($("#tmpWeekBasketTemplate").html()),
+        template: _.template($("#tmpWeekBasketTemplate").html()),
 
-	initialize: function(args) {
-	    this.model = args.model;
-	    this.model.on("sync change", this.render, this);
-	    this.validatedBasketModel = args.validatedBasketModel;
-	},
+        initialize: function (args) {
+            this.model = args.model;
+            this.model.on("sync change", this.render, this);
+            this.validatedBasketModel = args.validatedBasketModel;
+        },
 
-	render: function () {
-	    this.$el.html(this.template({tmpBasketModel: this.model, tmpBasket: this.model.toJSON(), validatedBasketModel: this.validatedBasketModel}));
-	}
+        render: function () {
+            this.$el.html(this.template({ tmpBasketModel: this.model, tmpBasket: this.model.toJSON(), validatedBasketModel: this.validatedBasketModel }));
+        }
     }
 );
 
 ValidatedWeekBasketView = Backbone.View.extend(
     {
-	el: "#validatedBasket",
+        el: "#validatedBasket",
 
-	template: _.template($("#validatedWeekBasketTemplate").html()),
+        template: _.template($("#validatedWeekBasketTemplate").html()),
 
-	events: {
-	    "click .validatedBasketCollapse": "toggleCollapse"
-	},
+        events: {
+            "click .validatedBasketCollapse": "toggleCollapse"
+        },
 
-	initialize: function(args) {
-	    this.model = args.model;
-	    this.model.on("sync", this.render, this);
-	    this.tmpBasketModel = args.tmpBasketModel;
-	    this.tmpBasketModel.on("sync change", this.render, this);
-	},
+        initialize: function (args) {
+            this.model = args.model;
+            this.model.on("sync", this.render, this);
+            this.tmpBasketModel = args.tmpBasketModel;
+            this.tmpBasketModel.on("sync change", this.render, this);
+        },
 
-	toggleCollapse: function() {
-	    if (this.$("#collapsible").hasClass("in")) {
-		this.collapse(true);
-	    } else {
-		this.collapse(false);
-	    }
-	},
+        toggleCollapse: function () {
+            if (this.$("#collapsible").hasClass("in")) {
+                this.collapse(true);
+            } else {
+                this.collapse(false);
+            }
+        },
 
-	collapse: function(hide) {
-	    if (hide) {
-		this.$("#collapsible").collapse("hide");
-		this.$(".glyphicon-collapse-up").addClass("hidden");
-		this.$(".glyphicon-collapse-down").removeClass("hidden");
-	    } else {
-		this.$("#collapsible").collapse("show");
-		this.$(".glyphicon-collapse-up").removeClass("hidden");
-		this.$(".glyphicon-collapse-down").addClass("hidden");
-	    }
-	},
+        collapse: function (hide) {
+            if (hide) {
+                this.$("#collapsible").collapse("hide");
+                this.$(".glyphicon-collapse-up").addClass("hidden");
+                this.$(".glyphicon-collapse-down").removeClass("hidden");
+            } else {
+                this.$("#collapsible").collapse("show");
+                this.$(".glyphicon-collapse-up").removeClass("hidden");
+                this.$(".glyphicon-collapse-down").addClass("hidden");
+            }
+        },
 
-	render: function () {
-	    this.$el.html(this.template({tmpBasket: this.tmpBasketModel.toJSON(), validatedBasketModel: this.model, validatedBasket: this.model.toJSON()}));
-	}
+        render: function () {
+            this.$el.html(this.template({ tmpBasket: this.tmpBasketModel.toJSON(), validatedBasketModel: this.model, validatedBasket: this.model.toJSON() }));
+        }
     }
 );
 
-var initViews = function() {
+var initViews = function () {
 
     window.ProductModalView = new ProductModalView();
 
@@ -608,25 +607,25 @@ var initViews = function() {
     WeekBasket.FiltersView = new FiltersView({ model: WeekBasket.ProductTypesModel, productsModel: WeekBasket.ProductsModel });
 
     WeekBasket.ValidatedWeekBasketView = new ValidatedWeekBasketView(
-    	{
-    	    model: WeekBasket.ValidatedWeekBasketModel,
-    	    tmpBasketModel: WeekBasket.TmpWeekBasketModel
-    	});
+        {
+            model: WeekBasket.ValidatedWeekBasketModel,
+            tmpBasketModel: WeekBasket.TmpWeekBasketModel
+        });
 
     WeekBasket.ProductsView = new ProductsView({ model: WeekBasket.ProductsModel, tmpBasketModel: WeekBasket.TmpWeekBasketModel });
 
     WeekBasket.TmpWeekBasketView = new TmpWeekBasketView({
-    	model: WeekBasket.TmpWeekBasketModel,
-    	validatedBasketModel: WeekBasket.ValidatedWeekBasketModel,
-    	validatedBasketView: WeekBasket.ValidatedWeekBasketView
+        model: WeekBasket.TmpWeekBasketModel,
+        validatedBasketModel: WeekBasket.ValidatedWeekBasketModel,
+        validatedBasketView: WeekBasket.ValidatedWeekBasketView
     });
 };
 
-var bootstrapWeekBasket = function() {
+var bootstrapWeekBasket = function () {
     initModels();
     initViews();
 };
 
-$(function() {
+$(function () {
     bootstrapWeekBasket();
 });

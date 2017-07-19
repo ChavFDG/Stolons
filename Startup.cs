@@ -53,13 +53,13 @@ namespace Stolons
         {
             try
             {
-		using (var db = new ApplicationDbContext())
-        	{
-		    db.Database.EnsureCreated();
+                using (var db = new ApplicationDbContext())
+                {
+                    db.Database.EnsureCreated();
                     db.Database.Migrate();
-        	}
+                }
 
- 		services.AddDbContext<ApplicationDbContext>();
+                services.AddDbContext<ApplicationDbContext>();
 
                 services.AddIdentity<ApplicationUser, IdentityRole>()
                     .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -134,7 +134,7 @@ namespace Stolons
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
-            
+
             List<Stolon> stolons = CreateStolons(context);
             await CreateAdminAccount(context, userManager, stolons.First());
             CreateProductCategories(context);
@@ -143,9 +143,9 @@ namespace Stolons
             await InitializeSampleAndTestData(serviceProvider, context, userManager, stolons.First());
 #endif
             Configurations.Environment = env;
-            //TODO à relancer !
-            //Thread billManager = new Thread(() => BillGenerator.ManageBills(context));
-            //billManager.Start();
+
+            Thread billManager = new Thread(() => BillGenerator.ManageBills(context));
+            billManager.Start();
         }
 
 
@@ -341,7 +341,7 @@ namespace Stolons
                 productStock.WeekStock = weekStock;
             }
         }
-        
+
 
         private List<Stolon> CreateStolons(ApplicationDbContext context)
         {
@@ -350,7 +350,7 @@ namespace Stolons
             List<Stolon> stolons = new List<Stolon>();
             Stolon stolon = new Stolon();
             stolon.State = Stolon.StolonState.Open;
-            stolon.IsModeSimulated = false;
+            stolon.IsModeSimulated = true;
             stolon.CreationDate = DateTime.Now;
 
 
@@ -405,7 +405,7 @@ namespace Stolons
                     "damien.paravel@gmail.com",
                     "damien.paravel@gmail.com",
                     Role.Admin,
-                    stolon, 
+                    stolon,
                     true);
             await CreateAcount(context,
                     userManager,
@@ -457,7 +457,7 @@ namespace Stolons
 
             if (context.Adherents.Any(x => x.Email == email))
                 return;
-            Adherent adherent = new Adherent(); 
+            Adherent adherent = new Adherent();
             adherent.Name = name;
             adherent.Surname = surname;
             adherent.Email = email;
@@ -480,7 +480,7 @@ namespace Stolons
                 adherentStolon.IsProducer = true;
             }
 
-          
+
 
             context.Adherents.Add(adherent);
             context.AdherentStolons.Add(adherentStolon);

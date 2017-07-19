@@ -28,7 +28,7 @@ namespace Stolons.Models
         }
 
         [Display(Name = "Produits")]
-        public List<BillEntry> Products { get; set; }
+        public List<BillEntry> BillEntries { get; set; }
 
         public bool Validated { get; set; }
 
@@ -38,7 +38,7 @@ namespace Stolons.Models
 	    get
 	    {
 		Decimal price = 0;
-		foreach (BillEntry entry in Products)
+		foreach (BillEntry entry in BillEntries)
 		{
 		    price += entry.Price;
 		}

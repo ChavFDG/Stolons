@@ -130,7 +130,7 @@ else
                 </tr>
 
                 <% if (validatedBasketModel.exists()) { %>
-                <% _.forEach(validatedBasket.Products, function(entry) { %>
+                <% _.forEach(validatedBasket.BillEntries, function(entry) { %>
                 <tr class="billEntry">
                     <td>
                         <a href="#" onclick="ProductModalView.open('<%= entry.Product.Id %>');return false;">
@@ -195,7 +195,7 @@ else
                 </th>
             </tr>
 
-            <% _.forEach(tmpBasket.Products, function(entry) { %>
+            <% _.forEach(tmpBasket.BillEntries, function(entry) { %>
 
             <tr class="billEntry">
                 <td>
@@ -217,7 +217,7 @@ else
                 </td>
             </tr>
             <% }); %>
-            <% if (tmpBasket.Products.length === 0) { %>
+            <% if (tmpBasket.BillEntries.length === 0) { %>
             <tr>
                 <td colspan="5">
                     <b>Aucun produit dans le panier</b>

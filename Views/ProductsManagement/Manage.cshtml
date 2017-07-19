@@ -156,6 +156,13 @@
                 <span asp-validation-for="Product.DLC" class="text-danger" />
             </div>
         </div>
+        <div class="form-group">
+            <label asp-for="Product.Fridge" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Product.Fridge" class="form-control" />
+                <span asp-validation-for="Product.Fridge" class="text-danger" />
+            </div>
+        </div>
         <!-- just to make the current product familly accessible by js -->
         <span id="productFamilly" class="hidden">
             @if (Model.Product.Familly != null)

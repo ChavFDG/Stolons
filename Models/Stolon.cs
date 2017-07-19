@@ -24,6 +24,10 @@ namespace Stolons.Models
         //Configuration de la structure
         [Display(Name = "Libelle de la structure")]
         public string Label { get; set; } = "Mon stolon";
+        //Must be unique
+        [Display(Name = "Libelle court (utilisé pour la facturation et l'accès)")]
+        public string ShortLabel { get; set; } = "MonStol";
+
         [Display(Name = "Logo de la structure")]
         public string LogoFileName { get; set; }
         [Display(Name = "Adresse de la structure")]

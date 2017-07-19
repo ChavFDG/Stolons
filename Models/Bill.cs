@@ -12,6 +12,8 @@ namespace Stolons.Models
 
     public interface IBill
     {
+        Guid BillId { get; set; }
+
         [Display(Name = "Numéro de facture")] //Year_WeekNumber_UserId
         string BillNumber { get; set; }
         [Display(Name = "Utilisateur")]
@@ -43,6 +45,8 @@ namespace Stolons.Models
     public class ConsumerBill : IBill
     {
         [Key]
+        public Guid BillId { get; set; }
+
         [Display(Name = "Numéro de facture")] //Year_WeekNumber_UserId
         public string BillNumber { get; set; }
         public AdherentStolon AdherentStolon { get; set; }
@@ -83,13 +87,15 @@ namespace Stolons.Models
         public bool HasBeenModified { get; set; }
         [Display(Name = "Raison de la modification")]
         public string ModificationReason { get; set; }
-        [Display(Name = "Montant")]
+        [Display(Name = "Date de modification")]
         public DateTime ModifiedDate { get; set; }
     }
 
     public class ProducerBill : IBill
     {
         [Key]
+        public Guid BillId { get; set; }
+
         [Display(Name = "Numéro de facture")] //Year_WeekNumber_UserId
         public string BillNumber { get; set; }
         public AdherentStolon AdherentStolon { get; set; }
@@ -101,8 +107,9 @@ namespace Stolons.Models
                 return AdherentStolon.Adherent;
             }
         }
+        
         public List<BillEntry> BillEntries { get; set; }
-
+        
         [Display(Name = "Stolon")]
         public Stolon Stolon
         {
@@ -151,7 +158,7 @@ namespace Stolons.Models
         public bool HasBeenModified { get; set; }
         [Display(Name = "Raison de la modification")]
         public string ModificationReason { get; set; }
-        [Display(Name = "Montant")]
+        [Display(Name = "Date de la modification")]
         public DateTime ModifiedDate { get; set; }
     }
 

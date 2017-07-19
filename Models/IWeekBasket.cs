@@ -13,18 +13,18 @@ namespace Stolons.Models
         Guid AdherentStolonId { get; set; }
         AdherentStolon AdherentStolon { get; set; }
         Adherent Adherent { get; }
-        List<BillEntry> Products { get; set; }
+        List<BillEntry> BillEntries { get; set; }
     }
 
     public static class WeekBasketHelper
     {
         public static void RetrieveProducts(this IWeekBasket weekBasket, ApplicationDbContext context)
         {
-            foreach (BillEntry billEntry in weekBasket.Products)
+            foreach (BillEntry billEntry in weekBasket.BillEntries)
             {
                 if (billEntry.ProductStock == null)
                 {
-                    billEntry.ProductStock = context.ProductsStocks.Include(x => x.AdherentStolon).Include(x => x.Product).Include(x => x.AdherentStolon.Adherent).First(x => x.Id == billEntry.ProductId);
+                    billEntry.ProductStock = context.ProductsStocks.Include(x => x.AdherentStolon).Include(x => x.Product).Include(x => x.AdherentStolon.Adherent).First(x => x.Id == billEntry.ProductStockId);
                 }
             }
         }
