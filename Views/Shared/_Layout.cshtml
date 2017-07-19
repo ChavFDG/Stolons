@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 @using Microsoft.AspNetCore.Identity;
 @using System.Security.Claims;
 @using Stolons.ViewModels;
@@ -30,17 +30,12 @@
         @if (User.Identity.IsAuthenticated)
         {
             @await Component.InvokeAsync("Banner")
-
         }
-        <div class="container body-content">
+        <div class="buddy container body-content">
             @RenderBody()
         </div>
-        <div id="footer">
-            <footer>
-                <hr />
-                <p>&copy; 2017 - Association Stolons</p>
-            </footer>
-        </div>
+	<!-- Include the footer partial -->
+	@{ await Html.RenderPartialAsync("Footer"); }
     </div>
 
     <div class="modal fade" id="bodyAndFooterModal" tabindex="-1" role="dialog">

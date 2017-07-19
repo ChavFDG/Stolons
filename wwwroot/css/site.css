@@ -8,12 +8,15 @@ body, html {
     /* background-repeat: repeat; */
 }
 
+/* body wrapper class, x% of all viewport */
+.buddy {
+    min-height: 63vh;
+}
+
 #wrapper {
     position: relative;
     min-height: 100%;
 }
-
-
 
 #footer {
     width: 70% !important;
@@ -23,7 +26,6 @@ body, html {
     margin: 0 auto;
     height: 60px;
 }
-
 
 @media (max-width: @screen-xs) {
     body {
@@ -114,6 +116,10 @@ div#warning-container {
 }
 
 div#login-wrapper {
+    margin: 10px;
+}
+
+div#adherent-details-wrapper {
     margin: 10px;
 }
 
@@ -659,9 +665,9 @@ div#products {
     margin-top: 20px;
 }
 
-    div#products img {
-        max-width: 100px;
-    }
+div#products img {
+    max-width: 100px;
+}
 
 div#links {
     margin: 30px 0;

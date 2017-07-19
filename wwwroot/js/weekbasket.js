@@ -26,7 +26,7 @@ ProductsModel = Backbone.Collection.extend(
     {
 	defaults: [],
 
-	model: ProductModel,
+	model: ProductStockModel,
 
 	url: "/api/Products",
 
@@ -55,8 +55,7 @@ TmpWeekBasketModel = Backbone.Model.extend(
 	getTotal: function() {
 	    var total = 0;
 	    _.forEach(this.get("Products"), function(billEntry) {
-		var productModel = WeekBasket.ProductsModel.get(billEntry.ProductId);
-		total += (billEntry.Quantity * productModel.get("Price"));
+		total += billEntry.Price;
 	    });
 	    return total;
 	},
@@ -167,13 +166,11 @@ ValidatedWeekBasketModel = Backbone.Model.extend({
     getTotal: function() {
 	var total = 0;
 	_.forEach(this.get("Products"), function(billEntry) {
-	    var productModel = WeekBasket.ProductsModel.get(billEntry.ProductId);
-	    console.log("Bill ProductId  = " + billEntry.ProductId);
-	    total += (billEntry.Quantity * productModel.get("Price"));
+	    total += billEntry.Price;
 	});
 	return total;
     },
-    
+
     //return true if the basket was validated this week
     exists: function() {
 	return ! _.isEmpty(this.get("Products"));
@@ -286,14 +283,14 @@ FiltersView = Backbone.View.extend({
 	var searchTerm = this.$("#search").val() || "";
 	searchTerm = searchTerm.toLowerCase();
 	var nbMatch = 0;
-	this.productsModel.forEach(function(productModel) {
-	    var product = productModel.toJSON();
+	this.productsModel.forEach(function(productStockModel) {
+	    var product = productStockModel.get("Product").toJSON();
 
 	    if (this.famillyMatch(product) && (this.productNameMatch(product, searchTerm) || this.productDescMatch(product, searchTerm))) {
-		$("#product-" + product.Id).removeClass("hidden");
+		$("#product-" + productStockModel.get("Id")).removeClass("hidden");
 		nbMatch++;
 	    } else {
-		$("#product-" + product.Id).removeClass("hidden").addClass("hidden");
+		$("#product-" + productStockModel.get("Id")).removeClass("hidden").addClass("hidden");
 	    }
 	}, this);
 	if (nbMatch === 0) {
@@ -353,7 +350,12 @@ ProductModalView = Backbone.View.extend({
     },
 
     render: function() {
-	this.$el.html(this.template({product: this.currentProduct.toJSON(), productModel: this.currentProduct}));
+	this.$el.html(this.template({
+	    product: this.currentProduct.get("Product").toJSON(),
+	    productModel: this.currentProduct.get("Product"),
+	    productStock: this.currentProduct.toJSON(),
+	    productStockModel: this.currentProduct
+	}));
     },
 
     renderModal: function() {
@@ -371,7 +373,7 @@ ProducerModalView = Backbone.View.extend({
     template: _.template($("#producerModalTemplate").html()),
 
     open: function(productId) {
-	this.renderModal(WeekBasket.ProductsModel.get(productId).get("Producer"));
+	this.renderModal(WeekBasket.ProductsModel.get(productId).get("AdherentStolon").Adherent);
     },
 
     onClose: function() {
@@ -399,7 +401,12 @@ ProductView = Backbone.View.extend(
 	},
 
 	render: function() {
-	    this.$el.html(this.template({product: this.model.toJSON(), productModel: this.model}));
+	    this.$el.html(this.template({
+		productStock: this.model.toJSON(),
+		productStockModel: this.model,
+		product: this.model.get("Product").toJSON(),
+		productModel: this.model.get("Product")
+	    }));
 	}
     }
 );
@@ -430,20 +437,20 @@ ProductActionView = Backbone.View.extend(
 	    if (!this.billEntry) {
 		return false;
 	    }
-	    var validatedBillEntry = WeekBasket.ValidatedWeekBasketModel.getProductEntry(this.productId);
+	    var validatedBillEntry = WeekBasket.TmpWeekBasketModel.getProductEntry(this.productId);
 	    var validatedQty = (validatedBillEntry && validatedBillEntry.Quantity) || 0;
 	    var diffQty = this.billEntry.Quantity - validatedQty;
-	    var stepStock = this.billEntry.Product.RemainingStock;
+	    var stepStock = this.billEntry.ProductStock.RemainingStock;
 
-	    if (this.billEntry.Product.Type != 1)
+	    if (this.billEntry.Type != 1)
 	    {
-		stepStock = (this.billEntry.Product.RemainingStock * 1000) / this.billEntry.Product.QuantityStep;
+		stepStock = (this.billEntry.ProductStock.RemainingStock * 1000) / this.billEntry.ProductStock.Product.QuantityStep;
 	    }
 	    return diffQty < stepStock;
 	},
 
 	canAddToBasket: function() {
-	    var validatedBillEntry = WeekBasket.ValidatedWeekBasketModel.getProductEntry(this.productId);
+	    var validatedBillEntry = WeekBasket.TmpWeekBasketModel.getProductEntry(this.productId);
 	    var validatedQty = (validatedBillEntry && validatedBillEntry.Quantity) || 0;
 	    var productModel = WeekBasket.ProductsModel.get(this.productId);
 	    if (!this.billEntry) {
@@ -487,7 +494,11 @@ ProductActionView = Backbone.View.extend(
 	},
 
 	render: function() {
-	    this.$el.html(this.template({billEntry: this.billEntry, canAddToBasket: _.bind(this.canAddToBasket, this), canIncrement: _.bind(this.canIncrement, this)}));
+	    this.$el.html(this.template({
+		billEntry: this.billEntry,
+		canAddToBasket: _.bind(this.canAddToBasket, this),
+		canIncrement: _.bind(this.canIncrement, this)
+	    }));
 	}
     }
 );

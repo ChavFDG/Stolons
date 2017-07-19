@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 @using Microsoft.AspNetCore.Identity;
 @using System.Security.Claims;
 @using Stolons.ViewModels;
@@ -25,20 +25,19 @@
 
     </head>
     <body>
-      <div id="wrapper">
+	<div id="wrapper">
+	    @if (User.Identity.IsAuthenticated)
+            {
+		@await Component.InvokeAsync("Banner")
+            }
+            <div class="buddy container body-content">
+		@RenderBody()
+            </div>
 
-	@await Component.InvokeAsync("Banner")
+	    <!-- Include the footer partial -->
+	    @{ await Html.RenderPartialAsync("Footer"); }
 
-	<div class="container body-content">
-          @RenderBody()
 	</div>
-	<div id="footer">
-	  <footer>
-	    <hr />
-	    <p>&copy; 2015 - Association Stolons</p>
-	  </footer>
-	</div>
-      </div>
-      @RenderSection("scripts", required: false)
+	@RenderSection("scripts", required: false)
     </body>
 </html>

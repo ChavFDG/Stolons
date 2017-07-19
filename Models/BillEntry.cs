@@ -15,13 +15,13 @@ namespace Stolons.Models
         [Key]
         public Guid Id { get; set; }
 
-        public Guid BillId { get; set; }
+        // public Guid? BillId { get; set; }
 
         public Guid ProductId { get; set; }
 
         [Display(Name = "Fiche produit")]
         [ForeignKey(nameof(ProductId))]
-        public Product Product { get; set; }
+        public ProductStockStolon ProductStock { get; set; }
 
         [Display(Name = "Quantité")]
         public int Quantity { get; set; }
@@ -31,22 +31,27 @@ namespace Stolons.Models
         {
             get
             {
-                return Product.GetQuantityString(Quantity);
+                return ProductStock.Product.GetQuantityString(Quantity);
             }
         }
-        
+
         public decimal WeightPrice { get; set; }
 
         [NotMapped]
-        public Decimal TotalPrice
+        public Decimal Price
         {
             get
             {
-
+		decimal price = 0;
+		if (this.Type == Product.SellType.Piece) {
+		    price = Quantity * UnitPrice;
+		} else {
+		    price = WeightPrice * Quantity * QuantityStep;
+		}
                 return Quantity * UnitPrice;
             }
         }
-        
+
         [Display(Name = "Famille de produit")]
         public Guid FamillyId { get; set; }
         [ForeignKey(nameof(FamillyId))]
@@ -130,10 +135,6 @@ namespace Stolons.Models
         [Display(Name = "Type de vente")]
         [Required]
         public SellType Type { get; set; }
-
-        [Display(Name = "Prix (kg ou l)")]
-        [Required]
-        public decimal Price { get; set; }
 
         public int ProducersFee { get; set; }
 
@@ -349,9 +350,31 @@ namespace Stolons.Models
         {
             BillEntry clonedBillEntry = new BillEntry();
             clonedBillEntry.ProductId = this.ProductId;
-            clonedBillEntry.Product = this.Product;
+	    clonedBillEntry.FamillyId = this.FamillyId;
+	    clonedBillEntry.Familly = this.Familly;
+	    clonedBillEntry.Name = this.Name;
+            clonedBillEntry.WeightPrice = this.WeightPrice;
+	    clonedBillEntry.UnitPrice = this.UnitPrice;
+	    clonedBillEntry.Tax = this.Tax;
+	    clonedBillEntry.TaxEnum = this.TaxEnum;
+	    clonedBillEntry.ProductUnit = this.ProductUnit;
             clonedBillEntry.Quantity = this.Quantity;
             return clonedBillEntry;
         }
+
+	public static BillEntry fromProduct(ProductStockStolon ProductStock)
+	{
+	    BillEntry billEntry = new BillEntry();
+            billEntry.ProductId = ProductStock.Id;
+	    billEntry.FamillyId = ProductStock.Product.FamillyId;
+	    billEntry.Familly = ProductStock.Product.Familly;
+	    billEntry.Name = ProductStock.Product.Name;
+            billEntry.WeightPrice = ProductStock.Product.WeightPrice;
+	    billEntry.UnitPrice = ProductStock.Product.UnitPrice;
+	    billEntry.Tax = ProductStock.Product.Tax;
+	    billEntry.TaxEnum = ProductStock.Product.TaxEnum;
+	    billEntry.ProductUnit = ProductStock.Product.ProductUnit;
+            return billEntry;
+	}
     }
 }

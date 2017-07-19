@@ -13,11 +13,8 @@ namespace Stolons.ViewModels.WeekBasket
     {
 
         public AdherentStolon AdherentStolon { get; set; }
-
         public List<ProductStockStolon> ProductsStocks { get; set; }
-
         public List<ProductType> ProductTypes { get; set; }
-
         public TempWeekBasket TempWeekBasket { get; set; }
         public ValidatedWeekBasket ValidatedWeekBasket { get; set; }
 
@@ -25,13 +22,12 @@ namespace Stolons.ViewModels.WeekBasket
         {
         }
 
-        public WeekBasketViewModel(AdherentStolon activeAdherentStolon,AdherentStolon adherentStolon, TempWeekBasket tempWeekBasket, ValidatedWeekBasket validatedWeekBasket, ApplicationDbContext context)
+        public WeekBasketViewModel(AdherentStolon adherentStolon, TempWeekBasket tempWeekBasket, ValidatedWeekBasket validatedWeekBasket, ApplicationDbContext context)
         {
-            ActiveAdherentStolon = activeAdherentStolon;
             TempWeekBasket = tempWeekBasket;
             ValidatedWeekBasket = validatedWeekBasket;
-            AdherentStolon = adherentStolon;
-            ProductsStocks = context.ProductsStocks.Include(x => x.Product).Include(x=>x.AdherentStolon).Where(x => x.State == Product.ProductState.Enabled).Where(x=>x.Product.IsAvailable).ToList();
+	    AdherentStolon = adherentStolon;
+            ProductsStocks = context.ProductsStocks.Include(x => x.Product).Include(x => x.AdherentStolon).Where(x => x.AdherentStolon.Id == AdherentStolon.Stolon.Id).Where(x => x.Product.IsAvailable).Where(x => x.State == Product.ProductState.Enabled).ToList();
             ProductTypes = context.ProductTypes.Include(x => x.ProductFamilly).ToList();
         }
     }

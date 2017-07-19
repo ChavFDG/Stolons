@@ -1,7 +1,7 @@
 @model Stolons.ViewModels.Stolons.StolonViewModel
 
 
-<form asp-action="EditStolon" enctype="multipart/form-data">
+<form asp-action="EditStolon" asp-controller="Stolons" asp-route-id="@Model.Stolon.Id"  enctype="multipart/form-data">
     <div class="modal-body">
         @Html.Partial("_PartialEditStolonForm")
     </div>

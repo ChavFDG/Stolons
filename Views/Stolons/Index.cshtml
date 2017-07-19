@@ -1,7 +1,6 @@
 ﻿@using Stolons.ViewModels.Stolons;
 @model StolonsViewModel
 
-
 <h1>Les Stolons</h1>
 
 <a href="#" onclick="showAddStolon(this);" data-title="Ajout d'un Stolon"  class="btn btn-small btn-default">Ajouter un nouveau Stolon</a>
@@ -13,7 +12,7 @@
             <li>
                 <a data-toggle="tab" href="#@adherentStolon.Stolon.Id">
                     @adherentStolon.Stolon.Label
-                    <img src="@adherentStolon.Stolon.LogoFilePath" class="responsiveImage stolon-avatar" />           
+                    <img src="@adherentStolon.Stolon.LogoFilePath" class="responsiveImage stolon-avatar" />
                 </a>
             </li>
         }

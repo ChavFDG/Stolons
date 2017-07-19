@@ -16,8 +16,6 @@ namespace Stolons.Models
 
         public List<ProductStockStolon> ProductStocks { get; set; } = new List<ProductStockStolon>();
 
-        public List<BillEntry> BillEntries { get; set; }
-
         [Display(Name = "Producteur")]
         public Guid ProducerId { get; set; }
         [ForeignKey(nameof(ProducerId))]
@@ -226,6 +224,7 @@ namespace Stolons.Models
                 return Configurations.ProductsStockagePathLight;
             }
         }
+
         [NotMapped]
         public string HeavyPath
         {

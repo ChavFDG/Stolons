@@ -22,9 +22,9 @@ namespace Stolons.Models
         {
             foreach (BillEntry billEntry in weekBasket.Products)
             {
-                if (billEntry.Product == null)
+                if (billEntry.ProductStock == null)
                 {
-                    billEntry.Product = context.Products.Include(x=>x.Producer).First(x => x.Id == billEntry.ProductId);
+                    billEntry.ProductStock = context.ProductsStocks.Include(x => x.AdherentStolon).Include(x => x.Product).Include(x => x.AdherentStolon.Adherent).First(x => x.Id == billEntry.ProductId);
                 }
             }
         }

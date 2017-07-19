@@ -13,7 +13,6 @@ namespace Stolons.Models
         [Key]
         public Guid Id { get; set; }
 
-        
         public Guid AdherentStolonId { get; set; }
         [ForeignKey(nameof(AdherentStolonId))]
         public AdherentStolon AdherentStolon { get; set; }
@@ -31,21 +30,20 @@ namespace Stolons.Models
         [Display(Name = "Produits")]
         public List<BillEntry> Products { get; set; }
 
-
         public bool Validated { get; set; }
-	
-	    [NotMapped]
-	    public Decimal TotalPrice
+
+	[NotMapped]
+	public Decimal TotalPrice
+	{
+	    get
 	    {
-	        get
-	        {
-                Decimal price = 0;
-		        foreach (BillEntry entry in Products)
-		        {
-		            price += entry.Price;
-		        }
-		        return price;
-	        }
+		Decimal price = 0;
+		foreach (BillEntry entry in Products)
+		{
+		    price += entry.Price;
+		}
+		return price;
 	    }
+	}
     }
 }

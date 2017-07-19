@@ -15,6 +15,7 @@ namespace Stolons.Models
         {
 
         }
+
         public ProductStockStolon(Guid productId, Guid adherentStolonId)
         {
             ProductId = productId;
@@ -28,7 +29,9 @@ namespace Stolons.Models
         [ForeignKey(nameof(ProductId))]
         public Product Product { get; set; }
 
-        public Guid AdherentStolonId { get; set; }
+        public List<BillEntry> BillEntries { get; set; }
+
+	public Guid AdherentStolonId { get; set; }
         [ForeignKey(nameof(AdherentStolonId))]
         public AdherentStolon AdherentStolon { get; set; }
 

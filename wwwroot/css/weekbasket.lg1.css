@@ -26,7 +26,7 @@
 #baskets {
     padding: 15px 0;
     position: fixed;
-    right: 15%;
+    right: 5%;
     top: 60px;
     width: auto; /* same as .content left */
     z-index: 1020;
@@ -47,23 +47,23 @@
 
 @media (max-width: 1589px) {
     #filters {
-	top: 100px !important;
+    	top: 100px !important;
     }
     #baskets {
 	top: 100px !important;
     }
 }
 
-/* @media (max-width: 1560px) { */
-/*     #baskets { */
-/* 	position: relative; */
-/* 	margin: auto; */
-/* 	right: 0; */
-/* 	top: 0 !important; */
-/* 	padding-top: 20px; */
-/*     } */
-/*     #products { */
-/* 	margin-left: 30% !important; */
-/* 	max-width: 750px !important; */
-/*     } */
-/* } */
+@media (max-width: 1560px) {
+    #baskets {
+	position: relative;
+	margin: auto;
+	right: 0;
+	top: 0 !important;
+	padding-top: 20px;
+    }
+    #products {
+	margin-left: 30% !important;
+	max-width: 750px !important;
+    }
+}
