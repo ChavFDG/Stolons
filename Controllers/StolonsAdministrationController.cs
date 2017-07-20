@@ -169,7 +169,6 @@ namespace Stolons.Controllers
 
 
 
-        [Route("Stolons/SwitchMode")]
         public IActionResult SwitchMode(Guid id)
         {
             if (!Authorized(Role.Admin))

@@ -843,3 +843,12 @@ h1 {
         border-color: #ddd #ddd #ddd transparent;
         *border-left-color: #ffffff;
     }
+.clickable-table tr:hover {
+    background-color: #ccc;
+}
+.clickable-table td:hover {
+    cursor: pointer;
+}
+.clickable-row {
+
+}

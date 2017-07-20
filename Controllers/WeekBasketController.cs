@@ -227,7 +227,7 @@ namespace Stolons.Controllers
         {
             TempWeekBasket tempWeekBasket = _context.TempsWeekBaskets.Include(x => x.AdherentStolon).Include(x => x.AdherentStolon.Adherent).Include(x => x.BillEntries).First(x => x.Id.ToString() == weekBasketId);
             tempWeekBasket.RetrieveProducts(_context);
-            BillEntry billEntry = tempWeekBasket.BillEntries.First(x => x.ProductStockId.ToString() == productId);
+            BillEntry billEntry = tempWeekBasket.BillEntries.First(x => x.ProductId.ToString() == productId);
             tempWeekBasket.BillEntries.Remove(billEntry);
             _context.Remove(billEntry);
             tempWeekBasket.Validated = IsBasketValidated(tempWeekBasket);

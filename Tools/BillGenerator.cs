@@ -22,16 +22,25 @@ namespace Stolons.Tools
     {
         private static Dictionary<Guid, Stolon.Modes> lastModes = new Dictionary<Guid, Stolon.Modes>();
         
-        public static void ManageBills(ApplicationDbContext dbContext)
+        public static void ManageBills()
         {
-            foreach (Stolon stolon in dbContext.Stolons)
-            {
-                lastModes.Add(stolon.Id, stolon.GetMode());
-            }
-            do
+            using (ApplicationDbContext dbContext = new ApplicationDbContext())
             {
                 foreach (Stolon stolon in dbContext.Stolons)
                 {
+                    lastModes.Add(stolon.Id, stolon.GetMode());
+                }
+            }
+            do
+            {
+                ApplicationDbContext dbContext = new ApplicationDbContext();
+                foreach (Stolon stolon in dbContext.Stolons)
+                {
+                    //For new Stolon
+                    if(!lastModes.Keys.Contains(stolon.Id))
+                        lastModes.Add(stolon.Id, stolon.GetMode());
+                    //
+
                     Stolon.Modes currentMode = stolon.GetMode();
                     if (lastModes[stolon.Id] == Stolon.Modes.Order && currentMode == Stolon.Modes.DeliveryAndStockUpdate)
                     {
@@ -52,7 +61,7 @@ namespace Stolons.Tools
                             dbContext.Add(consumerBill);
                         }
                         //Producer (creates bills)
-                        foreach (var producer in dbContext.AdherentStolons.Where(x=>x.StolonId == stolon.Id && x.IsProducer))
+                        foreach (var producer in dbContext.AdherentStolons.Include(x=>x.Adherent).Include(x=>x.Stolon).Where(x=>x.StolonId == stolon.Id && x.IsProducer))
                         {
                             List<BillEntry> billEntries = new List<BillEntry>();
                             consumerBills.ForEach(consumerBill=>consumerBill.BillEntries.Where(billEntry=>billEntry.ProductStock.Product.ProducerId == producer.Id).ToList().ForEach(x=>billEntries.Add(x)));
@@ -137,6 +146,7 @@ namespace Stolons.Tools
                     }
                     lastModes[stolon.Id] = currentMode;
                 }
+                dbContext.Dispose();
                 Thread.Sleep(5000);
             } while (true);
         }
@@ -522,7 +532,7 @@ namespace Stolons.Tools
             string billNumber = shortLabel + "_" + localId;
             if(isProducerBill)
                 billNumber += "P";
-            billNumber = "_" + DateTime.Now.Year + "_" + DateTime.Now.GetIso8601WeekOfYear(); 
+            billNumber += "_" + DateTime.Now.Year + "_" + DateTime.Now.GetIso8601WeekOfYear(); 
             return billNumber;
         }
 

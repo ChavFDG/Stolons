@@ -27,6 +27,16 @@ namespace Stolons.Models
         [ForeignKey(nameof(ProductStockId))]
         public ProductStockStolon ProductStock { get; set; }
 
+
+        [NotMapped]
+        public Guid ProductId
+        {
+            get
+            {
+                return ProductStock.ProductId;
+            }
+        }
+
         [Display(Name = "Quantité")]
         public int Quantity { get; set; }
 

@@ -1,0 +1,76 @@
+﻿@model IEnumerable<ConsumerBill>
+@using Stolons.Helpers
+@using Stolons.Models
+
+<h2>Mes commandes</h2>
+
+<div class="boxContainer">
+    <div class="col-lg-4">
+        <table class="table">
+            <tr>
+                <th>
+                    Date
+                </th>
+                <th>
+                    Numéro
+                </th>
+                <th>
+                    Stolon
+                </th>
+                <th>
+                    Etat
+                </th>
+                <th>
+                    Montant
+                </th>
+            </tr>
+            <tbody id="test" class="clickable-table">
+                @{
+                    decimal total = 0;
+                    foreach (var item in Model.OrderBy(x => x.EditionDate))
+                    {
+                        total += item.OrderAmount;
+                        <tr data-content='@item.HtmlBillContent'>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.EditionDate)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.BillNumber)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Stolon.Label)
+                            </td>
+                            <td>
+                                @(EnumHelper<BillState>.GetDisplayValue(@item.State))
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.OrderAmount) €
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+        <p>Montant total : @total €</p>
+    </div>
+    <div class="col-lg-8">
+        <div id="billContent">
+
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('.clickable-table tr').click(function () {
+            var content = $(this).data("content");
+
+
+            $('#billContent').html(content);
+
+
+//            $(billContent).innerHTML = content;
+        });
+
+    });
+</script>

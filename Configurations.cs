@@ -85,8 +85,8 @@ namespace Stolons
 
         public static string GetUrl(IBill bill)
         {
-            string url = GetUrl(bill.AdherentStolon is Adherent ? Configurations.ConsumersBillsStockagePath : Configurations.ProducersBillsStockagePath);
-            url += "/" + bill.AdherentStolon.LocalId + "/" + bill.BillNumber + ".pdf";
+            string url = GetUrl(bill is ConsumerBill ? Configurations.ConsumersBillsStockagePath : Configurations.ProducersBillsStockagePath);
+            url += "/" + bill.BillNumber + ".pdf";
             return url;
         }
 

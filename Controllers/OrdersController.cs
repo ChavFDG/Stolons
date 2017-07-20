@@ -14,9 +14,9 @@ using System.Collections.Generic;
 
 namespace Stolons.Controllers
 {
-    public class BillsController : BaseController
+    public class OrdersController : BaseController
     {
-        public BillsController(ApplicationDbContext context, IHostingEnvironment environment,
+        public OrdersController(ApplicationDbContext context, IHostingEnvironment environment,
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             IServiceProvider serviceProvider) : base(serviceProvider, userManager, context, environment, signInManager)
@@ -29,8 +29,8 @@ namespace Stolons.Controllers
         public async Task<IActionResult> Index()
         {
             Adherent stolonsUser = await this.GetCurrentAdherentAsync();
-            List<ProducerBill> bills = new List<ProducerBill>();
-            _context.ProducerBills.Include(x => x.AdherentStolon).Include(x => x.AdherentStolon.Adherent).Include(x => x.AdherentStolon.Stolon).Where(x => x.Adherent.Email == stolonsUser.Email).ToList().ForEach(x => bills.Add(x));
+            List<ConsumerBill> bills = new List<ConsumerBill>();
+            _context.ConsumerBills.Include(x=>x.AdherentStolon).Include(x=>x.AdherentStolon.Adherent).Include(x => x.AdherentStolon.Stolon).Where(x => x.Adherent.Email == stolonsUser.Email).ToList().ForEach(x => bills.Add(x));
             return View(bills);
         }
         

@@ -144,7 +144,7 @@ namespace Stolons
 #endif
             Configurations.Environment = env;
 
-            Thread billManager = new Thread(() => BillGenerator.ManageBills(context));
+            Thread billManager = new Thread(() => BillGenerator.ManageBills());
             billManager.Start();
         }
 
