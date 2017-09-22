@@ -93,6 +93,7 @@ namespace Stolons.Controllers
 
         private MailsSendedReport SendMail(IEnumerable<IAdherent> users, MailMessage mailMessage)
         {
+            var activeAdherentStolon = GetActiveAdherentStolon();
             MailsSendedReport report = new MailsSendedReport();
             foreach (Adherent user in users)
             {
@@ -100,10 +101,11 @@ namespace Stolons.Controllers
                 { 
                     try
                     {
-                        AuthMessageSender.SendEmail(user.Email,
-                                                        user.Name,
-                                                        mailMessage.Title,
-                                                        mailMessage.Message);
+                        AuthMessageSender.SendEmail(activeAdherentStolon.Stolon.Label,
+                                                    user.Email,
+                                                    user.Name,
+                                                    mailMessage.Title,
+                                                    mailMessage.Message);
                         report.MailsSended++;
                     }
                     catch(Exception except)

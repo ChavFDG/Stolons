@@ -8,9 +8,9 @@ namespace Stolons.ViewModels.Mails
 {
     public class MailMessage
     {
-        [Display(Name = "Titre")]
-        public string Title { get; set; } = "Entrer le titre du courriel";
+        [Display(Name = "Sujet")]
+        public string Title { get; set; } = "Entrer le sujet du courriel";
         [Display(Name = "Message")]
-        public string Message { get; set; } = "Entrer le message du courriel (compatible HTML)";
+        public string Message { get; set; } = "Entrer le message du courriel";
     }
 }

@@ -23,6 +23,8 @@ MISE à jour post core pour v2 :
 - Ajouter un bouton cotisation payé => affiche le prix à payer (à la demi année) et ajoute automatiquement une entré dans la table COMPTABILITE
 - Ajouter un code couleur pour les cotisation payé, non payé
 - Quand un utilisateur est bloqué, afficher le commentaire de blocage
+- Voir bug adresse mail avec majuscule
+- Voir bug modifier le type q'un produit , son prix ou autre infos ? Ca suit bien ?
 
 MISE à jour JUILLET :
 - Pouvoir rendre un produit disponible lors de la période commande (mais pas l'inverse)

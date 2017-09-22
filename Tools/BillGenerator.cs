@@ -21,7 +21,7 @@ namespace Stolons.Tools
     public static class BillGenerator
     {
         private static Dictionary<Guid, Stolon.Modes> lastModes = new Dictionary<Guid, Stolon.Modes>();
-        
+
         public static void ManageBills()
         {
             using (ApplicationDbContext dbContext = new ApplicationDbContext())
@@ -37,7 +37,7 @@ namespace Stolons.Tools
                 foreach (Stolon stolon in dbContext.Stolons)
                 {
                     //For new Stolon
-                    if(!lastModes.Keys.Contains(stolon.Id))
+                    if (!lastModes.Keys.Contains(stolon.Id))
                         lastModes.Add(stolon.Id, stolon.GetMode());
                     //
 
@@ -61,10 +61,10 @@ namespace Stolons.Tools
                             dbContext.Add(consumerBill);
                         }
                         //Producer (creates bills)
-                        foreach (var producer in dbContext.AdherentStolons.Include(x=>x.Adherent).Include(x=>x.Stolon).Where(x=>x.StolonId == stolon.Id && x.IsProducer))
+                        foreach (var producer in dbContext.AdherentStolons.Include(x => x.Adherent).Include(x => x.Stolon).Where(x => x.StolonId == stolon.Id && x.IsProducer))
                         {
                             List<BillEntry> billEntries = new List<BillEntry>();
-                            consumerBills.ForEach(consumerBill=>consumerBill.BillEntries.Where(billEntry=>billEntry.ProductStock.Product.ProducerId == producer.Id).ToList().ForEach(x=>billEntries.Add(x)));
+                            consumerBills.ForEach(consumerBill => consumerBill.BillEntries.Where(billEntry => billEntry.ProductStock.Product.ProducerId == producer.Id).ToList().ForEach(x => billEntries.Add(x)));
                             //Generate bill for producer
                             ProducerBill bill = CreateBill<ProducerBill>(producer, billEntries);
                             bill.HtmlBillContent = GenerateHtmlBillContent(bill, dbContext);
@@ -84,20 +84,20 @@ namespace Stolons.Tools
                         dbContext.BillEntrys.Clear();
 
                         //Move stolon's products to stock 
-                        foreach(ProductStockStolon productStock in dbContext.ProductsStocks.Include(x=>x.AdherentStolon).Include(x=>x.Product).Where(x=>x.AdherentStolon.StolonId == stolon.Id))
+                        foreach (ProductStockStolon productStock in dbContext.ProductsStocks.Include(x => x.AdherentStolon).Include(x => x.Product).Where(x => x.AdherentStolon.StolonId == stolon.Id))
                         {
-                            if(productStock.State == ProductState.Enabled && productStock.Product.StockManagement == StockType.Week)
+                            if (productStock.State == ProductState.Enabled && productStock.Product.StockManagement == StockType.Week)
                             {
                                 productStock.State = ProductState.Stock;
                                 productStock.RemainingStock = productStock.WeekStock;
                             }
                         }
-                        #if (DEBUG)
+#if (DEBUG)
                         //For test, remove existing consumer bill and producer bill => That will never exist in normal mode cause they can only have one bill by week per user
                         dbContext.RemoveRange(dbContext.ConsumerBills.Where(x => consumerBills.Any(y => y.BillNumber == x.BillNumber)));
                         dbContext.RemoveRange(dbContext.ProducerBills.Where(x => producerBills.Any(y => y.BillNumber == x.BillNumber)));
-                        dbContext.RemoveRange(dbContext.StolonsBills.Where(x => x.BillNumber == stolonsBill.BillNumber));   
-                        #endif
+                        dbContext.RemoveRange(dbContext.StolonsBills.Where(x => x.BillNumber == stolonsBill.BillNumber));
+#endif
                         //
                         dbContext.SaveChanges();
                         #endregion Save bills
@@ -111,7 +111,8 @@ namespace Stolons.Tools
                         }
                         catch (Exception exept)
                         {
-                            AuthMessageSender.SendEmail(Configurations.Application.ContactMailAddress,
+                            AuthMessageSender.SendEmail(stolon.Label,
+                                                            Configurations.Application.ContactMailAddress,
                                                             "Stolons",
                                                             "Erreur lors de la génération de la facture Stolons",
                                                             "Message d'erreur : " + exept.Message);
@@ -168,7 +169,8 @@ namespace Stolons.Tools
                 }
                 Thread.Sleep(50);
                 //Send mail to producer
-                AuthMessageSender.SendEmail(    bill.Adherent.Email,
+                AuthMessageSender.SendEmail(bill.AdherentStolon.Stolon.Label,
+                                                bill.Adherent.Email,
                                                 bill.Adherent.CompanyName,
                                                 "Votre commande de la semaine (Facture " + bill.BillNumber + ")",
                                                 bill.HtmlOrderContent
@@ -178,7 +180,8 @@ namespace Stolons.Tools
             }
             catch (Exception exept)
             {
-                AuthMessageSender.SendEmail(Configurations.Application.ContactMailAddress,
+                AuthMessageSender.SendEmail(bill.AdherentStolon.Stolon.Label,
+                                                Configurations.Application.ContactMailAddress,
                                                 "Stolons",
                                                 "Erreur lors de la génération de la facture " + bill.BillNumber + " à " + bill.Adherent.Email,
                                                 "Message d'erreur : " + exept.Message);
@@ -207,7 +210,8 @@ namespace Stolons.Tools
                 if (bill.AdherentStolon.Token > 0)
                     message += "<p>Vous avez " + bill.AdherentStolon.Token + "𝞫, pensez à payer vos bogues lors de la récupération de votre commande.</p>";
 
-                AuthMessageSender.SendEmail(bill.Adherent.Email,
+                AuthMessageSender.SendEmail(bill.AdherentStolon.Stolon.Label,
+                                                bill.Adherent.Email,
                                                 bill.Adherent.Name,
                                                 "Votre commande de la semaine (Facture " + bill.BillNumber + ")",
                                                 message,
@@ -216,7 +220,8 @@ namespace Stolons.Tools
             }
             catch (Exception exept)
             {
-                AuthMessageSender.SendEmail(Configurations.Application.ContactMailAddress,
+                AuthMessageSender.SendEmail(bill.AdherentStolon.Stolon.Label,
+                                                Configurations.Application.ContactMailAddress,
                                                 "Stolons",
                                                 "Erreur lors de la génération de la facture " + bill.BillNumber + " à " + bill.Adherent.Email,
                                                 "Message d'erreur : " + exept.Message);
@@ -387,7 +392,7 @@ namespace Stolons.Tools
             decimal totalAmount = 0;
             foreach (var billEntry in bill.BillEntries)
             {
-                totalAmount += billEntry.Price;                
+                totalAmount += billEntry.Price;
             }
             bill.OrderAmount = totalAmount;
             bill.ProducersFee = bill.AdherentStolon.Stolon.ProducersFee;
@@ -420,7 +425,7 @@ namespace Stolons.Tools
             //Taux tax / Total HT
             Dictionary<decimal, decimal> taxTotal = new Dictionary<decimal, decimal>();
             decimal totalWithoutTax = 0;
-            foreach (var productBillEntries in bill.BillEntries.GroupBy(x=>x.ProductStock.Product, x => x).OrderBy(x=>x.Key.Name))
+            foreach (var productBillEntries in bill.BillEntries.GroupBy(x => x.ProductStock.Product, x => x).OrderBy(x => x.Key.Name))
             {
                 int quantity = 0;
                 productBillEntries.ForEach(x => quantity += x.Quantity);
@@ -525,14 +530,14 @@ namespace Stolons.Tools
             return bill as T;
         }
 
-        private static string GenerateBillNumber(string shortLabel,int localId,bool isProducerBill)
+        private static string GenerateBillNumber(string shortLabel, int localId, bool isProducerBill)
         {
             //ShortStolonName_LocalId(P)_YearNumber_WeekNumber
             //Exemple : "Privas_12_2017_25
             string billNumber = shortLabel + "_" + localId;
-            if(isProducerBill)
+            if (isProducerBill)
                 billNumber += "P";
-            billNumber += "_" + DateTime.Now.Year + "_" + DateTime.Now.GetIso8601WeekOfYear(); 
+            billNumber += "_" + DateTime.Now.Year + "_" + DateTime.Now.GetIso8601WeekOfYear();
             return billNumber;
         }
 

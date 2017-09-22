@@ -404,8 +404,9 @@ namespace Stolons.Controllers
                 {
                     subject = "Validation partielle de votre panier de la semaine";
                 }
-                ValidationSummaryViewModel validationSummaryViewModel = new ValidationSummaryViewModel(GetActiveAdherentStolon(), validatedWeekBasket, rejectedEntries) { Total = GetBasketPrice(validatedWeekBasket) };
-                Services.AuthMessageSender.SendEmail(validatedWeekBasket.Adherent.Email, validatedWeekBasket.Adherent.Name, subject, base.RenderPartialViewToString("Templates/ValidatedBasketTemplate", validationSummaryViewModel));
+                var adherentStolon = GetActiveAdherentStolon();
+                ValidationSummaryViewModel validationSummaryViewModel = new ValidationSummaryViewModel(adherentStolon, validatedWeekBasket, rejectedEntries) { Total = GetBasketPrice(validatedWeekBasket) };
+                Services.AuthMessageSender.SendEmail(adherentStolon.Stolon.Label,validatedWeekBasket.Adherent.Email, validatedWeekBasket.Adherent.Name, subject, base.RenderPartialViewToString("Templates/ValidatedBasketTemplate", validationSummaryViewModel));
                 //Return view
                 return View("ValidateBasket", validationSummaryViewModel);
             }
@@ -424,7 +425,7 @@ namespace Stolons.Controllers
 
                 //Il ne commande rien du tout
                 //On lui signale
-                Services.AuthMessageSender.SendEmail(validatedWeekBasket.Adherent.Email, validatedWeekBasket.Adherent.Name, "Panier de la semaine annulé", base.RenderPartialViewToString("ValidateBasket", null));
+                Services.AuthMessageSender.SendEmail(stolon.Label,validatedWeekBasket.Adherent.Email, validatedWeekBasket.Adherent.Name, "Panier de la semaine annulé", base.RenderPartialViewToString("ValidateBasket", null));
             }
             return View("ValidateBasket");
         }

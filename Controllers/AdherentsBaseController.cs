@@ -97,7 +97,7 @@ namespace Stolons.Controllers
                 _context.SaveChanges();
                 //Send confirmation mail
                 string confirmationViewName = edition == AdherentEdition.Consumer ? "AdherentConfirmationMail" : "ProducerConfirmationMail";
-                Services.AuthMessageSender.SendEmail(vmAdherent.Adherent.Email, vmAdherent.Adherent.Name, "Creation de votre compte", base.RenderPartialViewToString(confirmationViewName, adherentStolon));
+                Services.AuthMessageSender.SendEmail(stolon.Label, vmAdherent.Adherent.Email, vmAdherent.Adherent.Name, "Creation de votre compte", base.RenderPartialViewToString(confirmationViewName, adherentStolon));
 
                 return RedirectToAction("Index");
             }

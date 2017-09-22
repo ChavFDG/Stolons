@@ -20,7 +20,6 @@ using Stolons.Models.Users;
 using Microsoft.Extensions.Configuration.UserSecrets;
 using static Stolons.Configurations;
 
-[assembly: UserSecretsId("aspnet-TestApp-ce345b64-19cf-4972-b34f-d16f2e7976ed")]
 
 namespace Stolons
 {
@@ -55,7 +54,7 @@ namespace Stolons
             {
                 using (var db = new ApplicationDbContext())
                 {
-                    db.Database.EnsureCreated();
+                    //db.Database.EnsureCreated();
                     db.Database.Migrate();
                 }
 

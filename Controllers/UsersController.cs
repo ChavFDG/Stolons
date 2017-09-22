@@ -86,7 +86,7 @@ namespace Stolons.Controllers
                 _context.AdherentStolons.Add(adherentStolon);
                 _context.SaveChanges();
                 //Send confirmation mail
-                Services.AuthMessageSender.SendEmail(adherentStolon.Adherent.Email, adherentStolon.Adherent.Name, "Adhésion à un nouveau Stolon", base.RenderPartialViewToString("AdherentConfirmationMail", adherentStolon));
+                Services.AuthMessageSender.SendEmail(adherentStolon.Stolon.Label,adherentStolon.Adherent.Email, adherentStolon.Adherent.Name, "Adhésion à un nouveau Stolon", base.RenderPartialViewToString("AdherentConfirmationMail", adherentStolon));
 
                 return RedirectToAction("Index");
             }
@@ -135,7 +135,7 @@ namespace Stolons.Controllers
                 _context.SaveChanges();
                 //Send confirmation mail
                 string confirmationViewName = edition == AdherentEdition.Consumer ? "AdherentConfirmationMail" : "ProducerConfirmationMail";
-                Services.AuthMessageSender.SendEmail(vmAdherent.Adherent.Email, vmAdherent.Adherent.Name, "Creation de votre compte", base.RenderPartialViewToString(confirmationViewName, adherentStolon));
+                Services.AuthMessageSender.SendEmail(stolon.Label,vmAdherent.Adherent.Email, vmAdherent.Adherent.Name, "Creation de votre compte", base.RenderPartialViewToString(confirmationViewName, adherentStolon));
 
                 return RedirectToAction("Index");
             }

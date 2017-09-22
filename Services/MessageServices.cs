@@ -1,6 +1,7 @@
 ﻿using MailKit;
 using MailKit.Net.Smtp;
 using MimeKit;
+using Stolons.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,10 +19,10 @@ namespace Stolons.Services
         /// MAIL KIT
         /// Info : http://dotnetthoughts.net/how-to-send-emails-from-aspnet-core/
         /// </summary>
-        public static void SendEmail(string email, string name, string subject, string message,byte[] attachment = null,string attachmentName ="Facture")
+        public static void SendEmail(string senderLabel, string email, string name, string subject, string message,byte[] attachment = null,string attachmentName ="Facture")
         {
             var mimeMessage = new MimeMessage();
-            mimeMessage.From.Add(new MailboxAddress(Configurations.Application.StolonsLabel, Configurations.Application.MailAddress));
+            mimeMessage.From.Add(new MailboxAddress(senderLabel, Configurations.Application.MailAddress));
             mimeMessage.To.Add(new MailboxAddress(name, email));
             mimeMessage.Subject = subject;
             var bodyBuilder = new BodyBuilder();
