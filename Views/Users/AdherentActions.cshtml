@@ -10,9 +10,9 @@
     </a>
     <ul class="dropdown-menu">
         <li><a asp-action="ShowBills" asp-route-id="@Model.AdherentStolon.Id">Voir factures</a></li>
-        <li><a href="#" onclick="showDetailsAdherent(this);" data-id="@Model.AdherentStolon.Id" data-title="@("Détail de " + Model.AdherentStolon.Adherent.Surname +" "+Model.AdherentStolon.Adherent.Name)">Voir détail</a></li>
-        <li><a href="#" onclick="showEditAdherent(this);" data-id="@Model.AdherentStolon.Id" data-title="@("Modification de " + Model.AdherentStolon.Adherent.Surname +" "+Model.AdherentStolon.Adherent.Name)">Modifier</a></li>
-        <li><a href="#" onclick="showCreditToken(this);" data-id="@Model.AdherentStolon.Id" data-title="@("Créditer des stols à " + Model.AdherentStolon.Adherent.Surname +" "+Model.AdherentStolon.Adherent.Name)">Créditer des stols</a></li>
+        <li><a href="#" data-target="" onclick="showDetailsAdherent(this);" data-id="@Model.AdherentStolon.Id" data-title="@("Détail de " + Model.AdherentStolon.Adherent.Surname +" "+Model.AdherentStolon.Adherent.Name)">Voir détail</a></li>
+        <li><a href="#" data-target="" onclick="showEditAdherent(this);" data-id="@Model.AdherentStolon.Id" data-title="@("Modification de " + Model.AdherentStolon.Adherent.Surname +" "+Model.AdherentStolon.Adherent.Name)">Modifier</a></li>
+        <li><a href="#" data-target="" onclick="showCreditToken(this);" data-id="@Model.AdherentStolon.Id" data-title="@("Créditer des stols à " + Model.AdherentStolon.Adherent.Surname +" "+Model.AdherentStolon.Adherent.Name)">Créditer des stols</a></li>
         @if (Model.AdherentStolon.SubscriptionPaid == false)
         {
             <li>
