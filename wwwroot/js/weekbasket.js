@@ -156,12 +156,12 @@ TmpWeekBasketModel = Backbone.Model.extend(
             });
         },
 
-        removeBillEntry: function (productId) {
+        removeBillEntry: function (productStockId) {
             var self = this;
             return $.ajax({
                 url: '/api/removeBillEntry',
                 data: {
-                    productId: productId,
+                    productStockId: productStockId,
                     weekBasketId: self.get("Id")
                 },
                 type: 'post',
