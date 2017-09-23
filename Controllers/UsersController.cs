@@ -151,27 +151,28 @@ namespace Stolons.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult EditAdherent(AdherentViewModel vmAdherent, IFormFile uploadFile)
+        public IActionResult EditAdherent(AdherentViewModel vmAdherent, string uploadAvatar)
         {
             if (!Authorized(Role.Volunteer))
                 return Unauthorized();
 
             if (ModelState.IsValid)
             {
-                UploadAndSetAvatar(vmAdherent.Adherent, uploadFile);
-                UpdateAdherent(vmAdherent, uploadFile);
+                UpdateAdherent(vmAdherent, uploadAvatar);
                 return RedirectToAction("Index");
             }
             return View(vmAdherent);
         }
 
-        public void UpdateAdherent(AdherentViewModel vmAdherent, IFormFile uploadFile)
+        public void UpdateAdherent(AdherentViewModel vmAdherent, string uploadAvatar)
         {
             ApplicationUser appUser = _context.Users.First(x => x.Email == vmAdherent.OriginalEmail);
             appUser.Email = vmAdherent.Adherent.Email;
             _context.Update(appUser);
             _context.SaveChanges();
 
+            _environment.DeleteFile(vmAdherent.Adherent.AvatarFilePath);
+            vmAdherent.Adherent.AvatarFileName = _environment.UploadBase64Image(uploadAvatar, Configurations.AvatarStockagePath);
 
             Adherent adherent = _context.Adherents.FirstOrDefault(x => x.Id == vmAdherent.Adherent.Id);
             adherent.CloneAllPropertiesFrom(vmAdherent.Adherent);
@@ -334,7 +335,7 @@ namespace Stolons.Controllers
             if (ModelState.IsValid)
             {
                 #region Creating Sympathizer
-                string fileName = Configurations.DefaultFileName;
+                string fileName = Configurations.DefaultImageFileName;
 
                 //Setting value for creation
                 vmSympathizer.Sympathizer.RegistrationDate = DateTime.Now;

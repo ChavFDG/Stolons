@@ -36,7 +36,7 @@ namespace Stolons.Models
             get
             {
                 if (String.IsNullOrWhiteSpace(LogoFileName))
-                    return "\\" + Path.Combine(Configurations.StolonLogoStockagePath, Configurations.DefaultFileName);
+                    return "\\" + Path.Combine(Configurations.StolonLogoStockagePath, Configurations.DefaultImageFileName);
                 return "\\" + Path.Combine(Configurations.StolonLogoStockagePath, LogoFileName);
             }
         }

@@ -39,7 +39,7 @@ namespace Stolons.Models.Users
             get
             {
                 if (String.IsNullOrWhiteSpace(AvatarFileName))
-                    return "\\"+ Path.Combine(Configurations.AvatarStockagePath, Configurations.DefaultFileName);
+                    return "\\"+ Path.Combine(Configurations.AvatarStockagePath, Configurations.DefaultImageFileName);
                 return "\\" + Path.Combine(Configurations.AvatarStockagePath, AvatarFileName);
             }
         }

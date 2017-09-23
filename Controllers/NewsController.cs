@@ -73,7 +73,7 @@ namespace Stolons.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    string fileName = Configurations.DefaultFileName;
+                    string fileName = Configurations.DefaultImageFileName;
                     if (uploadFile != null)
                     {
                         //Image uploading
@@ -190,7 +190,7 @@ namespace Stolons.Controllers
                 return;
             //Deleting image
             string image = Path.Combine(_environment.WebRootPath, imagePath);
-            string defaultImage = Path.Combine(Configurations.NewsImageStockagePath, Configurations.DefaultFileName);
+            string defaultImage = Path.Combine(Configurations.NewsImageStockagePath, Configurations.DefaultImageFileName);
             if (System.IO.File.Exists(image) && imagePath != defaultImage)
                 System.IO.File.Delete(image);
         }

@@ -116,12 +116,12 @@ namespace Stolons.Controllers
         /// <returns></returns>
         protected async Task<string> UploadFile(IFormFile uploadFile, string stockagePath, string filePathToDelete = null)
         {
-            if (!String.IsNullOrWhiteSpace(filePathToDelete) && !filePathToDelete.EndsWith(Configurations.DefaultFileName))
+            if (!String.IsNullOrWhiteSpace(filePathToDelete) && !filePathToDelete.EndsWith(Configurations.DefaultImageFileName))
                 if (System.IO.File.Exists(filePathToDelete))
                     System.IO.File.Delete(filePathToDelete);
 
             if (uploadFile == null)
-                return String.IsNullOrWhiteSpace(filePathToDelete) || filePathToDelete.EndsWith(Configurations.DefaultFileName) ? null : Path.GetFileName(filePathToDelete);
+                return String.IsNullOrWhiteSpace(filePathToDelete) || filePathToDelete.EndsWith(Configurations.DefaultImageFileName) ? null : Path.GetFileName(filePathToDelete);
 
             string uploads = Path.Combine(_environment.WebRootPath, stockagePath);
             string fileName = Guid.NewGuid().ToString() + "_" + ContentDispositionHeaderValue.Parse(uploadFile.ContentDisposition).FileName.Trim('"');

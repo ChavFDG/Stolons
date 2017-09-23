@@ -70,8 +70,8 @@ namespace Stolons
         public static string ProductsTypeAndFamillyIconsStockagesPath = Path.Combine("images", "productFamilies");
         public static string ProductsStockagePathLight = Path.Combine("uploads", "images", "products","light");
         public static string ProductsStockagePathHeavy = Path.Combine("uploads", "images", "products","heavy");
-        public static string DefaultProductImage = Path.Combine("uploads", "images", "products", "Default.png");
-        public static string DefaultFileName = "default.png";
+        public static string DefaultProductImageFullPath = Path.Combine("uploads", "images", "products", "Default.png");
+        public static string DefaultImageFileName = "default.png";
         private static string _labelImagePath = Path.Combine("images", "labels");
         public static string GetImage(this Product.Label label)
         {
@@ -94,7 +94,7 @@ namespace Stolons
         public static void DeleteFile(this IHostingEnvironment environment, string fullFilePath)
         {
             string toDelete = Path.Combine(environment.WebRootPath, fullFilePath);
-            if (File.Exists(toDelete))
+            if (File.Exists(toDelete) && !toDelete.Contains(Configurations.DefaultImageFileName))
                 File.Delete(toDelete);
         }
 
@@ -107,6 +107,8 @@ namespace Stolons
 
         public static string UploadBase64Image(this IHostingEnvironment environment, string base64data, string path, string pictureName = null)
         {
+            if(string.IsNullOrWhiteSpace(base64data))
+                return Configurations.DefaultImageFileName + ".jpg";
             base64data = base64data.Remove(0, base64data.IndexOf(',') + 1);
             byte[] data = Convert.FromBase64String(base64data);
 

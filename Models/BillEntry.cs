@@ -291,7 +291,7 @@ namespace Stolons.Models
             }
             else
             {
-                return Configurations.DefaultProductImage;
+                return Configurations.DefaultProductImageFullPath;
             }
         }
 
