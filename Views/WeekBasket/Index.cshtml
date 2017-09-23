@@ -161,7 +161,7 @@ else
                 <% _.forEach(validatedBasket.BillEntries, function(entry) { %>
                 <tr class="billEntry">
                     <td>
-                        <a href="#" onclick="ProductModalView.open('<%= entry.ProductStock.Product.Id %>');return false;">
+                        <a href="#" onclick="ProductModalView.open('<%= entry.ProductStock.Id %>');return false;">
                             <%= entry.ProductStock.Product.Name %>
                         </a>
                     </td>
@@ -227,7 +227,7 @@ else
 
             <tr class="billEntry">
                 <td>
-                    <a href="#" onclick="ProductModalView.open('<%= entry.ProductId %>');return false;">
+                    <a href="#" onclick="ProductModalView.open('<%= entry.ProductStockId %>');return false;">
                         <%= entry.Name %>
                     </a>
                 </td>

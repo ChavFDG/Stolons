@@ -442,7 +442,7 @@ namespace Stolons.Controllers
 
                 //Il ne commande rien du tout
                 //On lui signale
-                Services.AuthMessageSender.SendEmail(stolon.Label,validatedWeekBasket.Adherent.Email, validatedWeekBasket.Adherent.Name, "Panier de la semaine annulé", base.RenderPartialViewToString("ValidateBasket", null));
+                Services.AuthMessageSender.SendEmail(stolon.Label,validatedWeekBasket.Adherent.Email, validatedWeekBasket.Adherent.Name, "Panier de la semaine annulé", base.RenderPartialViewToString("Templates/ValidatedBasketTemplate", null));
             }
             return View("Basket");
         }

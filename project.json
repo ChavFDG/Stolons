@@ -34,10 +34,11 @@
             "type": "build"
         },
         "Microsoft.AspNetCore.Hosting.Abstractions": "1.1.0",
-      "MailKit": "1.10.2",
+	"MailKit": "1.10.2",
         "Microsoft.EntityFrameworkCore": "1.1.0",
         "BundlerMinifier.Core": "2.3.327",
-      "Microsoft.AspNetCore.Mvc": "1.1.1"
+	"Microsoft.AspNetCore.Mvc": "1.1.1",
+	"morelinq": "2.6.0",
     },
 
     "tools": {
