@@ -67,7 +67,7 @@ namespace Stolons.Controllers
                 emails = _context.Adherents.Select(x => x.Email).ToList();
             }
             _context.AdherentStolons.Include(x => x.Adherent).Where(x => x.StolonId == stolon.Id).ToList().ForEach(x => emails.Remove(x.Adherent.Email));
-            return PartialView(new SelectAdherentViewModel(GetActiveAdherentStolon(), stolon, emails));
+            return PartialView(new SelectAdherentViewModel(GetActiveAdherentStolon(), stolon, emails, edition == AdherentEdition.Producer));
         }
 
 
@@ -82,9 +82,13 @@ namespace Stolons.Controllers
             {
                 AdherentStolon adherentStolon = new AdherentStolon(_context.Adherents.First(x => x.Email == selectAdherentViewModel.SelectedEmail), _context.Stolons.First(x => x.Id == selectAdherentViewModel.Stolon.Id));
                 adherentStolon.RegistrationDate = DateTime.Now;
-                //adherentStolon.LocalId = _context.AdherentStolons.Where(x => x.StolonId == selectAdherentViewModel.Stolon.Id).Max(x => x.LocalId) + 1;
+                adherentStolon.LocalId = _context.AdherentStolons.Where(x => x.StolonId == selectAdherentViewModel.Stolon.Id).Max(x => x.LocalId) + 1;
                 _context.AdherentStolons.Add(adherentStolon);
                 _context.SaveChanges();
+                if (selectAdherentViewModel.AddHasProducer)
+                {
+                    SetAsProducer(adherentStolon.Id);
+                }
                 //Send confirmation mail
                 Services.AuthMessageSender.SendEmail(adherentStolon.Stolon.Label, adherentStolon.Adherent.Email, adherentStolon.Adherent.Name, "Adhésion à un nouveau Stolon", base.RenderPartialViewToString("AdherentConfirmationMail", adherentStolon));
 
@@ -441,10 +445,18 @@ namespace Stolons.Controllers
             return RedirectToAction("Index");
         }
 
+        /// <summary>
+        /// Set as producer the specified adherent stolon
+        /// </summary>
+        /// <param name="id">Adherent Stolon Id</param>
         public IActionResult SetAsProducer(Guid? id)
         {
-            AdherentStolon adherentStolon = _context.AdherentStolons.First(x => x.Id == id);
+            AdherentStolon adherentStolon = _context.AdherentStolons.Include(x=>x.Adherent).ThenInclude(x=>x.Products).First(x => x.Id == id);
             adherentStolon.IsProducer = true;
+            foreach(var product in adherentStolon.Adherent.Products)
+            {
+                _context.ProductsStocks.Add(new ProductStockStolon(product.Id, adherentStolon.Id));
+            }
             _context.SaveChanges();
             return RedirectToAction("Index");
         }
@@ -453,6 +465,7 @@ namespace Stolons.Controllers
         {
             AdherentStolon adherentStolon = _context.AdherentStolons.First(x => x.Id == id);
             adherentStolon.IsProducer = false;
+            _context.ProductsStocks.RemoveRange(_context.ProductsStocks.Where(x => x.AdherentStolonId == adherentStolon.Id));
             _context.SaveChanges();
             return RedirectToAction("Index");
         }

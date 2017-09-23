@@ -41,6 +41,7 @@ namespace Stolons.Controllers
                 .Include(x => x.Products).ThenInclude(x=>x.Familly)
                 .Include(x => x.Products).ThenInclude(x => x.Familly.Type)
                 .Include(x => x.AdherentStolons).FirstOrDefault(x => x.Id == producer.Id);
+            producer.AdherentStolons.ForEach(adherentStolon => adherentStolon.Stolon = _context.Stolons.First(stolon => stolon.Id == adherentStolon.StolonId));
             var products = _context.Products.Include(x=>x.ProductStocks).Include(m => m.Familly).Include(m => m.Familly.Type).Where(x => x.Producer == producer).ToList();
             products.ForEach(prod => prod.ProductStocks.ForEach(stock => stock.Product = prod));
             ProductsViewModel vm = new ProductsViewModel(GetActiveAdherentStolon(), products, producer);
@@ -271,12 +272,12 @@ namespace Stolons.Controllers
             return RedirectToAction("Index");
         }
         
-        public IActionResult DisableAllProduct()
+        public IActionResult DisableAllProduct(Guid adherentStolonId)
         {
             if (!AuthorizedProducer())
                 return Unauthorized();
 
-            foreach (var product in _context.ProductsStocks.Include(x => x.AdherentStolon).Where(x => x.AdherentStolon.AdherentId == GetCurrentAdherentSync().Id && x.State != Product.ProductState.Disabled))
+            foreach (var product in _context.ProductsStocks.Include(x => x.AdherentStolon).Where(x => x.AdherentStolonId == adherentStolonId && x.State != Product.ProductState.Disabled ))
             {
                 product.State = Product.ProductState.Disabled;
             }

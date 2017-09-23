@@ -3,6 +3,7 @@
 <form asp-action="AddAdherent" asp-controller="Users" enctype="multipart/form-data">
     <div class="modal-body">
         <input asp-for="Stolon.Id" hidden="hidden" />
+        <input asp-for="AddHasProducer" hidden="hidden" />
         <p>Saisir le courriel de l'adhérent à ajouter à @Model.Stolon.Label:</p>
         <div class="form-group">
             <div class="col-md-12">

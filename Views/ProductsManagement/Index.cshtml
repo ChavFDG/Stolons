@@ -47,11 +47,11 @@ if (Model.Products.Any(x => x.ProductStocks.Any(prodStock => prodStock.State == 
                     @(adherentStolon.Stolon.Label)
                 </div>
                 <div>
-                    @("("+EnumHelper<Stolon.Modes>.GetDisplayValue(adherentStolon.Stolon.GetMode())+")")
+                    @("(" + EnumHelper<Stolon.Modes>.GetDisplayValue(adherentStolon.Stolon.GetMode()) + ")")
                 </div>
                 @if (adherentStolon.Stolon.GetMode() == Stolon.Modes.DeliveryAndStockUpdate)
                 {
-                        <a asp-action="DisableAllProduct">Désactiver tout les produits</a>
+                    <a asp-action="DisableAllProduct" asp-route-adherentStolonId="@adherentStolon.Id">Désactiver tout les produits</a>
                 }
             </th>
         }
@@ -79,7 +79,8 @@ if (Model.Products.Any(x => x.ProductStocks.Any(prodStock => prodStock.State == 
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
 
-                @if (!item.ProductStocks.Any(x => x.AdherentStolon.Stolon.GetMode() == Stolon.Modes.Order))
+
+                @if (!item.ProductStocks.Any(x => (x.State == Product.ProductState.Enabled && x.AdherentStolon.Stolon.GetMode() == Stolon.Modes.Order)))
                 {
                     <div class="dropdown">
                         <a class="dropdown-toggle btn btn-small btn-default" data-toggle="dropdown" href="#">
@@ -107,7 +108,7 @@ if (Model.Products.Any(x => x.ProductStocks.Any(prodStock => prodStock.State == 
                     }
                     @if (!item.HideWeightPrice && item.WeightPrice != 0)
                     {
-                        <br/>
+                        <br />
                         @Html.DisplayFor(model => item.WeightPrice)@("€/")
                         @Html.DisplayFor(model => item.ProductUnit)
                     }

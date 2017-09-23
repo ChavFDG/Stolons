@@ -13,17 +13,18 @@ namespace Stolons.ViewModels.Adherents
         {
 
         }
-        public SelectAdherentViewModel(AdherentStolon activeAdherent, Stolon stolon,List<string> adherentsMails)
+        public SelectAdherentViewModel(AdherentStolon activeAdherent, Stolon stolon,List<string> adherentsMails, bool addHasProducer)
         {
             base.ActiveAdherentStolon = activeAdherent;
             AdherentsMails = adherentsMails;
             Stolon = stolon;
+            AddHasProducer = addHasProducer;
         }
 
         public List<string> AdherentsMails { get; set; }
         [Display(Name ="Courriel de l'adhérent à ajouter")]
         public string SelectedEmail { get; set; }
         public Stolon Stolon { get; set; }
-
+        public bool AddHasProducer { get; set; }
     }
 }
