@@ -152,6 +152,11 @@ div#warning-informations {
     margin-right: auto;
 }
 
+.productCategoryImage {
+    max-width: 35px;
+    max-height: 35px;
+}
+
 .oldNews {
     opacity: 0.5;
     filter: alpha(opacity=50); /* For IE8 and earlier */
@@ -327,6 +332,21 @@ div#warning-informations {
     margin: 5px;
 }
 
+.anchorProductType {
+    padding: 5px;
+    font-size: 17px;
+    font-weight: 600;
+    color: black;
+}
+
+.anchorProductFamily {
+    padding: 5px;
+    padding-left: 30px;
+    font-size: 17px;
+    font-weight: 600;
+    color: black;
+}
+
 .publicProduct {
     display: inline-block;
     float: left;
@@ -336,9 +356,29 @@ div#warning-informations {
     margin: 5px;
 }
 
-#filters .searchFilter {
+#filters {
+    margin: 0 auto;
+    padding: 15px;
+}
+
+#filters ul {
+    list-style-type: none;
+    background-color: transparent !important;
+    background: transparent !important;
+}
+
+#filters > li {
+    list-style-type: none;
     display: inline;
 }
+
+#filtersSearch {
+    display: inline;
+}
+
+/* #filters .searchFilter { */
+/*     display: inline; */
+/* } */
 
 .product-top {
     height: 100px;

@@ -225,11 +225,11 @@ namespace Stolons.Controllers
         }
 
         [HttpPost, ActionName("RemoveBillEntry"), Route("api/removeBillEntry")]
-        public string RemoveBillEntry(string weekBasketId, string productId)
+        public string RemoveBillEntry(string weekBasketId, string productStockId)
         {
             TempWeekBasket tempWeekBasket = _context.TempsWeekBaskets.Include(x => x.AdherentStolon).Include(x => x.AdherentStolon.Adherent).Include(x => x.BillEntries).First(x => x.Id.ToString() == weekBasketId);
             tempWeekBasket.RetrieveProducts(_context);
-            BillEntry billEntry = tempWeekBasket.BillEntries.First(x => x.ProductId.ToString() == productId);
+            BillEntry billEntry = tempWeekBasket.BillEntries.First(x => x.ProductId.ToString() == productStockId);
             tempWeekBasket.BillEntries.Remove(billEntry);
             _context.Remove(billEntry);
             tempWeekBasket.Validated = IsBasketValidated(tempWeekBasket);

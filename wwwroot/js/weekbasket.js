@@ -7,8 +7,12 @@ ProductTypeModel = Backbone.Model.extend({
 
     defaults: {},
 
-    idAttribute: "Id"
+    idAttribute: "Id",
 
+    parse: function(data) {
+	data["ProductFamilly"] = _.sortBy(data["ProductFamilly"], "FamillyName");
+	return data;
+    }
 });
 
 ProductTypesModel = Backbone.Collection.extend({
@@ -19,7 +23,9 @@ ProductTypesModel = Backbone.Collection.extend({
 
     initialize: function () {
         this.fetch();
-    }
+    },
+
+    comparator: "Name"
 });
 
 ProductsModel = Backbone.Collection.extend(
@@ -32,7 +38,35 @@ ProductsModel = Backbone.Collection.extend(
 
         initialize: function () {
             this.fetch();
-        }
+        },
+
+	getProductsForFamily: function(family) {
+	    var products = [];
+	    this.forEach(function(productModel) {
+		var productFamilly = productModel.get("Product").get("Familly");
+		if (!_.isEmpty(productFamilly)) {
+		    if (productFamilly.FamillyName == family) {
+			products.push(productModel);
+		    }
+		}
+	    });
+	    //console.log("products for familly " + family + " ::::", products);
+	    return products;
+	},
+
+	getProductsForType: function(typeName) {
+	    var products = [];
+	    this.forEach(function(productModel) {
+		var familly = productModel.get("Product").get("Familly");
+		if (!_.isEmpty(familly)) {
+		    if (familly.Type.Name == typeName) {
+			products.push(productModel);
+		    }
+		}
+	    });
+	    //console.log("products for familly " + family + " ::::", products);
+	    return products;
+	}
     }
 );
 
@@ -213,38 +247,8 @@ FiltersView = Backbone.View.extend({
     initialize: function (args) {
         this.model = args.model;
         this.productsModel = args.productsModel;
-        this.model.on('sync', this.initTreeData, this);
+        this.model.on('sync', this.render, this);
         this.selectedFamily = "Tous";
-    },
-
-    initTreeData: function () {
-        this.treeData = this.model.toJSON();
-        data = this.treeData;
-        _.forEach(data, function (category, idx) {
-            data[idx].id = category.Id;
-            data[idx].text = category.Name;
-            data[idx].icon = category.Image ? "/" + category.Image : "/images/productFamilies/default.jpg";
-            data[idx].children = category.ProductFamilly;
-            data[idx].category = true;
-            _.forEach(data[idx].children, function (family, fIdx) {
-                data[idx].children[fIdx].id = family.Id;
-                data[idx].children[fIdx].text = family.FamillyName;
-                data[idx].children[fIdx].icon = family.Image ? "/" + family.Image : "/images/productFamilies/default.jpg";
-                data[idx].children[fIdx].category = false;
-            });
-        });
-        this.treeData = [{
-            id: "Tous",
-            text: "Tous",
-            icon: false,
-            children: this.treeData,
-            category: true,
-            state: {
-                opened: true,
-                selected: false
-            }
-        }];
-        this.render();
     },
 
     famillyMatch: function (product) {
@@ -302,28 +306,23 @@ FiltersView = Backbone.View.extend({
 
     render: function () {
         this.$el.html(this.template({ productTypes: this.model.toJSON() }));
-        $("#tree").jstree({
-            "core": {
-                "data": this.treeData,
-                "themes": {
-                    "variant": "responsive"
-                }
-            }
-        });
-        this.instance = $("#tree").jstree(true);
-        this.registerEventsHandlers();
-        this.$('#search').on("input", _.bind(function () {
+	//Register click events on categories
+	this.model.forEach(function(typeModel) {
+	    $("#link_" + typeModel.get("Name")).click(function(e) {
+		var loc = document.location.toString().split('#')[0];
+		var anchor = $(e.target).attr("href");
+		document.location = loc + anchor;
+		return false;
+	    });
+	});
+	$('#filters > li.dropdown').hover(function() {
+	    $(this).find('.dropdown-menu').stop(true, true).delay(0).fadeIn(0);
+	}, function() {
+	    $(this).find('.dropdown-menu').stop(true, true).delay(0).fadeOut(0);
+	});
+	this.$('#search').on("input", _.bind(function () {
             this.filterProducts();
         }, this));
-    },
-
-    registerEventsHandlers: function () {
-        $("#tree").on('changed.jstree', _.bind(this.nodeSelected, this));
-    },
-
-    nodeSelected: function (event, data) {
-        this.selectedNode = data.node && data.node.original;
-        this.filterProducts();
     }
 });
 
@@ -519,7 +518,7 @@ ProductsView = Backbone.View.extend(
 
 	//TODO here group by categories
         render: function () {
-            this.$el.html(this.template({ products: this.model.models }));
+            this.$el.html(this.template({ products: this.model, productTypes: WeekBasket.ProductTypesModel.toJSON() }));
             this.model.forEach(function (productStockModel) {
                 var productView = new ProductView({
                     el: "#product-" + productStockModel.get("Id"),

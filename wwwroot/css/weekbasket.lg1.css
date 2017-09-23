@@ -2,9 +2,9 @@
 
 /*-- WEEK BASKET @media max-width: 1849 --*/
 
-.weekBasketContent {
-    padding-top: 20px;
-}
+/* .weekBasketContent { */
+/*     padding-top: 20px; */
+/* } */
 
 #validatedBasket {
     padding-top: 35px;
@@ -32,18 +32,18 @@
     z-index: 1020;
 }
 
-#filters {
-    position: fixed;
-    top: 60px;
-    left: 15%;
-    z-index: 1020;
-    max-width: 100px;
-}
+/* #filters { */
+/*     position: fixed; */
+/*     top: 60px; */
+/*     left: 15%; */
+/*     z-index: 1020; */
+/*     max-width: 100px; */
+/* } */
 
-#products {
-    margin-left: 32%;
-    max-width: 600px;
-}
+/* #products { */
+/*     margin-left: 32%; */
+/*     max-width: 600px; */
+/* } */
 
 @media (max-width: 1589px) {
     #filters {
