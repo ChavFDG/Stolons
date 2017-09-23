@@ -9,11 +9,7 @@
     {
         if (Model.IsFullValid)
         {
-            ViewData["Title"] = "Panier validé :)";
-        }
-        else
-        {
-            ViewData["Title"] = "Panier partiellement validé :'(";
+            ViewData["Title"] = "Votre panier de la semaine";
         }
     }
 }
@@ -22,9 +18,9 @@
 @if (Model == null)
 {
     <p>
-        Votre panier a été annulé.
+        Votre panier est vide
+	<a asp-controller="WeekBasket" asp-action="Index">Ajouter des produits</a>
     </p>
-    
 }
 else
 {
@@ -32,16 +28,20 @@ else
     {
         <p>
             Votre panier a été validé avec succès.
-            @Model.ValidatedWeekBasket.AdherentStolon.Stolon.OrderDeliveryMessage
         </p>
+	<p>
+	    @Model.ValidatedWeekBasket.AdherentStolon.Stolon.OrderDeliveryMessage
+	</p>
     }
     else
     {
         <p>
             Votre panier a été partiellement validé.
             Certains produits ne sont plus disponibles dans la quantité demandée. Veuilliez en prendre connaissance sur le tableau ci-dessous puis ajuster vos besoins.
-            @Model.ValidatedWeekBasket.AdherentStolon.Stolon.OrderDeliveryMessage
         </p>
+	<p>
+	    @Model.ValidatedWeekBasket.AdherentStolon.Stolon.OrderDeliveryMessage
+	</p>
     }
 
     @if (!Model.IsFullValid)

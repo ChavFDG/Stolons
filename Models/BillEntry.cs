@@ -380,6 +380,7 @@ namespace Stolons.Models
             clonedBillEntry.ProductUnit = this.ProductUnit;
             clonedBillEntry.Quantity = this.Quantity;
             clonedBillEntry.HasBeenModified = this.HasBeenModified;
+	    clonedBillEntry.Type = this.Type;
             return clonedBillEntry;
         }
 
@@ -395,6 +396,7 @@ namespace Stolons.Models
             billEntry.Tax = productStock.Product.Tax;
             billEntry.TaxEnum = productStock.Product.TaxEnum;
             billEntry.ProductUnit = productStock.Product.ProductUnit;
+	    billEntry.Type = productStock.Product.Type;
             return billEntry;
         }
     }

@@ -63,7 +63,7 @@ TmpWeekBasketModel = Backbone.Model.extend(
         getProductEntry: function (productId) {
             var productEntry;
             _.forEach(this.get("BillEntries"), function (billEntry) {
-                if (billEntry.ProductId == productId) {
+                if (billEntry.ProductStock.Id == productId) {
                     productEntry = billEntry;
                     return false;
                 }
@@ -71,12 +71,12 @@ TmpWeekBasketModel = Backbone.Model.extend(
             return productEntry;
         },
 
-        addProductToBasket: function (productId) {
+        addProductToBasket: function (productStockId) {
             var self = this;
             return $.ajax({
                 url: '/api/addtobasket',
                 data: {
-                    productId: productId,
+                    productStockId: productStockId,
                     weekBasketId: self.get("Id")
                 },
                 type: 'post',
@@ -88,12 +88,12 @@ TmpWeekBasketModel = Backbone.Model.extend(
             });
         },
 
-        incrementProduct: function (productId) {
+        incrementProduct: function (productStockId) {
             var self = this;
             return $.ajax({
                 url: '/api/incrementProduct',
                 data: {
-                    productId: productId,
+                    productStockId: productStockId,
                     weekBasketId: self.get("Id")
                 },
                 type: 'post',
@@ -105,12 +105,12 @@ TmpWeekBasketModel = Backbone.Model.extend(
             });
         },
 
-        decrementProduct: function (productId) {
+        decrementProduct: function (productStockId) {
             var self = this;
             return $.ajax({
                 url: '/api/decrementProduct',
                 data: {
-                    productId: productId,
+                    productStockId: productStockId,
                     weekBasketId: self.get("Id")
                 },
                 type: 'post',
@@ -183,7 +183,7 @@ ValidatedWeekBasketModel = Backbone.Model.extend({
     getProductEntry: function (productId) {
         var productEntry;
         _.forEach(this.get("BillEntries"), function (billEntry) {
-            if (billEntry.ProductId == productId) {
+            if (billEntry.ProductStock.Id == productId) {
                 productEntry = billEntry;
                 return false;
             }
@@ -437,7 +437,7 @@ ProductActionView = Backbone.View.extend(
             if (!this.billEntry) {
                 return false;
             }
-            var validatedBillEntry = WeekBasket.TmpWeekBasketModel.getProductEntry(this.productId);
+            var validatedBillEntry = WeekBasket.ValidatedWeekBasketModel.getProductEntry(this.productId);
             var validatedQty = (validatedBillEntry && validatedBillEntry.Quantity) || 0;
             var diffQty = this.billEntry.Quantity - validatedQty;
             var stepStock = this.billEntry.ProductStock.RemainingStock;
@@ -445,11 +445,12 @@ ProductActionView = Backbone.View.extend(
             if (this.billEntry.Type != 1) {
                 stepStock = (this.billEntry.ProductStock.RemainingStock * 1000) / this.billEntry.ProductStock.Product.QuantityStep;
             }
+	    console.log("canIncrement ?? " + diffQty + ":: stepStock : " +  stepStock);
             return diffQty < stepStock;
         },
 
         canAddToBasket: function () {
-            var validatedBillEntry = WeekBasket.TmpWeekBasketModel.getProductEntry(this.productId);
+            var validatedBillEntry = WeekBasket.ValidatedWeekBasketModel.getProductEntry(this.productId);
             var validatedQty = (validatedBillEntry && validatedBillEntry.Quantity) || 0;
             var productModel = WeekBasket.ProductsModel.get(this.productId);
             if (!this.billEntry) {
@@ -493,10 +494,11 @@ ProductActionView = Backbone.View.extend(
         },
 
         render: function () {
-            this.$el.html(this.template({
-                billEntry: this.billEntry,
-                canAddToBasket: _.bind(this.canAddToBasket, this),
-                canIncrement: _.bind(this.canIncrement, this)
+	    var that = this;
+            this.$el.html(that.template({
+                billEntry: that.billEntry,
+                canAddToBasket: _.bind(that.canAddToBasket, that),
+                canIncrement: _.bind(that.canIncrement, that)
             }));
         }
     }
@@ -515,21 +517,21 @@ ProductsView = Backbone.View.extend(
             this.views = {};
         },
 
+	//TODO here group by categories
         render: function () {
             this.$el.html(this.template({ products: this.model.models }));
-            this.model.forEach(function (productModel) {
+            this.model.forEach(function (productStockModel) {
                 var productView = new ProductView({
-                    el: "#product-" + productModel.get("Id"),
-                    model: productModel
+                    el: "#product-" + productStockModel.get("Id"),
+                    model: productStockModel
                 });
-                this.views[productModel.get("Id")] = productView;
+                this.views[productStockModel.get("Id")] = productView;
                 productView.render();
-
                 var productActionView = new ProductActionView(
                     {
                         model: this.tmpBasketModel,
-                        productId: productModel.get("Id"),
-                        el: "#product-" + productModel.get("Id") + " .pr_actions"
+                        productId: productStockModel.get("Id"),
+                        el: "#product-" + productStockModel.get("Id") + " .pr_actions"
                     });
                 productActionView.render();
             }, this);
@@ -567,7 +569,7 @@ ValidatedWeekBasketView = Backbone.View.extend(
 
         initialize: function (args) {
             this.model = args.model;
-            this.model.on("sync", this.render, this);
+            this.model.on("sync change", this.render, this);
             this.tmpBasketModel = args.tmpBasketModel;
             this.tmpBasketModel.on("sync change", this.render, this);
         },
@@ -593,7 +595,11 @@ ValidatedWeekBasketView = Backbone.View.extend(
         },
 
         render: function () {
-            this.$el.html(this.template({ tmpBasket: this.tmpBasketModel.toJSON(), validatedBasketModel: this.model, validatedBasket: this.model.toJSON() }));
+            this.$el.html(this.template({
+		tmpBasket: this.tmpBasketModel.toJSON(),
+		validatedBasketModel: this.model,
+		validatedBasket: this.model.toJSON()
+	    }));
         }
     }
 );
