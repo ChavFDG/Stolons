@@ -5,13 +5,13 @@
 @if (Model.ActiveAdherentStolon.Stolon.StolonType == Stolon.OrganisationType.Association)
 {
     <ul class="nav nav-tabs">
-        <li class="active"><a data-toggle="tab" href="@("#allUsers"+Model.Stolon.Id)">Tous les adhérents</a></li>
+        <li class="active"><a data-toggle="tab" href="@("#allUsers"+Model.Stolon.Id)" name="all">Tous les adhérents</a></li>
         @if (Model.Stolon.UseSympathizer)
         {
-            <li><a data-toggle="tab" href="@("#sympathizers"+Model.Stolon.Id)">Sympathisants</a></li>
+            <li><a data-toggle="tab" href="@("#sympathizers"+Model.Stolon.Id)" name="sympathizers">Sympathisants</a></li>
         }
-        <li><a data-toggle="tab" href="@("#consumers"+Model.Stolon.Id)">Consomateurs</a></li>
-        <li><a data-toggle="tab" href="@("#producers"+Model.Stolon.Id)">Producteurs</a></li>
+        <li><a data-toggle="tab" href="@("#consumers"+Model.Stolon.Id)" name="consumers">Consomateurs</a></li>
+        <li><a data-toggle="tab" href="@("#producers"+Model.Stolon.Id)" name="producers">Producteurs</a></li>
     </ul>
 
     <div class="tab-content">
@@ -51,11 +51,45 @@
 
 <script>
 
-    function showAddAdherent(clickedElement) {
+ $(function() {
+     var tab = localStorage.getItem("AdherentsTab") || "all";
+     switch (tab) {
+	 case "all":
+	     $('a[name="all"]').tab('show');
+	     break;
+	 case "symtatizers":
+	     $('a[name="symtatizers"]').tab('show');
+	     break;
+	 case "consumers":
+	     $('a[name="consumers"]').tab('show');
+	     break;
+	 case "producers":
+	     $('a[name="producers"]').tab('show');
+	     break;
+	 default:
+	     $('a[name="all"]').tab('show');
+     }
+     $("ul.nav a").on('click', onTabClick);
+ });
+
+ function onTabClick(e) {
+     var tab = $(e.target);
+
+     var tabName = tab.attr("name");
+     setTab(tabName);
+     return true;
+ }
+ 
+ function setTab(tab) {
+     localStorage.setItem("AdherentsTab", tab);
+ }
+
+ function showAddAdherent(clickedElement) {
         $("#bodyAndFooterModal .modal-title").html($(clickedElement).attr("data-title"));
         var dataid = $(clickedElement).attr("data-id");
         var edition = $(clickedElement).attr("data-edition");
         showAddAdherentAjax(dataid, edition);
+	return false;
     }
 
     function showAddAdherentAjax(dataId, edition) {
@@ -80,6 +114,7 @@
         $("#bodyAndFooterModal .modal-title").html($(clickedElement).attr("data-title"));
         var dataid = $(clickedElement).attr("data-id");
         showDisableAccountAjax(dataid);
+	return false;
     }
 
     function showDisableAccountAjax(dataId) {
@@ -98,11 +133,11 @@
         });
     }
 
-
     function showDetailsAdherent(clickedElement) {
         $("#bodyAndFooterModal .modal-title").html($(clickedElement).attr("data-title"));
         var dataid = $(clickedElement).attr("data-id");
         showDetailsAdherentAjax(dataid);
+	return false;
     }
 
     function showDetailsAdherentAjax(dataId) {
@@ -173,6 +208,7 @@
         $("#bodyAndFooterModal .modal-title").html($(clickedElement).attr("data-title"));
         var dataid = $(clickedElement).attr("data-id");
         showCreditTokenAjax(dataid);
+	return false;
     }
 
 
