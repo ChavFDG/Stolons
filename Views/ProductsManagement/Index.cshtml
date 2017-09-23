@@ -92,8 +92,22 @@ if (Model.Products.Any(x => x.ProductStocks.Any(prodStock => prodStock.State == 
                                 <a asp-action="Manage" asp-route-id="@item.Id"> Modifier</a>
                             </li>
                             <li>
-                                <a asp-action="Delete" asp-route-id="@item.Id"> Supprimer</a>
+                                @Html.ActionLink("Archiver",
+                                    "Archive",
+                                    "ProductsManagement",
+                                    new { id = @item.Id },
+                                    new { onclick = "return confirm('Êtes vous sur de vouloir archiver le produit " + item.Name + " ?');" })
                             </li>
+                            @if (!item.ProductStocks.Any(x => x.BillEntries.Count != 0))
+                            {
+                                <li>
+                                    @Html.ActionLink("Supprimer",
+                                    "Delete",
+                                    "ProductsManagement",
+                                    new { id = @item.Id },
+                                    new { onclick = "return confirm('Êtes vous sur de vouloir supprimer le produit " + item.Name + " ?');" })
+                                </li>
+                            }
                         </ul>
                     </div>
                 }

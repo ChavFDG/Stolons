@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -40,7 +41,18 @@ namespace Stolons.Models.Messages
         public string Title { get; set; }
 
         [Display(Name = "Image d'illustration")]
-        public string ImageLink { get; set; }
+        public string ImageName { get; set; }
+
+        [NotMapped]
+        public string ImageLink
+        {
+            get
+            {
+                if (String.IsNullOrWhiteSpace(ImageName))
+                    return "\\" + Path.Combine(Configurations.NewsImageStockagePath, Configurations.DefaultImageFileName);
+                return "\\" + Path.Combine(Configurations.NewsImageStockagePath, ImageName);
+            }
+        }
 
         [Display(Name = "Date de début de publication")]
         public DateTime PublishStart { get; set; } = DateTime.Now;

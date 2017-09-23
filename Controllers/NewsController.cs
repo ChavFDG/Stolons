@@ -67,21 +67,15 @@ namespace Stolons.Controllers
         // POST: News/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(NewsViewModel newsVm, IFormFile uploadFile)
+        public IActionResult Create(NewsViewModel newsVm, string uploadNewsImage)
         {
             if (Authorized(Role.Volunteer) || AuthorizedProducer())
             {
                 if (ModelState.IsValid)
                 {
                     string fileName = Configurations.DefaultImageFileName;
-                    if (uploadFile != null)
-                    {
-                        //Image uploading
-                        string uploads = Path.Combine(_environment.WebRootPath, Configurations.NewsImageStockagePath);
-                        fileName = Guid.NewGuid().ToString() + "_" + ContentDispositionHeaderValue.Parse(uploadFile.ContentDisposition).FileName.Trim('"');
-                        await uploadFile.SaveImageAsAsync(Path.Combine(uploads, fileName));
-                        newsVm.News.ImageLink = Path.Combine(Configurations.NewsImageStockagePath, fileName);
-                    }
+                    if (!String.IsNullOrWhiteSpace(uploadNewsImage))
+                        newsVm.News.ImageName = _environment.UploadBase64Image(uploadNewsImage, Configurations.NewsImageStockagePath);
                     //Setting value for creation
                     newsVm.News.Id = Guid.NewGuid();
                     newsVm.News.DateOfPublication = DateTime.Now;
@@ -119,23 +113,17 @@ namespace Stolons.Controllers
         // POST: News/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(NewsViewModel newsVm, IFormFile uploadFile)
+        public async Task<IActionResult> Edit(NewsViewModel newsVm, string uploadNewsImage)
         {
             if (Authorized(Role.Volunteer) || AuthorizedProducer())
             {
                 if (ModelState.IsValid)
                 {
-                    if (uploadFile != null)
+
+                    if (!String.IsNullOrWhiteSpace(uploadNewsImage))
                     {
-                        string uploads = Path.Combine(_environment.WebRootPath, Configurations.NewsImageStockagePath);
-                        //Deleting old image
-                        if(!String.IsNullOrWhiteSpace(newsVm.News.ImageLink))
-                            DeleteImage(newsVm.News.ImageLink);
-                        //Image uploading
-                        string fileName = Guid.NewGuid().ToString() + "_" + ContentDispositionHeaderValue.Parse(uploadFile.ContentDisposition).FileName.Trim('"');
-                        await uploadFile.SaveImageAsAsync(Path.Combine(uploads, fileName));
-                        //Setting new value, saving
-                        newsVm.News.ImageLink = Path.Combine(Configurations.NewsImageStockagePath, fileName);
+                        _environment.DeleteFile(newsVm.News.ImageLink);
+                        newsVm.News.ImageName = _environment.UploadBase64Image(uploadNewsImage, Configurations.NewsImageStockagePath);
                     }
                     newsVm.News.PublishBy = GetActiveAdherentStolon();
                     _context.Update(newsVm.News);
@@ -178,21 +166,10 @@ namespace Stolons.Controllers
                 return Unauthorized();
 
             News news = _context.News.FirstOrDefault(x => x.Id == id);
-            DeleteImage(news.ImageLink);
+            _environment.DeleteFile(news.ImageLink);
             _context.News.Remove(news);
             _context.SaveChanges();
             return RedirectToAction("Index");
-        }
-
-        private void DeleteImage(string imagePath)
-        {
-            if (String.IsNullOrWhiteSpace(imagePath))
-                return;
-            //Deleting image
-            string image = Path.Combine(_environment.WebRootPath, imagePath);
-            string defaultImage = Path.Combine(Configurations.NewsImageStockagePath, Configurations.DefaultImageFileName);
-            if (System.IO.File.Exists(image) && imagePath != defaultImage)
-                System.IO.File.Delete(image);
         }
     }
 }

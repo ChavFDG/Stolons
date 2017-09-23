@@ -13,9 +13,48 @@
 
   <ItemGroup>
     <Compile Remove="Views\NewFolder\**" />
+    <Compile Remove="wwwroot\bills\consumer\**" />
+    <Compile Remove="wwwroot\bills\producer\**" />
+    <Compile Remove="wwwroot\bills\stolons\**" />
+    <Compile Remove="wwwroot\images\marion\**" />
+    <Compile Remove="wwwroot\images\productsIcons\**" />
     <Content Remove="Views\NewFolder\**" />
+    <Content Remove="wwwroot\bills\consumer\**" />
+    <Content Remove="wwwroot\bills\producer\**" />
+    <Content Remove="wwwroot\bills\stolons\**" />
+    <Content Remove="wwwroot\images\marion\**" />
+    <Content Remove="wwwroot\images\productsIcons\**" />
     <EmbeddedResource Remove="Views\NewFolder\**" />
+    <EmbeddedResource Remove="wwwroot\bills\consumer\**" />
+    <EmbeddedResource Remove="wwwroot\bills\producer\**" />
+    <EmbeddedResource Remove="wwwroot\bills\stolons\**" />
+    <EmbeddedResource Remove="wwwroot\images\marion\**" />
+    <EmbeddedResource Remove="wwwroot\images\productsIcons\**" />
     <None Remove="Views\NewFolder\**" />
+    <None Remove="wwwroot\bills\consumer\**" />
+    <None Remove="wwwroot\bills\producer\**" />
+    <None Remove="wwwroot\bills\stolons\**" />
+    <None Remove="wwwroot\images\marion\**" />
+    <None Remove="wwwroot\images\productsIcons\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="wwwroot\images\logos\Logo.jpg" />
+    <Content Remove="wwwroot\images\logos\Logo_low.png" />
+    <Content Remove="wwwroot\images\logos\Logo_med.png" />
+    <Content Remove="wwwroot\images\logos\Stolons-Bar.jpg" />
+    <Content Remove="wwwroot\images\logos\Stolons-Concert.jpg" />
+    <Content Remove="wwwroot\images\logos\Stolons-Conference.jpg" />
+    <Content Remove="wwwroot\images\logos\Stolons-Paniers.jpg" />
+    <Content Remove="wwwroot\images\logos\Stolons-Restaurant.jpg" />
+    <Content Remove="wwwroot\images\logos\Stolons-Spectacles.jpg" />
+    <Content Remove="wwwroot\uploads\images\news\28711263-baf0-495d-aeb4-46acbf6e7e13_DSCF9339.JPG" />
+    <Content Remove="wwwroot\uploads\images\news\6014cbca-d700-4438-9815-f5e2a3ce499c_Jellyfish.jpg" />
+    <Content Remove="wwwroot\uploads\images\news\8426e31f-10b9-48d2-8189-81d677f4509a_Koala.jpg" />
+    <Content Remove="wwwroot\uploads\images\news\92ac281f-9d10-49d1-98f3-ace2b815ccd5_be55cf623569c966a1947660b8e84f6b1e797593.jpg" />
+    <Content Remove="wwwroot\uploads\images\news\9aad3e78-0498-4608-af8f-016ad9b27e86.jpg" />
+    <Content Remove="wwwroot\uploads\images\news\af065602-0a72-4ecc-b560-fbe32a8838ad_Logo final stretch.jpg" />
+    <Content Remove="wwwroot\uploads\images\news\c8de22fb-6898-4de6-b97c-ecb8a773c0e9.jpg" />
   </ItemGroup>
 
   <ItemGroup>
@@ -67,10 +106,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Migrations\" />
-    <Folder Include="Migrations\" />
-    <Folder Include="Migrations\" />
-    <Folder Include="Migrations\" />
+    <Folder Include="wwwroot\bills\" />
   </ItemGroup>
 
 </Project>

@@ -247,6 +247,8 @@ namespace Stolons.Models
             }
         }
 
+        public bool IsArchive = false;
+
         public enum SellType
         {
             [Display(Name = "Au poids")]

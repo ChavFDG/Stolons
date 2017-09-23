@@ -13,11 +13,57 @@
         });
 </script>
 
+<script>
+    function resizeImageToSpecificWidth(width) {
+        var input = document.getElementById('newsImage');
+
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (event) {
+                var img = new Image();
+                img.onload = function () {
+                    var oc = document.createElement('canvas'), octx = oc.getContext('2d');
+                    oc.width = img.width;
+                    oc.height = img.height;
+                    octx.drawImage(img, 0, 0);
+                    while (oc.width * 0.5 > width) {
+                        oc.width *= 0.5;
+                        oc.height *= 0.5;
+                        octx.drawImage(oc, 0, 0, oc.width, oc.height);
+                    }
+                    oc.width = width;
+                    oc.height = oc.width * img.height / img.width;
+                    octx.drawImage(img, 0, 0, oc.width, oc.height);
+
+                    document.getElementById('image1Preview').src = oc.toDataURL();
+
+                    $('input[name=uploadNewsImage]').val(oc.toDataURL());
+                };
+                img.src = event.target.result;
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+
+    $(document).ready(function () {
+        var input = document.getElementById('newsImage');
+        input.onclick = function () {
+            this.value = null;
+        };
+
+        input.onchange = function () {
+            resizeImageToSpecificWidth(600);
+        };
+    });
+</script>
+
+
 <div class="form-horizontal">
     <hr />
     <input asp-for="News.Id" hidden="hidden" />
     <input asp-for="News.DateOfPublication" hidden="hidden" />
-    <input asp-for="News.ImageLink" hidden="hidden" />
+    <input asp-for="News.ImageName" hidden="hidden" />
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="form-group">
         <label asp-for="News.Title" class="col-md-2 control-label"></label>
@@ -70,9 +116,13 @@
         </div>
     </div>
     <div class="form-group">
-        <label asp-for="News.ImageLink" class="col-md-2 control-label"></label>
-        <div class="col-md-10">
-            <input type="file" accept="image/*" name="uploadFile" class="form-control" />
+        <label asp-for="News.ImageName" class="col-md-2 control-label"></label>
+        <div class="col-md-4">
+            <input id="newsImage" type="file" accept="image/*" class="form-control" />
+            <input type="hidden" name="uploadNewsImage" />
+        </div>
+        <div class="col-md-4">
+            <img id="image1Preview" src="@("\\"+Model.News.ImageName)" class="imgPreview" />
         </div>
     </div>
 </div>

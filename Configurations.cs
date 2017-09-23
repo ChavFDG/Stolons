@@ -71,7 +71,7 @@ namespace Stolons
         public static string ProductsStockagePathLight = Path.Combine("uploads", "images", "products","light");
         public static string ProductsStockagePathHeavy = Path.Combine("uploads", "images", "products","heavy");
         public static string DefaultProductImageFullPath = Path.Combine("uploads", "images", "products", "Default.png");
-        public static string DefaultImageFileName = "default.png";
+        public static string DefaultImageFileName = "default.jpg";
         private static string _labelImagePath = Path.Combine("images", "labels");
         public static string GetImage(this Product.Label label)
         {

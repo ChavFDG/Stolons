@@ -196,32 +196,11 @@ namespace Stolons.Controllers
             vmProduct.RefreshTypes(_context);
             return View(vmProduct);
         }
-
-        // GET: ProductsManagement/Delete/5
-        [ActionName("Delete")]
-        public IActionResult Delete(Guid? id)
-        {
-            if (!AuthorizedProducer())
-                return Unauthorized();
-
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            Product product = _context.Products.FirstOrDefault(x => x.Id == id);
-            if (product == null)
-            {
-                return NotFound();
-            }
-
-            return View(product);
-        }
-
-        // POST: ProductsManagement/Delete/5
+        
+        
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(Guid id)
+        public IActionResult Delete(Guid id)
         {
             if (!AuthorizedProducer())
                 return Unauthorized();
@@ -231,7 +210,21 @@ namespace Stolons.Controllers
             _context.SaveChanges();
             return RedirectToAction("Index");
         }
+
+        [HttpPost, ActionName("Archive")]
+        [ValidateAntiForgeryToken]
+        public IActionResult Archive(Guid id)
+        {
+            if (!AuthorizedProducer())
+                return Unauthorized();
+
+            Product product = _context.Products.FirstOrDefault(x => x.Id == id);
+            product.IsArchive = true;
+            _context.SaveChanges();
+            return RedirectToAction("Index");
+        }
         
+
         public IActionResult EnableForAllStolon(Guid? productId)
         {
             if (!AuthorizedProducer())
