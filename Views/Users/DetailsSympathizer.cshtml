@@ -1,6 +1,6 @@
 @model Stolons.ViewModels.Sympathizers.SympathizerViewModel
 
-<div>
+<div id="adherent-details-wrapper">
     <dl class="dl-horizontal">
         <dt>
             @Html.DisplayNameFor(model => model.Sympathizer.Name)
@@ -13,30 +13,30 @@
         </dt>
         <dd>
             @Html.DisplayFor(model => model.Sympathizer.Surname)
-        </dd>    
+        </dd>
         <dt>
             @Html.DisplayNameFor(model => model.Sympathizer.PostCode)
         </dt>
         <dd>
             @Html.DisplayFor(model => model.Sympathizer.PostCode)
-        </dd>   
+        </dd>
         <dt>
             @Html.DisplayNameFor(model => model.Sympathizer.ReceivedInformationsEmail)
         </dt>
         <dd>
             @Html.DisplayFor(model => model.Sympathizer.ReceivedInformationsEmail)
-        </dd>     
+        </dd>
         <dt>
             @Html.DisplayNameFor(model => model.Sympathizer.Email)
         </dt>
         <dd>
             @Html.DisplayFor(model => model.Sympathizer.Email)
-        </dd>       
+        </dd>
         <dt>
             @Html.DisplayNameFor(model => model.Sympathizer.RegistrationDate)
         </dt>
         <dd>
             @Html.DisplayFor(model => model.Sympathizer.RegistrationDate)
-        </dd>       
+        </dd>
     </dl>
 </div>

@@ -7,11 +7,38 @@
 <a asp-controller="Manage" asp-action="ChangePassword" class="btn btn-small btn-default">Changer mon mot de passe</a>
 <br />
 <br />
-<a asp-controller="Manage" asp-action="Edit" class="btn btn-small btn-default">Modifier mes informations personnelles</a>
+<a href="#" class="btn btn-small btn-default" onclick="showEditAdherent(this);" data-id="@Model.ActiveAdherentStolon.Id" data-title="Modification de mes informations personnelles">Modifier mes informations personnelles</a>
+
+<script>
+     function showEditAdherent(clickedElement) {
+        $("#bodyAndFooterModal .modal-title").html($(clickedElement).attr("data-title"));
+        var dataid = $(clickedElement).attr("data-id");
+        showEditAdherentAjax(dataid);
+    }
+
+    function showEditAdherentAjax(dataId) {
+        var link = '@Url.Action("_PartialEditAdherent", "Users", new { id ="-1"})'
+        link = link.replace("-1", dataId);
+
+        $.ajax({
+            type: "GET",
+            url: link,
+            error: function(data)
+            {},
+            success: function (data) {
+                $("#bodyAndFooterModal .modal-bodyAndFooter").html(data);
+                $('#bodyAndFooterModal').modal('show');
+            },
+        });
+    }
+</script>
+
+
+
 <p class="text-success">@ViewData["StatusMessage"]</p>
 <div>
     <div class="boxContainer">
-        @Html.Partial("Templates/DetailsAdherent", new AdherentViewModel(Model.ActiveAdherentStolon, Model.ActiveAdherentStolon.Adherent,Model.ActiveAdherentStolon.Stolon, Model.IsProducer ? AdherentEdition.Producer : AdherentEdition.Consumer))
+        @Html.Partial("../Users/DetailsAdherent", new AdherentViewModel(Model.ActiveAdherentStolon, Model.ActiveAdherentStolon.Adherent,Model.ActiveAdherentStolon.Stolon, Model.IsProducer ? AdherentEdition.Producer : AdherentEdition.Consumer))
     </div>
 
     <div class="boxContainer">

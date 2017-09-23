@@ -39,9 +39,9 @@ namespace Stolons.Controllers
             if (!Authorized(Role.Volunteer))
                 return Unauthorized();
 
-            Stolon stolon = id == null ? GetCurrentStolon() : _context.Stolons.First(x=>x.Id == id);            
+            Stolon stolon = id == null ? GetCurrentStolon() : _context.Stolons.First(x => x.Id == id);
             AdherentsViewModel adherentsViewModel = new AdherentsViewModel(GetActiveAdherentStolon(), stolon, _context.Sympathizers.Where(x => x.StolonId == stolon.Id).ToList(), _context.AdherentStolons.Include(x => x.Stolon).Include(x => x.Adherent).Where(x => x.StolonId == stolon.Id).ToList());
-            return View(adherentsViewModel); 
+            return View(adherentsViewModel);
         }
 
 
@@ -50,7 +50,7 @@ namespace Stolons.Controllers
             AdherentStolon adherentStolon = _context.AdherentStolons.Include(x => x.Adherent).Include(x => x.Stolon).FirstOrDefault(x => x.Id == id);
             return PartialView(new AdherentStolonViewModel(GetActiveAdherentStolon(), adherentStolon));
         }
-        
+
 
 
 
@@ -60,13 +60,13 @@ namespace Stolons.Controllers
             List<string> emails;
             if (edition == AdherentEdition.Producer)
             {
-                emails = _context.Adherents.Include(x=>x.AdherentStolons).Where(x=>x.AdherentStolons.Any(prod=>prod.IsProducer)).Select(x => x.Email).ToList();
+                emails = _context.Adherents.Include(x => x.AdherentStolons).Where(x => x.AdherentStolons.Any(prod => prod.IsProducer)).Select(x => x.Email).ToList();
             }
             else
             {
                 emails = _context.Adherents.Select(x => x.Email).ToList();
             }
-            _context.AdherentStolons.Include(x=>x.Adherent).Where(x => x.StolonId == stolon.Id).ToList().ForEach(x => emails.Remove(x.Adherent.Email));
+            _context.AdherentStolons.Include(x => x.Adherent).Where(x => x.StolonId == stolon.Id).ToList().ForEach(x => emails.Remove(x.Adherent.Email));
             return PartialView(new SelectAdherentViewModel(GetActiveAdherentStolon(), stolon, emails));
         }
 
@@ -80,13 +80,13 @@ namespace Stolons.Controllers
 
             if (ModelState.IsValid)
             {
-                AdherentStolon adherentStolon = new AdherentStolon(_context.Adherents.First(x => x.Email == selectAdherentViewModel.SelectedEmail), _context.Stolons.First(x=>x.Id == selectAdherentViewModel.Stolon.Id));
+                AdherentStolon adherentStolon = new AdherentStolon(_context.Adherents.First(x => x.Email == selectAdherentViewModel.SelectedEmail), _context.Stolons.First(x => x.Id == selectAdherentViewModel.Stolon.Id));
                 adherentStolon.RegistrationDate = DateTime.Now;
                 //adherentStolon.LocalId = _context.AdherentStolons.Where(x => x.StolonId == selectAdherentViewModel.Stolon.Id).Max(x => x.LocalId) + 1;
                 _context.AdherentStolons.Add(adherentStolon);
                 _context.SaveChanges();
                 //Send confirmation mail
-                Services.AuthMessageSender.SendEmail(adherentStolon.Stolon.Label,adherentStolon.Adherent.Email, adherentStolon.Adherent.Name, "Adhésion à un nouveau Stolon", base.RenderPartialViewToString("AdherentConfirmationMail", adherentStolon));
+                Services.AuthMessageSender.SendEmail(adherentStolon.Stolon.Label, adherentStolon.Adherent.Email, adherentStolon.Adherent.Name, "Adhésion à un nouveau Stolon", base.RenderPartialViewToString("AdherentConfirmationMail", adherentStolon));
 
                 return RedirectToAction("Index");
             }
@@ -135,7 +135,7 @@ namespace Stolons.Controllers
                 _context.SaveChanges();
                 //Send confirmation mail
                 string confirmationViewName = edition == AdherentEdition.Consumer ? "AdherentConfirmationMail" : "ProducerConfirmationMail";
-                Services.AuthMessageSender.SendEmail(stolon.Label,vmAdherent.Adherent.Email, vmAdherent.Adherent.Name, "Creation de votre compte", base.RenderPartialViewToString(confirmationViewName, adherentStolon));
+                Services.AuthMessageSender.SendEmail(stolon.Label, vmAdherent.Adherent.Email, vmAdherent.Adherent.Name, "Creation de votre compte", base.RenderPartialViewToString(confirmationViewName, adherentStolon));
 
                 return RedirectToAction("Index");
             }
@@ -146,7 +146,7 @@ namespace Stolons.Controllers
         {
             AdherentStolon adherentStolon = _context.AdherentStolons.Include(x => x.Adherent).Include(x => x.Stolon).FirstOrDefault(x => x.Id == id);
 
-            return PartialView(new AdherentViewModel(GetActiveAdherentStolon(), adherentStolon.Adherent, adherentStolon.Stolon, adherentStolon.IsProducer ? AdherentEdition.Producer: AdherentEdition.Consumer));
+            return PartialView(new AdherentViewModel(GetActiveAdherentStolon(), adherentStolon.Adherent, adherentStolon.Stolon, adherentStolon.IsProducer ? AdherentEdition.Producer : AdherentEdition.Consumer));
         }
 
         [HttpPost]
@@ -159,23 +159,27 @@ namespace Stolons.Controllers
             if (ModelState.IsValid)
             {
                 UploadAndSetAvatar(vmAdherent.Adherent, uploadFile);
-                UpdateAdherent( vmAdherent, uploadFile);
+                UpdateAdherent(vmAdherent, uploadFile);
                 return RedirectToAction("Index");
             }
             return View(vmAdherent);
         }
 
-        public void UpdateAdherent( AdherentViewModel vmAdherent, IFormFile uploadFile)
+        public void UpdateAdherent(AdherentViewModel vmAdherent, IFormFile uploadFile)
         {
             ApplicationUser appUser = _context.Users.First(x => x.Email == vmAdherent.OriginalEmail);
             appUser.Email = vmAdherent.Adherent.Email;
-            vmAdherent.Adherent.Name = vmAdherent.Adherent.Name.ToUpper();
             _context.Update(appUser);
-            _context.Update(vmAdherent.Adherent);
+            _context.SaveChanges();
+
+
+            Adherent adherent = _context.Adherents.FirstOrDefault(x => x.Id == vmAdherent.Adherent.Id);
+            adherent.CloneAllPropertiesFrom(vmAdherent.Adherent);
+            _context.Update(adherent);
             _context.SaveChanges();
         }
 
-      
+
         public virtual IActionResult DeleteAdherent(Guid id)
         {
             if (!Authorized(Role.Admin))
@@ -245,22 +249,33 @@ namespace Stolons.Controllers
         }
 
 
-        public IActionResult DisableAdherent(Guid id, string comment)
+        public virtual PartialViewResult _PartialDisableAdherent(Guid id, Guid? stolonId = null)
+        {
+            AdherentStolon adherentStolon = _context.AdherentStolons.Include(x => x.Adherent).Include(x => x.Stolon).FirstOrDefault(x => x.Id == id);
+
+
+            return PartialView(new DisableAccountViewModel(GetActiveAdherentStolon(), adherentStolon));
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public virtual IActionResult DisableAdherent(AdherentStolonViewModel vmAdherentStolon, string comment)
         {
             if (!Authorized(Role.Volunteer))
                 return Unauthorized();
-
-            AdherentStolon adherentStolon = _context.AdherentStolons.First(x => x.Id == id);
             //
-            adherentStolon.DisableReason = comment;
-            adherentStolon.Enable = false;
+            vmAdherentStolon.AdherentStolon.DisableReason = comment;
+            vmAdherentStolon.AdherentStolon.Enable = false;
             //Update
-            _context.AdherentStolons.Update(adherentStolon);
+            _context.AdherentStolons.Update(vmAdherentStolon.AdherentStolon);
             //Save
             _context.SaveChanges();
             return RedirectToAction("Index");
         }
-        
+
+
+
 
         public PartialViewResult _PartialCreditToken(Guid id)
         {
@@ -284,7 +299,7 @@ namespace Stolons.Controllers
                 Transaction.TransactionType.Inbound,
                 Transaction.TransactionCategory.TokenCredit,
                 vmCreditToken.CreditedToken,
-                "Encaissement de "+ vmCreditToken.CreditedToken + "€, pour créditage du compte de " + adherentStolon.Adherent.Name + "( " + adherentStolon.LocalId + " ) de " + vmCreditToken.CreditedToken + "β"));
+                "Encaissement de " + vmCreditToken.CreditedToken + "€, pour créditage du compte de " + adherentStolon.Adherent.Name + "( " + adherentStolon.LocalId + " ) de " + vmCreditToken.CreditedToken + "β"));
             _context.Update(adherentStolon);
             _context.SaveChanges();
             return RedirectToAction("Index");
@@ -298,17 +313,17 @@ namespace Stolons.Controllers
 
 
         public PartialViewResult _PartialDetailsSympathizer(Guid id)
-        {           
+        {
             Sympathizer sympathizer = _context.Sympathizers.FirstOrDefault(x => x.Id == id);
             return PartialView(new SympathizerViewModel(GetActiveAdherentStolon(), sympathizer));
         }
 
-        
+
         public PartialViewResult _PartialCreateSympathizer(Guid stolonId)
         {
             return PartialView(new SympathizerViewModel(GetActiveAdherentStolon(), new Sympathizer() { StolonId = stolonId }));
         }
-        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult CreateSympathizer(SympathizerViewModel vmSympathizer)
@@ -357,7 +372,7 @@ namespace Stolons.Controllers
             }
             return View(vmSympathizer);
         }
-        
+
         public IActionResult DeleteSympathizer(Guid id)
         {
             if (!Authorized(Role.Admin))

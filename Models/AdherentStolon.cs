@@ -71,7 +71,7 @@ namespace Stolons.Models
 
         public virtual ICollection<News> News { get; set; }
 
-        [Display(Name = "Bogues")]
+        [Display(Name = "Stols")]
         public decimal Token { get; set; } = 0;
 
 

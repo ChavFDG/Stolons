@@ -78,7 +78,7 @@ namespace Stolons.Models
         [Display(Name = "Montant")]
         public decimal OrderAmount { get; set; }
 
-        [Display(Name = "Bogues")]
+        [Display(Name = "Stols")]
         public decimal TokenUsed { get; set; } = 0;
 
         public string HtmlBillContent { get; set; }

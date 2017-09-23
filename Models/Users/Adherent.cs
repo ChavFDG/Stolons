@@ -136,8 +136,34 @@ namespace Stolons.Models.Users
         [Display(Name = "Longitude")]
         public double Longitude { get; set; }
 
+        public void CloneAllPropertiesFrom(Adherent adherent)
+        {
+            this.Address = adherent.Address;
+            this.Area = adherent.Area;
+            this.AvatarFileName = adherent.AvatarFileName;
+            this.City = adherent.City;
+            this.CompanyName = adherent.CompanyName;
+            this.Email = adherent.Email;
+            this.ExploitationPicuresSerialized = adherent.ExploitationPicuresSerialized;
+            this.IsWebAdmin = adherent.IsWebAdmin;
+            this.Latitude = adherent.Latitude;
+            this.Longitude =  adherent.Longitude;
+            this.Name = adherent.Name;
+            this.OpenText = adherent.OpenText;
+            this.PhoneNumber = adherent.PhoneNumber;
+            this.PostCode = adherent.PostCode;
+            this.Production = adherent.Production;
+            this.ReceivedGoodPlanByEmail = adherent.ReceivedGoodPlanByEmail;
+            this.ReceivedInformationsEmail = adherent.ReceivedInformationsEmail;
+            this.ReceivedNewsByEmail = adherent.ReceivedNewsByEmail;
+            this.ReceivedProductListByEmail = adherent.ReceivedProductListByEmail;
+            this.StartDate = adherent.StartDate;
+            this.Surname = adherent.Surname;
+            this.WebSiteLink = adherent.WebSiteLink;
+        }
+
         #endregion Produce
-        
+
     }
 
 

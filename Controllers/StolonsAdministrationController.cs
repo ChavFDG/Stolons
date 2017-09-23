@@ -120,7 +120,7 @@ namespace Stolons.Controllers
         // POST: Stolons/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditStolon(StolonViewModel vm, IFormFile uploadFile)
+        public async Task<IActionResult> EditStolon(StolonViewModel vm, string uploadLogo)
         {
             if (ModelState.IsValid)
             {
@@ -134,7 +134,10 @@ namespace Stolons.Controllers
                             vm.Stolon.UseSympathizer = false;
                             break;
                     }
-                    vm.Stolon.LogoFileName = await UploadFile(uploadFile, Configurations.AvatarStockagePath, vm.Stolon.LogoFileName);
+                    //Je supprime l'ancien logo
+                    _environment.DeleteFile(StolonLogoStockagePath, vm.Stolon.LogoFileName);
+                    //J'upload le nouveau et récupére son nom
+                    vm.Stolon.LogoFileName = _environment.UploadBase64Image( uploadLogo, StolonLogoStockagePath);
                     _context.Update(vm.Stolon);
                     await _context.SaveChangesAsync();
                 }

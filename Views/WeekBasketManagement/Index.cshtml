@@ -148,7 +148,7 @@ else
                 Téléphone
             </th>
             <th>
-                Bogues
+                Stols
             </th>
             <th>
                 Etat
@@ -173,7 +173,7 @@ else
                     @Html.DisplayFor(modelItem => item.Adherent.PhoneNumber)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.AdherentStolon.Token)𝞫
+                    @Html.DisplayFor(modelItem => item.AdherentStolon.Token)Ṩ
                 </td>
                 <td>
                     <a href="#" class="btn btn-small btn-default open-consumer-modal" billNumber="@item.BillNumber" canUseToken="@(Convert.ToInt32(item.AdherentStolon.Token >= item.OrderAmount))">Valider la récupération et le paiement</a>
@@ -204,9 +204,9 @@ else
                 </div>
                 <div class="modal-body">
                     <% if (canUseToken == 1) { %>
-                        <a href="/WeekBasketManagement/UpdateConsumerBill?paymentMode=0&billNumber=<%= billNumber %>" class="credit btn btn-small btn-default">Bogues</a>
+                        <a href="/WeekBasketManagement/UpdateConsumerBill?paymentMode=0&billNumber=<%= billNumber %>" class="credit btn btn-small btn-default">Stols</a>
                     <% } else {%>
-                        <a href="#" class="credit btn btn-small btn-default disabled">Bogues</a>
+                        <a href="#" class="credit btn btn-small btn-default disabled">Stols</a>
                     <% }%>
                     <a href="/WeekBasketManagement/UpdateConsumerBill?paymentMode=1&billNumber=<%= billNumber %>" class="credit btn btn-small btn-default">Chèque</a>
                     <a href="/WeekBasketManagement/UpdateConsumerBill?paymentMode=2&billNumber=<%= billNumber %>" class="credit btn btn-small btn-default">Espèces</a>

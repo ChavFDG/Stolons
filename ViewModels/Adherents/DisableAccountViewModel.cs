@@ -1,27 +1,26 @@
 ﻿using Stolons.Models;
-using Stolons.Models.Users;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Stolons.ViewModels.Token
+namespace Stolons.ViewModels.Adherents
 {
-    public class CreditTokenViewModel : BaseViewModel
+    public class DisableAccountViewModel : BaseViewModel
     {
-        public CreditTokenViewModel()
+        public DisableAccountViewModel()
         {
 
         }
-        public CreditTokenViewModel(AdherentStolon activeAdherentStolon, AdherentStolon adherentStolon)
+        public DisableAccountViewModel(AdherentStolon activeAdherentStolon, AdherentStolon adherentStolon)
         {
             ActiveAdherentStolon = activeAdherentStolon;
             AdherentStolon = adherentStolon;
         }
         public AdherentStolon AdherentStolon { get; set; }
 
-        [Display(Name = "Stols à créditer :")]
-        public decimal CreditedToken { get; set; } = 0;
+        [Display(Name = "Raison :")]
+        public string Comment { get; set; } = "Entrer la raison de la désactivation";
     }
 }

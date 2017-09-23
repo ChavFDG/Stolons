@@ -1,0 +1,61 @@
+﻿@model Stolons.ViewModels.Adherents.DisableAccountViewModel
+
+<div id="dialog-confirm"></div>
+
+
+<form asp-action="DisableAdherent">
+    <div class="modal-body">
+        <div class="form-horizontal">
+            <input asp-for="AdherentStolon.Id" hidden="hidden" />
+            <div class="form-group">
+                <label asp-for="Comment" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="Comment" class="form-control" id="disableComment" />
+                    <span asp-validation-for="Comment" class="text-danger" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <input id="disableButton" class="disable btn btn-small btn-default" type="submit" value="Désactiver le compte" />
+    </div>
+    <div id="disableModal" class="modal fade"></div>
+</form>
+
+<script id="disableModalTemplate" type="text/template">
+    <div class="modals">
+        <div class="modal-dialog" style="width: 250px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                </div>
+                <div class="modal-body">
+                    <p>Etes vous sur de vouloir désactiver le compte ?</p>
+                    <input class="disable btn btn-small btn-default" type="submit" id="validDisable" value="Valider" />
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script>
+    DisableModalView = Backbone.View.extend({
+        el: '#disableModal',
+        template: _.template($("#disableModalTemplate").html()),
+        open: function () {
+            this.render();
+        },
+        render: function () {
+            this.$el.html(this.template({ comment: $('input#disableComment').val() }));
+            this.$el.modal('show');
+        }
+    });
+
+    $( function() {
+        var disableModalView = new DisableModalView();
+        $('input#disableButton').click(function () {
+            disableModalView.open();
+            return false;
+        });
+    } );
+</script>

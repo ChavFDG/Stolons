@@ -60,6 +60,11 @@
             resizeImageToSpecificWidth(600, 'MainPictureHeavy');
             resizeImageToSpecificWidth(155, 'MainPictureLight');
         };
+
+        //$('#SellType').onchange = function () {
+        //    if (this.val() == 1)
+        //        $('#price').val(99);  
+        //};
     });
 </script>
 
@@ -112,7 +117,6 @@
             <label class="col-md-2 control-label">Photo principale</label>
             <div class="col-md-4">
                 <input id="image" type="file" class="form-control" accept="image/*">
-
                 <input type="hidden" name="MainPictureHeavy" />
                 <input type="hidden" name="MainPictureLight" />
             </div>

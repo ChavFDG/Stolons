@@ -88,7 +88,7 @@ namespace Stolons.Models.Transactions
             ProducerRefound = 6,
             [Display(Name = "Paiement panier")]
             BillPayement = 7,
-            [Display(Name = "Créditage de bogues")]
+            [Display(Name = "Créditage de stols")]
             TokenCredit = 8,
             [Display(Name = "Autre")]
             Other = 99

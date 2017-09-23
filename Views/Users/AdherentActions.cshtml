@@ -12,9 +12,9 @@
         <li><a asp-action="ShowBills" asp-route-id="@Model.AdherentStolon.Id">Voir factures</a></li>
         <li><a href="#" onclick="showDetailsAdherent(this);" data-id="@Model.AdherentStolon.Id" data-title="@("Détail de " + Model.AdherentStolon.Adherent.Surname +" "+Model.AdherentStolon.Adherent.Name)">Voir détail</a></li>
         <li><a href="#" onclick="showEditAdherent(this);" data-id="@Model.AdherentStolon.Id" data-title="@("Modification de " + Model.AdherentStolon.Adherent.Surname +" "+Model.AdherentStolon.Adherent.Name)">Modifier</a></li>
-        <li><a href="#" onclick="showCreditToken(this);" data-id="@Model.AdherentStolon.Id" data-title="@("Créditer des bogues à " + Model.AdherentStolon.Adherent.Surname +" "+Model.AdherentStolon.Adherent.Name)">Créditer des bogues</a></li>
+        <li><a href="#" onclick="showCreditToken(this);" data-id="@Model.AdherentStolon.Id" data-title="@("Créditer des stols à " + Model.AdherentStolon.Adherent.Surname +" "+Model.AdherentStolon.Adherent.Name)">Créditer des stols</a></li>
         @if (Model.AdherentStolon.SubscriptionPaid == false)
-                        {
+        {
             <li>
                 @Html.ActionLink(
                                    "Payer cotisation de : " + Model.AdherentStolon.GetStringSubscriptionAmount(),
@@ -23,22 +23,15 @@
                                     new { id = Model.AdherentStolon.Id },
                                     new { onclick = "return confirm('Valider le paiement de la cotisation de " + Model.AdherentStolon.Adherent.Name + " pour un montant de : " + Model.AdherentStolon.GetStringSubscriptionAmount() + "');" })
             </li>
-                        }
+        }
         @if (Model.ActiveAdherentStolon.Authorized(Role.Admin))
-                        {
+        {
             @if (Model.AdherentStolon.Enable == true)
-                            {
-                <li>
-                    @Html.ActionLink(
-                                   "Désactiver le compte",
-                                   "Disable",
-                                   "Users",
-                                    new { id = Model.AdherentStolon.Id },
-                                    new { onclick = "return confirm('Entrer la raison de la désactivation du compte pour " + Model.AdherentStolon.Adherent.Name + "');" })
-                </li>
-                            }
-                            else
-                            {
+            {
+                <li><a href="#" onclick="showDisableAccount(this);" data-id="@Model.AdherentStolon.Id" data-title="@("Désactivation du compte de " + Model.AdherentStolon.Adherent.Surname +" "+Model.AdherentStolon.Adherent.Name)">Désactiver le compte</a></li>
+            }
+            else
+            {
                 <li>
                     @Html.ActionLink(
                                    "Activer le compte",
@@ -47,7 +40,7 @@
                                     new { id = Model.AdherentStolon.Id },
                                     new { onclick = "return confirm('Confirmation de l'activation du compte de " + Model.AdherentStolon.Adherent.Name + " ?');" })
                 </li>
-                            }
+            }
 
             <li>
                 @Html.ActionLink(
@@ -57,6 +50,6 @@
                                     new { id = Model.AdherentStolon.Id },
                                     new { onclick = "return confirm('Êtes vous sur de vouloir supprimer le comtpe de " + Model.AdherentStolon.Adherent.Name + " ?');" })
             </li>
-                        }
+        }
     </ul>
 </div>

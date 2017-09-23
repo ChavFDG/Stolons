@@ -35,6 +35,54 @@ $(function() {
     });
 });
 </script>
+
+
+<script>
+    function resizeImageToSpecificWidth(width) {
+        var input = document.getElementById('logoImage');
+
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (event) {
+                var img = new Image();
+                img.onload = function () {
+                    var oc = document.createElement('canvas'), octx = oc.getContext('2d');
+                    oc.width = img.width;
+                    oc.height = img.height;
+                    octx.drawImage(img, 0, 0);
+                    while (oc.width * 0.5 > width) {
+                        oc.width *= 0.5;
+                        oc.height *= 0.5;
+                        octx.drawImage(oc, 0, 0, oc.width, oc.height);
+                    }
+                    oc.width = width;
+                    oc.height = oc.width * img.height / img.width;
+                    octx.drawImage(img, 0, 0, oc.width, oc.height);
+                    
+                    document.getElementById('image1Preview').src = oc.toDataURL();
+                    
+                    $('input[name=uploadLogo]').val(oc.toDataURL());
+                };
+                img.src = event.target.result;
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+
+    $(document).ready(function () {
+        var input = document.getElementById('logoImage');
+        input.onclick = function () {
+            this.value = null;
+        };
+
+        input.onchange = function () {
+            resizeImageToSpecificWidth(400);
+        };
+    });
+</script>
+
+
 <div class="form-horizontal">
     <hr />
     <input asp-for="Stolon.Id" hidden="hidden" />
@@ -73,7 +121,8 @@ $(function() {
     <div class="form-group">
         <label asp-for="Stolon.LogoFileName" class="col-md-2 control-label"></label>
         <div class="col-md-4">
-            <input id="image" type="file" accept="image/*" name="uploadFile" class="form-control">
+            <input id="logoImage" type="file" accept="image/*" class="form-control">
+            <input type="hidden" name="uploadLogo" />
         </div>
         <div class="col-md-4">
             <img id="image1Preview" src="@("\\"+Model.Stolon.LogoFilePath)" class="imgPreview" />

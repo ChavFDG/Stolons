@@ -208,7 +208,7 @@ namespace Stolons.Tools
                 message += "<br/>";
                 message += "<h4>En pièce jointe votre commande de la semaine (Facture " + bill.BillNumber + ")</h4>";
                 if (bill.AdherentStolon.Token > 0)
-                    message += "<p>Vous avez " + bill.AdherentStolon.Token + "𝞫, pensez à payer vos bogues lors de la récupération de votre commande.</p>";
+                    message += "<p>Vous avez " + bill.AdherentStolon.Token + "Ṩ, pensez à payer vos stols lors de la récupération de votre commande.</p>";
 
                 AuthMessageSender.SendEmail(bill.AdherentStolon.Stolon.Label,
                                                 bill.Adherent.Email,

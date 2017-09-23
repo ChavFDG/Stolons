@@ -91,7 +91,38 @@ namespace Stolons
         }
 
 
-        public static async Task<string> UploadImageFile(IHostingEnvironment environment, IFormFile uploadFile, string path)
+        public static void DeleteFile(this IHostingEnvironment environment, string fullFilePath)
+        {
+            string toDelete = Path.Combine(environment.WebRootPath, fullFilePath);
+            if (File.Exists(toDelete))
+                File.Delete(toDelete);
+        }
+
+        public static void DeleteFile(this IHostingEnvironment environment,  string filePath,string fileName)
+        {
+            if (String.IsNullOrWhiteSpace(fileName))
+                return;
+            DeleteFile(environment, Path.Combine(filePath, fileName));
+        }
+
+        public static string UploadBase64Image(this IHostingEnvironment environment, string base64data, string path, string pictureName = null)
+        {
+            base64data = base64data.Remove(0, base64data.IndexOf(',') + 1);
+            byte[] data = Convert.FromBase64String(base64data);
+
+            string uploads = Path.Combine(environment.WebRootPath, path);
+            if(string.IsNullOrWhiteSpace(pictureName))
+                pictureName = Guid.NewGuid().ToString() + ".jpg";
+            string filePath = Path.Combine(uploads, pictureName);
+            using (var file = File.Create(filePath))
+            {
+                file.Write(data, 0, data.Count());
+            }
+            return pictureName;
+        }
+
+
+        public static async Task<string> UploadImageFile(this IHostingEnvironment environment, IFormFile uploadFile, string path)
         {
             string uploads = Path.Combine(environment.WebRootPath, path);
             string fileName = Guid.NewGuid().ToString() + "_" + ContentDispositionHeaderValue.Parse(uploadFile.ContentDisposition).FileName.Trim('"');
@@ -102,22 +133,8 @@ namespace Stolons
             return Path.Combine(path,fileName);
         }
 
-        public static string UploadImageFile(IHostingEnvironment environment, string base64data ,string path, string fileName)
-        {
-            base64data = base64data.Remove(0, base64data.IndexOf(',') + 1);
-            byte[] data = Convert.FromBase64String(base64data);
 
-            string uploads = Path.Combine(environment.WebRootPath, path);
-
-            string filePath = Path.Combine(uploads, fileName);
-            using (var file = File.Create(filePath))
-            {
-                file.Write(data, 0, data.Count());
-            }
-            return Path.Combine(path, fileName);
-        }
-
-        #endregion FIleManagement
+        #endregion FileManagement
 
 
 
