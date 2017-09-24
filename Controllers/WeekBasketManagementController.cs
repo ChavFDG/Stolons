@@ -30,7 +30,8 @@ namespace Stolons.Controllers
         public IActionResult Index()
         {
             Stolon stolon = GetCurrentStolon();
-            VmWeekBasketManagement vm = new VmWeekBasketManagement();
+	    var adherentStolon = GetActiveAdherentStolon();
+            VmWeekBasketManagement vm = new VmWeekBasketManagement(adherentStolon);
             vm.Stolon = GetCurrentStolon();
             vm.ConsumerBills = _context.ConsumerBills.Include(x=>x.AdherentStolon).ThenInclude(x=>x.Adherent).Include(x=>x.AdherentStolon).ThenInclude(x=>x.Stolon).Where(x => x.State == BillState.Pending && x.AdherentStolon.StolonId == stolon.Id).OrderBy(x=>x.Adherent.Id).ToList();
             vm.ProducerBills = _context.ProducerBills.Include(x => x.AdherentStolon).ThenInclude(x => x.Adherent).Include(x => x.AdherentStolon).ThenInclude(x => x.Stolon).Where(x => x.State != BillState.Paid && x.AdherentStolon.StolonId == stolon.Id).OrderBy(x => x.Adherent.Id).ToList();
@@ -42,7 +43,7 @@ namespace Stolons.Controllers
         // GET: UpdateConsumerBill
         public IActionResult UpdateConsumerBill(string billNumber, PaymentMode paymentMode)
         {
-            ConsumerBill bill = _context.ConsumerBills.Include(x => x.Adherent).First(x => x.BillNumber == billNumber);
+            ConsumerBill bill = _context.ConsumerBills.Include(x => x.AdherentStolon).First(x => x.BillNumber == billNumber);
             bill.State = BillState.Paid;
             //_context.Update(bill);
             //Transaction
@@ -60,7 +61,7 @@ namespace Stolons.Controllers
         // GET: UpdateProducerBill
         public IActionResult UpdateProducerBill(string billNumber)
         {
-            ProducerBill bill = _context.ProducerBills.Include(x=>x.Adherent).First(x => x.BillNumber == billNumber);
+            ProducerBill bill = _context.ProducerBills.Include(x=>x.AdherentStolon).First(x => x.BillNumber == billNumber);
             bill.State++;
             _context.Update(bill);
             if(bill.State == BillState.Paid)

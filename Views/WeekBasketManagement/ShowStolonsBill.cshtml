@@ -9,6 +9,10 @@
     <p>Impossible de trouver la facture</p>
 }
 else
-{
-    @Html.Raw(Model.HtmlBillContent)
-}
+    {
+    <div>
+    <p>
+	@Html.Raw(Model.HtmlBillContent)
+    </p>
+    </div>
+    }

@@ -6,9 +6,14 @@ using System.Threading.Tasks;
 
 namespace Stolons.ViewModels.WeekBasketManagement
 {
-    public class VmWeekBasketManagement
+    public class VmWeekBasketManagement : BaseViewModel
     {
-        public Stolon Stolon { get; set; }
+	public VmWeekBasketManagement(AdherentStolon activeAdherentStolon)
+	{
+	    ActiveAdherentStolon = activeAdherentStolon;
+	}
+
+	public Stolon Stolon { get; set; }
 
         public List<ConsumerBill> ConsumerBills { get; set; }
 
