@@ -39,6 +39,7 @@
         "BundlerMinifier.Core": "2.3.327",
 	"Microsoft.AspNetCore.Mvc": "1.1.1",
 	"morelinq": "2.6.0",
+	"DinkToPdf": "1.0.8",
     },
 
     "tools": {
