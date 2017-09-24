@@ -38,6 +38,8 @@ else
 
     <script id="filtersTemplate" type="text/template">
         <% _.forEach(productTypes, function(type) { %>
+        <% var typesProducts = products.getProductsForType(type.Name); %>
+	<% if (typesProducts.length > 0) { %>
         <li class="dropdown">
         <a id="link_<%= type.Name %>" href="#<%= type.Name %>" class="dropdown-toggle" data-toggle="dropdown">
             <img src="<%= type.Image %>" class="productCategoryImage" />
@@ -45,16 +47,20 @@ else
         </a>
         <ul class="dropdown-menu">
         <% _.forEach(type.ProductFamilly, function(family) { %>
+             <% var familyProducts = products.getProductsForFamily(family.FamillyName); %>
+	     <% if (familyProducts.length > 0) { %>
              <li>
                  <a id="link_<%= family.FamillyName %>" href="#<%= family.FamillyName %>">
                      <img src="<%= family.Image %>" class="productCategoryImage" />
                      <%= family.FamillyName %>
                  </a>
 	     </li>
+        <% } %>
         <% }); %>
         </ul>
         </li>
         </a>
+        <% } %>
         <% }); %>
     </script>
 
@@ -103,12 +109,18 @@ else
         <% _.forEach(productTypes, function(type) { %>
 	    <% var typeProducts = products.getProductsForType(type.Name) %>
 	    <% if (!_.isEmpty(typeProducts)) { %>
-	    <a id="<%= type.Name %>" class="anchorProductType"><%= type.Name %></a>
+	    <a id="<%= type.Name %>" class="anchorProductType">
+		<img src="<%= type.Image %>" class="productCategoryImage" />
+		<%= type.Name %>
+	    </a>
             <% _.forEach(type.ProductFamilly, function(family) { %>
 		<% var famillyProducts = products.getProductsForFamily(family.FamillyName) %>
 		<% if (famillyProducts.length > 0)  { %>
 		  <div class="row">
-		    <a id="<%= family.FamillyName %>" class="anchorProductFamily"><%= family.FamillyName %></a>
+		    <a id="<%= family.FamillyName %>" class="anchorProductFamily">
+			<img src="<%= family.Image %>" class="productCategoryImage" />
+			<%= family.FamillyName %>
+		    </a>
                     <% _.forEach(famillyProducts, function(productModel) { %>
 		        <div id="product-<%= productModel.get('Id') %>">
 		        </div>

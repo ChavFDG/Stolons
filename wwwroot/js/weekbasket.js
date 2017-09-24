@@ -22,7 +22,7 @@ ProductTypesModel = Backbone.Collection.extend({
     model: ProductTypeModel,
 
     initialize: function () {
-        this.fetch();
+	this.fetch();
     },
 
     comparator: "Name"
@@ -37,7 +37,7 @@ ProductsModel = Backbone.Collection.extend(
         url: "/api/Products",
 
         initialize: function () {
-            this.fetch();
+	    this.fetch();
         },
 
 	getProductsForFamily: function(family) {
@@ -50,7 +50,6 @@ ProductsModel = Backbone.Collection.extend(
 		    }
 		}
 	    });
-	    //console.log("products for familly " + family + " ::::", products);
 	    return products;
 	},
 
@@ -64,7 +63,6 @@ ProductsModel = Backbone.Collection.extend(
 		    }
 		}
 	    });
-	    //console.log("products for familly " + family + " ::::", products);
 	    return products;
 	}
     }
@@ -182,7 +180,6 @@ TmpWeekBasketModel = Backbone.Model.extend(
                 },
                 type: 'post',
                 success: function (response) {
-                    console.log("Reset basket response: ", response);
                     self.set(JSON.parse(response));
                 }
             });
@@ -226,16 +223,6 @@ ValidatedWeekBasketModel = Backbone.Model.extend({
     }
 });
 
-var initModels = function () {
-    WeekBasket.ProductsModel = new ProductsModel();
-    WeekBasket.ProductTypesModel = new ProductTypesModel();
-    WeekBasket.ValidatedWeekBasketModel = new ValidatedWeekBasketModel();
-    WeekBasket.TmpWeekBasketModel = new TmpWeekBasketModel();
-    WeekBasket.ProductsModel.on("sync", function () {
-        WeekBasket.TmpWeekBasketModel.fetch();
-    });
-};
-
 /* ---------------------------  Bellow Views definitions -------------------- */
 
 FiltersView = Backbone.View.extend({
@@ -247,8 +234,9 @@ FiltersView = Backbone.View.extend({
     initialize: function (args) {
         this.model = args.model;
         this.productsModel = args.productsModel;
-        this.model.on('sync', this.render, this);
-        this.selectedFamily = "Tous";
+	this.model.on('sync', this.render, this);
+        this.productsModel.on('sync', this.render, this);
+        //this.selectedFamily = "Tous";
     },
 
     famillyMatch: function (product) {
@@ -305,7 +293,10 @@ FiltersView = Backbone.View.extend({
     },
 
     render: function () {
-        this.$el.html(this.template({ productTypes: this.model.toJSON() }));
+        this.$el.html(this.template({
+	    productTypes: this.model.toJSON(),
+	    products: WeekBasket.ProductsModel
+	}));
 	//Register click events on categories
 	this.model.forEach(function(typeModel) {
 	    $("#link_" + typeModel.get("Name")).click(function(e) {
@@ -316,9 +307,9 @@ FiltersView = Backbone.View.extend({
 	    });
 	});
 	$('#filters > li.dropdown').hover(function() {
-	    $(this).find('.dropdown-menu').stop(true, true).delay(0).fadeIn(0);
+	    $(this).find('.dropdown-menu').stop(true, true).delay(0).fadeIn(1000);
 	}, function() {
-	    $(this).find('.dropdown-menu').stop(true, true).delay(0).fadeOut(0);
+	    $(this).find('.dropdown-menu').stop(true, true).delay(0).fadeOut(1000);
 	});
 	this.$('#search').on("input", _.bind(function () {
             this.filterProducts();
@@ -436,6 +427,10 @@ ProductActionView = Backbone.View.extend(
             if (!this.billEntry) {
                 return false;
             }
+	    //Infinite stock
+	    if (this.billEntry.ProductStock.Product.StockManagement == 2) {
+		return true;
+	    }
             var validatedBillEntry = WeekBasket.ValidatedWeekBasketModel.getProductEntry(this.productId);
             var validatedQty = (validatedBillEntry && validatedBillEntry.Quantity) || 0;
             var diffQty = this.billEntry.Quantity - validatedQty;
@@ -444,7 +439,6 @@ ProductActionView = Backbone.View.extend(
             if (this.billEntry.Type != 1) {
                 stepStock = (this.billEntry.ProductStock.RemainingStock * 1000) / this.billEntry.ProductStock.Product.QuantityStep;
             }
-	    console.log("canIncrement ?? " + diffQty + ":: stepStock : " +  stepStock);
             return diffQty < stepStock;
         },
 
@@ -453,6 +447,10 @@ ProductActionView = Backbone.View.extend(
             var validatedQty = (validatedBillEntry && validatedBillEntry.Quantity) || 0;
             var productModel = WeekBasket.ProductsModel.get(this.productId);
             if (!this.billEntry) {
+		//Infinite stock
+		if (productModel.get("Product").get("StockManagement")  == 2) {
+		    return true;
+		}
                 if (productModel.get("RemainingStock") + validatedQty > 0) {
                     return true;
                 } else {
@@ -602,6 +600,18 @@ ValidatedWeekBasketView = Backbone.View.extend(
         }
     }
 );
+
+
+var initModels = function () {
+    var def = $.Deferred();
+    WeekBasket.ProductTypesModel = new ProductTypesModel();
+    WeekBasket.ProductsModel = new ProductsModel();
+    WeekBasket.ValidatedWeekBasketModel = new ValidatedWeekBasketModel();
+    WeekBasket.TmpWeekBasketModel = new TmpWeekBasketModel();
+    WeekBasket.ProductsModel.on("sync", function() {
+	WeekBasket.TmpWeekBasketModel.fetch();
+    }, this);
+};
 
 var initViews = function () {
 
