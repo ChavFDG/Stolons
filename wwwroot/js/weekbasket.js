@@ -309,7 +309,7 @@ FiltersView = Backbone.View.extend({
 	$('#filters > li.dropdown').hover(function() {
 	    $(this).find('.dropdown-menu').stop(true, true).delay(0).fadeIn(1000);
 	}, function() {
-	    $(this).find('.dropdown-menu').stop(true, true).delay(0).fadeOut(1000);
+	    $(this).find('.dropdown-menu').stop(true, true).delay(600).fadeOut(200);
 	});
 	this.$('#search').on("input", _.bind(function () {
             this.filterProducts();
