@@ -48,7 +48,7 @@
                     @Html.DisplayFor(modelItem => item.Adherent.PhoneNumber)
                 </td>
                 <td>
-                    @if (User.IsInRole(Configurations.Role.StolonAdmin.ToString()) || User.IsInRole(Configurations.Role.WebAdmin.ToString()))
+                    @if (Model.ActiveAdherentStolon.Authorized(Role.Admin) || Model.ActiveAdherentStolon.Adherent.IsWebAdmin)
                     {
                         @Html.ActionLink(
                                    "Valider paiement de la facture",
