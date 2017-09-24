@@ -16,6 +16,7 @@ using Stolons.Helpers;
 using Stolons.Models.Users;
 using Stolons.Models.Messages;
 using Stolons.ViewModels.News;
+using System.Collections.Generic;
 
 namespace Stolons.Controllers
 {
@@ -35,7 +36,17 @@ namespace Stolons.Controllers
         // GET: News
         public IActionResult Index()
         {
-            return View(new NewsListViewModel(GetActiveAdherentStolon(), _context.News.Include(x => x.PublishBy).ThenInclude(x => x.Adherent).Include(x => x.PublishBy).ThenInclude(x => x.Stolon).Where(x => x.PublishBy.StolonId == GetCurrentStolon().Id).ToList()));
+            var activeAdherentStolon = GetActiveAdherentStolon();
+            if (Authorized(Role.Volunteer))
+            {
+                return View(new NewsListViewModel(activeAdherentStolon, _context.News.Include(x => x.PublishBy).ThenInclude(x => x.Adherent).Include(x => x.PublishBy).ThenInclude(x => x.Stolon).Where(x => x.PublishBy.StolonId == GetCurrentStolon().Id).ToList()));
+            }
+            if (AuthorizedProducer())
+            {
+                return View(new NewsListViewModel(activeAdherentStolon, _context.News.Include(x => x.PublishBy).ThenInclude(x => x.Adherent).Include(x => x.PublishBy).ThenInclude(x => x.Stolon).Where(x => x.PublishBy.AdherentId == activeAdherentStolon.AdherentId).ToList()));
+            }
+            return NotFound();
+
         }
 
         // GET: News/Details/5

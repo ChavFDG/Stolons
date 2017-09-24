@@ -65,7 +65,7 @@
                 @switch (item.PublishAs)
                 {
                     case Stolons.Models.Messages.NewsPublishAs.Producer:
-                        <a asp-action="PartialDetail" asp-controller="Producers" asp-route-id="@item.PublishBy.Adherent.Id">PublishBy.Adherent.CompanyName)</a>
+                        <a asp-action="PartialDetail" asp-controller="Producers" asp-route-id="@item.PublishBy.Adherent.Id">@item.PublishBy.Adherent.CompanyName</a>
                         break;
                     case Stolons.Models.Messages.NewsPublishAs.Stolon:
                         @item.PublishBy.Stolon.Label

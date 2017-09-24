@@ -122,7 +122,16 @@
             <input type="hidden" name="uploadNewsImage" />
         </div>
         <div class="col-md-4">
-            <img id="image1Preview" src="@("\\"+Model.News.ImageName)" class="imgPreview" />
+            @{
+                if (String.IsNullOrWhiteSpace(Model.News.ImageName))
+                {
+                    <img id="image1Preview" alt="Pas d'image" class="imgPreview" />
+                }
+                else
+                {
+                    <img id="image1Preview" src="@(Configurations.GetUrl(Model.News.ImageLink))" class="imgPreview" />
+                }
+            }
         </div>
     </div>
 </div>
