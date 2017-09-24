@@ -98,6 +98,7 @@ namespace Stolons.Models
 
         [Display(Name = "Numéro de facture")] //Year_WeekNumber_UserId
         public string BillNumber { get; set; }
+        public string OrderNumber { get; set; }
         public AdherentStolon AdherentStolon { get; set; }
 
         public Adherent Adherent
@@ -226,9 +227,7 @@ namespace Stolons.Models
         {
             get
             {
-                string stolonsBillsPath = Path.Combine(Configurations.Environment.WebRootPath, Configurations.StolonsBillsStockagePath);
-                string stolonsBillsFullPath = Path.Combine(stolonsBillsPath, BillNumber + ".pdf");
-                return stolonsBillsFullPath;
+                return Path.Combine(Configurations.BillsStockagePath, BillNumber + ".pdf");
             }
         }
 
@@ -237,12 +236,8 @@ namespace Stolons.Models
         {
             get
             {
-                string url = Configurations.GetUrl(Configurations.StolonsBillsStockagePath);
-                url += "/" + BillNumber + ".pdf";
-                return url;
+                return Configurations.GetUrl(FilePath);
             }
         }
-
     }
-
 }

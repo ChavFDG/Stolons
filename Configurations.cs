@@ -62,9 +62,7 @@ namespace Stolons
 
         public static string StolonLogoStockagePath = Path.Combine("uploads", "images","logos");
         public static string ServiceImageStockagePath = Path.Combine("images","services");
-        public static string StolonsBillsStockagePath = Path.Combine("bills", "stolons");
-        public static string ConsumersBillsStockagePath = Path.Combine("bills","consumer");
-        public static string ProducersBillsStockagePath = Path.Combine("bills", "producer");
+        public static string BillsStockagePath = Path.Combine("bills");
         public static string NewsImageStockagePath = Path.Combine("uploads", "images", "news");
         public static string AvatarStockagePath = Path.Combine("uploads", "images", "avatars");
         public static string ProductsTypeAndFamillyIconsStockagesPath = Path.Combine("images", "productFamilies");
@@ -83,13 +81,38 @@ namespace Stolons
             return localPath.Replace("\\", "/");
         }
 
-        public static string GetUrl(IBill bill)
+        public static string GetBillUrl(IBill bill)
         {
-            string url = GetUrl(bill is ConsumerBill ? Configurations.ConsumersBillsStockagePath : Configurations.ProducersBillsStockagePath);
-            url += "/" + bill.BillNumber + ".pdf";
-            return url;
+            return BillsStockagePath + "/" + bill.BillNumber + ".pdf";
         }
 
+        public static string GetOrderUrl(ProducerBill prodBill)
+        {
+            return BillsStockagePath + "/" + prodBill.OrderNumber + ".pdf";
+        }
+
+        public static string GetBillFilePath(this IBill bill)
+        {
+            return Path.Combine(Configurations.Environment.WebRootPath,
+                                            Configurations.BillsStockagePath,
+                                            bill.GetBillFileName());
+        }
+        public static string GetOrderFilePath(this ProducerBill bill)
+        {
+            return Path.Combine(Configurations.Environment.WebRootPath,
+                                            Configurations.BillsStockagePath,
+                                            bill.GetOrderFileName());
+        }
+
+        public static string GetBillFileName(this IBill bill)
+        {
+            return bill.BillNumber + ".pdf";
+        }
+
+        public static string GetOrderFileName(this ProducerBill bill)
+        {
+            return bill.OrderNumber + ".pdf";
+        }
 
         public static void DeleteFile(this IHostingEnvironment environment, string fullFilePath)
         {

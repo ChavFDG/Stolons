@@ -80,44 +80,6 @@ namespace Stolons.Tools
                             dbContext.Add(bill);
                         }
 
-
-
-
-
-
-
-                        var converter = new BasicConverter(new PdfTools());
-
-
-                        var doc = new HtmlToPdfDocument()
-                        {
-                            GlobalSettings =
-                            {
-                                ColorMode = ColorMode.Color,
-                                Orientation = Orientation.Landscape,
-                                PaperSize = PaperKind.A4Plus,
-                                Out = Path.Combine(Configurations.Environment.WebRootPath,"test.pdf"),
-                            },
-                            Objects =
-                            {
-                                new ObjectSettings()
-                                {
-                                    PagesCount = true,
-                                    HtmlContent = producerBills[0].HtmlBillContent,
-                                    WebSettings = { DefaultEncoding = "utf-8" },
-                                    HeaderSettings = { FontSize = 9, Right = "Page [page] of [toPage]", Line = true, Spacing = 2.812 }
-                                }
-                            }
-                        };
-
-
-
-                        converter.Convert(doc);
-
-
-
-
-
                         //Stolons
                         StolonsBill stolonsBill = GenerateBill(stolon, consumerWeekBaskets, dbContext);
                         dbContext.Add(stolonsBill);
@@ -149,7 +111,7 @@ namespace Stolons.Tools
                         #endregion Save bills
 
                         #region Create PDF and send mail
-                        
+
                         //For stolons
                         string billWebAddress = Path.Combine("http://", Configurations.SiteUrl, "WeekBasketManagement", "ShowStolonsBill", stolonsBill.BillNumber).Replace("\\", "/");
                         try
@@ -168,15 +130,13 @@ namespace Stolons.Tools
                         // => Producer, send mails
                         foreach (var bill in producerBills)
                         {
-                            Thread thread = new Thread(() => GeneratePdfAndSendEmail(bill));
-                            thread.Start();
+                            GenerateOrderPdfAndSendEmail(bill);
                         }
 
                         //Bills (save bills and send mails to user)
                         foreach (var bill in consumerBills)
                         {
-                            Thread thread = new Thread(() => GeneratePdfAndSendEmail(bill));
-                            thread.Start();
+                            GenerateOrderPdfAndSendEmail(bill);
                         }
 
                         #endregion  Create PDF and send mail
@@ -200,30 +160,33 @@ namespace Stolons.Tools
         }
 
 
-        private static void GeneratePdfAndSendEmail(ProducerBill bill)
+        private static void GenerateOrderPdfAndSendEmail(ProducerBill bill)
         {
             try
             {
-                //Generate pdf file
-                GeneratePDF(bill);
-                int cpt = 0;
-                while (!File.Exists(bill.GetFilePath()))
+                if (bill.BillEntries.Count == 0)
                 {
-                    cpt++;
-                    Thread.Sleep(500);
-                    if (cpt == 20)
-                        return;
+                    AuthMessageSender.SendEmail(bill.AdherentStolon.Stolon.Label,
+                                                    bill.Adherent.Email,
+                                                    bill.Adherent.CompanyName,
+                                                    "Aucune commande chez " + bill.Stolon.Label + " cette semaine.",
+                                                    "<h3>Aucune commande chez  " + bill.Stolon.Label + " cette semaine.");
                 }
-                Thread.Sleep(50);
-                //Send mail to producer
-                AuthMessageSender.SendEmail(bill.AdherentStolon.Stolon.Label,
-                                                bill.Adherent.Email,
-                                                bill.Adherent.CompanyName,
-                                                "Votre commande de la semaine (Facture " + bill.BillNumber + ")",
-                                                bill.HtmlOrderContent
-                                                + "<h3>En pièce jointe votre facture de la semaine (Facture " + bill.BillNumber + ")</h3>",
-                                                File.ReadAllBytes(bill.GetFilePath()),
-                                                "Facture " + bill.GetFileName());
+                else
+                {
+                    //Generate pdf file
+                    GenerateOrderPDF(bill);
+                    //Send mail to producer
+                    AuthMessageSender.SendEmail(bill.AdherentStolon.Stolon.Label,
+                                                    bill.Adherent.Email,
+                                                    bill.Adherent.CompanyName,
+                                                    "Votre bon de commande de la semaine chez " + bill.Stolon.Label + " (Bon de commande " + bill.BillNumber + ")",
+                                                    bill.HtmlOrderContent
+                                                    + "<h3>En pièce jointe votre bon de commande de la semaine chez " + bill.Stolon.Label + " (Bon de commande " + bill.BillNumber + ")</h3>",
+                                                    File.ReadAllBytes(bill.GetOrderFilePath()),
+                                                    "Bon de commande " + bill.GetOrderFileName());
+                }
+
             }
             catch (Exception exept)
             {
@@ -235,35 +198,27 @@ namespace Stolons.Tools
             }
 
         }
-        private static void GeneratePdfAndSendEmail(ConsumerBill bill)
+        private static void GenerateOrderPdfAndSendEmail(ConsumerBill bill)
         {
 
             try
             {
                 //Generate pdf file
-                GeneratePDF(bill);
-                int cpt = 0;
-                while (!File.Exists(bill.GetFilePath()))
-                {
-                    cpt++;
-                    System.Threading.Thread.Sleep(500);
-                    if (cpt == 20)
-                        return;
-                }
-                //Send mail to user with bill
+                GenerateBillPDF(bill);
+                //Send mail to consumer
                 string message = "<h3>" + bill.AdherentStolon.Stolon.OrderDeliveryMessage + "</h3>";
                 message += "<br/>";
                 message += "<h4>En pièce jointe votre commande de la semaine (Facture " + bill.BillNumber + ")</h4>";
                 if (bill.AdherentStolon.Token > 0)
-                    message += "<p>Vous avez " + bill.AdherentStolon.Token + "Ṩ, pensez à payer vos stols lors de la récupération de votre commande.</p>";
+                    message += "<p>Vous avez " + bill.AdherentStolon.Token + "Ṩ, pensez à payer avec vos stols lors de la récupération de votre commande.</p>";
 
                 AuthMessageSender.SendEmail(bill.AdherentStolon.Stolon.Label,
                                                 bill.Adherent.Email,
                                                 bill.Adherent.Name,
                                                 "Votre commande de la semaine (Facture " + bill.BillNumber + ")",
                                                 message,
-                                                File.ReadAllBytes(bill.GetFilePath()),
-                                                "Facture " + bill.GetFileName());
+                                                File.ReadAllBytes(bill.GetBillFilePath()),
+                                                "Commande " + bill.GetBillFileName());
             }
             catch (Exception exept)
             {
@@ -276,23 +231,10 @@ namespace Stolons.Tools
 
         }
 
-        private static string GetFilePath(this IBill bill)
-        {
-            return Path.Combine(Configurations.Environment.WebRootPath,
-                                            bill.AdherentStolon.Adherent is Adherent ? Configurations.ProducersBillsStockagePath : Configurations.ConsumersBillsStockagePath,
-                                            bill.AdherentStolon.Id.ToString(),
-                                            bill.GetFileName());
-        }
-        private static string GetFileName(this IBill bill)
-        {
-            return bill.BillNumber + ".pdf";
-        }
-
-
         private static StolonsBill GenerateBill(Stolon stolon, List<ValidatedWeekBasket> consumerWeekBaskets, ApplicationDbContext dbContext)
         {
             StringBuilder builder = new StringBuilder();
-            string billNumber = DateTime.Now.Year + "_" + DateTime.Now.GetIso8601WeekOfYear();
+            string billNumber = stolon.ShortLabel + "_" + DateTime.Now.Year + "_" + DateTime.Now.GetIso8601WeekOfYear();
             StolonsBill bill = new StolonsBill(billNumber)
             {
                 Stolon = stolon,
@@ -366,9 +308,6 @@ namespace Stolons.Tools
             return bill;
         }
 
-        //BILL NAME INFORMATION
-        //Bills are stored like that : bills\UserId\Year_WeekNumber_UserId
-
         //PRODUCER BILL
 
         private static string GenerateHtmlOrderContent(ProducerBill bill, ApplicationDbContext dbContext)
@@ -377,10 +316,10 @@ namespace Stolons.Tools
             StringBuilder orderBuilder = new StringBuilder();
             //Entete de facture
             //  Producteur
-            orderBuilder.AppendLine("<h3> Commande n°" + bill.BillNumber + "</h3>");
-            orderBuilder.AppendLine("<p>" + bill.Adherent.CompanyName + "<p>");
-            orderBuilder.AppendLine("<p>Année : " + DateTime.Now.Year);
-            orderBuilder.AppendLine("<p>Semaine : " + DateTime.Now.GetIso8601WeekOfYear());
+            orderBuilder.AppendLine("<h3> Commande n°" + bill.OrderNumber + "</h3>");
+            orderBuilder.AppendLine("<p>" + bill.Adherent.CompanyName + "<br>");
+            orderBuilder.AppendLine("<Année : " + DateTime.Now.Year + "<br>");
+            orderBuilder.AppendLine("Semaine : " + DateTime.Now.GetIso8601WeekOfYear() + "<br></p>");
             orderBuilder.AppendLine("<br>");
             #region Par produit
 
@@ -432,6 +371,9 @@ namespace Stolons.Tools
             orderBuilder.AppendLine("</table>");
 
             #endregion Par client
+            orderBuilder.AppendLine("<p>" + "Montant total de la commande  " + bill.OrderAmount + "€<br>");
+            orderBuilder.AppendLine("Montant total du % du Stolons " + bill.FeeAmount + "€<br>");
+            orderBuilder.AppendLine("Montant total à percevoir     <b>" + bill.BillAmount + "€</b> <i>(Dont " + bill.TaxAmount + "€ TVA)</i></p>");
             return orderBuilder.ToString();
         }
 
@@ -536,12 +478,12 @@ namespace Stolons.Tools
 
             //Entete de facture
             builder.AppendLine("<h2>Facture : " + bill.BillNumber + "</h2>");
-            builder.AppendLine("<p>Numéro d'adhérent : " + bill.AdherentStolon.LocalId + "<p>");
-            builder.AppendLine("<p>Nom : " + bill.Adherent.Name + "<p>");
-            builder.AppendLine("<p>Prénom : " + bill.Adherent.Surname + "<p>");
-            builder.AppendLine("<p>Téléphone : " + bill.Adherent.PhoneNumber + "<p>");
-            builder.AppendLine("<p>Année : " + DateTime.Now.Year);
-            builder.AppendLine("<p>Semaine : " + DateTime.Now.GetIso8601WeekOfYear());
+            builder.AppendLine("<p>Numéro d'adhérent : " + bill.AdherentStolon.LocalId + "<br>");
+            builder.AppendLine("Nom : " + bill.Adherent.Name + "<br>");
+            builder.AppendLine("Prénom : " + bill.Adherent.Surname + "<br>");
+            builder.AppendLine("Téléphone : " + bill.Adherent.PhoneNumber + "<br>");
+            builder.AppendLine("Année : " + DateTime.Now.Year + "<br>");
+            builder.AppendLine("Semaine : " + DateTime.Now.GetIso8601WeekOfYear()+"</p>");
             //
             builder.AppendLine("<h2>Produits de votre panier de la semaine :</h2>");
             builder.AppendLine("<table class=\"table\">");
@@ -568,12 +510,14 @@ namespace Stolons.Tools
             return builder.ToString();
         }
 
-        private static T CreateBill<T>(AdherentStolon userStolon, List<BillEntry> billEntries) where T : class, IBill, new()
+        private static T CreateBill<T>(AdherentStolon adherentStolon, List<BillEntry> billEntries) where T : class, IBill, new()
         {
             IBill bill = new T();
             bill.BillEntries = billEntries;
-            bill.BillNumber = GenerateBillNumber(userStolon.Stolon.ShortLabel, userStolon.LocalId, bill is ProducerBill);
-            bill.AdherentStolon = userStolon;
+            bill.BillNumber = GenerateBillNumber(adherentStolon.Stolon.ShortLabel, adherentStolon.LocalId, bill is ProducerBill);
+            if (bill is ProducerBill)
+                (bill as ProducerBill).OrderNumber = GenerateOrderNumber(adherentStolon.Stolon.ShortLabel, adherentStolon.LocalId);
+            bill.AdherentStolon = adherentStolon;
             bill.State = BillState.Pending;
             bill.EditionDate = DateTime.Now;
             return bill as T;
@@ -590,32 +534,52 @@ namespace Stolons.Tools
             return billNumber;
         }
 
-        public static void GeneratePDF(IBill bill)
+        private static string GenerateOrderNumber(string shortLabel, int localId)
         {
-            string billWebAddress = Path.Combine("http://", Configurations.SiteUrl, "Bills", "ShowBill", bill.BillNumber).Replace("\\", "/");
-            GeneratePDF(billWebAddress, bill.GetFilePath());
+            //ShortStolonName_LocalId(P)_YearNumber_WeekNumber
+            //Exemple : "Privas_12_2017_25
+            string orderNumber = shortLabel + "_" + localId;
+            orderNumber += "BC";
+            orderNumber += "_" + DateTime.Now.Year + "_" + DateTime.Now.GetIso8601WeekOfYear();
+            return orderNumber;
         }
 
-        /// <summary>
-        /// Generate a pdf file from a web url to a file path
-        /// </summary>
-        /// <param name="webAddress"></param>
-        /// <param name="filePath"></param>
-        public static void GeneratePDF(string webAddress, string filePath)
+        public static void GenerateOrderPDF(ProducerBill bill)
         {
+            GeneratePDF(bill.HtmlOrderContent, bill.GetOrderFilePath());
+        }
 
-            while (File.Exists(filePath))
+        public static void GenerateBillPDF(IBill bill)
+        {
+            GeneratePDF(bill.HtmlBillContent, bill.GetBillFilePath());
+        }
+
+        public static void GeneratePDF(string htmlContent, string fullPath)
+        {
+            var converter = new BasicConverter(new PdfTools());
+
+            var doc = new HtmlToPdfDocument()
             {
-                File.Delete(filePath);
-            }
+                GlobalSettings =
+                            {
+                                ColorMode = ColorMode.Color,
+                                Orientation = Orientation.Portrait,
+                                PaperSize = PaperKind.A4Plus,
+                                Out = fullPath,
+                            },
+                Objects =
+                            {
+                                new ObjectSettings()
+                                {
+                                    PagesCount = true,
+                                    HtmlContent = htmlContent,
+                                    WebSettings = { DefaultEncoding = "utf-8" },
+                                    HeaderSettings = { FontSize = 9, Right = "Page [page] sur [toPage]", Line = true, Spacing = 2.812 }
+                                }
+                            }
+            };
 
-            string phantomFolder = Path.Combine(Configurations.Environment.WebRootPath, "phantomjs");
-            string phantomjs = Path.Combine(phantomFolder, "phantomjs.exe");
-            string rasterizejs = Path.Combine(Configurations.Environment.WebRootPath, "phantomjs", "rasterize.js");
-
-            //Création du PDF par phantomjs
-            string arguments = "\"" + rasterizejs + "\" \"" + webAddress + "\" " + filePath;
-            var proc = Process.Start(phantomjs, arguments);
+            converter.Convert(doc);
         }
 
         public static int GetIso8601WeekOfYear(this DateTime time)
