@@ -436,6 +436,10 @@ ProductActionView = Backbone.View.extend(
             if (!this.billEntry) {
                 return false;
             }
+	    //Infinite stock
+	    if (this.billEntry.ProductStock.Product.StockManagement == 2) {
+		return true;
+	    }
             var validatedBillEntry = WeekBasket.ValidatedWeekBasketModel.getProductEntry(this.productId);
             var validatedQty = (validatedBillEntry && validatedBillEntry.Quantity) || 0;
             var diffQty = this.billEntry.Quantity - validatedQty;
@@ -444,7 +448,6 @@ ProductActionView = Backbone.View.extend(
             if (this.billEntry.Type != 1) {
                 stepStock = (this.billEntry.ProductStock.RemainingStock * 1000) / this.billEntry.ProductStock.Product.QuantityStep;
             }
-	    console.log("canIncrement ?? " + diffQty + ":: stepStock : " +  stepStock);
             return diffQty < stepStock;
         },
 
@@ -453,6 +456,10 @@ ProductActionView = Backbone.View.extend(
             var validatedQty = (validatedBillEntry && validatedBillEntry.Quantity) || 0;
             var productModel = WeekBasket.ProductsModel.get(this.productId);
             if (!this.billEntry) {
+		//Infinite stock
+		if (productModel.get("Product").get("StockManagement")  == 2) {
+		    return true;
+		}
                 if (productModel.get("RemainingStock") + validatedQty > 0) {
                     return true;
                 } else {

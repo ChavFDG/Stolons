@@ -211,8 +211,17 @@ namespace Stolons.Controllers
             {
                 stepStock = (productStock.RemainingStock * 1000.0M) / productStock.Product.QuantityStep;
             }
+	    bool proceed = false;
+	    if (productStock.Product.StockManagement == Product.StockType.Unlimited)
+	    {
+		proceed = true;
+	    }
             if (!(quantity > 0 && stepStock < (billEntry.Quantity - validatedQuantity) + quantity))
             {
+		proceed = true;
+	    }
+	    if (proceed == true)
+	    {
                 billEntry.Quantity = billEntry.Quantity + quantity;
 
                 if (billEntry.Quantity <= 0)
@@ -361,7 +370,7 @@ namespace Stolons.Controllers
                             //Actual remaining stock in terms of quantity step Kg/L for weight type products
                             stepStock = (productStock.RemainingStock / productStock.Product.QuantityStep) * 1000.0M;
                         }
-                        if (stepStock < qtyDiff)
+                        if (stepStock < qtyDiff && productStock.Product.StockManagement != Product.StockType.Unlimited)
                         {
                             //Stock insuffisant, on supprime la nouvelle ligne et on garde l'ancienne
                             validatedWeekBasket.BillEntries.Remove(newEntry);
@@ -390,7 +399,7 @@ namespace Stolons.Controllers
                         {
                             stepStock = (productStock.RemainingStock / productStock.Product.QuantityStep) * 1000.0M;
                         }
-                        if (newEntry.Quantity <= stepStock)
+                        if (newEntry.Quantity <= stepStock || productStock.Product.StockManagement == Product.StockType.Unlimited)
                         {
                             //product.RemainingStock -= newEntry.Quantity;
                             UpdateProductStock(productStock, -newEntry.Quantity);
