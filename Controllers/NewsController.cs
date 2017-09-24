@@ -113,7 +113,7 @@ namespace Stolons.Controllers
         // POST: News/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(NewsViewModel newsVm, string uploadNewsImage)
+        public IActionResult Edit(NewsViewModel newsVm, string uploadNewsImage)
         {
             if (Authorized(Role.Volunteer) || AuthorizedProducer())
             {

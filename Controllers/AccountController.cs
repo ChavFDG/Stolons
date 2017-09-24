@@ -51,7 +51,7 @@ namespace Stolons.Controllers
             if (ModelState.IsValid)
             {
                 //D'abord on regarde si il existe bien un User avec ce mail
-                Adherent stolonsUser = _context.Adherents.Include(x=>x.AdherentStolons).FirstOrDefault(x => model.Email.Equals(x.Email, StringComparison.CurrentCultureIgnoreCase));
+                Adherent stolonsUser = _context.Adherents.Include(x => x.AdherentStolons).FirstOrDefault(x => model.Email.Equals(x.Email, StringComparison.CurrentCultureIgnoreCase));
                 if (stolonsUser == null)
                 {
                     ModelState.AddModelError("LoginFailed", "Utilisateur inconnu");
@@ -85,7 +85,7 @@ namespace Stolons.Controllers
                         return View(model);
                     }
                 }
-                
+
             }
             // If we got this far, something failed, redisplay form
             return View(model);
@@ -101,66 +101,66 @@ namespace Stolons.Controllers
             return RedirectToAction(nameof(HomeController.Index), "Home");
         }
 
-	[HttpGet]
+        [HttpGet]
         [AllowAnonymous]
-	public IActionResult ForgotPassword()
-	{
-	    return View();
-	}
-
-	// POST /Account/ForgotPassword
-	[HttpPost]
-        [AllowAnonymous]
-	public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
+        public IActionResult ForgotPassword()
         {
-	    if (!ModelState.IsValid)
-	    {
-		return View(model);
-	    }
-	    Adherent stolonsUser = _context.Adherents.FirstOrDefault(x => model.Email.Equals(x.Email, StringComparison.CurrentCultureIgnoreCase));
-	    if (stolonsUser == null)
-	    {
-		return View("ForgotPasswordConfirmation");
-	    }
-	    ApplicationUser appUser = await _userManager.FindByEmailAsync(stolonsUser.Email.ToString());
-	    string resetPasswordToken = await _userManager.GeneratePasswordResetTokenAsync(appUser);
-	    resetPasswordToken = System.Net.WebUtility.UrlEncode(resetPasswordToken);
-	    string link = "http://" + Configurations.SiteUrl + "/Account/ResetPassword?token=" + resetPasswordToken + "&mail=" + stolonsUser.Email;
+            return View();
+        }
 
-	    //Send mail
-	    ForgotPasswordEmailViewModel vmodel = new ForgotPasswordEmailViewModel(stolonsUser, link);
-	    AuthMessageSender.SendEmail(Configurations.Application.StolonsLabel, stolonsUser.Email, "", "Stolons: Oubli de votre mot de passe", base.RenderPartialViewToString("ResetPasswordEmailTemplate", vmodel), null, null);
-	    return View("ForgotPasswordConfirmation");
-	}
-
-	[HttpGet]
+        // POST /Account/ForgotPassword
+        [HttpPost]
         [AllowAnonymous]
-	public IActionResult ResetPassword([FromQuery] string token, [FromQuery] string mail)
-	{
-	    var model = new ResetPasswordViewModel(token, mail);
-	    return View("ResetPassword", model);
-	}
-
-	[HttpPost]
-        [AllowAnonymous]
-	public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
-	    Adherent stolonsUser = _context.Adherents.FirstOrDefault(x => model.Email.Equals(x.Email, StringComparison.CurrentCultureIgnoreCase));
-	    if (stolonsUser == null)
-	    {
-		return View(model);
-	    }
-	    ApplicationUser appUser = await _userManager.FindByEmailAsync(stolonsUser.Email);
-	    var result = await _userManager.ResetPasswordAsync(appUser, model.Token, model.Password);
-	    if (result.Succeeded)
-	    {
-		return View("ResetPasswordSuccess");
-	    }
-	    return View(model);
+            Adherent stolonsUser = _context.Adherents.FirstOrDefault(x => model.Email.Equals(x.Email, StringComparison.CurrentCultureIgnoreCase));
+            if (stolonsUser == null)
+            {
+                return View("ForgotPasswordConfirmation");
+            }
+            ApplicationUser appUser = await _userManager.FindByEmailAsync(stolonsUser.Email.ToString());
+            string resetPasswordToken = await _userManager.GeneratePasswordResetTokenAsync(appUser);
+            resetPasswordToken = System.Net.WebUtility.UrlEncode(resetPasswordToken);
+            string link = "http://" + Configurations.SiteUrl + "/Account/ResetPassword?token=" + resetPasswordToken + "&mail=" + stolonsUser.Email;
+
+            //Send mail
+            ForgotPasswordEmailViewModel vmodel = new ForgotPasswordEmailViewModel(stolonsUser, link);
+            AuthMessageSender.SendEmail(Configurations.Application.StolonsLabel, stolonsUser.Email, "", "Stolons: Oubli de votre mot de passe", base.RenderPartialViewToString("ResetPasswordEmailTemplate", vmodel), null, null);
+            return View("ForgotPasswordConfirmation");
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult ResetPassword([FromQuery] string token, [FromQuery] string mail)
+        {
+            var model = new ResetPasswordViewModel(token, mail);
+            return View("ResetPassword", model);
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+            Adherent stolonsUser = _context.Adherents.FirstOrDefault(x => model.Email.Equals(x.Email, StringComparison.CurrentCultureIgnoreCase));
+            if (stolonsUser == null)
+            {
+                return View(model);
+            }
+            ApplicationUser appUser = await _userManager.FindByEmailAsync(stolonsUser.Email);
+            var result = await _userManager.ResetPasswordAsync(appUser, model.Token, model.Password);
+            if (result.Succeeded)
+            {
+                return View("ResetPasswordSuccess");
+            }
+            return View(model);
         }
 
         [HttpGet]
@@ -170,7 +170,7 @@ namespace Stolons.Controllers
             return View();
         }
 
-	#region Helpers
+        #region Helpers
 
         private void AddErrors(IdentityResult result)
         {
@@ -196,21 +196,21 @@ namespace Stolons.Controllers
     }
 }
 
-        // // GET: /Account/ConfirmEmail
-        // [HttpGet]
-        // [AllowAnonymous]
-        // public async Task<IActionResult> ConfirmEmail(string userId, string code)
-        // {
-        //     if (userId == null || code == null)
-        //     {
-        //         return View("Error");
-        //     }
-        //     var user = await _userManager.FindByIdAsync(userId);
-        //     if (user == null)
-        //     {
-        //         return View("Error");
-        //     }
-        //     var result = await _userManager.ConfirmEmailAsync(user, code);
-        //     return View(result.Succeeded ? "ConfirmEmail" : "Error");
-        // }
+// // GET: /Account/ConfirmEmail
+// [HttpGet]
+// [AllowAnonymous]
+// public async Task<IActionResult> ConfirmEmail(string userId, string code)
+// {
+//     if (userId == null || code == null)
+//     {
+//         return View("Error");
+//     }
+//     var user = await _userManager.FindByIdAsync(userId);
+//     if (user == null)
+//     {
+//         return View("Error");
+//     }
+//     var result = await _userManager.ConfirmEmailAsync(user, code);
+//     return View(result.Succeeded ? "ConfirmEmail" : "Error");
+// }
 

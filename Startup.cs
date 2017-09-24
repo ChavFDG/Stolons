@@ -242,7 +242,7 @@ namespace Stolons
             pain.TaxEnum = Product.TAX.Ten;
             pain.Producer = producer;
             pain.ProductUnit = Product.Unit.Kg;
-            pain.StockManagement = Product.StockType.Week;
+            pain.StockManagement = Product.StockType.Unlimited;
             pain.Type = Product.SellType.Piece;
             AddStocks(pain);
             pain.Familly = context.ProductFamillys.First(x => x.FamillyName == "Pains");

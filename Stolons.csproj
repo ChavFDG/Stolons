@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
-
   <PropertyGroup>
     <TargetFramework>netcoreapp1.1</TargetFramework>
     <PreserveCompilationContext>true</PreserveCompilationContext>
@@ -10,7 +9,6 @@
     <PackageTargetFallback>$(PackageTargetFallback);dotnet5.6;dnxcore50;portable-net45+win8</PackageTargetFallback>
     <RuntimeFrameworkVersion>1.1.1</RuntimeFrameworkVersion>
   </PropertyGroup>
-
   <ItemGroup>
     <Compile Remove="Views\NewFolder\**" />
     <Compile Remove="wwwroot\bills\consumer\**" />
@@ -37,7 +35,6 @@
     <None Remove="wwwroot\images\marion\**" />
     <None Remove="wwwroot\images\productsIcons\**" />
   </ItemGroup>
-
   <ItemGroup>
     <Content Remove="wwwroot\images\logos\Logo.jpg" />
     <Content Remove="wwwroot\images\logos\Logo_low.png" />
@@ -56,14 +53,13 @@
     <Content Remove="wwwroot\uploads\images\news\af065602-0a72-4ecc-b560-fbe32a8838ad_Logo final stretch.jpg" />
     <Content Remove="wwwroot\uploads\images\news\c8de22fb-6898-4de6-b97c-ecb8a773c0e9.jpg" />
   </ItemGroup>
-
   <ItemGroup>
     <None Update="wwwroot\**\*;Views\**\*;Areas\**\Views">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </None>
   </ItemGroup>
-
   <ItemGroup>
+    <PackageReference Include="DinkToPdf" Version="1.0.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="1.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="1.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics" Version="1.1.1" />
@@ -93,20 +89,16 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="1.1.2" />
     <PackageReference Include="morelinq" Version="2.6.0" />
   </ItemGroup>
-
   <Target Name="PrepublishScript" BeforeTargets="PrepareForPublish">
     <Exec Command="bower install" />
     <Exec Command="dotnet bundle" />
   </Target>
-
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="1.0.0" />
     <DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="1.0.0" />
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.0" />
   </ItemGroup>
-
   <ItemGroup>
     <Folder Include="wwwroot\bills\" />
   </ItemGroup>
-
 </Project>

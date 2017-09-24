@@ -64,7 +64,13 @@ namespace Stolons.Tools
                         foreach (var producer in dbContext.AdherentStolons.Include(x => x.Adherent).Include(x => x.Stolon).Where(x => x.StolonId == stolon.Id && x.IsProducer))
                         {
                             List<BillEntry> billEntries = new List<BillEntry>();
-                            consumerBills.ForEach(consumerBill => consumerBill.BillEntries.Where(billEntry => billEntry.ProductStock.Product.ProducerId == producer.Id).ToList().ForEach(x => billEntries.Add(x)));
+                            foreach (var consumerBill in consumerBills)
+                            {
+                                foreach (var billEntry in consumerBill.BillEntries.Where(billEntry => billEntry.ProductStock.Product.ProducerId == producer.AdherentId))
+                                {
+                                    billEntries.Add(billEntry);
+                                }
+                            }
                             //Generate bill for producer
                             ProducerBill bill = CreateBill<ProducerBill>(producer, billEntries);
                             bill.HtmlBillContent = GenerateHtmlBillContent(bill, dbContext);
@@ -103,6 +109,19 @@ namespace Stolons.Tools
                         #endregion Save bills
 
                         #region Create PDF and send mail
+
+
+                        var converter = new DinkToPdf.BasicConverter(new DinkToPdf.PdfTools());
+
+
+
+
+
+
+
+
+
+
                         //For stolons
                         string billWebAddress = Path.Combine("http://", Configurations.SiteUrl, "WeekBasketManagement", "ShowStolonsBill", stolonsBill.BillNumber).Replace("\\", "/");
                         try
@@ -131,7 +150,7 @@ namespace Stolons.Tools
                             Thread thread = new Thread(() => GeneratePdfAndSendEmail(bill));
                             thread.Start();
                         }
-
+                        
                         #endregion  Create PDF and send mail
                     }
                     if (lastModes[stolon.Id] == Stolon.Modes.DeliveryAndStockUpdate && currentMode == Stolon.Modes.Order)
@@ -246,10 +265,12 @@ namespace Stolons.Tools
         {
             StringBuilder builder = new StringBuilder();
             string billNumber = DateTime.Now.Year + "_" + DateTime.Now.GetIso8601WeekOfYear();
-            StolonsBill bill = new StolonsBill(billNumber);
-            bill.Stolon = stolon;
-            bill.Amount = 0;
-            bill.ProducersFee = stolon.ProducersFee;
+            StolonsBill bill = new StolonsBill(billNumber)
+            {
+                Stolon = stolon,
+                Amount = 0,
+                ProducersFee = stolon.ProducersFee
+            };
 
             if (!consumerWeekBaskets.Any())
             {
@@ -369,7 +390,7 @@ namespace Stolons.Tools
             foreach (var group in billEntriesByConsumer.OrderBy(x => x.Key.LocalId))
             {
                 orderBuilder.AppendLine("<tr>");
-                orderBuilder.AppendLine("<td colspan=\"3\" style=\"border-top:1px solid;\">" + "<b>" + group.Key.Id + "</b>" + "</td>");
+                orderBuilder.AppendLine("<td colspan=\"3\" style=\"border-top:1px solid;\">" + "<b>" + group.Key.LocalId + "</b>" + "</td>");
                 orderBuilder.AppendLine("</tr>");
                 foreach (var entries in group.OrderBy(x => x.ProductStock.ProductId))
                 {
@@ -521,8 +542,10 @@ namespace Stolons.Tools
 
         private static T CreateBill<T>(AdherentStolon userStolon, List<BillEntry> billEntries) where T : class, IBill, new()
         {
-            IBill bill = new T();
-            bill.BillEntries = billEntries;
+            IBill bill = new T
+            {
+                BillEntries = billEntries
+            };
             bill.BillNumber = GenerateBillNumber(userStolon.Stolon.ShortLabel, userStolon.LocalId, bill is ProducerBill);
             bill.AdherentStolon = userStolon;
             bill.State = BillState.Pending;

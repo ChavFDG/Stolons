@@ -43,9 +43,11 @@ namespace Stolons.Controllers
             if (tempWeekBasket == null)
             {
                 //Il n'a pas encore de panier de la semaine, on lui en crÃ©e un
-                tempWeekBasket = new TempWeekBasket();
-                tempWeekBasket.AdherentStolon = adherentStolon;
-                tempWeekBasket.BillEntries = new List<BillEntry>();
+                tempWeekBasket = new TempWeekBasket
+                {
+                    AdherentStolon = adherentStolon,
+                    BillEntries = new List<BillEntry>()
+                };
                 _context.Add(tempWeekBasket);
                 _context.SaveChanges();
             }
@@ -111,9 +113,11 @@ namespace Stolons.Controllers
             if (tempWeekBasket == null)
             {
                 //Il n'a pas encore de panier de la semaine, on lui en creer un
-                tempWeekBasket = new TempWeekBasket();
-                tempWeekBasket.AdherentStolon = adherentStolon;
-                tempWeekBasket.BillEntries = new List<BillEntry>();
+                tempWeekBasket = new TempWeekBasket
+                {
+                    AdherentStolon = adherentStolon,
+                    BillEntries = new List<BillEntry>()
+                };
                 _context.Add(tempWeekBasket);
                 _context.SaveChanges();
             }
@@ -128,7 +132,7 @@ namespace Stolons.Controllers
         }
 
         [HttpGet, ActionName("ValidatedWeekBasket"), Route("api/validatedWeekBasket")]
-        public async Task<string> JsonValidatedWeekBasket()
+        public string JsonValidatedWeekBasket()
         {
 	    var adherentStolon = GetActiveAdherentStolon();
             if (adherentStolon == null)
@@ -313,9 +317,11 @@ namespace Stolons.Controllers
             if (validatedWeekBasket == null)
             {
                 //First validation of the week
-                validatedWeekBasket = new ValidatedWeekBasket();
-                validatedWeekBasket.BillEntries = new List<BillEntry>();
-                validatedWeekBasket.AdherentStolon = tempWeekBasket.AdherentStolon;
+                validatedWeekBasket = new ValidatedWeekBasket
+                {
+                    BillEntries = new List<BillEntry>(),
+                    AdherentStolon = tempWeekBasket.AdherentStolon
+                };
                 _context.Add(validatedWeekBasket);
             }
             else
