@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Http;
 using System.Diagnostics;
 using static Stolons.Models.Product;
 using MoreLinq;
+using DinkToPdf;
 
 namespace Stolons.Tools
 {
@@ -78,6 +79,45 @@ namespace Stolons.Tools
                             producerBills.Add(bill);
                             dbContext.Add(bill);
                         }
+
+
+
+
+
+
+
+                        var converter = new BasicConverter(new PdfTools());
+
+
+                        var doc = new HtmlToPdfDocument()
+                        {
+                            GlobalSettings =
+                            {
+                                ColorMode = ColorMode.Color,
+                                Orientation = Orientation.Landscape,
+                                PaperSize = PaperKind.A4Plus,
+                                Out = Path.Combine(Configurations.Environment.WebRootPath,"test.pdf"),
+                            },
+                            Objects =
+                            {
+                                new ObjectSettings()
+                                {
+                                    PagesCount = true,
+                                    HtmlContent = producerBills[0].HtmlBillContent,
+                                    WebSettings = { DefaultEncoding = "utf-8" },
+                                    HeaderSettings = { FontSize = 9, Right = "Page [page] of [toPage]", Line = true, Spacing = 2.812 }
+                                }
+                            }
+                        };
+
+
+
+                        converter.Convert(doc);
+
+
+
+
+
                         //Stolons
                         StolonsBill stolonsBill = GenerateBill(stolon, consumerWeekBaskets, dbContext);
                         dbContext.Add(stolonsBill);
@@ -109,19 +149,7 @@ namespace Stolons.Tools
                         #endregion Save bills
 
                         #region Create PDF and send mail
-
-
-                        var converter = new DinkToPdf.BasicConverter(new DinkToPdf.PdfTools());
-
-
-
-
-
-
-
-
-
-
+                        
                         //For stolons
                         string billWebAddress = Path.Combine("http://", Configurations.SiteUrl, "WeekBasketManagement", "ShowStolonsBill", stolonsBill.BillNumber).Replace("\\", "/");
                         try
@@ -150,7 +178,7 @@ namespace Stolons.Tools
                             Thread thread = new Thread(() => GeneratePdfAndSendEmail(bill));
                             thread.Start();
                         }
-                        
+
                         #endregion  Create PDF and send mail
                     }
                     if (lastModes[stolon.Id] == Stolon.Modes.DeliveryAndStockUpdate && currentMode == Stolon.Modes.Order)
@@ -542,10 +570,8 @@ namespace Stolons.Tools
 
         private static T CreateBill<T>(AdherentStolon userStolon, List<BillEntry> billEntries) where T : class, IBill, new()
         {
-            IBill bill = new T
-            {
-                BillEntries = billEntries
-            };
+            IBill bill = new T();
+            bill.BillEntries = billEntries;
             bill.BillNumber = GenerateBillNumber(userStolon.Stolon.ShortLabel, userStolon.LocalId, bill is ProducerBill);
             bill.AdherentStolon = userStolon;
             bill.State = BillState.Pending;
