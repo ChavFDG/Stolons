@@ -157,15 +157,18 @@ namespace Stolons.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult EditAdherent(AdherentViewModel vmAdherent, string uploadAvatar)
         {
-            if (!Authorized(Role.Volunteer))
-                return Unauthorized();
-
-            if (ModelState.IsValid)
+            if (Authorized(Role.Volunteer) || vmAdherent.Adherent.Id == GetActiveAdherentStolon().AdherentId)
             {
-                UpdateAdherent(vmAdherent, uploadAvatar);
-                return RedirectToAction("Index");
+                if (ModelState.IsValid)
+                {
+                    UpdateAdherent(vmAdherent, uploadAvatar);
+                    return RedirectToAction("Index");
+                }
+                return View(vmAdherent);
+
             }
-            return View(vmAdherent);
+            return Unauthorized();
+
         }
 
         public void UpdateAdherent(AdherentViewModel vmAdherent, string uploadAvatar)

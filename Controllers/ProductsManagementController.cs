@@ -43,6 +43,14 @@ namespace Stolons.Controllers
                 .Include(x => x.AdherentStolons).FirstOrDefault(x => x.Id == producer.Id);
             producer.AdherentStolons.ForEach(adherentStolon => adherentStolon.Stolon = _context.Stolons.First(stolon => stolon.Id == adherentStolon.StolonId));
             var products = _context.Products.Include(x=>x.ProductStocks).Include(m => m.Familly).Include(m => m.Familly.Type).Where(x => x.Producer == producer).ToList();
+            foreach (var prod in products)
+            {
+                foreach (var stock in prod.ProductStocks)
+                {
+                    stock.Product = prod;
+                    stock.BillEntries = _context.BillEntrys.Where(x => x.ProductStockId == stock.Id).ToList();
+                }
+            }
             products.ForEach(prod => prod.ProductStocks.ForEach(stock => stock.Product = prod));
             ProductsViewModel vm = new ProductsViewModel(GetActiveAdherentStolon(), products, producer);
             return View(vm);
@@ -129,17 +137,17 @@ namespace Stolons.Controllers
                     string pictureName = Guid.NewGuid().ToString() + ".jpg";
                     _environment.UploadBase64Image( vmProduct.MainPictureLight, Configurations.ProductsStockagePathLight, pictureName);
                     _environment.UploadBase64Image( vmProduct.MainPictureHeavy, Configurations.ProductsStockagePathHeavy, pictureName);
-                    if (!vmProduct.IsNew)
+                    if (vmProduct.IsNew || vmProduct.Product.Pictures.Count == 0)
+                    {
+                        //Add
+                        vmProduct.Product.Pictures.Add(pictureName);
+                    }
+                    else
                     {
                         //Replace
                         _environment.DeleteFile(Configurations.ProductsStockagePathLight, vmProduct.Product.Pictures[0]);
                         _environment.DeleteFile(Configurations.ProductsStockagePathHeavy, vmProduct.Product.Pictures[0]);
                         vmProduct.Product.Pictures[0] = pictureName;
-                    }
-                    else
-                    {
-                        //Add
-                        vmProduct.Product.Pictures.Add(pictureName);
                     }
                 }
                 if (!String.IsNullOrWhiteSpace(vmProduct.Picture2Light))
