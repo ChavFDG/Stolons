@@ -182,15 +182,18 @@ namespace Stolons
             ProductType bakery = CreateProductType(context, "Boulangerie", "boulangerie.jpg");
             CreateProductFamily(context, bakery, "Farines", "farines.jpg");
             CreateProductFamily(context, bakery, "Pains", "pain.jpg");
+            CreateProductFamily(context, bakery, "Patisseries");
 
             ProductType grocery = CreateProductType(context, "Epicerie", "epicerie.jpg");
             CreateProductFamily(context, grocery, "Conserves", "conserves.jpg");
+            CreateProductFamily(context, grocery, "Produits secs", "farines.jpg");
 
             ProductType bevarages = CreateProductType(context, "Boissons", "boissons.jpg");
             CreateProductFamily(context, bevarages, "Alcools", "alcool.jpg");
             CreateProductFamily(context, bevarages, "Sans alcool", "sans_alcool.jpg");
 
             ProductType other = CreateProductType(context, "Autres", "autres.jpg");
+            CreateProductFamily(context, other, "Non définie");
             CreateProductFamily(context, other, "Savons", "savon.jpg");
 
             context.SaveChanges();

@@ -63,7 +63,7 @@
 
         //$('#SellType').onchange = function () {
         //    if (this.val() == 1)
-        //        $('#price').val(99);  
+        //        $('#price').val(99);
         //};
     });
 </script>
@@ -277,10 +277,6 @@
             <label asp-for="Product.Familly" class="col-md-2 control-label">Famille</label>
             <div class="col-md-10">
                 <select id="familiesDropDown" name="FamillyName">
-
-                    <option value="Tous" <% if (!currentFamilly || currentFamilly == "Tous") { %> selected="selected" <% }%> >
-	      Tous
-	    </option>
 
                     <% _.forEach(productTypes, function(productType) { %>
 

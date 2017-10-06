@@ -108,7 +108,7 @@ namespace Stolons.Controllers
             if (!AuthorizedProducer())
                 return Unauthorized();
 
-            Product product = id == null ? new Product() : _context.Products.Include(x => x.Familly).First(x => x.Id == id);
+            Product product = id == null ? new Product() { Familly = _context.ProductFamillys.FirstOrDefault(x => x.FamillyName == "Non définie") } : _context.Products.Include(x => x.Familly).First(x => x.Id == id);
             return View(new ProductEditionViewModel(GetActiveAdherentStolon(), product, _context, id == null));
 
         }

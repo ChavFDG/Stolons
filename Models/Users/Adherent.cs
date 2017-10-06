@@ -65,9 +65,7 @@ namespace Stolons.Models.Users
         #region MailSubscription
         [Display(Name = "Informations importantes")]
         public bool ReceivedInformationsEmail { get; set; }
-
-        [Display(Name = "Nouvelles")]
-        public bool ReceivedNewsByEmail { get; set; } = false;
+        
 
         [Display(Name = "Rappel à l'ouverture des commandes")]
         public bool ReceivedProductListByEmail { get; set; } = false;
@@ -155,7 +153,6 @@ namespace Stolons.Models.Users
             this.Production = adherent.Production;
             this.ReceivedGoodPlanByEmail = adherent.ReceivedGoodPlanByEmail;
             this.ReceivedInformationsEmail = adherent.ReceivedInformationsEmail;
-            this.ReceivedNewsByEmail = adherent.ReceivedNewsByEmail;
             this.ReceivedProductListByEmail = adherent.ReceivedProductListByEmail;
             this.StartDate = adherent.StartDate;
             this.Surname = adherent.Surname;

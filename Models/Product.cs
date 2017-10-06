@@ -11,6 +11,11 @@ namespace Stolons.Models
 {
     public class Product : IProduct
     {
+
+        public  Product()
+        {
+
+        }
         [Key]
         public Guid Id { get; set; }
 
