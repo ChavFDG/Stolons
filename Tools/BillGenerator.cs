@@ -45,6 +45,33 @@ namespace Stolons.Tools
                     Stolon.Modes currentMode = stolon.GetMode();
                     if (lastModes[stolon.Id] == Stolon.Modes.Order && currentMode == Stolon.Modes.DeliveryAndStockUpdate)
                     {
+
+#if (DEBUG)
+                        //For test, remove existing consumer bill and producer bill => That will never exist in normal mode cause they can only have one bill by week per user
+                        string billToRemove = DateTime.Now.Year + "_" + DateTime.Now.GetIso8601WeekOfYear();
+                        //
+                        foreach(var bill in dbContext.ConsumerBills.Where(x => x.BillNumber.EndsWith(billToRemove)).Include(x=>x.BillEntries).ToList())
+                        {
+                            foreach(var billEntry in bill.BillEntries)
+                            {
+                                billEntry.ConsumerBill = null;
+                            }
+                            dbContext.Remove(bill);
+                            dbContext.SaveChanges();
+                        }
+                        foreach (var bill in dbContext.ProducerBills.Where(x => x.BillNumber.EndsWith(billToRemove)).Include(x => x.BillEntries).ToList())
+                        {
+                            foreach (var billEntry in bill.BillEntries)
+                            {
+                                billEntry.ProducerBill = null;
+                            }
+                            dbContext.Remove(bill);
+                            dbContext.SaveChanges();
+                        }
+                        dbContext.RemoveRange(dbContext.StolonsBills.Where(x => x.BillNumber.EndsWith(billToRemove)));
+                        dbContext.SaveChanges();
+#endif
+
                         //We moved form Order to Preparation, create and send bills
                         List<ConsumerBill> consumerBills = new List<ConsumerBill>();
                         List<ProducerBill> producerBills = new List<ProducerBill>();
@@ -61,6 +88,7 @@ namespace Stolons.Tools
                             consumerBills.Add(consumerBill);
                             dbContext.Add(consumerBill);
                         }
+
                         //Producer (creates bills)
                         foreach (var producer in dbContext.AdherentStolons.Include(x => x.Adherent).Include(x => x.Stolon).Where(x => x.StolonId == stolon.Id && x.IsProducer))
                         {
@@ -83,13 +111,20 @@ namespace Stolons.Tools
                         //Stolons
                         StolonsBill stolonsBill = GenerateBill(stolon, consumerWeekBaskets, dbContext);
                         dbContext.Add(stolonsBill);
+                        dbContext.SaveChanges();
                         #endregion Create bills
 
                         #region Save bills
                         //Remove week basket
-                        dbContext.TempsWeekBaskets.Clear();
-                        dbContext.ValidatedWeekBaskets.Clear();
-                        dbContext.BillEntrys.Clear();
+                        foreach (var billEntry in dbContext.BillEntrys.Include(x=>x.TempWeekBasket).Where(x=>x.TempWeekBasket != null))
+                        {
+                            billEntry.TempWeekBasket = null;
+                        }
+                        foreach (var validateWeekBasket in dbContext.ValidatedWeekBaskets)
+                        {
+                            if (validateWeekBasket.BillEntries != null)
+                                validateWeekBasket.BillEntries.Clear();
+                        }
 
                         //Move stolon's products to stock 
                         foreach (ProductStockStolon productStock in dbContext.ProductsStocks.Include(x => x.AdherentStolon).Include(x => x.Product).Where(x => x.AdherentStolon.StolonId == stolon.Id))
@@ -100,13 +135,8 @@ namespace Stolons.Tools
                                 productStock.RemainingStock = productStock.WeekStock;
                             }
                         }
-#if (DEBUG)
-                        //For test, remove existing consumer bill and producer bill => That will never exist in normal mode cause they can only have one bill by week per user
-                        dbContext.RemoveRange(dbContext.ConsumerBills.Where(x => consumerBills.Any(y => y.BillNumber == x.BillNumber)));
-                        dbContext.RemoveRange(dbContext.ProducerBills.Where(x => producerBills.Any(y => y.BillNumber == x.BillNumber)));
-                        dbContext.RemoveRange(dbContext.StolonsBills.Where(x => x.BillNumber == stolonsBill.BillNumber));
-#endif
                         //
+
                         dbContext.SaveChanges();
                         #endregion Save bills
 
@@ -140,6 +170,8 @@ namespace Stolons.Tools
                         }
 
                         #endregion  Create PDF and send mail
+
+
                     }
                     if (lastModes[stolon.Id] == Stolon.Modes.DeliveryAndStockUpdate && currentMode == Stolon.Modes.Order)
                     {
@@ -186,7 +218,6 @@ namespace Stolons.Tools
                                                     File.ReadAllBytes(bill.GetOrderFilePath()),
                                                     "Bon de commande " + bill.GetOrderFileName());
                 }
-
             }
             catch (Exception exept)
             {
@@ -483,7 +514,7 @@ namespace Stolons.Tools
             builder.AppendLine("Prénom : " + bill.Adherent.Surname + "<br>");
             builder.AppendLine("Téléphone : " + bill.Adherent.PhoneNumber + "<br>");
             builder.AppendLine("Année : " + DateTime.Now.Year + "<br>");
-            builder.AppendLine("Semaine : " + DateTime.Now.GetIso8601WeekOfYear()+"</p>");
+            builder.AppendLine("Semaine : " + DateTime.Now.GetIso8601WeekOfYear() + "</p>");
             //
             builder.AppendLine("<h2>Produits de votre panier de la semaine :</h2>");
             builder.AppendLine("<table class=\"table\">");

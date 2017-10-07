@@ -94,7 +94,7 @@ namespace Stolons
             app.UseRequestLocalization(new RequestLocalizationOptions() { DefaultRequestCulture = new RequestCulture("En-Gb") });
             //
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            loggerFactory.AddDebug();
+            loggerFactory.AddDebug(LogLevel.Debug);
 
             if (env.IsDevelopment())
             {

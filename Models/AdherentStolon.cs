@@ -104,7 +104,6 @@ namespace Stolons.Models
 
         #endregion Subscription
 
-
         //
         public bool Authorized(Role role)
         {

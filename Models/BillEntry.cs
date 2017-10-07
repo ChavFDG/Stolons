@@ -20,6 +20,22 @@ namespace Stolons.Models
         [ForeignKey(nameof(ConsumerBillId))]
         public virtual ConsumerBill ConsumerBill { get; set; }
 
+        public Guid? ProducerBillId { get; set; }
+
+        [ForeignKey(nameof(ProducerBillId))]
+        public virtual ProducerBill ProducerBill { get; set; }
+
+
+        public Guid? TempWeekBasketId { get; set; }
+
+        [ForeignKey(nameof(TempWeekBasketId))]
+        public virtual TempWeekBasket TempWeekBasket { get; set; }
+
+
+        public Guid? ValidatedWeekBasketId { get; set; }
+
+        [ForeignKey(nameof(ValidatedWeekBasketId))]
+        public virtual ValidatedWeekBasket ValidatedWeekBasket { get; set; }
 
         public Guid ProductStockId { get; set; }
 
@@ -326,6 +342,12 @@ namespace Stolons.Models
         public bool HasBeenModified { get; set; }
 
 
+        
+
+
+
+
+
         public string GetQuantityString(decimal quantity)
         {
             if (Type == SellType.Piece)
@@ -369,6 +391,10 @@ namespace Stolons.Models
         public BillEntry Clone()
         {
             BillEntry clonedBillEntry = new BillEntry();
+            clonedBillEntry.ValidatedWeekBasketId = this.ValidatedWeekBasketId;
+            clonedBillEntry.TempWeekBasketId = this.TempWeekBasketId;
+            clonedBillEntry.ConsumerBillId = this.ConsumerBillId;
+            clonedBillEntry.ProducerBillId = this.ProducerBillId;
             clonedBillEntry.ProductStockId = this.ProductStockId;
             clonedBillEntry.FamillyId = this.FamillyId;
             clonedBillEntry.Familly = this.Familly;
@@ -380,7 +406,7 @@ namespace Stolons.Models
             clonedBillEntry.ProductUnit = this.ProductUnit;
             clonedBillEntry.Quantity = this.Quantity;
             clonedBillEntry.HasBeenModified = this.HasBeenModified;
-	    clonedBillEntry.Type = this.Type;
+	        clonedBillEntry.Type = this.Type;
             return clonedBillEntry;
         }
 

@@ -58,6 +58,7 @@ namespace Stolons.Models
                 return AdherentStolon.Adherent;
             }
         }
+
         public List<BillEntry> BillEntries { get; set; }
 
         [Display(Name = "Stolon")]

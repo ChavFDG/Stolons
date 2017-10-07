@@ -39,7 +39,7 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Adherent.Id)
+                    @Html.DisplayFor(modelItem => item.AdherentStolon.LocalId)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Adherent.CompanyName)
@@ -59,7 +59,7 @@
                    </td>
                 <td>
                     @{
-                        <a href="@Configurations.GetUrl(item)">@(item.BillAmount + "€" + " (" + item.FeeAmount + "€) - " + item.BillNumber)</a>
+                        <a href="@Configurations.GetBillUrl(item)">@(item.BillAmount + "€" + " (" + item.FeeAmount + "€) - " + item.BillNumber)</a>
                     }
                 </td>
             </tr>
@@ -116,7 +116,7 @@ else
                 </td>
                 <td>
                     @{
-                        <a href="@Configurations.GetUrl(item)">@(item.BillNumber)</a>
+                        <a href="@Configurations.GetBillUrl(item)">@(item.BillNumber)</a>
                     }
                 </td>
             </tr>
@@ -180,7 +180,7 @@ else
                 </td>
                 <td>
                     @{
-                        <a href="@Configurations.GetUrl(item)">@(item.OrderAmount +"€ - " + item.BillNumber)</a>
+                        <a href="@Configurations.GetBillUrl(item)">@(item.OrderAmount +"€ - " + item.BillNumber)</a>
                     }
                 </td>
             </tr>

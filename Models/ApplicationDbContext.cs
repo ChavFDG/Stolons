@@ -48,25 +48,25 @@ namespace Stolons.Models
         public DbSet<AdherentStolon> AdherentStolons { get; set; }
 
 
-	public ApplicationDbContext() : base()
+        public ApplicationDbContext() : base()
         {
         }
 
-	public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-            : base(options)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+                : base(options)
         {
         }
 
-	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             // var connectionStringBuilder = new SqliteConnectionStringBuilder { DataSource = "Stolons.sqlite" };
             // var connectionString = connectionStringBuilder.ToString();
             // var connection = new SqliteConnection(connectionString);
             optionsBuilder.UseSqlite("Data Source=Stolons.sqlite");
-	    optionsBuilder.EnableSensitiveDataLogging();
+            optionsBuilder.EnableSensitiveDataLogging();
         }
 
- 	protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
@@ -85,9 +85,13 @@ namespace Stolons.Models
             //Product
             modelBuilder.Entity<ProductStockStolon>()
                 .HasMany(x => x.BillEntries)
-		.WithOne(x => x.ProductStock);
-            modelBuilder.Entity<Product>()
-                .HasOne(x => x.Producer);
+                .WithOne(x => x.ProductStock);
+                    modelBuilder.Entity<Product>()
+                        .HasOne(x => x.Producer);
+            //TempWeekBasket
+            modelBuilder.Entity<TempWeekBasket>()
+                .HasMany(x => x.BillEntries)
+                .WithOne(x => x.TempWeekBasket);
         }
 
         public List<Sympathizer> GetSympathizers(Stolon stolon)
