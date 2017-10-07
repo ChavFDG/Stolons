@@ -3,32 +3,32 @@
 @model WeekBasketViewModel
 
 @{
-   Layout = "_WeekBasketLayout";
+    Layout = "_WeekBasketLayout";
 }
 
 @if (Model.AdherentStolon.Stolon.GetMode() == Stolon.Modes.DeliveryAndStockUpdate)
 {
     <h3>Commande indisponible</h3>
     <p>Les commandes seront à nouveau disponible : </p>
-    <p><b>@(Model.AdherentStolon.Stolon.OrderDayStartDate.ToFrench() + " à " + String.Format("{0:00}", Model.AdherentStolon.Stolon.OrderHourStartDate)  + ":" + String.Format("{0:00}", Model.AdherentStolon.Stolon.OrderMinuteStartDate))</b></p>
+    <p><b>@(Model.AdherentStolon.Stolon.OrderDayStartDate.ToFrench() + " à " + String.Format("{0:00}", Model.AdherentStolon.Stolon.OrderHourStartDate) + ":" + String.Format("{0:00}", Model.AdherentStolon.Stolon.OrderMinuteStartDate))</b></p>
     <a asp-controller="Bills" asp-action="Index">(Cliquer ici pour voir vos commandes / factures)</a>
 
 }
 else
-    {
+{
     <div class="row">
-	<div id="filters">
-	</div>
+        <div id="filters">
+        </div>
     </div>
     <div class="row">
-	<div id="products">
-	</div>
-	<div id="baskets">
-	    <div id="tmpBasket">
-	    </div>
-	    <div id="validatedBasket">
-	    </div>
-	</div>
+        <div id="products">
+        </div>
+        <div id="baskets">
+            <div id="tmpBasket">
+            </div>
+            <div id="validatedBasket">
+            </div>
+        </div>
     </div>
 
     <div id="productModal" class="modal fade"></div>
@@ -37,31 +37,30 @@ else
     <!-- below are templates definitions to be rendered under placeholders defined above -->
 
     <script id="filtersTemplate" type="text/template">
-        <% _.forEach(productTypes, function(type) { %>
+    <% _.forEach(productTypes, function(type) { %>
         <% var typesProducts = products.getProductsForType(type.Name); %>
-	<% if (typesProducts.length > 0) { %>
+        <% if (typesProducts.length > 0) { %>
         <li class="dropdown">
-        <a id="link_<%= type.Name %>" href="#<%= type.Name %>" class="dropdown-toggle" data-toggle="dropdown">
-            <img src="<%= type.Image %>" class="productCategoryImage" />
-            <%= type.Name %>
-        </a>
-        <ul class="dropdown-menu">
-        <% _.forEach(type.ProductFamilly, function(family) { %>
-             <% var familyProducts = products.getProductsForFamily(family.FamillyName); %>
-	     <% if (familyProducts.length > 0) { %>
-             <li>
-                 <a id="link_<%= family.FamillyName %>" href="#<%= family.FamillyName %>">
-                     <img src="<%= family.Image %>" class="productCategoryImage" />
-                     <%= family.FamillyName %>
-                 </a>
-	     </li>
-        <% } %>
-        <% }); %>
-        </ul>
+            <a id="link_<%= type.Name %>" href="#<%= type.Name %>" class="dropdown-toggle" data-toggle="dropdown">
+                <img src="<%= type.Image %>" class="productCategoryImage" />
+                <div class="dropdown__item__text"><%= type.Name %></div>
+            </a>
+            <ul class="dropdown-menu">
+                <% _.forEach(type.ProductFamilly, function(family) { %>
+                <% var familyProducts = products.getProductsForFamily(family.FamillyName); %>
+                <% if (familyProducts.length > 0) { %>
+                <li>
+                    <a id="link_<%= family.FamillyName %>" href="#<%= family.FamillyName %>">
+                        <img src="<%= family.Image %>" class="productCategoryImage" />
+                        <%= family.FamillyName %>
+                    </a>
+                </li>
+                <% } %>
+                <% }); %>
+            </ul>
         </li>
-        </a>
         <% } %>
-        <% }); %>
+    <% }); %>
     </script>
 
     <!-- Include the product template -->
@@ -107,34 +106,42 @@ else
 
     <script id="productsTemplate" type="text/template">
         <% _.forEach(productTypes, function(type) { %>
-	    <% var typeProducts = products.getProductsForType(type.Name) %>
-	    <% if (!_.isEmpty(typeProducts)) { %>
-	    <a id="<%= type.Name %>" class="anchorProductType">
-		<img src="<%= type.Image %>" class="productCategoryImage" />
-		<%= type.Name %>
-	    </a>
-            <% _.forEach(type.ProductFamilly, function(family) { %>
-		<% var famillyProducts = products.getProductsForFamily(family.FamillyName) %>
-		<% if (famillyProducts.length > 0)  { %>
-		  <div class="row">
-		    <a id="<%= family.FamillyName %>" class="anchorProductFamily">
-			<img src="<%= family.Image %>" class="productCategoryImage" />
-			<%= family.FamillyName %>
-		    </a>
-                    <% _.forEach(famillyProducts, function(productModel) { %>
-		        <div id="product-<%= productModel.get('Id') %>">
-		        </div>
-	 	    <% }); %>
-		  </div>
-		<% } %>
-            <% }); %>
-		   <hr />
-     	  <% } %>
+            <% var typeProducts = products.getProductsForType(type.Name) %>
+            <% if (!_.isEmpty(typeProducts)) { %>
+                <div class="product__type">
+                    <div class="product__type__title">
+                        <div id="<%= type.Name %>" class="anchorProductType">
+                            <%= type.Name.split('').reverse().map(function (l) {
+                                return '<div class="verticaltext">' + l + '</div>';
+                            }).join('') %>
+                            <img src="<%= type.Image %>" class="productCategoryImage" />
+                        </div>
+                    </div>
+                    <div class="product__type__content">
+                        <% _.forEach(type.ProductFamilly, function(family) { %>
+                            <% var famillyProducts = products.getProductsForFamily(family.FamillyName) %>
+                            <% if (famillyProducts.length > 0)  { %>
+                                <div class="product__type__content__familly">
+                                    <div class="anchorProductFamily" id="<%= family.FamillyName %>">
+                                        <img src="<%= family.Image %>" class="productCategoryImage" />
+                                        <%= family.FamillyName %>
+                                    </div>
+                                    <div class="row">
+                                        <% _.forEach(famillyProducts, function(productModel) { %>
+                                            <div id="product-<%= productModel.get('Id') %>"></div>
+                                        <% }); %>
+                                    </div>
+                                </div>
+                            <% } %>
+                        <% }); %>
+                    </div>
+                </div>
+            <% } %>
         <% }); %>
 
-	<div id="emptyProducts" class="hidden">
-	  <span><b>Aucun produit disponible ou pas de produits correspondants à votre recherche</b></span>
-	</div>
+        <div id="emptyProducts" class="hidden">
+            <span><b>Aucun produit disponible ou pas de produits correspondants à votre recherche</b></span>
+        </div>
 
     </script>
 
@@ -173,7 +180,7 @@ else
                 <% _.forEach(validatedBasket.BillEntries, function(entry) { %>
                 <tr class="billEntry">
                     <td>
-                        <a href="#" onclick="ProductModalView.open('<%= entry.ProductStock.Id %>');return false;">
+                        <a href="#" onclick="ProductModalView.open('<%= entry.Stock.Id %>');return false;">
                             <%= entry.ProductStock.Product.Name %>
                         </a>
                     </td>
@@ -315,5 +322,5 @@ else
     <script src="/lib/jstree.min.js"></script>
 
     <script src="/js/weekbasket.js"></script>
-	
+
 }
