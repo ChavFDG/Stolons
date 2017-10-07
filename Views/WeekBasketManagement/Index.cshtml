@@ -51,15 +51,17 @@
                     @if (Model.ActiveAdherentStolon.Authorized(Role.Admin) || Model.ActiveAdherentStolon.Adherent.IsWebAdmin)
                     {
                         @Html.ActionLink(
-                                   "Valider paiement de la facture",
-                                  "UpdateProducerBill",
-                                    new { billNumber = item.BillNumber },
-                                    new { onclick = "return confirm('Confirmation du paiement de " + +item.BillAmount + " à " + item.Adherent.CompanyName + "');" })
-                    }
-                   </td>
+                            "Valider paiement de la facture",
+                            "UpdateProducerBill",
+                            new { billNumber = item.BillNumber },
+                            new { onclick = "return confirm('Confirmation du paiement de " + +item.BillAmount + " à " + item.Adherent.CompanyName + "');",
+				  @class = "btn btn-small btn-default" }
+			)
+		    }
+                </td>
                 <td>
                     @{
-                        <a href="@Configurations.GetUrl(item)">@(item.BillAmount + "€" + " (" + item.FeeAmount + "€) - " + item.BillNumber)</a>
+                        <a href="@Configurations.GetBillUrl(item)">@(item.BillAmount + "€" + " (" + item.FeeAmount + "€) - " + item.BillNumber)</a>
                     }
                 </td>
             </tr>
@@ -99,7 +101,7 @@ else
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Adherent.Id)
+                    @Html.DisplayFor(modelItem => item.AdherentStolon.LocalId)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Adherent.CompanyName)
@@ -109,14 +111,18 @@ else
                 </td>
                 <td>
                     @Html.ActionLink(
-                                   "Valider la livraison",
-                                  "UpdateProducerBill",
-                                    new { billNumber = item.BillNumber },
-                                    new { onclick = "return confirm('Confirmation de la livraison de " + item.Adherent.CompanyName + "');" })
+                        "Valider la livraison",
+                        "UpdateProducerBill",
+                        new { billNumber = item.BillNumber },
+                        new { onclick = "return confirm('Confirmation de la livraison de " + item.Adherent.CompanyName + "');",
+			      @class="btn btn-small btn-default"
+			}
+		    )
+		    <a href="#" class="btn btn-small btn-default" onclick="openCorrectionModal(@item.BillId)">Réctifier la livraison</a>
                 </td>
                 <td>
                     @{
-                        <a href="@Configurations.GetUrl(item)">@(item.BillNumber)</a>
+                        <a href="@Configurations.GetBillUrl(item)">@(item.BillNumber)</a>
                     }
                 </td>
             </tr>
@@ -161,7 +167,7 @@ else
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Adherent.Id)
+                    @Html.DisplayFor(modelItem => item.AdherentStolon.LocalId)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Adherent.Name)
@@ -180,7 +186,7 @@ else
                 </td>
                 <td>
                     @{
-                        <a href="@Configurations.GetUrl(item)">@(item.OrderAmount +"€ - " + item.BillNumber)</a>
+                        <a href="@Configurations.GetBillUrl(item)">@(item.OrderAmount +"€ - " + item.BillNumber)</a>
                     }
                 </td>
             </tr>
