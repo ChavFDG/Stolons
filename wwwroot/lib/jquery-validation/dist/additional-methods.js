@@ -778,7 +778,9 @@ $.validator.addMethod("postcodeUK", function(value, element) {
  *
  * The end result is that neither of these inputs:
  *
- *	<input class="productinfo" name="partnumber">
+ *	<input
+
+        info" name="partnumber">
  *	<input class="productinfo" name="description">
  *
  *	...will validate unless at least one of them is filled.
