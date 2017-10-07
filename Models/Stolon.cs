@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Stolons.Models.Users;
 using System.IO;
 using Stolons.Helpers;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Stolons.Models
 {
@@ -45,6 +46,8 @@ namespace Stolons.Models
         public string PhoneNumber { get; set; } = "";
         [Display(Name = "Courriel de contact")]
         public string ContactMailAddress { get; set; } = "";
+        [Display(Name = "Page Facebook")]
+        public string FacebookPage { get; set; } = "";
 
         [Display(Name = "Avoir une comission sur les producteurs")]
         public bool UseProducersFee { get; set; } = true;
@@ -201,6 +204,15 @@ namespace Stolons.Models
             }
             toReturn += " à " + String.Format("{0:00}", BasketPickUpEndHour) + "h" + String.Format("{0:00}", BasketPickUpEndMinute);
             return toReturn;
+        }
+
+        [NotMapped]
+        public Modes Mode
+        {
+            get
+            {
+                return GetMode();
+            }
         }
 
         public Modes GetMode()

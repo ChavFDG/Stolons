@@ -26,13 +26,15 @@ namespace Stolons.Controllers
         }
 
         // GET: Transactions
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             if (!Authorized(Role.Volunteer))
                 return Unauthorized();
 
             Stolon stolon = GetCurrentStolon();
-            return View(new TransactionsViewModel(GetActiveAdherentStolon(), stolon,await _context.Transactions.Include(x=>x.Stolon).Where(x=>x.StolonId == stolon.Id).ToListAsync()));
+            List<Transaction> transactions = _context.Transactions.Include(x => x.Stolon).Where(x => x.StolonId == stolon.Id).ToList();
+            transactions.OfType<AdherentTransaction>().ToList().ForEach(transac => transac.Adherent = _context.Adherents.FirstOrDefault(adherent => adherent.Id == transac.AdherentId));
+            return View(new TransactionsViewModel(GetActiveAdherentStolon(), stolon, transactions));
         }
 
         // GET: Transactions/Details/5
@@ -61,7 +63,7 @@ namespace Stolons.Controllers
             if (!Authorized(Role.Volunteer))
                 return Unauthorized();
 
-            return View(new TransactionViewModel(GetActiveAdherentStolon(), GetCurrentStolon(), new Transaction()));
+            return View(new TransactionViewModel(GetActiveAdherentStolon(), GetCurrentStolon(), new AdherentTransaction()));
         }
 
         // POST: Transactions/Create
@@ -73,9 +75,14 @@ namespace Stolons.Controllers
         {
             if (ModelState.IsValid)
             {
-                transactionVm.Transaction.Id = Guid.NewGuid();
-                transactionVm.Transaction.StolonId = transactionVm.Stolon.Id;
-                _context.Add(transactionVm.Transaction);
+                AdherentTransaction adherentTransaction = new AdherentTransaction(  GetActiveAdherentStolon().Adherent,
+                                                                                    GetCurrentStolon(),
+                                                                                    transactionVm.Transaction.Type,
+                                                                                    transactionVm.Transaction.Category,
+                                                                                    transactionVm.Transaction.Amount,
+                                                                                    transactionVm.Transaction.Description,
+                                                                                    false);
+                _context.Add(adherentTransaction);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
             }

@@ -307,7 +307,7 @@ namespace Stolons.Controllers
                 Transaction.TransactionType.Inbound,
                 Transaction.TransactionCategory.TokenCredit,
                 vmCreditToken.CreditedToken,
-                "Encaissement de " + vmCreditToken.CreditedToken + "€, pour créditage du compte de " + adherentStolon.Adherent.Name + "( " + adherentStolon.LocalId + " ) de " + vmCreditToken.CreditedToken + "β"));
+                "Encaissement de " + vmCreditToken.CreditedToken + "€, pour créditage du compte de " + adherentStolon.Adherent.Name + "( " + adherentStolon.LocalId + " ) de " + vmCreditToken.CreditedToken + "Ṩ"));
             _context.Update(adherentStolon);
             _context.SaveChanges();
             return RedirectToAction("Index");

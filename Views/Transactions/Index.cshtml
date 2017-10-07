@@ -31,7 +31,7 @@
                 @Html.DisplayNameFor(model => model.Transactions.First().Amount)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Transactions.First().AddedAutomaticly)
+                Ajouter par
             </th>
             <th></th>
         </tr>
@@ -66,7 +66,18 @@
                         break;
                 }
                 <td>
-                    @Html.DisplayFor(modelItem => item.AddedAutomaticly)
+                    @if (item is AdherentTransaction)
+                    {
+                        @((item as AdherentTransaction).Adherent.Surname + " " + (item as AdherentTransaction).Adherent.Name)
+                    }
+                    else
+                    {
+                        @item.Stolon.Label
+                    }
+                    @if (item.AddedAutomaticly)
+                    {
+                        @(" " + "(Automatique)")
+                    }
                 </td>
                 <td>
                     <div class="dropdown">

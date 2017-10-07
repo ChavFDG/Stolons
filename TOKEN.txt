@@ -1,4 +1,4 @@
-﻿Les "TOKEN" ("Stols" ou "Ṩ" pour les users) est la monnaie virtuel du site.Bogues
+﻿Les "TOKEN" ("Stols" ou "Ṩ" pour les users) est la monnaie virtuel du site.Stols
 Chaque consommateur a des Tokens.
 Les Tokens peuvent être crédité par les bénévoles.
 1 € = 1 Token, on ne peut pas transformer les Token en euro

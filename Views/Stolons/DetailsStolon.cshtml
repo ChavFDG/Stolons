@@ -7,7 +7,14 @@
 {
     <a asp-action="SwitchMode" asp-controller="Stolons" asp-route-id="@Model.Stolon.Id" class="btn btn-small btn-default">@(Model.Stolon.GetMode() == Stolon.Modes.DeliveryAndStockUpdate ? "Passer en mode Commande" : "Passer en mode Livraison et mise à jour des stocks")</a>
 }
-
+@functions
+{
+    string DayToFrench(DayOfWeek dayOfWeekValue)
+    {
+        var culture = new System.Globalization.CultureInfo("fr-FR");
+        return culture.DateTimeFormat.GetDayName(dayOfWeekValue);
+    }
+}
 <div>
     <hr />
     <div class="row">
@@ -203,7 +210,7 @@
                     @Html.DisplayNameFor(model => model.Stolon.OrderDayStartDate)
                 </dt>
                 <dd>
-                    @Html.DisplayFor(model => model.Stolon.OrderDayStartDate)
+                    @DayToFrench(Model.Stolon.OrderDayStartDate)
                 </dd>
                 <dt>
                     @Html.DisplayNameFor(model => model.Stolon.OrderHourStartDate)
@@ -221,7 +228,7 @@
                     @Html.DisplayNameFor(model => model.Stolon.DeliveryAndStockUpdateDayStartDate)
                 </dt>
                 <dd>
-                    @Html.DisplayFor(model => model.Stolon.DeliveryAndStockUpdateDayStartDate)
+                    @DayToFrench(Model.Stolon.DeliveryAndStockUpdateDayStartDate)
                 </dd>
                 <dt>
                     @Html.DisplayNameFor(model => model.Stolon.DeliveryAndStockUpdateDayStartDateHourStartDate)
@@ -239,7 +246,7 @@
                     @Html.DisplayNameFor(model => model.Stolon.BasketPickUpStartDay)
                 </dt>
                 <dd>
-                    @Html.DisplayFor(model => model.Stolon.BasketPickUpStartDay)
+                    @DayToFrench(Model.Stolon.BasketPickUpStartDay)
                 </dd>
                 <dt>
                     @Html.DisplayNameFor(model => model.Stolon.BasketPickUpStartHour)
@@ -257,7 +264,7 @@
                     @Html.DisplayNameFor(model => model.Stolon.BasketPickEndUpDay)
                 </dt>
                 <dd>
-                    @Html.DisplayFor(model => model.Stolon.BasketPickEndUpDay)
+                    @DayToFrench(Model.Stolon.BasketPickEndUpDay)
                 </dd>
                 <dt>
                     @Html.DisplayNameFor(model => model.Stolon.BasketPickUpEndHour)

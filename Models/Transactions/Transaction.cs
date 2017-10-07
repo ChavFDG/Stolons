@@ -96,7 +96,7 @@ namespace Stolons.Models.Transactions
 
         public enum PaymentMode
         {
-            [Display(Name = "Bogue")]
+            [Display(Name = "Stol")]
             Token = 0,
             [Display(Name = "Chéque")]
             Check = 1,
