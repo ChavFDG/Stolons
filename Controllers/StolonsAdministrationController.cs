@@ -168,7 +168,7 @@ namespace Stolons.Controllers
             var stolon = await _context.Stolons.SingleOrDefaultAsync(m => m.Id == id);
             _context.Stolons.Remove(stolon);
             await _context.SaveChangesAsync();
-            _context.RemoveRange(_context.AdherentStolons.Where(x => x.StolonId == stolon.Id));
+            _context.RemoveRange(_context.AdherentStolons.Where(x => x.StolonId == stolon.Id).ToList());
             return RedirectToAction("Index");
         }
 

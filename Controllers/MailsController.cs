@@ -58,7 +58,7 @@ namespace Stolons.Controllers
             if (!Authorized(Role.Volunteer))
                 return Unauthorized();
 
-            return View("Report", SendMail(_context.Adherents, mailMessage));
+            return View("Report", SendMail(_context.Adherents.ToList(), mailMessage));
         }
         
         public IActionResult SendToConsumers(MailMessage mailMessage)
@@ -66,7 +66,7 @@ namespace Stolons.Controllers
             if (!Authorized(Role.Volunteer))
                 return Unauthorized();
 
-            return View("Report",SendMail(_context.Adherents, mailMessage));
+            return View("Report",SendMail(_context.Adherents.ToList(), mailMessage));
         }
         
         public IActionResult SendToProducers(MailMessage mailMessage)
@@ -74,7 +74,7 @@ namespace Stolons.Controllers
             if (!Authorized(Role.Volunteer))
                 return Unauthorized();
 
-            return View("Report",SendMail(_context.Adherents, mailMessage));
+            return View("Report",SendMail(_context.Adherents.ToList(), mailMessage));
         }
 
         // GET: News/Details/5
@@ -84,10 +84,10 @@ namespace Stolons.Controllers
                 return Unauthorized();
 
             List<IAdherent> users = new List<IAdherent>();
-            users.AddRange(_context.Sympathizers.Where(x=>x.StolonId == stolon.Id && x.ReceivedInformationsEmail));
-            users.AddRange(_context.Adherents.Include(x=>x.AdherentStolons).Where(x=>x.AdherentStolons.Any(consStol=>consStol.StolonId == stolon.Id)));
+            users.AddRange(_context.Sympathizers.Where(x=>x.StolonId == stolon.Id && x.ReceivedInformationsEmail).ToList());
+            users.AddRange(_context.Adherents.Include(x=>x.AdherentStolons).Where(x=>x.AdherentStolons.Any(consStol=>consStol.StolonId == stolon.Id)).ToList());
             //On peut envoyer deux fois à un producteur qui est un consomateur
-            users.AddRange(_context.Adherents.Include(x => x.AdherentStolons).Where(x => x.AdherentStolons.Any(consStol => consStol.StolonId == stolon.Id)));
+            users.AddRange(_context.Adherents.Include(x => x.AdherentStolons).Where(x => x.AdherentStolons.Any(consStol => consStol.StolonId == stolon.Id)).ToList());
             return View("Report",  SendMail(users.Distinct(),mailMessage));
         }
 

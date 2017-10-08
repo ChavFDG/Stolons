@@ -70,7 +70,7 @@ namespace Stolons.Controllers
             {
                 int orderedQty = 0;
                 List<BillEntry> billEntries = new List<BillEntry>();
-                foreach (var validateWeekBasket in _context.ValidatedWeekBaskets.Include(x=>x.AdherentStolon).ThenInclude(x=>x.Adherent).Include(x => x.BillEntries))
+                foreach (var validateWeekBasket in _context.ValidatedWeekBaskets.Include(x=>x.AdherentStolon).ThenInclude(x=>x.Adherent).Include(x => x.BillEntries).ToList())
                 {
                     validateWeekBasket.BillEntries.Where(x => x.ProductStockId == productStock.Id).ToList().ForEach(x => orderedQty += x.Quantity);
                 }
@@ -189,7 +189,7 @@ namespace Stolons.Controllers
                 {
                     _context.Products.Add(vmProduct.Product);
                     //Add it to all Stolon
-                    foreach (var adhrentStolon in _context.AdherentStolons.Where(x => x.AdherentId == vmProduct.Product.ProducerId && x.IsProducer))
+                    foreach (var adhrentStolon in _context.AdherentStolons.Where(x => x.AdherentId == vmProduct.Product.ProducerId && x.IsProducer).ToList())
                     {
                         _context.ProductsStocks.Add(new ProductStockStolon(vmProduct.Product.Id, adhrentStolon.Id));
                     }
@@ -237,7 +237,7 @@ namespace Stolons.Controllers
             if (!AuthorizedProducer())
                 return Unauthorized();
 
-            foreach (var productStock in _context.ProductsStocks.Where(x => x.ProductId == productId))
+            foreach (var productStock in _context.ProductsStocks.Where(x => x.ProductId == productId).ToList())
             {
                 productStock.State = Product.ProductState.Enabled;
             }
@@ -251,7 +251,7 @@ namespace Stolons.Controllers
             if (!AuthorizedProducer())
                 return Unauthorized();
 
-            foreach (var product in _context.ProductsStocks.Include(x => x.AdherentStolon).Where(x => x.AdherentStolon.AdherentId == GetCurrentAdherentSync().Id && x.State == Product.ProductState.Stock))
+            foreach (var product in _context.ProductsStocks.Include(x => x.AdherentStolon).Where(x => x.AdherentStolon.AdherentId == GetCurrentAdherentSync().Id && x.State == Product.ProductState.Stock).ToList())
             {
                 product.State = Product.ProductState.Enabled;
             }
@@ -264,7 +264,7 @@ namespace Stolons.Controllers
             if (!AuthorizedProducer())
                 return Unauthorized();
 
-            foreach (var product in _context.ProductsStocks.Include(x => x.AdherentStolon).Where(x => x.AdherentStolon.StolonId == stolonId &&  x.State == Product.ProductState.Stock))
+            foreach (var product in _context.ProductsStocks.Include(x => x.AdherentStolon).Where(x => x.AdherentStolon.StolonId == stolonId &&  x.State == Product.ProductState.Stock).ToList())
             {
                 product.State = Product.ProductState.Enabled;
             }
@@ -277,7 +277,7 @@ namespace Stolons.Controllers
             if (!AuthorizedProducer())
                 return Unauthorized();
 
-            foreach (var product in _context.ProductsStocks.Include(x => x.AdherentStolon).Where(x => x.AdherentStolonId == adherentStolonId && x.State != Product.ProductState.Disabled ))
+            foreach (var product in _context.ProductsStocks.Include(x => x.AdherentStolon).Where(x => x.AdherentStolonId == adherentStolonId && x.State != Product.ProductState.Disabled ).ToList())
             {
                 product.State = Product.ProductState.Disabled;
             }
@@ -317,7 +317,7 @@ namespace Stolons.Controllers
             if (!AuthorizedProducer())
                 return Unauthorized();
 
-            foreach (var product in _context.ProductsStocks.Where(x => x.AdherentStolonId == adherentStolonId && x.State == Product.ProductState.Stock))
+            foreach (var product in _context.ProductsStocks.Where(x => x.AdherentStolonId == adherentStolonId && x.State == Product.ProductState.Stock).ToList())
             {
                 product.State = Product.ProductState.Enabled;
             }
@@ -330,7 +330,7 @@ namespace Stolons.Controllers
             if (!AuthorizedProducer())
                 return Unauthorized();
 
-            foreach (var product in _context.ProductsStocks.Where(x => x.AdherentStolonId == adherentStolonId && x.State != Product.ProductState.Disabled))
+            foreach (var product in _context.ProductsStocks.Where(x => x.AdherentStolonId == adherentStolonId && x.State != Product.ProductState.Disabled).ToList())
             {
                 product.State = Product.ProductState.Disabled;
             }
@@ -477,7 +477,7 @@ namespace Stolons.Controllers
             {
                 return StatusCode(400);
             }
-            var products = _context.Products.Where(x => x.Familly.Type.Id == categoryId);
+            var products = _context.Products.Where(x => x.Familly.Type.Id == categoryId).ToList();
             foreach (Product product in products)
             {
                 product.Familly = null;
@@ -501,7 +501,7 @@ namespace Stolons.Controllers
             {
                 return StatusCode(400);
             }
-            var products = _context.Products.Where(x => x.Familly.Id == familyId);
+            var products = _context.Products.Where(x => x.Familly.Id == familyId).ToList();
             foreach (Product product in products)
             {
                 product.Familly = null;

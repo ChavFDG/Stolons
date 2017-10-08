@@ -48,12 +48,12 @@ namespace Stolons.Models
         //Adherent Stolons
         public DbSet<AdherentStolon> AdherentStolons { get; set; }
 
-	//private readonly IHostingEnvironment env;
+        //private readonly IHostingEnvironment env;
 
-	public ApplicationDbContext() : base()
-	{
-	    //this.env = env;
-	}
+        public ApplicationDbContext() : base()
+        {
+            //this.env = env;
+        }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
                 : base(options)
@@ -63,12 +63,12 @@ namespace Stolons.Models
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.EnableSensitiveDataLogging();
-	    var builder = new ConfigurationBuilder()
-		.SetBasePath(Configurations.Environment.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
-	    var configuration = builder.Build();
-	    var connectionString = configuration.GetConnectionString("Stolons");
-	    optionsBuilder.UseNpgsql(connectionString);
+            var builder = new ConfigurationBuilder()
+                    .SetBasePath(Configurations.Environment.ContentRootPath)
+                    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+            var configuration = builder.Build();
+            var connectionString = configuration.GetConnectionString("Stolons");
+            optionsBuilder.UseNpgsql(connectionString);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -91,8 +91,8 @@ namespace Stolons.Models
             modelBuilder.Entity<ProductStockStolon>()
                 .HasMany(x => x.BillEntries)
                 .WithOne(x => x.ProductStock);
-                    modelBuilder.Entity<Product>()
-                        .HasOne(x => x.Producer);
+            modelBuilder.Entity<Product>()
+                .HasOne(x => x.Producer);
             //TempWeekBasket
             modelBuilder.Entity<TempWeekBasket>()
                 .HasMany(x => x.BillEntries)

@@ -59,7 +59,7 @@ namespace Stolons.Controllers
             Stolon stolon = _context.Stolons.FirstOrDefault(x => x.Id == id);
             Dictionary<Adherent, List<Product>> prods = new Dictionary<Adherent, List<Product>>();
 
-            foreach (var producer in _context.Adherents.Include(x => x.Products))
+            foreach (var producer in _context.Adherents.Include(x => x.Products).ToList())
             {
                 prods.Add(producer, _context.Products.Include(x=>x.Familly).ThenInclude(x=>x.Type).Where(product => product.ProducerId == producer.Id).ToList());
             }

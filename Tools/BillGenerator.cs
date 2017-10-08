@@ -27,168 +27,168 @@ namespace Stolons.Tools
         {
             using (ApplicationDbContext dbContext = new ApplicationDbContext())
             {
-                foreach (Stolon stolon in dbContext.Stolons)
+                foreach (Stolon stolon in dbContext.Stolons.ToList())
                 {
                     lastModes.Add(stolon.Id, stolon.GetMode());
                 }
             }
             do
             {
-                ApplicationDbContext dbContext = new ApplicationDbContext();
-                foreach (Stolon stolon in dbContext.Stolons)
+                using (ApplicationDbContext dbContext = new ApplicationDbContext())
                 {
-                    //For new Stolon
-                    if (!lastModes.Keys.Contains(stolon.Id))
-                        lastModes.Add(stolon.Id, stolon.GetMode());
-                    //
-
-                    Stolon.Modes currentMode = stolon.GetMode();
-                    if (lastModes[stolon.Id] == Stolon.Modes.Order && currentMode == Stolon.Modes.DeliveryAndStockUpdate)
+                    foreach (Stolon stolon in dbContext.Stolons.ToList())
                     {
+                        //For new Stolon
+                        if (!lastModes.Keys.Contains(stolon.Id))
+                            lastModes.Add(stolon.Id, stolon.GetMode());
+                        //
+
+                        Stolon.Modes currentMode = stolon.GetMode();
+                        if (lastModes[stolon.Id] == Stolon.Modes.Order && currentMode == Stolon.Modes.DeliveryAndStockUpdate)
+                        {
 
 #if (DEBUG)
-                        //For test, remove existing consumer bill and producer bill => That will never exist in normal mode cause they can only have one bill by week per user
-                        string billToRemove = DateTime.Now.Year + "_" + DateTime.Now.GetIso8601WeekOfYear();
-                        //
-                        foreach (var bill in dbContext.ConsumerBills.Where(x => x.BillNumber.EndsWith(billToRemove)).Include(x => x.BillEntries).ToList())
-                        {
-                            foreach (var billEntry in bill.BillEntries)
+                            //For test, remove existing consumer bill and producer bill => That will never exist in normal mode cause they can only have one bill by week per user
+                            string billToRemove = DateTime.Now.Year + "_" + DateTime.Now.GetIso8601WeekOfYear();
+                            //
+                            foreach (var bill in dbContext.ConsumerBills.Where(x => x.BillNumber.EndsWith(billToRemove)).Include(x => x.BillEntries).ToList())
                             {
-                                billEntry.ConsumerBill = null;
+                                foreach (var billEntry in bill.BillEntries)
+                                {
+                                    billEntry.ConsumerBill = null;
+                                }
+                                dbContext.Remove(bill);
                             }
-                            dbContext.Remove(bill);
-                        }
-                        foreach (var bill in dbContext.ProducerBills.Where(x => x.BillNumber.EndsWith(billToRemove)).Include(x => x.BillEntries).ToList())
-                        {
-                            foreach (var billEntry in bill.BillEntries)
+                            foreach (var bill in dbContext.ProducerBills.Where(x => x.BillNumber.EndsWith(billToRemove)).Include(x => x.BillEntries).ToList())
                             {
-                                billEntry.ProducerBill = null;
+                                foreach (var billEntry in bill.BillEntries)
+                                {
+                                    billEntry.ProducerBill = null;
+                                }
+                                dbContext.Remove(bill);
                             }
-                            dbContext.Remove(bill);
-                        }
 #endif
 
-                        //We moved form Order to Preparation, create and send bills
-                        List<ConsumerBill> consumerBills = new List<ConsumerBill>();
-                        List<ProducerBill> producerBills = new List<ProducerBill>();
+                            //We moved form Order to Preparation, create and send bills
+                            List<ConsumerBill> consumerBills = new List<ConsumerBill>();
+                            List<ProducerBill> producerBills = new List<ProducerBill>();
 
-                        #region Create bills
-                        //Consumer (create bills)
-                        List<ValidatedWeekBasket> consumerWeekBaskets = dbContext.ValidatedWeekBaskets.Include(x => x.BillEntries).Include(x => x.AdherentStolon).Include(x => x.AdherentStolon.Stolon).Include(x => x.AdherentStolon.Adherent)
-                                                                                                      .Where(x => x.AdherentStolon.StolonId == stolon.Id ).ToList();
-                        foreach (var weekBasket in consumerWeekBaskets)
-                        {
-                            //Generate bill for consumer                            
-                            ConsumerBill consumerBill = CreateBill<ConsumerBill>(weekBasket.AdherentStolon, weekBasket.BillEntries);
-                            consumerBill.HtmlBillContent = GenerateHtmlBillContent(consumerBill, dbContext);
-                            consumerBills.Add(consumerBill);
-                            dbContext.Add(consumerBill);
-                            dbContext.SaveChanges();
-                            dbContext.Remove(weekBasket);
-                            dbContext.SaveChanges();
-                            //dbContext.Remove(dbContext.TempsWeekBaskets.Include(x=>x.BillEntries)
-                            //                        .First(x => x.AdherentStolonId == consumerBill.AdherentStolon.Id));
-                            //dbContext.SaveChanges();
-                        }
-
-                        //Producer (creates bills)
-                        foreach (var producer in dbContext.AdherentStolons.Include(x => x.Adherent).Include(x => x.Stolon).Where(x => x.StolonId == stolon.Id && x.IsProducer))
-                        {
-                            List<BillEntry> billEntries = new List<BillEntry>();
-                            foreach (var consumerBill in consumerBills)
+                            #region Create bills
+                            //Consumer (create bills)
+                            List<ValidatedWeekBasket> consumerWeekBaskets = dbContext.ValidatedWeekBaskets.Include(x => x.BillEntries).Include(x => x.AdherentStolon).Include(x => x.AdherentStolon.Stolon).Include(x => x.AdherentStolon.Adherent)
+                                                                                                          .Where(x => x.AdherentStolon.StolonId == stolon.Id).ToList();
+                            foreach (var weekBasket in consumerWeekBaskets)
                             {
-                                foreach (var billEntry in consumerBill.BillEntries.Where(billEntry => billEntry.ProductStock.Product.ProducerId == producer.AdherentId))
+                                //Generate bill for consumer                            
+                                ConsumerBill consumerBill = CreateBill<ConsumerBill>(weekBasket.AdherentStolon, weekBasket.BillEntries);
+                                consumerBill.HtmlBillContent = GenerateHtmlBillContent(consumerBill, dbContext);
+                                consumerBills.Add(consumerBill);
+                                dbContext.Add(consumerBill);
+                                dbContext.SaveChanges();
+                                dbContext.Remove(weekBasket);
+                                dbContext.SaveChanges();
+                                dbContext.Remove(dbContext.TempsWeekBaskets.Include(x=>x.BillEntries).First(x => x.AdherentStolonId == consumerBill.AdherentStolon.Id));
+                                dbContext.SaveChanges();
+                            }
+
+                            //Producer (creates bills)
+                            foreach (var producer in dbContext.AdherentStolons.Include(x => x.Adherent).Include(x => x.Stolon).Where(x => x.StolonId == stolon.Id && x.IsProducer).ToList())
+                            {
+                                List<BillEntry> billEntries = new List<BillEntry>();
+                                foreach (var consumerBill in consumerBills)
                                 {
-                                    billEntries.Add(dbContext.BillEntrys.Include(x=>x.ConsumerBill).First(x=>x.Id == billEntry.Id));
+                                    foreach (var billEntry in consumerBill.BillEntries.Where(billEntry => billEntry.ProductStock.Product.ProducerId == producer.AdherentId))
+                                    {
+                                        billEntries.Add(dbContext.BillEntrys.Include(x => x.ConsumerBill).First(x => x.Id == billEntry.Id));
+                                    }
+                                }
+                                //Generate bill for producer
+                                ProducerBill bill = CreateBill<ProducerBill>(producer, billEntries);
+                                bill.HtmlBillContent = GenerateHtmlBillContent(bill, dbContext);
+                                bill.HtmlOrderContent = GenerateHtmlOrderContent(bill, dbContext);
+                                producerBills.Add(bill);
+                                dbContext.Add(bill);
+                                dbContext.SaveChanges();
+                            }
+
+                            //Stolons
+                            StolonsBill stolonsBill = GenerateBill(stolon, consumerBills, dbContext);
+                            if (dbContext.StolonsBills.Any(x => x.BillNumber == stolonsBill.BillNumber))
+                            {
+                                StolonsBill tempBill = dbContext.StolonsBills.FirstOrDefault(x => x.BillNumber == stolonsBill.BillNumber);
+                                tempBill.Amount = stolonsBill.Amount;
+                                tempBill.EditionDate = stolonsBill.EditionDate;
+                                tempBill.HtmlBillContent = stolonsBill.HtmlBillContent;
+                                tempBill.ProducersFee = stolonsBill.ProducersFee;
+                            }
+                            else
+                                dbContext.Add(stolonsBill);
+
+                            dbContext.SaveChanges();
+                            #endregion Create bills
+
+                            #region Save bills
+
+                            //Move stolon's products to stock 
+                            foreach (ProductStockStolon productStock in dbContext.ProductsStocks.Include(x => x.AdherentStolon).Include(x => x.Product).Where(x => x.AdherentStolon.StolonId == stolon.Id).ToList())
+                            {
+                                if (productStock.State == ProductState.Enabled && productStock.Product.StockManagement == StockType.Week)
+                                {
+                                    productStock.State = ProductState.Stock;
+                                    productStock.RemainingStock = productStock.WeekStock;
                                 }
                             }
-                            //Generate bill for producer
-                            ProducerBill bill = CreateBill<ProducerBill>(producer, billEntries);
-                            bill.HtmlBillContent = GenerateHtmlBillContent(bill, dbContext);
-                            bill.HtmlOrderContent = GenerateHtmlOrderContent(bill, dbContext);
-                            producerBills.Add(bill);
-                            dbContext.Add(bill);
+                            //
+
+                            dbContext.SaveChanges();
+                            #endregion Save bills
+
+                            #region Create PDF and send mail
+
+                            //For stolons
+                            try
+                            {
+                                GeneratePDF(stolonsBill.HtmlBillContent, stolonsBill.GetStolonBillFilePath());
+                            }
+                            catch (Exception exept)
+                            {
+                                AuthMessageSender.SendEmail(stolon.Label,
+                                                                Configurations.Application.ContactMailAddress,
+                                                                "Stolons",
+                                                                "Erreur lors de la génération de la facture Stolons",
+                                                                "Message d'erreur : " + exept.Message);
+                            }
+
+                            // => Producer, send mails
+                            foreach (var bill in producerBills)
+                            {
+                                GenerateOrderPdfAndSendEmail(bill);
+                            }
+
+                            //Bills (save bills and send mails to user)
+                            foreach (var bill in consumerBills)
+                            {
+                                GenerateOrderPdfAndSendEmail(bill);
+                            }
+
+                            #endregion  Create PDF and send mail
+
+
+                        }
+                        if (lastModes[stolon.Id] == Stolon.Modes.DeliveryAndStockUpdate && currentMode == Stolon.Modes.Order)
+                        {
+                            foreach (ProductStockStolon productStock in dbContext.ProductsStocks.Include(x => x.AdherentStolon).Include(x => x.Product).Where(x => x.AdherentStolon.StolonId == stolon.Id).ToList())
+                            {
+                                if (productStock.State == ProductState.Stock)
+                                {
+                                    productStock.State = ProductState.Disabled;
+                                }
+                            }
                             dbContext.SaveChanges();
                         }
-
-                        //Stolons
-                        StolonsBill stolonsBill = GenerateBill(stolon, consumerBills, dbContext);
-                        if (dbContext.StolonsBills.Any(x => x.BillNumber == stolonsBill.BillNumber))
-                        {
-                            StolonsBill tempBill = dbContext.StolonsBills.FirstOrDefault(x => x.BillNumber == stolonsBill.BillNumber);
-                            tempBill.Amount = stolonsBill.Amount;
-                            tempBill.EditionDate = stolonsBill.EditionDate;
-                            tempBill.HtmlBillContent = stolonsBill.HtmlBillContent;
-                            tempBill.ProducersFee = stolonsBill.ProducersFee;
-                        }
-                        else
-                            dbContext.Add(stolonsBill);
-
-                        dbContext.SaveChanges();
-                        #endregion Create bills
-
-                        #region Save bills
-
-                        //Move stolon's products to stock 
-                        foreach (ProductStockStolon productStock in dbContext.ProductsStocks.Include(x => x.AdherentStolon).Include(x => x.Product).Where(x => x.AdherentStolon.StolonId == stolon.Id))
-                        {
-                            if (productStock.State == ProductState.Enabled && productStock.Product.StockManagement == StockType.Week)
-                            {
-                                productStock.State = ProductState.Stock;
-                                productStock.RemainingStock = productStock.WeekStock;
-                            }
-                        }
-                        //
-
-                        dbContext.SaveChanges();
-                        #endregion Save bills
-
-                        #region Create PDF and send mail
-
-                        //For stolons
-                        try
-                        {
-                            GeneratePDF(stolonsBill.HtmlBillContent, stolonsBill.GetStolonBillFilePath());
-                        }
-                        catch (Exception exept)
-                        {
-                            AuthMessageSender.SendEmail(stolon.Label,
-                                                            Configurations.Application.ContactMailAddress,
-                                                            "Stolons",
-                                                            "Erreur lors de la génération de la facture Stolons",
-                                                            "Message d'erreur : " + exept.Message);
-                        }
-
-                        // => Producer, send mails
-                        foreach (var bill in producerBills)
-                        {
-                            GenerateOrderPdfAndSendEmail(bill);
-                        }
-
-                        //Bills (save bills and send mails to user)
-                        foreach (var bill in consumerBills)
-                        {
-                            GenerateOrderPdfAndSendEmail(bill);
-                        }
-
-                        #endregion  Create PDF and send mail
-
-
+                        lastModes[stolon.Id] = currentMode;
                     }
-                    if (lastModes[stolon.Id] == Stolon.Modes.DeliveryAndStockUpdate && currentMode == Stolon.Modes.Order)
-                    {
-                        foreach (ProductStockStolon productStock in dbContext.ProductsStocks.Include(x => x.AdherentStolon).Include(x => x.Product).Where(x => x.AdherentStolon.StolonId == stolon.Id))
-                        {
-                            if (productStock.State == ProductState.Stock)
-                            {
-                                productStock.State = ProductState.Disabled;
-                            }
-                        }
-                        dbContext.SaveChanges();
-                    }
-                    lastModes[stolon.Id] = currentMode;
                 }
-                dbContext.Dispose();
                 Thread.Sleep(5000);
             } while (true);
         }
@@ -291,14 +291,14 @@ namespace Stolons.Tools
                 builder.AppendLine("<b>Nombre de panier : " + consumersBills.Count + "</b></p>");
                 builder.AppendLine("<p>Adhérents ayant un panier : ");
                 consumersBills.OrderBy(x => x.AdherentStolon.LocalId)
-                                            .ForEach(x => builder.AppendLine("<a href=\"#"+ x.AdherentStolon.LocalId+ "\">"+x.AdherentStolon.GetNumberSurnameName()+"</a>"));
+                                            .ForEach(x => builder.AppendLine("<a href=\"#" + x.AdherentStolon.LocalId + "\">" + x.AdherentStolon.GetNumberSurnameName() + "</a>"));
 
                 builder.AppendLine("<div style=\"page-break-after:always\"></div>");
                 int count = 0;
                 foreach (var consumerBill in consumersBills.OrderBy(x => x.AdherentStolon.LocalId))
                 {
                     count++;
-                    builder.AppendLine("<h1 id=\""+ consumerBill.AdherentStolon.LocalId + "\">Adhérent : " + consumerBill.AdherentStolon.LocalId + " / " + consumerBill.Adherent.Surname + " / " + consumerBill.Adherent.Name + "</h1>");
+                    builder.AppendLine("<h1 id=\"" + consumerBill.AdherentStolon.LocalId + "\">Adhérent : " + consumerBill.AdherentStolon.LocalId + " / " + consumerBill.Adherent.Surname + " / " + consumerBill.Adherent.Name + "</h1>");
                     builder.AppendLine("<p>Facture : " + consumerBill.BillNumber + "</p>");
                     builder.AppendLine("<p>Téléphone : " + consumerBill.Adherent.PhoneNumber + "</p>");
                     builder.AppendLine("<p>Total à régler : " + consumerBill.TotalPrice + " €</p>");

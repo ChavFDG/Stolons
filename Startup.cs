@@ -20,17 +20,15 @@ using Stolons.Models.Users;
 using Microsoft.Extensions.Configuration.UserSecrets;
 using static Stolons.Configurations;
 
-[assembly: UserSecretsId("aspnet-TestApp-ce345b64-19cf-4972-b34f-d16f2e7976ed")]
 
 namespace Stolons
 {
     public class Startup
     {
-
         IHostingEnvironment _environment;
         public Startup(IHostingEnvironment env)
         {
-	    Configurations.Environment = env;
+            Configurations.Environment = env;
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
@@ -59,11 +57,11 @@ namespace Stolons
                 //     //db.Database.EnsureCreated();
                 //     db.Database.Migrate();
                 // }
-		services.AddDbContext<ApplicationDbContext>();
+                services.AddDbContext<ApplicationDbContext>();
 
-		services.AddIdentity<ApplicationUser, IdentityRole>()
-                    .AddEntityFrameworkStores<ApplicationDbContext>()
-                    .AddDefaultTokenProviders();
+                services.AddIdentity<ApplicationUser, IdentityRole>()
+                            .AddEntityFrameworkStores<ApplicationDbContext>()
+                            .AddDefaultTokenProviders();
 
                 services.AddMvc();
 

@@ -37,7 +37,7 @@ namespace Stolons.Controllers
                 return Unauthorized();
             AdherentStolon activeAdherentStolon = GetActiveAdherentStolon();
             List<AdherentsViewModel> adherentsViewModel = new List<AdherentsViewModel>();
-            foreach(var stolon in _context.Stolons)
+            foreach(var stolon in _context.Stolons.ToList())
             {
                 adherentsViewModel.Add(new AdherentsViewModel(activeAdherentStolon, stolon, _context.Sympathizers.Where(x => x.StolonId == stolon.Id).ToList(), _context.AdherentStolons.Include(x=>x.Stolon).Include(x=>x.Adherent).Where(x => x.StolonId == stolon.Id).ToList()));
             }
