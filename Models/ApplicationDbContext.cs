@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -47,10 +48,12 @@ namespace Stolons.Models
         //Adherent Stolons
         public DbSet<AdherentStolon> AdherentStolons { get; set; }
 
+	//private readonly IHostingEnvironment env;
 
-        public ApplicationDbContext() : base()
-        {
-        }
+	public ApplicationDbContext() : base()
+	{
+	    //this.env = env;
+	}
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
                 : base(options)
@@ -59,11 +62,13 @@ namespace Stolons.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            // var connectionStringBuilder = new SqliteConnectionStringBuilder { DataSource = "Stolons.sqlite" };
-            // var connectionString = connectionStringBuilder.ToString();
-            // var connection = new SqliteConnection(connectionString);
-            optionsBuilder.UseSqlite("Data Source=Stolons.sqlite");
             optionsBuilder.EnableSensitiveDataLogging();
+	    var builder = new ConfigurationBuilder()
+		.SetBasePath(Configurations.Environment.ContentRootPath)
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+	    var configuration = builder.Build();
+	    var connectionString = configuration.GetConnectionString("Stolons");
+	    optionsBuilder.UseNpgsql(connectionString);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -40,6 +40,7 @@
 	"Microsoft.AspNetCore.Mvc": "1.1.1",
 	"morelinq": "2.6.0",
 	"DinkToPdf": "1.0.8",
+	"Npgsql.EntityFrameworkCore.PostgreSQL": "1.1.0"
     },
 
     "tools": {

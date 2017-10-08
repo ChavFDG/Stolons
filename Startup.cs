@@ -20,6 +20,7 @@ using Stolons.Models.Users;
 using Microsoft.Extensions.Configuration.UserSecrets;
 using static Stolons.Configurations;
 
+[assembly: UserSecretsId("aspnet-TestApp-ce345b64-19cf-4972-b34f-d16f2e7976ed")]
 
 namespace Stolons
 {
@@ -29,6 +30,7 @@ namespace Stolons
         IHostingEnvironment _environment;
         public Startup(IHostingEnvironment env)
         {
+	    Configurations.Environment = env;
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
@@ -52,15 +54,14 @@ namespace Stolons
         {
             try
             {
-                using (var db = new ApplicationDbContext())
-                {
-                    //db.Database.EnsureCreated();
-                    db.Database.Migrate();
-                }
+                // using (var db = new ApplicationDbContext())
+                // {
+                //     //db.Database.EnsureCreated();
+                //     db.Database.Migrate();
+                // }
+		services.AddDbContext<ApplicationDbContext>();
 
-                services.AddDbContext<ApplicationDbContext>();
-
-                services.AddIdentity<ApplicationUser, IdentityRole>()
+		services.AddIdentity<ApplicationUser, IdentityRole>()
                     .AddEntityFrameworkStores<ApplicationDbContext>()
                     .AddDefaultTokenProviders();
 
@@ -107,16 +108,16 @@ namespace Stolons
                 app.UseExceptionHandler("/Home/Error");
 
                 // For more details on creating database during deployment see http://go.microsoft.com/fwlink/?LinkID=615859
-                try
-                {
-                    using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>()
-                        .CreateScope())
-                    {
-                        serviceScope.ServiceProvider.GetService<ApplicationDbContext>()
-                             .Database.Migrate();
-                    }
-                }
-                catch { }
+                // try
+                // {
+                //     using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>()
+                //         .CreateScope())
+                //     {
+                //         serviceScope.ServiceProvider.GetService<ApplicationDbContext>()
+                //              .Database.Migrate();
+                //     }
+                // }
+                // catch { }
             }
             //app.UseIISPlatformHandler(options => options.AuthenticationDescriptions.Clear());  
             app.UseStatusCodePagesWithReExecute("/StatusCode/{0}");
