@@ -45,7 +45,7 @@ namespace Stolons.Models
     public class ConsumerBill : IBill
     {
         [Key]
-        public Guid BillId { get; set; }
+        public Guid BillId { get; set; } 
 
         [Display(Name = "Numéro de facture")] //Year_WeekNumber_UserId
         public string BillNumber { get; set; }
@@ -90,6 +90,20 @@ namespace Stolons.Models
         public string ModificationReason { get; set; }
         [Display(Name = "Date de modification")]
         public DateTime ModifiedDate { get; set; }
+
+        [NotMapped]
+        public Decimal TotalPrice
+        {
+            get
+            {
+                Decimal price = 0;
+                foreach (BillEntry entry in BillEntries)
+                {
+                    price += entry.Price;
+                }
+                return price;
+            }
+        }
     }
 
     public class ProducerBill : IBill
