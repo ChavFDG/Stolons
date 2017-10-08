@@ -13,6 +13,8 @@ using Stolons.Tools;
 using Stolons.Helpers;
 using static Stolons.Models.Transactions.Transaction;
 using Stolons.Models.Transactions;
+using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace Stolons.Controllers
 {
@@ -26,6 +28,7 @@ namespace Stolons.Controllers
         {
 
         }
+
         // GET: Bills
         public IActionResult Index()
         {
@@ -96,5 +99,25 @@ namespace Stolons.Controllers
             //Bill not found
             return View(null);
         }
+
+	[HttpGet, ActionName("ProducerBill"), Route("api/producerBill")]
+        public string ProducerBill(string billId)
+	{
+            IBill bill = _context.ProducerBills.Include(x => x.BillEntries).ThenInclude(x => x.ConsumerBill).Include(x => x.BillEntries).ThenInclude(x => x.ProductStock).ThenInclude(x => x.Product).Include(x => x.AdherentStolon).Include(x => x.AdherentStolon.Adherent).Include(x => x.AdherentStolon.Stolon).First(x => x.BillId.ToString() == billId);
+	    return JsonConvert.SerializeObject(bill, Formatting.Indented, new JsonSerializerSettings()
+	    {
+		ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+	    });
+	}
+
+	// [HttpGet, ActionName("CustomersForBill"), Route("api/billCustomers")]
+        // public string AddToBasket(string billId)
+	// {
+        //     IBill bill = _context.ProducerBills.Include(x => x.BillEntries).ThenInclude(x => x.ProductStock).ThenInclude(x => x.Product).Include(x => x.AdherentStolon).Include(x => x.AdherentStolon.Adherent).Include(x => x.AdherentStolon.Stolon).First(x => x.BillId.ToString() == billId);
+	//     return JsonConvert.SerializeObject(bill, Formatting.Indented, new JsonSerializerSettings()
+	//     {
+	// 	ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+	//     });
+	// }
     }
 }

@@ -207,7 +207,6 @@ MainView = Backbone.View.extend({
     reloadTreeData: function() {
 	this.instance.settings.core.data = this.model.toJSON();
 	this.instance.refresh();
-	console.log("reloading tree data");
     },
     
     registerEventsHandlers: function() {

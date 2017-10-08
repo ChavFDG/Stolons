@@ -33,7 +33,7 @@ namespace Stolons.Controllers
             _context.ProducerBills.Include(x => x.AdherentStolon).Include(x => x.AdherentStolon.Adherent).Include(x => x.AdherentStolon.Stolon).Where(x => x.Adherent.Email == stolonsUser.Email).ToList().ForEach(x => bills.Add(x));
             return View(bills);
         }
-        
+
         // GET: ShowBill
         public IActionResult ShowBill(string id)
         {

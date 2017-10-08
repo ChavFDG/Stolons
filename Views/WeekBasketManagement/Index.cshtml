@@ -55,7 +55,7 @@
                             "UpdateProducerBill",
                             new { billNumber = item.BillNumber },
                             new { onclick = "return confirm('Confirmation du paiement de " + +item.BillAmount + " à " + item.Adherent.CompanyName + "');",
-				  @class = "btn btn-small btn-default" }
+			    @class = "btn btn-small btn-default" }
 			)
 		    }
                 </td>
@@ -118,7 +118,7 @@ else
 			      @class="btn btn-small btn-default"
 			}
 		    )
-		    <a href="#" class="btn btn-small btn-default" onclick="openCorrectionModal(@item.BillId)">Réctifier la livraison</a>
+		    <a href="#" class="btn btn-small btn-default" onclick="openCorrectionModal('@item.BillId'); return false;">Réctifier la livraison</a>
                 </td>
                 <td>
                     @{
@@ -201,6 +201,8 @@ else
 
 <div id="consumerBillModal" class="modal fade"></div>
 
+<div id="correctionModal" class="modal fade"></div>
+
 <script id="consumerBillModalTemplate" type="text/template">
     <div class="modals">
         <div class="modal-dialog" style="width: 250px;">
@@ -222,6 +224,66 @@ else
     </div>
 </script>
 
+<script id="correctionModalTemplate" type="text/template">
+  <div class="modals">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+	    <div class="col-lg-12">
+	      <h4>Réctification de la livraison producteur (<%= producerBill.get("Adherent").CompanyName %>)</h4>
+	    </div>
+	  </div>
+	  <div class="row">
+	    <table id="correction-table">
+	      <thead>
+		<tr>
+		  <th class="crossed">
+		    <span class="th-crossed-left">Clients</span>
+		    <span class="th-crossed-right">Produits</span>
+		  </th>
+		  <% _.forEach(producerBill.get("BillEntries"), function(billEntry) { %>
+		  <td class="product-description productMgtImage">
+		    <img src="<%= billEntry.ProductStock.get("Product").getPictureUrl("light") %>">
+		    <span><%= billEntry.ProductStock.get("Product").get("Name") %></span>
+		  </td>
+		  <% }); %>
+		</tr>
+	      </thead>
+ 	      <tbody>
+		<% _.forEach(producerBill.getConsumers(), function(consumer) { %>
+		<tr>
+		  <% _.forEach(producerBill.get("BillEntries"), function(billEntry) { %>
+		  <td class="">
+		  </td>
+		  <% }); %>
+		</tr>
+		<% }); %>
+		<tr>
+		  <td>
+		    <h4>Total</h4>
+		  </td>
+		</tr>
+	      </tbody>
+	    </table>
+	  </div>
+	  <div class="row">
+	    <div class="col-lg-5">
+	      &nbsp;
+	    </div>
+	    <div class="col-lg-5">
+	      <a id="validateCorrection" href="#"class="btn btn-small btn-default">Valider</a>
+	    </div>
+	  </div>
+	</div>
+      </div>
+    </div>
+  </div>
+</script>
+
 <script>
     ConsumerBillModalView = Backbone.View.extend({
         el: '#consumerBillModal',
@@ -235,11 +297,23 @@ else
         }
     });
 
-    $( function() {
-        var consumerBillModalView = new ConsumerBillModalView();
-        $('a.open-consumer-modal').click(function () {
-            consumerBillModalView.open($(this).attr('billNumber'), $(this).attr('canUseToken')); 
-            return false;
-        });
-    } );
+ $(function() {
+     var consumerBillModalView = new ConsumerBillModalView();
+     $('a.open-consumer-modal').click(function () {
+         consumerBillModalView.open($(this).attr('billNumber'), $(this).attr('canUseToken')); 
+         return false;
+     });
+ } );
+
+ openCorrectionModal = function(billId) {
+    producerBillModel = new ProducerBillModel(billId);
+    producerBillModel.on("sync", function() {
+    CorrectionView = new BillsManagement.CorrectionView(producerBillModel);
+    CorrectionView.open();
+    }, this);
+ }; 
 </script>
+
+<script src="/js/billModel.js"></script>
+<script src="/js/productModel.js"></script>
+<script src="/js/billsManagement.js"></script>
