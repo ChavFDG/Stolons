@@ -180,7 +180,7 @@ else
                 <% _.forEach(validatedBasket.BillEntries, function(entry) { %>
                 <tr class="billEntry">
                     <td>
-                        <a href="#" onclick="ProductModalView.open('<%= entry.Stock.Id %>');return false;">
+                        <a href="#" onclick="ProductModalView.open('<%= entry.ProductStock.Id %>');return false;">
                             <%= entry.ProductStock.Product.Name %>
                         </a>
                     </td>

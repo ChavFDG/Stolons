@@ -391,8 +391,6 @@ namespace Stolons.Models
         public BillEntry Clone()
         {
             BillEntry clonedBillEntry = new BillEntry();
-            clonedBillEntry.ValidatedWeekBasketId = this.ValidatedWeekBasketId;
-            clonedBillEntry.TempWeekBasketId = this.TempWeekBasketId;
             clonedBillEntry.ConsumerBillId = this.ConsumerBillId;
             clonedBillEntry.ProducerBillId = this.ProducerBillId;
             clonedBillEntry.ProductStockId = this.ProductStockId;
@@ -406,7 +404,7 @@ namespace Stolons.Models
             clonedBillEntry.ProductUnit = this.ProductUnit;
             clonedBillEntry.Quantity = this.Quantity;
             clonedBillEntry.HasBeenModified = this.HasBeenModified;
-	        clonedBillEntry.Type = this.Type;
+	    clonedBillEntry.Type = this.Type;
             return clonedBillEntry;
         }
 
