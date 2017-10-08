@@ -104,6 +104,13 @@ namespace Stolons
                                             bill.GetOrderFileName());
         }
 
+        public static string GetStolonBillFilePath(this StolonsBill bill)
+        {
+            return Path.Combine(Configurations.Environment.WebRootPath,
+                                            Configurations.BillsStockagePath,
+                                            bill.GetFileName());
+        }
+
         public static string GetBillFileName(this IBill bill)
         {
             return bill.BillNumber + ".pdf";

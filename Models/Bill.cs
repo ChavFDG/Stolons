@@ -228,7 +228,7 @@ namespace Stolons.Models
         {
             get
             {
-                return Path.Combine(Configurations.BillsStockagePath, BillNumber + ".pdf");
+                return Path.Combine(Configurations.BillsStockagePath, GetFileName());
             }
         }
 
@@ -239,6 +239,11 @@ namespace Stolons.Models
             {
                 return Configurations.GetUrl(FilePath);
             }
+        }
+
+        public string GetFileName()
+        {
+            return this.BillNumber + ".pdf";
         }
     }
 }

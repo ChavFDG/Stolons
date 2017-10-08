@@ -50,14 +50,13 @@ namespace Stolons.Tools
                         //For test, remove existing consumer bill and producer bill => That will never exist in normal mode cause they can only have one bill by week per user
                         string billToRemove = DateTime.Now.Year + "_" + DateTime.Now.GetIso8601WeekOfYear();
                         //
-                        foreach(var bill in dbContext.ConsumerBills.Where(x => x.BillNumber.EndsWith(billToRemove)).Include(x=>x.BillEntries).ToList())
+                        foreach (var bill in dbContext.ConsumerBills.Where(x => x.BillNumber.EndsWith(billToRemove)).Include(x => x.BillEntries).ToList())
                         {
-                            foreach(var billEntry in bill.BillEntries)
+                            foreach (var billEntry in bill.BillEntries)
                             {
                                 billEntry.ConsumerBill = null;
                             }
                             dbContext.Remove(bill);
-                            dbContext.SaveChanges();
                         }
                         foreach (var bill in dbContext.ProducerBills.Where(x => x.BillNumber.EndsWith(billToRemove)).Include(x => x.BillEntries).ToList())
                         {
@@ -66,10 +65,7 @@ namespace Stolons.Tools
                                 billEntry.ProducerBill = null;
                             }
                             dbContext.Remove(bill);
-                            dbContext.SaveChanges();
                         }
-                        dbContext.RemoveRange(dbContext.StolonsBills.Where(x => x.BillNumber.EndsWith(billToRemove)));
-                        dbContext.SaveChanges();
 #endif
 
                         //We moved form Order to Preparation, create and send bills
@@ -112,13 +108,22 @@ namespace Stolons.Tools
 
                         //Stolons
                         StolonsBill stolonsBill = GenerateBill(stolon, consumerWeekBasketsBills, dbContext);
-                        dbContext.Add(stolonsBill);
+                        if (dbContext.StolonsBills.Any(x => x.BillNumber == stolonsBill.BillNumber))
+                        {
+                            StolonsBill tempBill = dbContext.StolonsBills.FirstOrDefault(x => x.BillNumber == stolonsBill.BillNumber);
+                            tempBill.Amount = stolonsBill.Amount;
+                            tempBill.EditionDate = stolonsBill.EditionDate;
+                            tempBill.HtmlBillContent = stolonsBill.HtmlBillContent;
+                            tempBill.ProducersFee = stolonsBill.ProducersFee;
+                        }
+                        else
+                            dbContext.Add(stolonsBill);
                         dbContext.SaveChanges();
                         #endregion Create bills
 
                         #region Save bills
                         //Remove week basket
-                        foreach (var billEntry in dbContext.BillEntrys.Include(x=>x.TempWeekBasket).Where(x=>x.TempWeekBasket != null))
+                        foreach (var billEntry in dbContext.BillEntrys.Include(x => x.TempWeekBasket).Where(x => x.TempWeekBasket != null))
                         {
                             billEntry.TempWeekBasket = null;
                         }
@@ -145,10 +150,9 @@ namespace Stolons.Tools
                         #region Create PDF and send mail
 
                         //For stolons
-                        string billWebAddress = Path.Combine("http://", Configurations.SiteUrl, "WeekBasketManagement", "ShowStolonsBill", stolonsBill.BillNumber).Replace("\\", "/");
                         try
                         {
-                            GeneratePDF(billWebAddress, stolonsBill.FilePath);
+                            GeneratePDF(stolonsBill.HtmlBillContent, stolonsBill.GetStolonBillFilePath());
                         }
                         catch (Exception exept)
                         {
@@ -263,6 +267,11 @@ namespace Stolons.Tools
 
         }
 
+        private static string GetNumberSurnameName(this AdherentStolon adherentStolon)
+        {
+            return adherentStolon.LocalId + " / " + adherentStolon.Adherent.Surname + " / " + adherentStolon.Adherent.Name;
+        }
+
         private static StolonsBill GenerateBill(Stolon stolon, Dictionary<ValidatedWeekBasket, ConsumerBill> consumerWeekBasketsBills, ApplicationDbContext dbContext)
         {
             StringBuilder builder = new StringBuilder();
@@ -281,14 +290,19 @@ namespace Stolons.Tools
             else
             {
                 builder.AppendLine("<h1>Commandes numéro : " + billNumber + "</h1>");
-                builder.AppendLine("<p>Année : " + DateTime.Now.Year + "</p>");
-                builder.AppendLine("<p>Semaine : " + DateTime.Now.GetIso8601WeekOfYear() + "</p>");
-                builder.AppendLine("<p><b>Nombre de panier : " + consumerWeekBasketsBills.Count + "</b></p>");
-                builder.AppendLine("<divstyle=\"page-break-after:always;\">");
+                builder.AppendLine("<p>Année : " + DateTime.Now.Year);
+                builder.AppendLine("Semaine : " + DateTime.Now.GetIso8601WeekOfYear());
+                builder.AppendLine("<b>Nombre de panier : " + consumerWeekBasketsBills.Count + "</b></p>");
+                builder.AppendLine("<p>Adhérents ayant un panier : ");
+                consumerWeekBasketsBills.OrderBy(x => x.Key.AdherentStolon.LocalId)
+                                            .ForEach(x => builder.AppendLine("<a href=\"#"+ x.Key.AdherentStolon.LocalId+ "\">"+x.Key.AdherentStolon.GetNumberSurnameName()+"</a>"));
 
-                foreach (var weekBasketBill in consumerWeekBasketsBills.OrderBy(x=>x.Key.AdherentStolon.LocalId))
+                builder.AppendLine("<div style=\"page-break-after:always\"></div>");
+                int count = 0;
+                foreach (var weekBasketBill in consumerWeekBasketsBills.OrderBy(x => x.Key.AdherentStolon.LocalId))
                 {
-                    builder.AppendLine("<h1>Adhérent : " + weekBasketBill.Key.AdherentStolon.LocalId + " / " + weekBasketBill.Key.Adherent.Surname + " / " + weekBasketBill.Key.Adherent.Name + "</h1>");
+                    count++;
+                    builder.AppendLine("<h1 id=\""+ weekBasketBill.Key.AdherentStolon.LocalId + "\">Adhérent : " + weekBasketBill.Key.AdherentStolon.LocalId + " / " + weekBasketBill.Key.Adherent.Surname + " / " + weekBasketBill.Key.Adherent.Name + "</h1>");
                     builder.AppendLine("<p>Facture : " + weekBasketBill.Value.BillNumber + "</p>");
                     builder.AppendLine("<p>Téléphone : " + weekBasketBill.Key.Adherent.PhoneNumber + "</p>");
                     builder.AppendLine("<p>Total à régler : " + weekBasketBill.Key.TotalPrice + " €</p>");
@@ -305,12 +319,12 @@ namespace Stolons.Tools
                     builder.AppendLine("<th>Quantité</th>");
                     builder.AppendLine("</tr>");
 
-                    foreach (var producerBillsEntry in billEntryByProducer.OrderBy(x=>x.Key.Adherent.CompanyName))
+                    foreach (var producerBillsEntry in billEntryByProducer.OrderBy(x => x.Key.Adherent.CompanyName))
                     {
                         builder.AppendLine("<tr>");
                         builder.AppendLine("<td colspan=\"3\" style=\"border-top:1px solid;\">" + "<b>" + producerBillsEntry.Key.Adherent.CompanyName + "</b>" + "</td>");
                         builder.AppendLine("</tr>");
-                        foreach (var billEntry in producerBillsEntry.OrderBy(x=>x.ProductStock.Product.Name))
+                        foreach (var billEntry in producerBillsEntry.OrderBy(x => x.ProductStock.Product.Name))
                         {
                             builder.AppendLine("<tr>");
                             builder.AppendLine("<td></td>");
@@ -320,10 +334,11 @@ namespace Stolons.Tools
 
                         }
                         builder.AppendLine("</table>");
-                        builder.AppendLine("<divstyle=\"page-break-after:always;\">");
                     }
-                }
+                    if (count != consumerWeekBasketsBills.Count)
+                        builder.AppendLine("<div style=\"page-break-after:always\"></div>");
 
+                }
 
 
                 /*

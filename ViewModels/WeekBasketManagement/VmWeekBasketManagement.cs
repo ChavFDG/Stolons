@@ -8,12 +8,12 @@ namespace Stolons.ViewModels.WeekBasketManagement
 {
     public class VmWeekBasketManagement : BaseViewModel
     {
-	public VmWeekBasketManagement(AdherentStolon activeAdherentStolon)
-	{
-	    ActiveAdherentStolon = activeAdherentStolon;
-	}
+        public VmWeekBasketManagement(AdherentStolon activeAdherentStolon)
+        {
+            ActiveAdherentStolon = activeAdherentStolon;
+        }
 
-	public Stolon Stolon { get; set; }
+        public Stolon Stolon { get; set; }
 
         public List<ConsumerBill> ConsumerBills { get; set; }
 
