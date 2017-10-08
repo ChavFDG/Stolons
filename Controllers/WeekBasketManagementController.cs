@@ -30,13 +30,13 @@ namespace Stolons.Controllers
         public IActionResult Index()
         {
             Stolon stolon = GetCurrentStolon();
-	    var adherentStolon = GetActiveAdherentStolon();
+	        var adherentStolon = GetActiveAdherentStolon();
             VmWeekBasketManagement vm = new VmWeekBasketManagement(adherentStolon);
             vm.Stolon = GetCurrentStolon();
             vm.ConsumerBills = _context.ConsumerBills.Include(x=>x.AdherentStolon).ThenInclude(x=>x.Adherent).Include(x=>x.AdherentStolon).ThenInclude(x=>x.Stolon).Where(x => x.State == BillState.Pending && x.AdherentStolon.StolonId == stolon.Id).OrderBy(x=>x.Adherent.Id).ToList();
             vm.ProducerBills = _context.ProducerBills.Include(x => x.AdherentStolon).ThenInclude(x => x.Adherent).Include(x => x.AdherentStolon).ThenInclude(x => x.Stolon).Where(x => x.State != BillState.Paid && x.AdherentStolon.StolonId == stolon.Id).OrderBy(x => x.Adherent.Id).ToList();
             vm.StolonsBills = _context.StolonsBills.Include(x=>x.Stolon).Where(x => x.StolonId == stolon.Id).ToList();
-            vm.WeekStolonsBill = vm.StolonsBills.FirstOrDefault(x => x.BillNumber == DateTime.Now.Year + "_" + DateTime.Now.GetIso8601WeekOfYear());
+            vm.WeekStolonsBill = vm.StolonsBills.FirstOrDefault(x => x.BillNumber.EndsWith(DateTime.Now.Year + "_" + DateTime.Now.GetIso8601WeekOfYear()));
             return View(vm);
         }
 

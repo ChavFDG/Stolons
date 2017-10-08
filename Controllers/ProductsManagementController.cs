@@ -70,7 +70,7 @@ namespace Stolons.Controllers
             {
                 int orderedQty = 0;
                 List<BillEntry> billEntries = new List<BillEntry>();
-                foreach (var validateWeekBasket in _context.ValidatedWeekBaskets.Include(x => x.BillEntries))
+                foreach (var validateWeekBasket in _context.ValidatedWeekBaskets.Include(x=>x.AdherentStolon).ThenInclude(x=>x.Adherent).Include(x => x.BillEntries))
                 {
                     validateWeekBasket.BillEntries.Where(x => x.ProductStockId == productStock.Id).ToList().ForEach(x => orderedQty += x.Quantity);
                 }
