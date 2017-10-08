@@ -88,3 +88,5 @@ ProductStockModel = Backbone.Model.extend({
         return data;
     }
 });
+
+window.ProductStockModel = ProductStockModel;

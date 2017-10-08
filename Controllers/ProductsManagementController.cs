@@ -204,8 +204,7 @@ namespace Stolons.Controllers
             vmProduct.RefreshTypes(_context);
             return View(vmProduct);
         }
-        
-        
+
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult Delete(Guid id)
@@ -342,24 +341,29 @@ namespace Stolons.Controllers
 
         
         [HttpPost, ActionName("ChangeStock")]
-        public IActionResult ChangeStock(Guid id, decimal newStock)
+        public IActionResult ChangeStock(Guid id, decimal stockDiff)
         {
             if (!AuthorizedProducer())
                 return Unauthorized();
-
-            _context.ProductsStocks.First(x => x.Id == id).WeekStock = newStock;
-            _context.ProductsStocks.First(x => x.Id == id).RemainingStock = newStock;
+	    var productStock = _context.ProductsStocks.First(x => x.Id == id);
+            productStock.WeekStock = productStock.WeekStock + stockDiff;
+	    productStock.RemainingStock = productStock.WeekStock;
             _context.SaveChanges();
             return Ok();
         }
-        
+
         [HttpPost, ActionName("ChangeCurrentStock")]
-        public string ChangeCurrentStock(Guid id, decimal newStock)
+        public string ChangeCurrentStock(Guid id, decimal stockDiff)
         {
             if (!AuthorizedProducer())
                 return "401";
             var productStock = _context.ProductsStocks.First(x => x.Id == id);
-            productStock.RemainingStock = newStock;
+	    //TODO verify that remaining stock >= 0
+	    if (productStock.RemainingStock + stockDiff < 0)
+	    {
+		return "Erreur: impossible de baisser le stock (stock restant: " + productStock.RemainingStock+ ")";
+	    }
+            productStock.RemainingStock = productStock.RemainingStock + stockDiff;
             _context.SaveChanges();
             return "ok";
         }

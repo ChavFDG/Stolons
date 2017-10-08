@@ -1,26 +1,4 @@
 
-var CurrentModeModel = Backbone.Model.extend(
-    {
-        default: { mode: 0 },
-        /*
-          0: commandes,
-          1: livraisons et stocks
-         */
-
-        url: "/api/currentMode",
-
-        initialize: function () {
-            this.fetch();
-        },
-
-        parse: function (data) {
-            return { mode: data };
-        }
-    }
-);
-
-window.CurrentModeModel = new CurrentModeModel();
-
 var ProductsStockCollection = Backbone.Collection.extend(
     {
         defaults: [],
@@ -67,13 +45,14 @@ var StockMgtViewModal = Backbone.View.extend({
 
     open: function (productStockId) {
         this.currentProductStock = ProductsModel.get(productStockId);
-        console.log(this.currentProductStock);
         this.renderModal();
-        if (window.CurrentModeModel.get("mode") == 0) {
+        if (this.currentProductStock.get("AdherentStolon").Stolon.Mode == 0 || this.currentProductStock.get("Product").get("StockManagement") == 1) {
             this.validateRemainingStock();
         } else {
             this.validateWeekStock();
         }
+	this.initWeekStock = this.currentProductStock.get("WeekStock");
+	this.initRemainingStock = this.currentProductStock.get("RemainingStock");
     },
 
     isInt: function (n) {
@@ -81,44 +60,35 @@ var StockMgtViewModal = Backbone.View.extend({
     },
 
     validateWeekStock: function () {
-        console.log("validate week stock, field  =" + $("#WeekStock").val());
         var weekStock = Math.abs(parseFloat($("#WeekStock").val()));
-        this.currentProductStock.set({ WeekStock: weekStock });
 
         if (this.currentProductStock.get("Product").get("Type") != 1) {
-            console.log("qtyStp = " + this.currentProductStock.get("Product").get("QuantityStep"));
             if ((weekStock * 1000) % this.currentProductStock.get("Product").get("QuantityStep") != 0) {
                 this.validation.weekStockError = "Le stock doit être divisible par le palier de vente (" + this.currentProductStock.get("Product").get("QuantityStepString") + ").";
-                console.log("stock divisible...");
                 this.render();
                 return;
             }
         } else {
             if (!this.isInt(weekStock)) {
                 this.validation.weekStockError = "Le nombre de pièces doit être un nombre entier.";
-                console.log("stock doit être entier stock = " + weekStock);
                 this.render();
                 return;
             }
         }
+	this.currentProductStock.set({ "WeekStock": weekStock });
         this.validation.weekStockError = "";
         this.render();
     },
 
     validateRemainingStock: function () {
-        var remainingStock = Math.
-            abs(parseFloat($("#RemainingStock").val()));
-        this.currentProductStock.set({ RemainingStock: remainingStock });
+        var remainingStock = Math.abs(parseFloat($("#RemainingStock").val()));
 
         if (this.currentProductStock.get("Product").get("Type") != 1) {
-            console.log("qtyStp = " + this.currentProductStock.get("Product").get("QuantityStep"));
             if ((remainingStock * 1000) % this.currentProductStock.get("Product").get("QuantityStep") != 0) {
                 this.validation.remainingStockError = "Le stock doit être divisible par le palier de vente.";
-                console.log("Le stock doit être divisible par le palier de vente.");
                 this.render();
                 return;
             }
-           
         } else {
             if (!this.isInt(remainingStock)) {
                 this.validation.remainingStockError = "Le nombre de pièces doit être un nombre entier.";
@@ -127,6 +97,7 @@ var StockMgtViewModal = Backbone.View.extend({
                 return;
             }
         }
+	this.currentProductStock.set({ "RemainingStock": remainingStock });
         this.validation.remainingStockError = "";
         this.render();
     },
@@ -137,31 +108,37 @@ var StockMgtViewModal = Backbone.View.extend({
         }
         var self = this;
         var responseHandler = function (responseText) {
-            // var data = JSON.parse(responseText);
-            // if (data.error == "INVALID_STOCK") {
-            // 	self.validation.remainingStockError = "TODO for error";
-            // 	self.render();
-            // } else {
-            location.reload();
-            //}
-        };
+	    if (responseText.startsWith("Erreur")) {
+		self.validation.remainingStockError = responseText;
+		self.render();
+	    } else {
+		location.reload();
+	    }
+	};
         var promise;
-        if (window.CurrentModeModel.get("mode") == 0) {
+	if (this.currentProductStock.get("AdherentStolon").Stolon.Mode == 0 || this.currentProductStock.get("Product").get("StockManagement") == 1) {
+	    console.log("current reminaing stock = " + this.currentProductStock.get("RemainingStock"));
+	    console.log("init reminaing stock = " + this.initRemainingStock);
+	    var diffStock = this.currentProductStock.get("RemainingStock") - this.initRemainingStock;
+	    //var diffStock = this.initRemainingStock - this.currentProductStock.get("RemainingStock");
+	    console.log("diff stock = " + diffStock);
             promise = $.ajax({
                 url: "/ProductsManagement/ChangeCurrentStock",
                 type: 'POST',
                 data: {
                     id: self.currentProductStock.get("Id"),
-                    newStock: self.currentProductStock.get("RemainingStock"),
+		    stockDiff: diffStock
                 }
             });
         } else {
+	    var diffStock = this.initWeekStock - this.currentProductStock.get("WeekStock");
+	    console.log("diff stock = " + diffStock);
             promise = $.ajax({
                 url: "/ProductsManagement/ChangeStock",
                 type: 'POST',
                 data: {
                     id: self.currentProductStock.get("Id"),
-                    newStock: self.currentProductStock.get("WeekStock"),
+                    stockDiff: diffStock
                 }
             });
         }
@@ -183,7 +160,7 @@ var StockMgtViewModal = Backbone.View.extend({
         this.$el.html(this.template(
             {
                 //productModel: new ProductModel(this.currentProductStock.get("Product")),
-                productStock: this.currentProductStock.toJSON(),
+                productStock: this.currentProductStock,
                 validation: this.validation
             }
         ));

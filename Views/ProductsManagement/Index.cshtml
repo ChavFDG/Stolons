@@ -59,7 +59,7 @@ if (Model.Products.Any(x => x.ProductStocks.Any(prodStock => prodStock.State == 
         </th>
     </tr>
 
-    @foreach (var item in Model.Producer.Products)
+    @foreach (var item in Model.Products)
     {
         <tr>
             <td class="productMgtImage">
@@ -166,8 +166,14 @@ if (Model.Products.Any(x => x.ProductStocks.Any(prodStock => prodStock.State == 
 
                 <td bgcolor="@(color)">
 
-
+		@if (productStock.Product.StockManagement != Product.StockType.Unlimited)
+		{
                     <input class="btn - small btn - default\" type="submit" value="@stockManagementLabel" onclick="StockMgtViewModal.open('@productStock.Id')" />
+		}
+		else
+		{
+		    <input class="btn small default" type="submit" value="Illimité" disabled />
+		}
                     <br />
                     <div class="dropdown">
                         <a class="dropdown-toggle btn btn-small btn-default" data-toggle="dropdown" href="#">
@@ -195,7 +201,7 @@ if (Model.Products.Any(x => x.ProductStocks.Any(prodStock => prodStock.State == 
                 </td>
             }
         </tr>
-                    }
+        }
 </table>
 
 <div id="stockMgt" class="modals">
@@ -210,24 +216,21 @@ if (Model.Products.Any(x => x.ProductStocks.Any(prodStock => prodStock.State == 
                 </div>
                 <div class="modal-body">
                     <div>
-                        <span><b>Gestion des stocks pour le produit : "<%= productStock.Product.get("Name") %>"</b></span>
+                        <span><b>Gestion des stocks pour le produit : <%= productStock.get("Product").Name %></b></span>
                     </div>
                     <br />
-                    <div><label>Vente : </label> <%= productStock.Product.getSellTypeString() %></div>
-                    <% if (productStock.Type != 1) { %>
-                    <div><label>Palier de vente : </label> <%= productStock.Product.get("QuantityStepString") %></div>
-                    <% } %>
+                    <div><label>Vente : </label> <%= productStock.getSellTypeString() %></div>
                     <br />
-                    <% if (currentMode.mode == 1 && productStock.StockManagement == 0) { %> <!-- Livraisons/stocks et gestion Hebdomadaire -->
+                    <% if (productStock.get("AdherentStolon").Stolon.Mode == 1 && productStock.get("Product").get("StockManagement") != 1) { %> <!-- Livraisons/stocks et gestion Hebdomadaire -->
                     <div class="form-horizontal">
                         <div class="form-group">
-                            <label for="WeekStock" class="col-md-4 control-label">Je propose cette semaine : </label>
+                            <label for="WeekStock" class="col-md-4 control-label">Stock proposé: </label>
                             <div class="col-md-4">
-                                <input id="WeekStock" name="WeekStock" class="form-control" min="0" type="number" step="<%= productStock.Product.get('QuantityStep') / 1000 || 1 %>" value="<%= productStock.WeekStock %>" />
+                                <input id="WeekStock" name="WeekStock" class="form-control" min="0" type="number" step="<%= productStock.get("Product").QuantityStep / 1000 || 1 %>" value="<%= productStock.get("WeekStock") %>" />
                                 <span id="WeekStockError" class="text-danger"><%= validation.weekStockError %></span>
                             </div>
                             <div class="col-md-4">
-                                <label class="control-label"><%= productStock.Product.getStockUnitString() %></label>
+                                <label class="control-label"><%= productStock.getStockUnitString() %></label>
                             </div>
                         </div>
                     </div>
@@ -236,23 +239,25 @@ if (Model.Products.Any(x => x.ProductStocks.Any(prodStock => prodStock.State == 
                         <div class="form-group">
                             <label for="RemainingStock" class="col-md-4 control-label">Il reste en stock : </label>
                             <div class="col-md-4">
-                                <input id="RemainingStock" name="RemainingStock" class="form-control" min="0" type="number" step="<%= productStock.QuantityStep / 1000 || 1 %>" value="<%= productStock.RemainingStock %>" />
+                                <input id="RemainingStock" name="RemainingStock" class="form-control" min="0" type="number" step="<%= productStock.get("QuantityStep") / 1000 || 1 %>" value="<%= productStock.get("RemainingStock") %>" />
                                 <span id="RemainingStockError" class="text-danger"><%= validation.remainingStockError %></span>
                             </div>
                             <div class="col-md-4">
-                                <label class="control-label"><%= productStock.Product.getStockUnitString() %></label>
+                                <label class="control-label"><%= productStock.getStockUnitString() %></label>
                             </div>
                         </div>
                         <div>
-                            <span><%= productStock.OrderedQuantityString %> ont déjà été commandé(e)s. </span>
+			    <% if (productStock.get("OrderedQuantityString") > 0) { %>
+                            <span><%= productStock.get("OrderedQuantityString") %> ont déjà été commandé(e)s. </span>
                             <span>Attention: modifications possibles jusqu'à la cloture des commandes.</span>
+			    <% } %>
                         </div>
                     </div>
                     <% } %>
                     <div class="row">
-                        <a id="saveStocks" href="javascript:;" class="btn btn-small btn-default" <% if (!_.isEmpty(validation.weekStockError) || !_.isEmpty(validation.remainingStockError)) { %> disabled="disabled" <% } %> >Enregistrer les modifications</a>
+                        <a id="saveStocks"  class="btn btn-small btn-default" <% if (!_.isEmpty(validation.weekStockError) || !_.isEmpty(validation.remainingStockError)) { %> disabled="disabled" <% } %> >Enregistrer les modifications</a>
                         <div class="col-md-4">
-                        </div>
+                       </div>
                     </div>
                 </div>
             </div>
@@ -262,4 +267,3 @@ if (Model.Products.Any(x => x.ProductStocks.Any(prodStock => prodStock.State == 
 
 <script src="/js/productModel.js"></script>
 <script src="/js/productsManagement.js"></script>
-
