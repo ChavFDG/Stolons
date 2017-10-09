@@ -63,12 +63,12 @@ namespace Stolons.Models
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.EnableSensitiveDataLogging();
-            var builder = new ConfigurationBuilder()
-                    .SetBasePath(Configurations.Environment.ContentRootPath)
-                    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
-            var configuration = builder.Build();
-            var connectionString = configuration.GetConnectionString("Stolons");
-            optionsBuilder.UseNpgsql(connectionString);
+	    var builder = new ConfigurationBuilder()
+		.SetBasePath(Configurations.Environment.ContentRootPath)
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false);
+	    var configuration = builder.Build();
+	    var connectionString = configuration.GetConnectionString("Stolons");
+	    optionsBuilder.UseNpgsql(connectionString);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
