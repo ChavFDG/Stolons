@@ -75,12 +75,12 @@ else
                     @Html.DisplayFor(modelItem => item.QuantityString)
                 </td>
                 <td>
-                    @(item.Quantity * item.UnitPrice) €
+                    @((item.Quantity * item.UnitPrice).ToString("0.00")) €
                 </td>
             </tr>
         }
     </table>
-    <h2>Prix total de votre panier : @Model.Total€</h2>
+    <h2>Prix total de votre panier : @Model.Total.ToString("0.00")€</h2>
     @if (!Model.IsFullValid)
     {
         <h3>Produits non validés</h3>

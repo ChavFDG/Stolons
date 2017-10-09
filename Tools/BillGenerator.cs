@@ -67,11 +67,12 @@ namespace Stolons.Tools
                                 }
                                 dbContext.Remove(bill);
                             }
+                            dbContext.SaveChanges();
+                            var billEntriesToRemove = dbContext.BillEntrys.Where(x => x.ConsumerBillId == null && x.ProducerBillId == null && x.TempWeekBasketId == null && x.ValidatedWeekBasketId == null).ToList();
+                            dbContext.RemoveRange(billEntriesToRemove);
+                            dbContext.SaveChanges();
 #endif
 
-                            //We moved form Order to Preparation, create and send bills
-                            List<ConsumerBill> consumerBills = new List<ConsumerBill>();
-                            List<ProducerBill> producerBills = new List<ProducerBill>();
 
                             #region Create bills
                             //Consumer (create bills)
@@ -79,18 +80,30 @@ namespace Stolons.Tools
                                                                                                           .Where(x => x.AdherentStolon.StolonId == stolon.Id).ToList();
                             foreach (var weekBasket in consumerWeekBaskets)
                             {
+                                //Remove TempWeekBasket and linked billEntry
+                                var tempWeekBasketToRemove = dbContext.TempsWeekBaskets.First(x => x.AdherentStolonId == weekBasket.AdherentStolon.Id);
+                                var linkedBillEntriesToRemove = dbContext.BillEntrys.Where(x => x.TempWeekBasketId == tempWeekBasketToRemove.Id).ToList();
+                                dbContext.RemoveRange(linkedBillEntriesToRemove);
+                                dbContext.SaveChanges();                                
+                                dbContext.Remove(tempWeekBasketToRemove);
+                                dbContext.SaveChanges();
+
                                 //Generate bill for consumer                            
                                 ConsumerBill consumerBill = CreateBill<ConsumerBill>(weekBasket.AdherentStolon, weekBasket.BillEntries);
                                 consumerBill.HtmlBillContent = GenerateHtmlBillContent(consumerBill, dbContext);
-                                consumerBills.Add(consumerBill);
                                 dbContext.Add(consumerBill);
                                 dbContext.SaveChanges();
                                 dbContext.Remove(weekBasket);
                                 dbContext.SaveChanges();
-                                dbContext.Remove(dbContext.TempsWeekBaskets.Include(x=>x.BillEntries).First(x => x.AdherentStolonId == consumerBill.AdherentStolon.Id));
-                                dbContext.SaveChanges();
-                            }
 
+
+                            }
+                            
+                            List<ProducerBill> producerBills = new List<ProducerBill>();
+                            List<ConsumerBill> consumerBills = dbContext.ConsumerBills.Include(x => x.BillEntries).ThenInclude(x=>x.ProductStock).ThenInclude(x=>x.Product)
+                                                                                        .Include(x => x.AdherentStolon).ThenInclude(x=>x.Adherent)
+                                                                                        .Include(x=>x.AdherentStolon).ThenInclude(x=>x.Stolon)
+                                                                                        .ToList();
                             //Producer (creates bills)
                             foreach (var producer in dbContext.AdherentStolons.Include(x => x.Adherent).Include(x => x.Stolon).Where(x => x.StolonId == stolon.Id && x.IsProducer).ToList())
                             {
@@ -99,7 +112,7 @@ namespace Stolons.Tools
                                 {
                                     foreach (var billEntry in consumerBill.BillEntries.Where(billEntry => billEntry.ProductStock.Product.ProducerId == producer.AdherentId))
                                     {
-                                        billEntries.Add(dbContext.BillEntrys.Include(x => x.ConsumerBill).First(x => x.Id == billEntry.Id));
+                                        billEntries.Add(billEntry);
                                     }
                                 }
                                 //Generate bill for producer
