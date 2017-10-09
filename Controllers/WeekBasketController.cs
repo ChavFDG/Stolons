@@ -334,6 +334,7 @@ namespace Stolons.Controllers
                     AdherentStolon = tempWeekBasket.AdherentStolon
                 };
                 _context.Add(validatedWeekBasket);
+                _context.SaveChanges();
             }
             else
             {
@@ -382,6 +383,8 @@ namespace Stolons.Controllers
                         else
                         {
                             UpdateProductStock(productStock, -qtyDiff);
+                            //On supprime la bill entry précédente ( ancienne bill entry)
+                            _context.BillEntrys.Remove(prevEntry);
                         }
                     }
                 }
@@ -413,10 +416,10 @@ namespace Stolons.Controllers
                         }
                     }
                 }
-
+                
+                _context.SaveChanges();
                 //On supprime toute les BillEntry du tempWeekBasket
-                tempWeekBasket.BillEntries = new List<BillEntry>();
-                _context.BillEntrys.RemoveRange(_context.BillEntrys.Where(x => x.TempWeekBasketId == tempWeekBasket.Id));
+                _context.BillEntrys.RemoveRange(_context.BillEntrys.Where(x => x.TempWeekBasketId == tempWeekBasket.Id).ToList());
                 _context.SaveChanges();
                 //On met le panier temporaire dans le même état que le validé
                 foreach (BillEntry entry in validatedWeekBasket.BillEntries)
