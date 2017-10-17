@@ -226,12 +226,12 @@ else
 
 <script id="correctionModalTemplate" type="text/template">
   <div class="modals">
-    <div class="modal-dialog">
+    <div class="modal-dialog" id="correction-modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
         </div>
-        <div class="modal-body">
+        <div class="modal-body" style="margin: auto;">
           <div class="row">
 	    <div class="col-lg-12">
 	      <h4>Réctification de la livraison producteur (<%= producerBill.get("Adherent").CompanyName %>)</h4>
@@ -239,33 +239,70 @@ else
 	  </div>
 	  <div class="row">
 	    <table id="correction-table">
+	      <colgroup>
+		<col>
+		</col>
+		<% _.forEach(producerBill.getProductStocks(), function(productStock) { %>
+		<col id="product-col-<%= productStock.get("Id") %>">
+		</col>
+		<% }); %>
+	      </colgroup>
 	      <thead>
 		<tr>
 		  <th class="crossed">
 		    <span class="th-crossed-left">Clients</span>
 		    <span class="th-crossed-right">Produits</span>
 		  </th>
-		  <% _.forEach(producerBill.get("BillEntries"), function(billEntry) { %>
-		  <td class="product-description productMgtImage">
-		    <img src="<%= billEntry.ProductStock.get("Product").getPictureUrl("light") %>">
-		    <span><%= billEntry.ProductStock.get("Product").get("Name") %></span>
+		  <% _.forEach(producerBill.getProductStocks(), function(productStock) { %>
+		  <td class="correction-product-description productMgtImage">
+		    <img src="<%= productStock.get("Product").getPictureUrl("light") %>">
+		    <span><%= productStock.get("Product").get("Name") %></span>
 		  </td>
 		  <% }); %>
 		</tr>
 	      </thead>
  	      <tbody>
-		<% _.forEach(producerBill.getConsumers(), function(consumer) { %>
+		<%  _.forEach(producerBill.getConsumers(), function(consumer) { %>
 		<tr>
-		  <% _.forEach(producerBill.get("BillEntries"), function(billEntry) { %>
-		  <td class="">
+		  <td>
+		    <span><%= consumer.Adherent.Surname %> <%= consumer.Adherent.Name  %> (<%= consumer.LocalId %>)</span>
 		  </td>
+		  <% _.forEach(producerBill.getProductStocks(), function(productStock) { %>
+		  <% var consumerBillEntry = producerBill.getBillEntry(consumer.Id, consumer.productStock); %>
+		  <% if (consumerBillEntry == null) { %>
+		  <td class="div-disabled correction-bill-entry">
+		    Pas de commande
+		  </td>
+		  <% } else { %>
+		  <td>
+		    <div class="correction-bill-entry">
+		      <div class="productQuantityChanger">
+			<a href="#" class="minus">
+			  <img src="/images/basket-remove.png" />
+			</a>
+			<span class="quantity">
+			  <%= consumerBillEntry.QuantityString %>
+			</span>
+			<a href="#" class="plus">
+			  <img src="/images/basket-add.png" />
+			</a>
+		      </div>
+		    </div>
+		  </td>
+		  <% } %>
 		  <% }); %>
 		</tr>
 		<% }); %>
 		<tr>
 		  <td>
-		    <h4>Total</h4>
+		    <h5>Total</h5>
 		  </td>
+		  <% _.forEach(producerBill.getProductStocks(), function(productStock) { %>
+		  <% var productStockTotal = producerBill.getProductStockTotal(productStock.Id); %>
+		  <td>
+		    <%= productStockTotal %>
+		  </td>
+		  <% }); %>
 		</tr>
 	      </tbody>
 	    </table>

@@ -946,11 +946,13 @@ h1 {
 }
 
 .th-crossed-left {
-    margin-top: 10px;
+    position: relative;
+    top: 12px;
 }
 
 .th-crossed-right {
-    margin-bottom: 10px;
+    position: relative;
+    bottom: 12px;
 }
 
 #correction-table {
@@ -962,8 +964,31 @@ h1 {
     border: 1px solid black;
 }
 
+.correction-col-error {
+    background-color: #f57070;
+}
+
 #validateCorrection {
     margin-top: 7px;
+}
+
+#correction-modal-dialog {
+    width: auto;
+    max-width: 75%;
+    padding-left: 10%;
+    padding-right: 10%;
+}
+
+.correction-product-description {
+    max-width: 150px;
+}
+
+.correction-bill-entry {
+    max-width: 150px;
+    font-size: 13px;
+    margin: auto;
+    align: center;
+    text-align: center;
 }
 
 .error {

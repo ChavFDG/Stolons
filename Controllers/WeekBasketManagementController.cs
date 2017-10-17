@@ -103,7 +103,13 @@ namespace Stolons.Controllers
 	[HttpGet, ActionName("ProducerBill"), Route("api/producerBill")]
         public string ProducerBill(string billId)
 	{
-            IBill bill = _context.ProducerBills.Include(x => x.BillEntries).ThenInclude(x => x.ConsumerBill).Include(x => x.BillEntries).ThenInclude(x => x.ProductStock).ThenInclude(x => x.Product).Include(x => x.AdherentStolon).Include(x => x.AdherentStolon.Adherent).Include(x => x.AdherentStolon.Stolon).First(x => x.BillId.ToString() == billId);
+	    //Entity framework ? Hum... ouai
+            IBill bill = _context.ProducerBills.Include(x => x.BillEntries).ThenInclude(x => x.ConsumerBill)
+		.Include(x => x.BillEntries).ThenInclude(x => x.ProductStock).ThenInclude(x => x.Product)
+		.Include(x => x.BillEntries).ThenInclude(x => x.ConsumerBill).ThenInclude(x => x.AdherentStolon).ThenInclude(x => x.Adherent)
+		.Include(x => x.BillEntries).ThenInclude(x => x.ConsumerBill).ThenInclude(x => x.BillEntries)
+		.Include(x => x.AdherentStolon).ThenInclude(x => x.Adherent)
+		.First(x => x.BillId.ToString() == billId);
 	    return JsonConvert.SerializeObject(bill, Formatting.Indented, new JsonSerializerSettings()
 	    {
 		ReferenceLoopHandling = ReferenceLoopHandling.Ignore

@@ -16,22 +16,46 @@ ProducerBillModel = Backbone.Model.extend({
 	this.fetch();
     },
 
-    getProducts: function() {
-	var products = [];
+    getProductStocks: function() {
+	var productsIdx = {};
 
 	_.forEach(this.get("BillEntries"), function(billEntry) {
-	    products.push(billEntry.ProductStock);
+	    productsIdx[billEntry.ProductStock.get("Id")] = billEntry.ProductStock;
 	});
-	return products;
+	return _.values(productsIdx);
     },
 
     getConsumers: function() {
-	var consumers = [];
+	var consumersIdx = {};
 
 	_.forEach(this.get("BillEntries"), function(billEntry) {
-	    consumers.push(billEntry.ConsumerBill);
+	    consumersIdx[billEntry.ConsumerBill.AdherentStolon.Id] = billEntry.ConsumerBill.AdherentStolon;
 	});
-	return consumers;
+	return _.values(consumersIdx);
+    },
+
+    //Get consumer bill entry for a given product or nil
+    getBillEntry: function(consumerId, productStockId) {
+	var billEntry = null;
+
+	_.forEach(this.get("BillEntries"), function(entry) {
+	    if (entry.ProductStock.Id == productStockId && entry.ConsumerBill.AdherentStolon.Id == consumerId) {
+		billEntry = entry;
+		return false;
+	    }
+	});
+	return billEntry;
+    },
+
+    getProductStockTotal: function(productStockId) {
+	var totalQty = 0;
+
+	_.forEach(this.get("BillEntries"), function(entry) {
+	    if (entry.ProductStock.Id == productStockId) {
+		totalQty += parseInt(entry.Quantity);
+	    }
+	});
+	return totalQty;
     },
 
     parse: function(data) {
