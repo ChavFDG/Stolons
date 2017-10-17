@@ -52,7 +52,7 @@
                                 <h4 class="modal-title">Connectez-vous !</h4>
                             </div>
                             @{
-                                Html.RenderPartial("../Account/Login");
+                                Html.RenderPartial("../Account/Login", new LoginViewModel());
                             }
                         </div>
                     </div>
@@ -72,13 +72,6 @@
                     <img src="/@productType.Key.Image" title="@productType.Key.Name" />
                 }
             }
-        </div>
-
-        <h3>Services</h3>
-        <div class="tiny-pictures">
-            <img src="~/images/productFamilies/alcool.jpg" />
-            <img src="~/images/productFamilies/confitures.jpg" />
-            <img src="~/images/productFamilies/fruits.jpg" />
         </div>
     </div>
 </div>
