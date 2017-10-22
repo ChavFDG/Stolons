@@ -27,14 +27,13 @@
         }
     </div>
     <div class="col-lg-4">
-        <div class="col-md-12">Chat box / Messages</div>
         <div class="col-lg-12">
             <div class="col-lg-12 comment">lala</div>
             <div class="col-lg-12 comment">lili</div>
         </div>
         <div class="col-lg-12">
-            <textarea name="comment"></textarea>
-            <a href="#" id="add-comment">Ajouter un commentaire</a>
+            <textarea id="add-comment" name="comment" placeholder="Votre message"></textarea>
+            <a href="#" id="add-comment" class="btn btn-small btn-default pull-right">Ajouter un commentaire</a>
         </div>
     </div>
 </div>
@@ -43,7 +42,20 @@
     $(document).ready(function () {
         $('a#add-comment').on('click', function () {
             var comment = $('textarea[name=comment]').val();
-            $('<div class="col-lg-12 comment">' + comment + '</div>').insertAfter('div.comment:last');
+            $('textarea[name=comment]').removeClass('error');
+
+            if (comment !== '') {
+                var link = '@Html.Raw(Url.Action("_PartialAddAdherent", "Users", new {  edition ="-1", stolonId = "-2"}))'
+                $.ajax({
+                    type: "POST",
+                    url: link,
+                    success: function (data) {
+                        $('<div class="col-lg-12 comment">' + comment + '</div>').insertAfter('div.comment:last');
+                    },
+                });
+            } else {
+                $('textarea[name=comment]').addClass('error');
+            }
             return false;
         });
 

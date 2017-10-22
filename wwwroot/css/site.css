@@ -798,7 +798,19 @@ a.main-links:hover, a.main-links:active {
 .comment {
     padding: 5px;
     background: #efefef;
-    margin-bottom: 2px;
+    margin-top: 5px;
+}
+
+textarea#add-comment {
+    width: 100%;
+    max-width: 100%;
+    height: 100px;
+    border-radius: 5px;
+    margin: 5px 0;
+}
+
+textarea.error {
+    border: 1px red solid;
 }
 
 .modal-header {
