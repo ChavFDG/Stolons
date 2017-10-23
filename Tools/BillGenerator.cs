@@ -281,6 +281,13 @@ namespace Stolons.Tools
             return adherentStolon.LocalId + " / " + adherentStolon.Adherent.Surname + " / " + adherentStolon.Adherent.Name;
         }
 
+        private static void AddBootstrap(this StringBuilder builder)
+        {
+            builder.Insert(0, "<head><link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css\"></head><body>");
+            builder.Append("</body>");
+
+        }
+
         private static StolonsBill GenerateBill(Stolon stolon, List<ConsumerBill> consumersBills, ApplicationDbContext dbContext)
         {
             StringBuilder builder = new StringBuilder();
@@ -405,6 +412,7 @@ namespace Stolons.Tools
                 }
                 */
             }
+            builder.AddBootstrap();
             bill.HtmlBillContent = builder.ToString();
 
             return bill;
@@ -476,6 +484,7 @@ namespace Stolons.Tools
             orderBuilder.AppendLine("<p>" + "Montant total de la commande  " + bill.OrderAmount + "€<br>");
             orderBuilder.AppendLine("Montant total du % du Stolons " + bill.FeeAmount + "€<br>");
             orderBuilder.AppendLine("Montant total à percevoir     <b>" + bill.BillAmount + "€</b> <i>(Dont " + bill.TaxAmount + "€ TVA)</i></p>");
+            orderBuilder.AddBootstrap();
             return orderBuilder.ToString();
         }
 
@@ -609,6 +618,7 @@ namespace Stolons.Tools
             }
             builder.AppendLine("</table>");
             builder.AppendLine("<p>Montant total : " + bill.OrderAmount + " €</p>");
+            builder.AddBootstrap();
             return builder.ToString();
         }
 
