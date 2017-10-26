@@ -44,6 +44,9 @@ namespace Stolons.Models
         public DbSet<ApplicationConfig> ApplicationConfig { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<AdherentTransaction> AdherentTransactions { get; set; }
+        //Messages
+        public DbSet<ChatMessage> ChatMessages { get; set; }
+
 
         //Adherent Stolons
         public DbSet<AdherentStolon> AdherentStolons { get; set; }

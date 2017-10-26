@@ -16,6 +16,7 @@ namespace Stolons.Models.Messages
         {
 
         }
+
         public News(Stolon stolon): this()
         {
             var day = stolon.BasketPickEndUpDay - DateTime.Now.DayOfWeek;

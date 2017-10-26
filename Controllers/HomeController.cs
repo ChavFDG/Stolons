@@ -12,6 +12,7 @@ using Stolons.ViewModels.Home;
 using Stolons.Models.Users;
 using static Stolons.Configurations;
 using Stolons.Models.Messages;
+using Stolons.ViewModels.Chat;
 
 namespace Stolons.Controllers
 {
@@ -35,6 +36,8 @@ namespace Stolons.Controllers
                     vm.NewsVm = new ViewModels.News.NewsListViewModel(adherentStolon, _context.News.Include(x => x.PublishBy).ThenInclude(x => x.Adherent).Where(x => x.PublishBy.StolonId == adherentStolon.StolonId).Where(x => (x.PublishStart < DateTime.Now && x.PublishEnd > DateTime.Now) || (x.PublishEnd < DateTime.Now)).ToList(),true);
                 else
                     vm.NewsVm = new ViewModels.News.NewsListViewModel(adherentStolon, _context.News.Include(x => x.PublishBy).ThenInclude(x=>x.Adherent).Where(x => x.PublishBy.StolonId == adherentStolon.StolonId).Where(x => x.PublishStart < DateTime.Now && x.PublishEnd > DateTime.Now).ToList());
+                vm.ChatVm = new ChatMessageListViewModel(adherentStolon, _context.ChatMessages.Include(x=>x.PublishBy).Include(x=>x.PublishBy.Stolon).Include(x=>x.PublishBy.Adherent).Where(x => x.PublishBy.StolonId == adherentStolon.StolonId).ToList());
+
                 return View(vm);
             }
             else
