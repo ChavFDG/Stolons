@@ -1,11 +1,12 @@
 ﻿@model Stolons.ViewModels.Adherents.SelectAdherentViewModel
 
-<form asp-action="AddAdherent" asp-controller="Users" enctype="multipart/form-data">
+<form asp-action="AddAdherent" name="AddAdherent" asp-controller="Users" enctype="multipart/form-data">
     <div class="modal-body">
         <input asp-for="Stolon.Id" hidden="hidden" />
         <input asp-for="AddHasProducer" hidden="hidden" />
         <p>Saisir le courriel de l'adhérent à ajouter à @Model.Stolon.Label:</p>
         <div class="form-group">
+            <label class="col-md-2 control-label required">Email</label>
             <div class="col-md-12">
                 <input id="inputEmail" asp-for="SelectedEmail" class="form-control" />
                 <span asp-validation-for="SelectedEmail" class="text-danger" />
@@ -13,7 +14,7 @@
         </div>
     </div>
     <div class="modal-footer">
-        <input type="submit" onclick="return ValidateEmail();"  value="Ajouter" class="btn btn-small btn-default" />
+        <input type="submit" id="submit" value="Ajouter" class="btn btn-small btn-default" />
     </div>
 </form>
 
@@ -39,7 +40,16 @@
             return false;
         }
     }
-   
+
+    $(document).ready(function () {
+        $('input#submit').on('click', function () {
+            formValidation.valid('AddAdherent');
+            if (formValidation.isValidated()) {
+                ValidateEmail();
+            }
+            return false;
+        });
+    });
 </script>
 
 @section Scripts {
