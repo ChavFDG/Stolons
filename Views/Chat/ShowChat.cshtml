@@ -3,8 +3,7 @@
 @model ChatMessageListViewModel
 
 <div>
-
-    <div class="col-lg-12">
+    <div class="col-lg-12 chat">
         @foreach (var message in Model.Messages)
         {
             <div class="col-lg-12 comment">@message.Content</div>

@@ -1011,3 +1011,8 @@ label.required:after {
     color: red;
     content: '*';
 }
+
+div.chat {
+    height: 500px;
+    overflow: auto;
+}
