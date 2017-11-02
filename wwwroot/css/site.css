@@ -993,6 +993,7 @@ h1 {
 
 .correction-product-description {
     max-width: 150px;
+    min-width: 60px;
 }
 
 .correction-bill-entry {
@@ -1003,6 +1004,11 @@ h1 {
     text-align: center;
 }
 
+.productStockQty {
+    max-width: 40px;
+    line-height: 0.8em;
+}
+
 .error {
     border: 1px red solid;
 }
@@ -1010,6 +1016,10 @@ h1 {
 label.required:after {
     color: red;
     content: '*';
+}
+
+.td-disabled {
+    background:#cccccc; color:#ffffff;
 }
 
 div.chat {

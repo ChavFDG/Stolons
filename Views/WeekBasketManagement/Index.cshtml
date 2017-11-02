@@ -268,22 +268,22 @@ else
 		    <span><%= consumer.Adherent.Surname %> <%= consumer.Adherent.Name  %> (<%= consumer.LocalId %>)</span>
 		  </td>
 		  <% _.forEach(producerBill.getProductStocks(), function(productStock) { %>
-		  <% var consumerBillEntry = producerBill.getBillEntry(consumer.Id, consumer.productStock); %>
+		  <% var consumerBillEntry = producerBill.getBillEntry(consumer.Id, productStock.get('Id')); %>
 		  <% if (consumerBillEntry == null) { %>
-		  <td class="div-disabled correction-bill-entry">
+		  <td class="td-disabled correction-bill-entry">
 		    Pas de commande
 		  </td>
 		  <% } else { %>
 		  <td>
 		    <div class="correction-bill-entry">
 		      <div class="productQuantityChanger">
-			<a href="#" class="minus">
+			<a href="#" class="minus" data-bill-entry-id="<%= consumerBillEntry.Id %>">
 			  <img src="/images/basket-remove.png" />
 			</a>
 			<span class="quantity">
-			  <%= consumerBillEntry.QuantityString %>
+			  <%= producerBill.getBillEntryQuantityString(consumerBillEntry.Id) %>
 			</span>
-			<a href="#" class="plus">
+			<a href="#" class="plus" data-bill-entry-id="<%= consumerBillEntry.Id %>">
 			  <img src="/images/basket-add.png" />
 			</a>
 		      </div>
@@ -298,9 +298,20 @@ else
 		    <h5>Total</h5>
 		  </td>
 		  <% _.forEach(producerBill.getProductStocks(), function(productStock) { %>
-		  <% var productStockTotal = producerBill.getProductStockTotal(productStock.Id); %>
 		  <td>
-		    <%= productStockTotal %>
+		    <div class="correction-bill-entry">
+		      <div class="productQuantityChanger">
+			<a href="#" class="minus decrementTotal" data-product-stock-id="<%= productStock.get('Id') %>">
+			  <img src="/images/basket-remove.png" />
+			</a>
+			<span class="quantity">
+			  <%= producerBill.getProductStockTotalQuantityString(productStock.get('Id')) %>
+			</span>
+			<a href="#" class="plus incrementTotal" data-product-stock-id="<%= productStock.get('Id') %>">
+			  <img src="/images/basket-add.png" />
+			</a>
+		      </div>
+		    </div>
 		  </td>
 		  <% }); %>
 		</tr>
