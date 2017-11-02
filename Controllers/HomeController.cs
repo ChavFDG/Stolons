@@ -36,7 +36,7 @@ namespace Stolons.Controllers
                     vm.NewsVm = new ViewModels.News.NewsListViewModel(adherentStolon, _context.News.Include(x => x.PublishBy).ThenInclude(x => x.Adherent).Where(x => x.PublishBy.StolonId == adherentStolon.StolonId).Where(x => (x.PublishStart < DateTime.Now && x.PublishEnd > DateTime.Now) || (x.PublishEnd < DateTime.Now)).ToList(),true);
                 else
                     vm.NewsVm = new ViewModels.News.NewsListViewModel(adherentStolon, _context.News.Include(x => x.PublishBy).ThenInclude(x=>x.Adherent).Where(x => x.PublishBy.StolonId == adherentStolon.StolonId).Where(x => x.PublishStart < DateTime.Now && x.PublishEnd > DateTime.Now).ToList());
-                vm.ChatVm = new ChatMessageListViewModel(adherentStolon, _context.ChatMessages.Include(x=>x.PublishBy).Include(x=>x.PublishBy.Stolon).Include(x=>x.PublishBy.Adherent).Where(x => x.PublishBy.StolonId == adherentStolon.StolonId).Take(200).OrderBy(x => x.DateOfPublication).ToList());
+                vm.ChatVm = new ChatMessageListViewModel(adherentStolon, _context.ChatMessages.Include(x=>x.PublishBy).Include(x=>x.PublishBy.Stolon).Include(x=>x.PublishBy.Adherent).Where(x => x.PublishBy.StolonId == adherentStolon.StolonId).OrderBy(x => x.DateOfPublication).Take(200).ToList());
 
                 return View(vm);
             }
