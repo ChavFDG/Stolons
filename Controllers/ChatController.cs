@@ -48,6 +48,7 @@ namespace Stolons.Controllers
         [HttpPost, ActionName("GetPreviousMessage")]
         public string GetPreviousMessages(DateTime date)
         {
+            date = date.AddMilliseconds(1);
             var adherentStolon = GetActiveAdherentStolon();
             ChatMessageListViewModel chatMessagesViewModel 
                 = new ChatMessageListViewModel(adherentStolon, 
@@ -59,9 +60,10 @@ namespace Stolons.Controllers
             });
         }
 
-        [HttpPost, ActionName("GetPreviousMessage")]
+        [HttpPost, ActionName("GetNewMessages")]
         public string GetNewMessages(DateTime date)
         {
+            date = date.AddMilliseconds(1);
             var adherentStolon = GetActiveAdherentStolon();
             ChatMessageListViewModel chatMessagesViewModel
                 = new ChatMessageListViewModel(adherentStolon,
