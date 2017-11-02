@@ -36,12 +36,27 @@ namespace Stolons.Controllers
 
 
         [HttpPost, ActionName("AddMessage")]
-        public string AddMessage(string message)
+        public string AddMessage(string message, DateTime date)
         {
-            var activeAdherentStolon = GetActiveAdherentStolon();
-            _context.ChatMessages.Add(new ChatMessage(activeAdherentStolon, message));
+            var adherentStolon = GetActiveAdherentStolon();
+            _context.ChatMessages.Add(new ChatMessage(adherentStolon, message));
             _context.SaveChanges();
-            return JsonConvert.SerializeObject(true);
+            
+            return GetPreviousMessages(date);
+        }
+
+        [HttpPost, ActionName("GetPreviousMessage")]
+        public string GetPreviousMessages(DateTime date)
+        {
+            var adherentStolon = GetActiveAdherentStolon();
+            ChatMessageListViewModel chatMessagesViewModel 
+                = new ChatMessageListViewModel(adherentStolon, 
+                _context.ChatMessages.Include(x => x.PublishBy).Include(x => x.PublishBy.Stolon).Include(x => x.PublishBy.Adherent)
+                    .Where(x => x.PublishBy.StolonId == adherentStolon.StolonId && x.DateOfPublication < date).ToList());
+            return JsonConvert.SerializeObject(chatMessagesViewModel, Formatting.Indented, new JsonSerializerSettings()
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            });
         }
 
     }
