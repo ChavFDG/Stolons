@@ -259,12 +259,12 @@ namespace Stolons.Controllers
             return RedirectToAction("Index");
         }
         
-        public IActionResult EnableAllStockProductForStolon(Guid? stolonId)
+        public IActionResult EnableAllStockProductForStolon(Guid? adherentStolonId)
         {
             if (!AuthorizedProducer())
                 return Unauthorized();
 
-            foreach (var product in _context.ProductsStocks.Include(x => x.AdherentStolon).Where(x => x.AdherentStolon.StolonId == stolonId &&  x.State == Product.ProductState.Stock).ToList())
+            foreach (var product in _context.ProductsStocks.Include(x => x.AdherentStolon).Where(x => x.AdherentStolon.Id == adherentStolonId &&  x.State == Product.ProductState.Stock).ToList())
             {
                 product.State = Product.ProductState.Enabled;
             }
@@ -272,7 +272,7 @@ namespace Stolons.Controllers
             return RedirectToAction("Index");
         }
         
-        public IActionResult DisableAllProduct(Guid adherentStolonId)
+        public IActionResult DisableAllProductForStolon(Guid adherentStolonId)
         {
             if (!AuthorizedProducer())
                 return Unauthorized();

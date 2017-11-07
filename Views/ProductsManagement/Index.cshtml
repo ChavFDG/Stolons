@@ -8,22 +8,6 @@
 
 <p>
     <a asp-action="Manage" class="btn btn-small btn-default">Ajouter un produit</a>
-    @{
-/*
-
- @if (Model.Stolon.GetMode() == Stolon.Modes.DeliveryAndStockUpdate)
-{
-if (Model.Products.Any(x => x.ProductStocks.Any(prodStock => prodStock.State == Product.ProductState.Stock)))
-{
-    <a asp-action="EnableAllStockProduct" class="btn btn-small btn-default">Rendre disponible tout les produits en attente de stock</a>
-}
-}
-
-
- */
-
-    }
-
 </p>
 <table class="table productsMgtTable">
     <tr>
@@ -51,7 +35,23 @@ if (Model.Products.Any(x => x.ProductStocks.Any(prodStock => prodStock.State == 
                 </div>
                 @if (adherentStolon.Stolon.GetMode() == Stolon.Modes.DeliveryAndStockUpdate)
                 {
-                    <a asp-action="DisableAllProduct" asp-route-adherentStolonId="@adherentStolon.Id">Désactiver tout les produits</a>
+                    <div class="dropdown">
+                        <a class="dropdown-toggle btn btn-small btn-default" data-toggle="dropdown" href="#">
+                            Actions
+                            <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a asp-action="DisableAllProductForStolon" asp-route-adherentStolonId="@adherentStolon.Id">Désactiver tout les produits</a>
+                            </li>
+                            @if (Model.Products.Any(x => x.ProductStocks.Any(prodStock => prodStock.State == Product.ProductState.Stock)))
+                            {
+                                <li>
+                                    <a asp-action="EnableAllStockProductForStolon" asp-route-adherentStolonId="@adherentStolon.Id" >Rendre disponible tout les produits en attente de stock</a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
                 }
             </th>
         }
