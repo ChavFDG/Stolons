@@ -669,7 +669,7 @@ namespace Stolons.Tools
 
         public static void GeneratePDF(string htmlContent, string fullPath)
         {
-            var converter = new BasicConverter(new PdfTools());
+            var converter = new SynchronizedConverter(new PdfTools());
 
             var doc = new HtmlToPdfDocument()
             {
