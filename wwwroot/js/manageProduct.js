@@ -55,8 +55,8 @@ ManageProductView = Backbone.View.extend(
                 var price = $("#price").val();
                 var qtyStep = $("#Product_QuantityStep").val();
                 if (price && qtyStep) {
-                    $("#unitPrice").val(price * qtyStep / 1000);
-                    $("#unitPrice").attr("value", price * qtyStep / 1000);
+                    var unitPrice = (price * qtyStep / 1000).toString();
+                    $("#unitPrice").val(unitPrice.replace('.', ','));
                 }
             }
         },

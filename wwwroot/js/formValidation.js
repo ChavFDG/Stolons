@@ -21,7 +21,7 @@ var formValidation = {
             }
         });
 
-        if (this.isValidated()) {
+        if ($this.isValidated()) {
             $('form[name=' + formName + ']').submit();
         }
     },

@@ -65,10 +65,16 @@
         //    if (this.val() == 1)
         //        $('#price').val(99);
         //};
+
+        $('input#submit').on('click', function () {
+            //formValidation.valid('product-form');
+            $('form[name=product-form]').submit();
+            return false;
+        });
     });
 </script>
 
-<form asp-action="Manage" enctype="multipart/form-data">
+<form asp-action="Manage" enctype="multipart/form-data" name="product-form">
     <div class="form-horizontal">
         <hr />
         <!--HIDDEN-->
@@ -79,7 +85,7 @@
         <input asp-for="Product.Familly" hidden="hidden" />
         <!-- <div asp-validation-summary="All" class="text-danger"></div> -->
         <div class="form-group">
-            <label asp-for="Product.Name" class="col-md-2 control-label"></label>
+            <label asp-for="Product.Name" class="col-md-2 control-label required"></label>
             <div class="col-md-10">
                 <input asp-for="Product.Name" class="form-control" data-val-required="Le nom du produit est requis" />
                 <span asp-validation-for="Product.Name" class="text-danger" />
@@ -249,7 +255,7 @@
         {
             <div class="form-group">
                 <div class="col-md-offset-2 col-md-10">
-                    <input type="submit" value="Ajouter" class="btn btn-small btn-default" />
+                    <input type="submit" id="submit" value="Ajouter" class="btn btn-small btn-default" />
                 </div>
             </div>
         }
@@ -257,7 +263,7 @@
         {
             <div class="form-group">
                 <div class="col-md-offset-2 col-md-10">
-                    <input type="submit" value="Modifier" class="btn btn-small btn-default" />
+                    <input type="submit" id="submit" value="Modifier" class="btn btn-small btn-default" />
                 </div>
             </div>
         }
@@ -269,9 +275,6 @@
 </div>
 
 @section Scripts {
-    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
-    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
-
     <script id="familiesTemplate" type="text/template">
         <div class="form-group">
             <label asp-for="Product.Familly" class="col-md-2 control-label">Famille</label>

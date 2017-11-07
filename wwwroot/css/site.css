@@ -801,6 +801,16 @@ a.main-links:hover, a.main-links:active {
     margin-top: 5px;
 }
 
+.comment img {
+    width: 100%;
+    border-radius: 50%;
+}
+
+.comment .date {
+    margin-top: 10px;
+    font-size: 12px;
+}
+
 textarea#add-comment {
     width: 100%;
     max-width: 100%;
