@@ -19,7 +19,7 @@ using Stolons.Tools;
 using Stolons.Models.Users;
 using Microsoft.Extensions.Configuration.UserSecrets;
 using static Stolons.Configurations;
-
+using System.Globalization;
 
 namespace Stolons
 {
@@ -28,6 +28,12 @@ namespace Stolons
         IHostingEnvironment _environment;
         public Startup(IHostingEnvironment env)
         {
+            var cultureInfo = new CultureInfo("fr-Fr");
+
+            CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+            CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
+
+
             Configurations.Environment = env;
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
