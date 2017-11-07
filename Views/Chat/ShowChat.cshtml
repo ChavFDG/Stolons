@@ -10,8 +10,8 @@
                 <div class="col-lg-3"><img src="@message.PublishBy.Adherent.AvatarFilePath"/></div>
                 <div class="col-lg-9">
                     @message.Content
-                    <div class="text-right date">@message.StringPublishBy</div>
                 </div>
+                <div class="col-lg-12 text-right date">@message.StringPublishBy</div>
             </div>
         }
     </div>
@@ -22,7 +22,7 @@
     </div>
     <script type="text/javascript">
         function getHtml(message, data) {
-            return '<div class="col-lg-12 comment" data-date="' + message.DateOfPublication + '"><div class="col-lg-3"><img src="' + data.ActiveAdherentStolon.Adherent.AvatarFilePath + '"/></div><div class="col-lg-9">' + message.Content + '<div class="text-right date">Par ' + data.ActiveAdherentStolon.Adherent.Surname + '</div></div></div>';
+            return '<div class="col-lg-12 comment" data-date="' + message.DateOfPublication + '"><div class="col-lg-3"><img src="' + data.ActiveAdherentStolon.Adherent.AvatarFilePath + '"/></div><div class="col-lg-9">' + message.Content + '</div><div class="col-lg-12 text-right date">' + message.StringPublishBy + '</div></div>';
     }
      function getNewMessages() {
         var link = '@Html.Raw(Url.Action("GetNewMessages", "Chat"))';
@@ -41,6 +41,7 @@
         });
     }
     $(document).ready(function () {
+         $("div.chat").animate({ scrollTop: 50000000 }, 1000);
         $('a#add-comment').on('click', function () {
             var $this = $(this);
 
@@ -66,7 +67,7 @@
                             $(getHtml(message, data)).insertAfter('div.comment:last');
                         });
 
-                        $("div.chat").animate({ scrollTop: 5000 }, 1000);
+                        $("div.chat").animate({ scrollTop: 50000000 }, 1000);
                     },
                 });
             } else {

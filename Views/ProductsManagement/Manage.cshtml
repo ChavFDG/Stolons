@@ -66,9 +66,8 @@
         //        $('#price').val(99);
         //};
 
-        $('input#submit').on('click', function () {
-            //formValidation.valid('product-form');
-            $('form[name=product-form]').submit();
+        $('form[name=product-form]').on('submit', function () {
+            formValidation.valid('product-form');
             return false;
         });
     });
