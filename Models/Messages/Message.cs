@@ -26,6 +26,7 @@ namespace Stolons.Models.Messages
         [Display(Name = "Publié le ")]
         public DateTime DateOfPublication { get; set; }
 
+
         public void Messsage()
         {
 
