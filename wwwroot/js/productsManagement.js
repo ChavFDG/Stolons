@@ -92,7 +92,6 @@ var StockMgtViewModal = Backbone.View.extend({
         } else {
             if (!this.isInt(remainingStock)) {
                 this.validation.remainingStockError = "Le nombre de pièces doit être un nombre entier.";
-                console.log("Le nombre de pièces doit être un nombre entier.");
                 this.render();
                 return;
             }
@@ -117,11 +116,7 @@ var StockMgtViewModal = Backbone.View.extend({
 	};
         var promise;
 	if (this.currentProductStock.get("AdherentStolon").Stolon.Mode == 0 || this.currentProductStock.get("Product").get("StockManagement") == 1) {
-	    console.log("current reminaing stock = " + this.currentProductStock.get("RemainingStock"));
-	    console.log("init reminaing stock = " + this.initRemainingStock);
 	    var diffStock = this.currentProductStock.get("RemainingStock") - this.initRemainingStock;
-	    //var diffStock = this.initRemainingStock - this.currentProductStock.get("RemainingStock");
-	    console.log("diff stock = " + diffStock);
             promise = $.ajax({
                 url: "/ProductsManagement/ChangeCurrentStock",
                 type: 'POST',
@@ -131,8 +126,7 @@ var StockMgtViewModal = Backbone.View.extend({
                 }
             });
         } else {
-	    var diffStock = this.initWeekStock - this.currentProductStock.get("WeekStock");
-	    console.log("diff stock = " + diffStock);
+	    var diffStock = this.currentProductStock.get("WeekStock") - this.initWeekStock;
             promise = $.ajax({
                 url: "/ProductsManagement/ChangeStock",
                 type: 'POST',
