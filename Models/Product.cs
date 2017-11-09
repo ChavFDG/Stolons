@@ -106,7 +106,7 @@ namespace Stolons.Models
         [Display(Name = "DLC")]
         public DateTime DLC { get; set; }
 
-        [Display(Name = "Stocker dans un réfrégirateur")]
+        [Display(Name = "Stocker dans un réfrigérateur")]
         public bool Fridge { get; set; }
 
         [Display(Name = "Type de vente")]
