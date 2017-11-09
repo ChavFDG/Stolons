@@ -21,8 +21,9 @@ var formValidation = {
             }
         });
 
-        if ($this.isValidated()) {
-            $('form[name=' + formName + ']').submit();
+        if (!$this.isValidated()) {
+	    //Prevent natural submit
+	    return false;
         }
     },
     isValidated: function () {

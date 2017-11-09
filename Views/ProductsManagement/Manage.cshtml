@@ -50,7 +50,7 @@
     }
 
 
-    $(document).ready(function () {
+    $(function () {
         var input = document.getElementById('image');
         input.onclick = function () {
             this.value = null;
@@ -67,8 +67,7 @@
         //};
 
         $('form[name=product-form]').on('submit', function () {
-            formValidation.valid('product-form');
-            return false;
+            return formValidation.valid('product-form');
         });
     });
 </script>
