@@ -434,6 +434,8 @@ namespace Stolons.Controllers
 
         public IActionResult SetAsVolunteer(Guid? id)
         {
+            if (!Authorized(Role.Volunteer))
+                return Unauthorized();
             AdherentStolon adherentStolon = _context.AdherentStolons.First(x => x.Id == id);
             adherentStolon.Role = Role.Volunteer;
             _context.SaveChanges();
@@ -442,8 +444,30 @@ namespace Stolons.Controllers
 
         public IActionResult SetAsAdmin(Guid? id)
         {
+            if (!Authorized(Role.Admin))
+                return Unauthorized();
             AdherentStolon adherentStolon = _context.AdherentStolons.First(x => x.Id == id);
             adherentStolon.Role = Role.Admin;
+            _context.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult SetAsWebAdmin(Guid? id)
+        {
+            if (!AuthorizedWebAdmin())
+                return Unauthorized();
+            AdherentStolon adherentStolon = _context.AdherentStolons.Include(x=>x.Adherent).First(x => x.Id == id);
+            adherentStolon.Adherent.IsWebAdmin = true;
+            _context.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult UnSetAsWebAdmin(Guid? id)
+        {
+            if (!AuthorizedWebAdmin())
+                return Unauthorized();
+            AdherentStolon adherentStolon = _context.AdherentStolons.Include(x => x.Adherent).First(x => x.Id == id);
+            adherentStolon.Adherent.IsWebAdmin = false;
             _context.SaveChanges();
             return RedirectToAction("Index");
         }

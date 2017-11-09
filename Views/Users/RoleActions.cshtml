@@ -19,7 +19,15 @@
             }
             @if (Model.AdherentStolon.Role != Role.Admin && Model.ActiveAdherentStolon.Authorized(Role.Admin))
             {
-                <li><a asp-action="SetAsAdmin" asp-controller="Users" asp-route-id="@Model.AdherentStolon.Id">Passer administrateur</a></li>
+                <li><a asp-action="SetAsAdmin" asp-controller="Users" asp-route-id="@Model.AdherentStolon.Id">Passer administrateur du stolon</a></li>
+            }
+            @if (Model.AdherentStolon.Adherent.IsWebAdmin && Model.ActiveAdherentStolon.Adherent.IsWebAdmin)
+            {
+                <li><a asp-action="UnSetAsWebAdmin" asp-controller="Users" asp-route-id="@Model.AdherentStolon.Id">Enlever les droits d'administrateur web</a></li>
+            }
+            @if (!Model.AdherentStolon.Adherent.IsWebAdmin && Model.ActiveAdherentStolon.Adherent.IsWebAdmin)
+            {
+                <li><a asp-action="SetAsWebAdmin" asp-controller="Users" asp-route-id="@Model.AdherentStolon.Id">Passer administrateur du site web et des stolons</a></li>
             }
             @if (!Model.AdherentStolon.IsProducer && Model.ActiveAdherentStolon.Authorized(Role.Admin))
             {
@@ -31,13 +39,22 @@
             }
         </ul>
     </div>
+
+    @if (Model.AdherentStolon.Adherent.IsWebAdmin)
+    {
+        <div class="glyphicon-leaf">
+            <div >
+                @{
+                    //Ce membre est administrateur web
+                }
+            </div>
+        </div>
+    }
 }
 else
 {
     @Html.DisplayFor(x => x.AdherentStolon.Role)
 }
-
-
 
 
     

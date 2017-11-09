@@ -34,6 +34,7 @@ namespace Stolons.Services
             {
                 using (var client = new SmtpClient())
                 {
+                    /*
                     client.Connect(Configurations.Application.MailSmtp, Configurations.Application.MailPort, false);
                     client.AuthenticationMechanisms.Remove("XOAUTH2");
                     // Note: since we don't have an OAuth2 token, disable
@@ -41,6 +42,7 @@ namespace Stolons.Services
                     client.Authenticate(Configurations.Application.MailAddress, Configurations.Application.MailPassword);
                     client.Send(mimeMessage);
                     client.Disconnect(true);
+                    */
                 }
             }
 	    catch (Exception except)

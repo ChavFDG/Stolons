@@ -224,6 +224,8 @@ namespace Stolons.Tools
                     //Generate pdf file
                     GenerateOrderPDF(bill);
                     //Send mail to producer
+                    try
+                    {
                     AuthMessageSender.SendEmail(bill.AdherentStolon.Stolon.Label,
                                                     bill.Adherent.Email,
                                                     bill.Adherent.CompanyName,
@@ -232,6 +234,11 @@ namespace Stolons.Tools
                                                     + "<h3>En pièce jointe votre bon de commande de la semaine chez " + bill.Stolon.Label + " (Bon de commande " + bill.BillNumber + ")</h3>",
                                                     File.ReadAllBytes(bill.GetOrderFilePath()),
                                                     "Bon de commande " + bill.GetOrderFileName());
+                    }
+                    catch (Exception exept)
+                    {
+                        Console.WriteLine("Error on sending mail " + exept);
+                    }
                 }
             }
             catch (Exception exept)
@@ -257,13 +264,20 @@ namespace Stolons.Tools
                 if (bill.AdherentStolon.Token > 0)
                     message += "<p>Vous avez " + bill.AdherentStolon.Token + "Ṩ, pensez à payer avec vos stols lors de la récupération de votre commande.</p>";
 
-                AuthMessageSender.SendEmail(bill.AdherentStolon.Stolon.Label,
+                try
+                {
+                    AuthMessageSender.SendEmail(bill.AdherentStolon.Stolon.Label,
                                                 bill.Adherent.Email,
                                                 bill.Adherent.Name,
                                                 "Votre commande de la semaine (Commande " + bill.BillNumber + ")",
                                                 message,
                                                 File.ReadAllBytes(bill.GetBillFilePath()),
                                                 "Commande " + bill.GetBillFileName());
+                }
+                catch (Exception exept)
+                {
+                    Console.WriteLine("Error on sending mail " + exept);
+                }
             }
             catch (Exception exept)
             {
@@ -693,6 +707,7 @@ namespace Stolons.Tools
             };
 
             converter.Convert(doc);
+            
         }
 
         public static int GetIso8601WeekOfYear(this DateTime time)

@@ -20,6 +20,8 @@ using Stolons.Models.Users;
 using Microsoft.Extensions.Configuration.UserSecrets;
 using static Stolons.Configurations;
 using System.Globalization;
+using DinkToPdf.Contracts;
+using DinkToPdf;
 
 namespace Stolons
 {
@@ -58,6 +60,8 @@ namespace Stolons
         {
             try
             {
+                // Add converter to DI
+                services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
                 // using (var db = new ApplicationDbContext())
                 // {
                 //     //db.Database.EnsureCreated();
