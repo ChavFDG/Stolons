@@ -183,6 +183,7 @@ namespace Stolons
             CreateProductFamily(context, fresh, "Légumes", "legumes.jpg");
             CreateProductFamily(context, fresh, "Produits laitiers", "produits_laitiers.jpg");
             CreateProductFamily(context, fresh, "Oeufs", "oeufs.jpg");
+            CreateProductFamily(context, fresh, "Viandes");
 
             ProductType bakery = CreateProductType(context, "Boulangerie", "boulangerie.jpg");
             CreateProductFamily(context, bakery, "Farines", "farines.jpg");

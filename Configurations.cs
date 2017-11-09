@@ -138,7 +138,7 @@ namespace Stolons
         public static string UploadBase64Image(this IHostingEnvironment environment, string base64data, string path, string pictureName = null)
         {
             if(string.IsNullOrWhiteSpace(base64data))
-                return Configurations.DefaultImageFileName + ".jpg";
+                return Configurations.DefaultImageFileName;
             base64data = base64data.Remove(0, base64data.IndexOf(',') + 1);
             byte[] data = Convert.FromBase64String(base64data);
 
