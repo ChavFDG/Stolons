@@ -13,7 +13,6 @@
     </div>
 
 
-
 <table class="table">
     <tr>
         <th>
@@ -50,6 +49,15 @@
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.LocalId)
+                @if (item.Adherent.IsWebAdmin)
+                {
+                    <div class="warning-container">
+                        <i class="glyphicon glyphicon-leaf"></i>
+                        <div class="warning-informations right">
+                            Ce membre est administrateur web    
+                        </div>
+                    </div>
+                }
             </td>
             <td class="tdAvatarList">
                 <div class="userListAvatar">

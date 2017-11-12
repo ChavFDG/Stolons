@@ -108,13 +108,6 @@ textarea {
         max-width: 37px;
     }
 
-div#warning-container {
-    float: left;
-    margin-right: 10px;
-    margin-top: 5px;
-    position: relative;
-}
-
 div#login-wrapper {
     margin: 10px;
 }
@@ -123,19 +116,31 @@ div#adherent-details-wrapper {
     margin: 10px;
 }
 
-img#warning {
+.warning-container {
+    display: inline-block;
+    margin-right: 10px;
+    margin-top: 5px;
+    position: relative;
+}
+
+img.warning {
     max-width: 25px;
 }
 
-div#warning-informations {
+.warning-informations {
     position: absolute;
     top: 25px;
-    width: 300px;
-    left: -150px;
+    width: auto;
+    transform: translateX(-50%);
     display: none;
     border: 1px solid rgba(0,0,0,.15);
     padding: 5px;
     background: #fff;
+    z-index: 1;
+    white-space: nowrap;
+}
+.warning-informations.right {
+    transform: none;
 }
 
 

@@ -11,10 +11,12 @@
         @{
             if (Model.ActiveAdherentStolon.Stolon.UseSubscipstion && !Model.ActiveAdherentStolon.SubscriptionPaid)
             {
-                <div id="warning-container">
-                    <img id="warning" src="/images/warning.png" />
-                    <div id="warning-informations">
-                        Cotisation non payée, penser à la régler à la prochaine commande
+                <div class="pull-left">
+                    <div class="warning-container">
+                        <img class="warning" src="/images/warning.png" />
+                        <div class="warning-informations">
+                            Cotisation non payée, <br />penser à la régler à la prochaine commande
+                        </div>
                     </div>
                 </div>
             }
@@ -44,13 +46,3 @@ else
 {
     <a asp-controller="Account" asp-action="Login" class="btn btn-link navbar-btn navbar-link">Se connecter</a>
 }
-<script>
-    $(function () {
-        $('img#warning').hover(function () {
-            $('div#warning-informations').show();
-            $(this).mouseout(function () {
-                $('div#warning-informations').fadeOut('fast');
-            });
-        });
-    });
-</script>
