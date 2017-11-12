@@ -42,7 +42,7 @@ namespace Stolons.Controllers
                 .Include(x => x.Products).ThenInclude(x => x.Familly.Type)
                 .Include(x => x.AdherentStolons).FirstOrDefault(x => x.Id == producer.Id);
             producer.AdherentStolons.ForEach(adherentStolon => adherentStolon.Stolon = _context.Stolons.First(stolon => stolon.Id == adherentStolon.StolonId));
-            var products = _context.Products.Include(x=>x.ProductStocks).Include(m => m.Familly).Include(m => m.Familly.Type).Where(x => x.Producer == producer).ToList();
+            var products = _context.Products.Include(x=>x.ProductStocks).Include(m => m.Familly).Include(m => m.Familly.Type).Where(x => x.Producer == producer).OrderBy(x=>x.Name).ToList();
             foreach (var prod in products)
             {
                 foreach (var stock in prod.ProductStocks)
@@ -221,13 +221,24 @@ namespace Stolons.Controllers
             if (!AuthorizedProducer())
                 return Unauthorized();
 
-            Product product = _context.Products.FirstOrDefault(x => x.Id == id);
+            Product product = _context.Products.Include(x=>x.ProductStocks).FirstOrDefault(x => x.Id == id);
             product.IsArchive = true;
-
+            product.ProductStocks.ToList().ForEach(x => x.State = Product.ProductState.Disabled);
             _context.SaveChanges();
             return RedirectToAction("Index");
         }
-        
+
+        public IActionResult UnArchive(Guid id)
+        {
+            if (!AuthorizedProducer())
+                return Unauthorized();
+
+            Product product = _context.Products.FirstOrDefault(x => x.Id == id);
+            product.IsArchive = false;
+            _context.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
 
         public IActionResult EnableForAllStolon(Guid? productId)
         {
