@@ -9,10 +9,6 @@
     padding-top: 35px;
 }
 
-#tmpBasket {
-    padding-top: 5px;
-}
-
 #emptyProducts {
     min-height: 40%;
     height: 40%;
@@ -23,12 +19,11 @@
 }
 
 #baskets {
-    padding: 15px 0;
-    position: fixed;
-    right: 5%;
-    top: 300px;
-    width: auto; /* same as .content left */
-    z-index: 1020;
+    position: relative;
+    /*
+        this div is positionned by bootstrap, one shall not set css rules here
+        prefere setting ryles in #tmpBasket
+    */
 }
 
 /* #filters { */

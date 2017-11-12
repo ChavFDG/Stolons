@@ -1,4 +1,4 @@
-
+/* Côme - 2017/11/12 - not used anymore*/
 
 /*-- WEEK BASKET @media max-width: 1849 --*/
 
@@ -61,9 +61,5 @@
 	right: 0;
 	top: 0 !important;
 	padding-top: 20px;
-    }
-    #products {
-	margin-left: 30% !important;
-	max-width: 750px !important;
     }
 }

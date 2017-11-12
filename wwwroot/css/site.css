@@ -629,10 +629,26 @@ div#warning-informations {
     width: 180px;
 }
 
-    .select-option img {
-        max-width: 25px;
-        max-height: 25px;
+.select-option img {
+    max-width: 25px;
+    max-height: 25px;
+}
+
+#tmpBasket {
+    position: static; /* will be fixed on scroll offset Y > 300 (300 is the header height) */
+}
+#tmpBasket .table {
+    max-width: 260px;
+}
+@media (max-width: 990px) { /* bootstrap sm-max*/
+    #tmpBasket {
+        position: static;
     }
+    #tmpBasket .table {
+        max-width: 100%;
+    }
+}
+
 
 .basketTable {
     border-collapse: collapse;
@@ -640,9 +656,9 @@ div#warning-informations {
     margin-bottom: 5px !important;
 }
 
-    .basketTable > th {
-        border: 1px solid #ddd;
-    }
+.basketTable > th {
+    border: 1px solid #ddd;
+}
 
 .basketTitle {
     font-size: 15px;
@@ -739,10 +755,6 @@ div#warning-informations {
 /*******************************/
 
 div#home div.row {
-    margin-top: 20px;
-}
-
-div#products {
     margin-top: 20px;
 }
 
