@@ -8,15 +8,13 @@
 {
     <div class="nav container">
         <div class="row">
-            <div class="col-lg-6 text-left" id="logo">
+            <div class="col-sm-6" id="logo">
                 <a asp-controller="Home" asp-action="Index">
                     <img src="~/images/logos/Logo_HD.png" style="max-width: 300px;" />
                 </a>
             </div>
-            <div class="col-lg-2" id="logo-stolon">
-
-            </div>
-            <div class=" col-lg-4 text-center">
+            <div class="col-sm-2" id="logo-stolon"></div>
+            <div class=" col-sm-4 text-center">
                 <a asp-controller="Home" asp-action="StolonContact" asp-route-id="@Model.ActiveAdherentStolon.Stolon.Id">
                     <h1>@Model.ActiveAdherentStolon.Stolon.Label</h1>
                 </a>
