@@ -288,10 +288,16 @@ namespace Stolons.Models
             Demeter = 1,
             [Display(Name = "Nature et Progrès")]
             NatureEtProgres = 2,
-            [Display(Name = "Fairtrade")]
-            Fairtrade = 3,
-            [Display(Name = "Max Havelaar ")]
-            MaxHavelaar = 4
+            [Display(Name = "Goutez l'Ardèche")]
+            GoutezArdeche = 3,
+            [Display(Name = "Max Havelaar")]
+            MaxHavelaar = 4,
+            [Display(Name = "Bio partenaire")]
+            BioPartenaire= 5,
+            [Display(Name = "Label Rouge")]
+            LabelRouge = 6
+
+                
         }
 
         public enum TAX
