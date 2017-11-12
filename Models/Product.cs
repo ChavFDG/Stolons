@@ -252,7 +252,7 @@ namespace Stolons.Models
             }
         }
 
-        public bool IsArchive = false;
+        public bool IsArchive { get; set; } = false;
 
         public enum SellType
         {
