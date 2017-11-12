@@ -44,10 +44,7 @@
     $(document).ready(function () {
         $('input#submit').on('click', function () {
             formValidation.valid('AddAdherent');
-            if (formValidation.isValidated()) {
-                ValidateEmail();
-            }
-            return false;
+            return formValidation.isValidated() && ValidateEmail()
         });
     });
 </script>
