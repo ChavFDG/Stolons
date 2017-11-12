@@ -31,7 +31,6 @@ namespace Stolons.Models
 
         [Display(Name = "Logo de la structure")]
         public string LogoFileName { get; set; }
-        [Display(Name = "Adresse de la structure")]
         public string LogoFilePath
         {
             get
@@ -41,6 +40,7 @@ namespace Stolons.Models
                 return "\\" + Path.Combine(Configurations.StolonLogoStockagePath, LogoFileName);
             }
         }
+        [Display(Name = "Adresse de la structure")]
         public string Address { get; set; } = "";
         [Display(Name = "Téléphone de contact")]
         public string PhoneNumber { get; set; } = "";
@@ -49,15 +49,15 @@ namespace Stolons.Models
         [Display(Name = "Page Facebook")]
         public string FacebookPage { get; set; } = "";
 
-        [Display(Name = "Avoir une comission sur les producteurs")]
+        [Display(Name = "Avoir une commission sur les producteurs")]
         public bool UseProducersFee { get; set; } = true;
-        [Display(Name = "Montant de la comission sur les producteurs en %")]
+        [Display(Name = "Montant de la commission sur les producteurs (en %)")]
         public int ProducersFee { get; set; } = 5;
 
         [Display(Name = "Texte de : \"Qui sommes nous ?\"")]
         public string AboutText { get; set; } = @"Texte de présentation de ma structure";
 
-        [Display(Name = "Texte de : \"Rejoingnez nous !\"")]
+        [Display(Name = "Texte de : \"Rejoignez nous !\"")]
         public string JoinUsText { get; set; } = @"Texte d'explication sur comment rejoindre la structure";
         //Cotisation
 
@@ -69,7 +69,7 @@ namespace Stolons.Models
 
         [Display(Name = "Cotisation sympathisant (€)")]
         public decimal SympathizerSubscription { get; set; } = 2;
-        [Display(Name = "Cotisation consomateur (€)")]
+        [Display(Name = "Cotisation consommateur (€)")]
         public decimal ConsumerSubscription { get; set; } = 10;
         [Display(Name = "Cotisation producteur (€)")]
         public decimal ProducerSubscription { get; set; } = 20;
@@ -130,7 +130,7 @@ namespace Stolons.Models
         [Display(Name = "Services proposés")]
         public List<Service> Services { get; set; } = new List<Service>();
 
-        [Display(Name = "Bon plan")]
+        [Display(Name = "Bons plan")]
         public bool GoodPlan { get; set; }
 
         [Display(Name = "Type de stolon")]

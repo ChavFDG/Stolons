@@ -19,7 +19,7 @@ namespace Stolons.Models
         [Display(Name = "Courriel de contact")]
         public string ContactMailAddress { get; set; } = "contact@stolons.org";
         //Mails
-        [Display(Name = "Courriel d'envoie des mails")]
+        [Display(Name = "Courriel d'envoi des mails")]
         public string MailAddress { get; set; } = "ne_pas_repondre@stolons.org";
         [Display(Name = "Mot de passe du courriel")]
         public string MailPassword { get; set; } = "Stolons2016";
@@ -30,6 +30,6 @@ namespace Stolons.Models
         [Display(Name = "Site en maintenance")]
         public bool IsInMaintenance{ get; set; } = false;
         [Display(Name = "Message de maintenance du site")]
-        public string MaintenanceMessage { get; set; } = "Le site est en maintenance, veuillez nous excuser pour la gène occasionée.";
+        public string MaintenanceMessage { get; set; } = "Le site est en maintenance, veuillez nous excuser pour la gêne occasionnée.";
     }
 }

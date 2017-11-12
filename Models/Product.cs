@@ -295,9 +295,7 @@ namespace Stolons.Models
             [Display(Name = "Bio partenaire")]
             BioPartenaire= 5,
             [Display(Name = "Label Rouge")]
-            LabelRouge = 6
-
-                
+            LabelRouge = 6                
         }
 
         public enum TAX

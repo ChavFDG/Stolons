@@ -76,7 +76,7 @@ else
 </div>
 
 <div class="boxContainer">
-<h4>Producteur ayant une commande à livrer cette semaine </h4>
+<h4>Producteur(s) ayant une commande à livrer cette semaine </h4>
 @if (Model.ProducerBills.Any(x => x.State == BillState.Pending))
 {
     <table class="table">
@@ -136,7 +136,7 @@ else
 </div>
 
 <div class="boxContainer">
-<h4>Adhérents ayant commandé un panier cette semaine</h4>
+<h4>Adhérent(s) ayant commandé un panier cette semaine</h4>
 @if (Model.ConsumerBills.Any())
 {
     <table class="table">
