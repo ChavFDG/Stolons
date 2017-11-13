@@ -25,6 +25,7 @@ var formValidation = {
 	    //Prevent natural submit
 	    return false;
         }
+	return true;
     },
     isValidated: function () {
         return this.errors.length === 0;

@@ -43,8 +43,7 @@
 
     $(document).ready(function () {
         $('input#submit').on('click', function () {
-            formValidation.valid('AddAdherent');
-            return formValidation.isValidated() && ValidateEmail()
+            return formValidation.valid('AddAdherent') && ValidateEmail();
         });
     });
 </script>
