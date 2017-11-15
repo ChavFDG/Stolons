@@ -22,6 +22,7 @@ using static Stolons.Configurations;
 using System.Globalization;
 using DinkToPdf.Contracts;
 using DinkToPdf;
+using System.Runtime.InteropServices;
 
 namespace Stolons
 {
@@ -174,6 +175,10 @@ namespace Stolons
             else
             {
                 Configurations.Application = new ApplicationConfig();
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                    Configurations.Application.ChroniumFullPath = @"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe";
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                    Configurations.Application.ChroniumFullPath = @"\usr\bin\chromium\";
                 context.Add(Configurations.Application);
                 context.SaveChanges();
             }

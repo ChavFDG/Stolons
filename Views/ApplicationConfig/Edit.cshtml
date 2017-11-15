@@ -17,7 +17,7 @@
         <div class="form-group">
             <label asp-for="ContactMailAddress" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <input rows="2" asp-for="ContactMailAddress" class="form-control"/>
+                <input rows="2" asp-for="ContactMailAddress" class="form-control" />
                 <span asp-validation-for="ContactMailAddress" class="text-danger" />
             </div>
         </div>
@@ -27,6 +27,15 @@
                 <input asp-for="ContactPhoneNumber" class="form-control" />
                 <span asp-validation-for="ContactPhoneNumber" class="text-danger" />
             </div>
+        </div>
+        <h4>PDF</h4>
+        <div class="form-group">
+            <label asp-for="ChroniumFullPath" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="ChroniumFullPath" class="form-control"  />
+                <span asp-validation-for="ChroniumFullPath" class="text-danger" />
+            </div>
+            <a asp-action="TestChroniumPath">Tester le chemin</a>
         </div>
         <h4>Courriels</h4>
         <div class="form-group">

@@ -84,7 +84,7 @@ namespace Stolons.Tools
                                 var tempWeekBasketToRemove = dbContext.TempsWeekBaskets.First(x => x.AdherentStolonId == weekBasket.AdherentStolon.Id);
                                 var linkedBillEntriesToRemove = dbContext.BillEntrys.Where(x => x.TempWeekBasketId == tempWeekBasketToRemove.Id).ToList();
                                 dbContext.RemoveRange(linkedBillEntriesToRemove);
-                                dbContext.SaveChanges();                                
+                                dbContext.SaveChanges();
                                 dbContext.Remove(tempWeekBasketToRemove);
                                 dbContext.SaveChanges();
 
@@ -98,11 +98,11 @@ namespace Stolons.Tools
 
 
                             }
-                            
+
                             List<ProducerBill> producerBills = new List<ProducerBill>();
-                            List<ConsumerBill> consumerBills = dbContext.ConsumerBills.Include(x => x.BillEntries).ThenInclude(x=>x.ProductStock).ThenInclude(x=>x.Product)
-                                                                                        .Include(x => x.AdherentStolon).ThenInclude(x=>x.Adherent)
-                                                                                        .Include(x=>x.AdherentStolon).ThenInclude(x=>x.Stolon)
+                            List<ConsumerBill> consumerBills = dbContext.ConsumerBills.Include(x => x.BillEntries).ThenInclude(x => x.ProductStock).ThenInclude(x => x.Product)
+                                                                                        .Include(x => x.AdherentStolon).ThenInclude(x => x.Adherent)
+                                                                                        .Include(x => x.AdherentStolon).ThenInclude(x => x.Stolon)
                                                                                         .ToList();
                             //Producer (creates bills)
                             foreach (var producer in dbContext.AdherentStolons.Include(x => x.Adherent).Include(x => x.Stolon).Where(x => x.StolonId == stolon.Id && x.IsProducer).ToList())
@@ -175,13 +175,14 @@ namespace Stolons.Tools
                             // => Producer, send mails
                             foreach (var bill in producerBills)
                             {
-                                GenerateOrderPdfAndSendEmail(bill);
+                                Task.Factory.StartNew(() => { GenerateOrderPdfAndSendEmail(bill); });
+                                
                             }
 
                             //Bills (save bills and send mails to user)
                             foreach (var bill in consumerBills)
                             {
-                                GenerateOrderPdfAndSendEmail(bill);
+                                Task.Factory.StartNew(() => { GenerateOrderPdfAndSendEmail(bill); });
                             }
 
                             #endregion  Create PDF and send mail
@@ -226,14 +227,14 @@ namespace Stolons.Tools
                     //Send mail to producer
                     try
                     {
-                    AuthMessageSender.SendEmail(bill.AdherentStolon.Stolon.Label,
-                                                    bill.Adherent.Email,
-                                                    bill.Adherent.CompanyName,
-                                                    "Votre bon de commande de la semaine chez " + bill.Stolon.Label + " (Bon de commande " + bill.BillNumber + ")",
-                                                    bill.HtmlOrderContent
-                                                    + "<h3>En pièce jointe votre bon de commande de la semaine chez " + bill.Stolon.Label + " (Bon de commande " + bill.BillNumber + ")</h3>",
-                                                    File.ReadAllBytes(bill.GetOrderFilePath()),
-                                                    "Bon de commande " + bill.GetOrderFileName());
+                        AuthMessageSender.SendEmail(bill.AdherentStolon.Stolon.Label,
+                                                        bill.Adherent.Email,
+                                                        bill.Adherent.CompanyName,
+                                                        "Votre bon de commande de la semaine chez " + bill.Stolon.Label + " (Bon de commande " + bill.BillNumber + ")",
+                                                        bill.HtmlOrderContent
+                                                        + "<h3>En pièce jointe votre bon de commande de la semaine chez " + bill.Stolon.Label + " (Bon de commande " + bill.BillNumber + ")</h3>",
+                                                        File.ReadAllBytes(bill.GetOrderFilePath()),
+                                                        "Bon de commande " + bill.GetOrderFileName());
                     }
                     catch (Exception exept)
                     {
@@ -302,6 +303,14 @@ namespace Stolons.Tools
 
         }
 
+        private static void AddFooterAndHeaderRemoval(this StringBuilder builder)
+        {
+            builder.Insert(0, @"<style>@media print {
+                                           @page { margin: 0; }
+                                           body { margin: 1.6cm; }
+                                         }</style>");
+        }
+
         private static StolonsBill GenerateBill(Stolon stolon, List<ConsumerBill> consumersBills, ApplicationDbContext dbContext)
         {
             StringBuilder builder = new StringBuilder();
@@ -321,11 +330,12 @@ namespace Stolons.Tools
             {
                 builder.AppendLine("<h1>Commandes numéro : " + billNumber + "</h1>");
                 builder.AppendLine("<p>Année : " + DateTime.Now.Year);
-                builder.AppendLine("Semaine : " + DateTime.Now.GetIso8601WeekOfYear());
-                builder.AppendLine("<b>Nombre de panier : " + consumersBills.Count + "</b></p>");
-                builder.AppendLine("<p>Adhérents ayant un panier : ");
+                builder.AppendLine("<br>Semaine : " + DateTime.Now.GetIso8601WeekOfYear());
+                builder.AppendLine("<br><b>Nombre de panier : " + consumersBills.Count + "</b></p>");
+                builder.AppendLine("<p>Adhérents ayant un panier : <small>");
                 consumersBills.OrderBy(x => x.AdherentStolon.LocalId)
-                                            .ForEach(x => builder.AppendLine("<a href=\"#" + x.AdherentStolon.LocalId + "\">" + x.AdherentStolon.GetNumberSurnameName() + "</a>"));
+                                            .ForEach(x => builder.AppendLine("<a href=\"#" + x.AdherentStolon.LocalId + "\">" + x.AdherentStolon.GetNumberSurnameName() + "</a><br>"));
+                builder.AppendLine("</small></p>");
 
                 builder.AppendLine("<div style=\"page-break-after:always\"></div>");
                 int count = 0;
@@ -335,7 +345,7 @@ namespace Stolons.Tools
                     builder.AppendLine("<h1 id=\"" + consumerBill.AdherentStolon.LocalId + "\">Adhérent : " + consumerBill.AdherentStolon.LocalId + " / " + consumerBill.Adherent.Surname + " / " + consumerBill.Adherent.Name + "</h1>");
                     builder.AppendLine("<p>Facture : " + consumerBill.BillNumber + "</p>");
                     builder.AppendLine("<p>Téléphone : " + consumerBill.Adherent.PhoneNumber + "</p>");
-                    builder.AppendLine("<p>Total à régler : " + consumerBill.TotalPrice + " €</p>");
+                    builder.AppendLine("<p>Total à régler : " + consumerBill.TotalPrice.ToString("0.00") + " €</p>");
 
                     //Create list of bill entry by product
                     var billEntryByProducer = consumerBill.BillEntries.GroupBy(x => x.ProducerBill);
@@ -381,7 +391,7 @@ namespace Stolons.Tools
                     builder.AppendLine("<h1>Adhérent : " + weekBasket.AdherentStolon.LocalId + " / " + weekBasket.Adherent.Surname + " / " + weekBasket.Adherent.Name + "</h1>");
                     builder.AppendLine("<p>Facture : " + billNumber + "_" + weekBasket.Consumer.Id + "</p>");
                     builder.AppendLine("<p>Téléphone : " + weekBasket.Consumer.PhoneNumber + "</p>");
-                    builder.AppendLine("<p>Total à régler : " + weekBasket.TotalPrice + " €</p>");
+                    builder.AppendLine("<p>Total à régler : " + weekBasket.TotalPrice.ToString("0.00") + " €</p>");
 
 
                     //Create list of bill entry by product
@@ -427,6 +437,8 @@ namespace Stolons.Tools
                 */
             }
             builder.AddBootstrap();
+            builder.AddFooterAndHeaderRemoval();
+            builder.AddFooterAndHeaderRemoval();
             bill.HtmlBillContent = builder.ToString();
 
             return bill;
@@ -495,10 +507,11 @@ namespace Stolons.Tools
             orderBuilder.AppendLine("</table>");
 
             #endregion Par client
-            orderBuilder.AppendLine("<p>" + "Montant total de la commande  " + bill.OrderAmount + "€<br>");
-            orderBuilder.AppendLine("Montant total du % du Stolons " + bill.FeeAmount + "€<br>");
-            orderBuilder.AppendLine("Montant total à percevoir     <b>" + bill.BillAmount + "€</b> <i>(Dont " + bill.TaxAmount + "€ TVA)</i></p>");
+            orderBuilder.AppendLine("<p>" + "Montant total de la commande  " + bill.OrderAmount.ToString("0.00") + "€<br>");
+            orderBuilder.AppendLine("Montant total du % du Stolons " + bill.FeeAmount.ToString("0.00") + "€<br>");
+            orderBuilder.AppendLine("Montant total à percevoir     <b>" + bill.BillAmount.ToString("0.00") + "€</b> <i>(Dont " + bill.TaxAmount.ToString("0.00") + "€ TVA)</i></p>");
             orderBuilder.AddBootstrap();
+            orderBuilder.AddFooterAndHeaderRemoval();
             return orderBuilder.ToString();
         }
 
@@ -551,7 +564,7 @@ namespace Stolons.Tools
                 billBuilder.AppendLine("<td>" + productBillEntries.Key.GetQuantityString(quantity) + "</td>");
                 billBuilder.AppendLine("<td>" + (productBillEntries.Key.TaxEnum == Product.TAX.None ? "NA" : productBillEntries.Key.Tax.ToString()) + " %</td>");
                 billBuilder.AppendLine("<td>" + (productBillEntries.Key.Type == SellType.Piece ? productBillEntries.First().UnitPriceWithoutFeeAndTax : productBillEntries.First().PriceWithoutFeeAndTax) + " €" + "</td>");
-                billBuilder.AppendLine("<td>" + productTotalWithoutTax + " €" + "</td>");
+                billBuilder.AppendLine("<td>" + productTotalWithoutTax.ToString("0.00") + " €" + "</td>");
                 billBuilder.AppendLine("</tr>");
                 //Si tax, on ajoute au total du taux de la tva
                 if (productBillEntries.Key.TaxEnum != Product.TAX.None)
@@ -568,7 +581,7 @@ namespace Stolons.Tools
             billBuilder.AppendLine("<td></td>");
             billBuilder.AppendLine("<td></td>");
             billBuilder.AppendLine("<td>Total HT</td>");
-            billBuilder.AppendLine("<td>" + totalWithoutTax + " €</td>");
+            billBuilder.AppendLine("<td>" + totalWithoutTax.ToString("0.00") + " €</td>");
             billBuilder.AppendLine("</tr>");
             bill.TaxAmount = 0;
             foreach (var tax in taxTotal)
@@ -579,7 +592,7 @@ namespace Stolons.Tools
                 billBuilder.AppendLine("<td></td>");
                 billBuilder.AppendLine("<td></td>");
                 billBuilder.AppendLine("<td>TAV " + tax.Key + "%</td>");
-                billBuilder.AppendLine("<td>" + taxAmount + " €</td>");
+                billBuilder.AppendLine("<td>" + taxAmount.ToString("0.00") + " €</td>");
                 billBuilder.AppendLine("</tr>");
                 bill.TaxAmount += taxAmount;
             }
@@ -588,7 +601,7 @@ namespace Stolons.Tools
             billBuilder.AppendLine("<td></td>");
             billBuilder.AppendLine("<td></td>");
             billBuilder.AppendLine("<td>Net à payer</td>");
-            billBuilder.AppendLine("<td>" + bill.BillAmount + " €</td>");
+            billBuilder.AppendLine("<td>" + bill.BillAmount.ToString("0.00") + " €</td>");
             billBuilder.AppendLine("</tr>");
             billBuilder.AppendLine("</table>");
 
@@ -624,14 +637,14 @@ namespace Stolons.Tools
                 decimal total = Convert.ToDecimal(billEntry.UnitPrice * billEntry.Quantity);
                 builder.AppendLine("<tr>");
                 builder.AppendLine("<td>" + billEntry.Name + "</td>");
-                builder.AppendLine("<td>" + billEntry.UnitPrice + " €" + "</td>");
+                builder.AppendLine("<td>" + billEntry.UnitPrice.ToString("0.00") + " €" + "</td>");
                 builder.AppendLine("<td>" + billEntry.QuantityString + "</td>");
-                builder.AppendLine("<td>" + total + " €" + "</td>");
+                builder.AppendLine("<td>" + total.ToString("0.00") + " €" + "</td>");
                 builder.AppendLine("</tr>");
                 bill.OrderAmount += total;
             }
             builder.AppendLine("</table>");
-            builder.AppendLine("<p>Montant total : " + bill.OrderAmount + " €</p>");
+            builder.AppendLine("<p>Montant total : " + bill.OrderAmount.ToString("0.00") + " €</p>");
             builder.AddBootstrap();
             return builder.ToString();
         }
@@ -683,31 +696,21 @@ namespace Stolons.Tools
 
         public static void GeneratePDF(string htmlContent, string fullPath)
         {
-            var converter = new SynchronizedConverter(new PdfTools());
-
-            var doc = new HtmlToPdfDocument()
+            string tempFileName = Guid.NewGuid().ToString().Remove(5) + ".html";
+            //Création du fichier temporaire
+            string tempFilePath = Path.Combine(Configurations.Environment.WebRootPath, "temp", tempFileName);
+            using (var streamWriter = File.CreateText(tempFilePath))
             {
-                GlobalSettings =
-                            {
-                                ColorMode = ColorMode.Color,
-                                Orientation = Orientation.Portrait,
-                                PaperSize = PaperKind.A4Plus,
-                                Out = fullPath,
-                            },
-                Objects =
-                            {
-                                new ObjectSettings()
-                                {
-                                    PagesCount = true,
-                                    HtmlContent = htmlContent,
-                                    WebSettings = { DefaultEncoding = "utf-8" },
-                                    HeaderSettings = { FontSize = 9, Right = "Page [page] sur [toPage]", Line = true, Spacing = 2.812 }
-                                }
-                            }
-            };
-            
-            converter.Convert(doc);
-            
+                streamWriter.Write(htmlContent);
+            }
+
+            string arguments = @"--headless --disable-gpu --print-to-pdf=" + "\"" + fullPath + "\"" + " " + "\"" + tempFilePath + "\"";
+            var proc = Process.Start(Configurations.Application.ChroniumFullPath, arguments);
+            while (!File.Exists(fullPath))
+            {
+                Thread.Sleep(100);
+            }
+            File.Delete(tempFilePath);
         }
 
         public static int GetIso8601WeekOfYear(this DateTime time)

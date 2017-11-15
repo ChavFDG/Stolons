@@ -50,6 +50,12 @@ namespace Stolons.Controllers
 			    });
 	    }
 
+        [ActionName("TestChroniumPath")]
+        public bool TestChroniumPath(string chroniumPath)
+        {
+            return System.IO.File.Exists("chroniumPath");
+        }
+
         // POST: Stolon/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
