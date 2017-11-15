@@ -226,7 +226,7 @@
                         <div class="form-group">
                             <label for="WeekStock" class="col-md-4 control-label">Stock proposé: </label>
                             <div class="col-md-4">
-                                <input id="WeekStock" name="WeekStock" class="form-control" min="0" type="number" step="<%= productStock.get(" Product").QuantityStep / 1000 || 1 %>" value="<%= productStock.get("WeekStock") %>" />
+                                <input id="WeekStock" name="WeekStock" class="form-control" min="0" type="number" step="<%= productStock.get("Product").QuantityStep / 1000 || 1 %>" value="<%= productStock.get("WeekStock") %>" />
                                 <span id="WeekStockError" class="text-danger"><%= validation.weekStockError %></span>
                             </div>
                             <div class="col-md-4">
