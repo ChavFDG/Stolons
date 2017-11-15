@@ -318,12 +318,18 @@ else
 	      </tbody>
 	    </table>
 	  </div>
+          <div class="row">
+	     <div class="col-lg-5">
+		 <label style="margin: auto;">Raison de l'erreur de livraison: </label>
+	         <textarea id="correction-reason" value="<%= view.reason %>" />
+	     </div>
+	  </div>
 	  <div class="row">
 	    <div class="col-lg-5">
 	      &nbsp;
 	    </div>
 	    <div class="col-lg-5">
-	      <a id="validateCorrection" href="#"class="btn btn-small btn-default">Valider</a>
+	      <a id="validateCorrection" href="#"class="btn btn-small btn-default" <%= view.valid === true ? "" : "disabled" %> >Valider</a>
 	    </div>
 	  </div>
 	</div>

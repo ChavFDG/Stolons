@@ -1038,6 +1038,10 @@ h1 {
     line-height: 0.8em;
 }
 
+#correction-reason {
+    margin: 10px;
+}
+
 .error {
     border: 1px red solid;
 }

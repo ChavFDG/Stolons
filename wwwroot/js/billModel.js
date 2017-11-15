@@ -48,6 +48,18 @@ ProducerBillModel = Backbone.Model.extend({
 	return _.values(consumersIdx);
     },
 
+    getBillEntryById: function(billEntryId) {
+	var billEntry;
+
+	_.forEach(this.get("BillEntries"), function(entry) {
+	    if (entry.Id == billEntryId) {
+		billEntry = entry;
+		return false;
+	    }
+	});
+	return billEntry;
+    },
+
     //Return consumer bill entry for a given product or nil
     getBillEntry: function(consumerId, productStockId) {
 	var billEntry = null;
@@ -61,15 +73,33 @@ ProducerBillModel = Backbone.Model.extend({
 	return billEntry;
     },
 
+    getBillEntriesForProductStock: function(productStockId) {
+	var billEntries = [];
+
+	_.forEach(this.get("BillEntries"), function(entry) {
+	    if (entry.ProductStock.get('Id') == productStockId) {
+		billEntries.push(entry);
+		return false;
+	    }
+	});
+	return billEntries;
+    },
+
     //Get the total quantity for this productStock
     getProductStockTotal: function(productStockId) {
 	var totalQty = 0;
 
-	_.forEach(this.get("BillEntries"), function(entry) {
-	    if (entry.ProductStock.get('Id') == productStockId) {
-		totalQty += parseInt(entry.Quantity);
-	    }
-	});
+	if (!this.productStocksTotals[productStockId]) {
+	    //Working with cloned object here because bill entries can be modified
+	    _.forEach(this.get("ClonedBillEntries"), function(entry) {
+		if (entry.ProductStock.get('Id') == productStockId) {
+		    totalQty += parseInt(entry.Quantity);
+		}
+	    });
+	    this.productStocksTotals[productStockId] = totalQty;
+	} else {
+	    totalQty = this.productStocksTotals[productStockId];
+	}
 	return totalQty;
     },
 
@@ -120,18 +150,33 @@ ProducerBillModel = Backbone.Model.extend({
 	}
     },
 
-    getProductStockQuantityString: function(billEntryId) {
-	
+    // getProductStockQuantityString: function(billEntryId) {
+    // 	//TODO ?,
+    // },
+
+    //Decrement bill entry quantity based on product type
+    decrementBillEntryQuantity: function(billEntry) {
+	var product = billEntry.ProductStock.Product;
+
+	if (product.Type == 1) {
+	    billEntry.Quantity -= 1;
+	} else {
+	    
+	}
     },
-    
+
     parse: function(data) {
 	if (data && data.BillEntries) {
+	    data.ClonedBillEntries = [];
 	    _.forEach(data.BillEntries, function(billEntry) {
 		//Because init of ProductStockModel like this doesn't call 'parse'
 		billEntry.ProductStock.Product = new ProductModel(billEntry.ProductStock.Product);
 		billEntry.ProductStock = new ProductStockModel(billEntry.ProductStock);
+		//Save a working copy of bill entries for Total
+		data.ClonedBillEntries.push(_.clone(billEntry));
 	    });
 	}
+	this.productStocksTotals = {};
 	return data;
     }
 });

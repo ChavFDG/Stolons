@@ -12,7 +12,9 @@ BillsManagement.CorrectionView = Backbone.View.extend({
 	"click .plus": "increment",
 	"click .decrementTotal": "decrementProductTotal",
 	"click .incrementTotal": "incrementProductTotal",
-	"click #validateCorrection": "validate"
+	//"keyup #correction-reason": "reasonChanged",
+	"change #correction-reason": "reasonChanged",
+	"click #validateCorrection": "save"
     },
 
     initialize: function(model) {
@@ -23,9 +25,9 @@ BillsManagement.CorrectionView = Backbone.View.extend({
     render: function() {
 	this.$el.html(this.template({
 	    view: this,
-	    producerBill: this.model,
-	    
+	    producerBill: this.model
 	}));
+	this.validate();
     },
 
     open: function() {
@@ -43,37 +45,98 @@ BillsManagement.CorrectionView = Backbone.View.extend({
 
     decrement: function(event) {
 	var billEntryId = $(event.currentTarget).data("bill-entry-id");
-	if (billEntryId) {
-	    
-	    event.preventDefault();
-	    return false;
+	var billEntry = this.model.getBillEntryById(billEntryId);
+
+	if (billEntry) {
+	    this.billEntries[billEntryId] = billEntry;
+	    billEntry.Quantity -= 1;
+	    if (billEntry.Quantity <= 0) {
+		billEntry.Quantity = 0;
+	    }
+	    this.render();
 	}
+	event.preventDefault();
+	return false;
     },
 
     increment: function(event) {
 	var billEntryId = $(event.currentTarget).data("bill-entry-id");
-	if (billEntryId) {
-	    console.log("Increment, bill entry id = " + billEntryId);
-	    event.preventDefault();
-	    return false;
+	var billEntry = this.model.getBillEntryById(billEntryId);
+
+	if (billEntry) {
+	    this.billEntries[billEntryId] = billEntry;
+	    billEntry.Quantity += 1;
+	    this.render();
 	}
+	event.preventDefault();
+	return false;
     },
 
     decrementProductTotal: function(event) {
 	var productStockId = $(event.currentTarget).data("product-stock-id");
+
 	if (productStockId) {
-	    console.log("decrement product total:" + productStockId);
-	    event.preventDefault();
-	    return false;
+	    this.model.productStocksTotals[productStockId] -= 1;
+	    if (this.model.productStocksTotals[productStockId] <= 0) {
+		this.model.productStocksTotals[productStockId] = 0;
+	    }
+	    this.render();
 	}
+	event.preventDefault();
+	return false;
     },
 
     incrementProductTotal: function(event) {
 	var productStockId = $(event.currentTarget).data("product-stock-id");
+
 	if (productStockId) {
-	    console.log("increment product total:" + productStockId);
-	    event.preventDefault();
+	    this.model.productStocksTotals[productStockId] += 1;
+	    this.render();
+	}
+	event.preventDefault();
+	return false;
+    },
+
+    validate: function() {
+	var that = this;
+	this.valid = true;
+
+	//For each locally saved (hence modified) billEntries associated product
+	// validates that the total produdt quatity is equal to the sum of the quantities in billentries.
+	_.each(this.billEntries, function(billEntry, billEntryId) {
+	    var productStockId = billEntry.ProductStock.get("Id");
+	    var billEntries = that.model.getBillEntriesForProductStock(productStockId);
+	    var totalEntriesQty = 0;
+	    _.forEach(billEntries, function(entry) {
+		totalEntriesQty += entry.Quantity;
+	    });
+	    if (totalEntriesQty != that.model.productStocksTotals[productStockId]) {
+		that.valid = false;
+		$("#product-col-" + productStockId).toggleClass("correction-col-error", true);
+	    }
+	});
+	$("#validateCorrection").attr("disabled", this.valid);
+    },
+
+    reasonChanged: function(event) {
+	this.reason = $("#correction-reason").val();
+    },
+
+    //Send modified billEntries quantities to serveur
+    save: function(event) {
+	var data = { "NewQuantities": []};
+	this.reason = $("#correction-reason").val();
+	if (_.isEmpty(this.reason)) {
+	    $("#correction-reason").toggleClass("error", true);
 	    return false;
 	}
+
+	_.each(this.billEntries, function(billEntry, billEntryId) {
+	    data.NewQuantities.push({"BillId": billEntryId, "Quantity": billEntry.Quantity});
+	});
+	data["Reason"] = this.reason;
+	//TODO send to server
+	event.preventDefault();
+	return false;
     }
 });
