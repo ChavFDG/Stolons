@@ -290,8 +290,8 @@ namespace Stolons.Models
             NatureEtProgres = 2,
             [Display(Name = "Goutez l'Ardèche")]
             GoutezArdeche = 3,
-            [Display(Name = "Max Havelaar")]
-            MaxHavelaar = 4,
+            [Display(Name = "Bio cohérence")]
+            BioCoherence = 4,
             [Display(Name = "Bio partenaire")]
             BioPartenaire= 5,
             [Display(Name = "Label Rouge")]
