@@ -41,15 +41,15 @@
         <div class="form-group">
             <label asp-for="MailAddress" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <input asp-for="MailAddress" class="form-control" min="0" max="100" />
-                <span asp-validation-for="MailAddress" class="text-danger" />
+                <input asp-for="MailAddress" class="form-control" />
+		<span asp-validation-for="MailAddress" class="text-danger" />
             </div>
         </div>
 
         <div class="form-group">
             <label asp-for="MailPassword" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <input asp-for="MailPassword" class="form-control" min="0" max="1000" />
+                <input asp-for="MailPassword" class="form-control" />
                 <span asp-validation-for="MailPassword" class="text-danger" />
             </div>
         </div>
@@ -63,7 +63,7 @@
         <div class="form-group">
             <label asp-for="MailSmtp" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <input asp-for="MailSmtp" class="form-control" min="0" max="1000" />
+                <input asp-for="MailSmtp" class="form-control" />
                 <span asp-validation-for="MailSmtp" class="text-danger" />
             </div>
         </div>
