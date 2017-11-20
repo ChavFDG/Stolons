@@ -176,9 +176,9 @@ namespace Stolons
             {
                 Configurations.Application = new ApplicationConfig();
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                    Configurations.Application.ChroniumFullPath = @"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe";
+                    Configurations.Application.ChromiumFullPath = @"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe";
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-                    Configurations.Application.ChroniumFullPath = @"\usr\bin\chromium\";
+                    Configurations.Application.ChromiumFullPath = @"\usr\bin\chromium\";
                 context.Add(Configurations.Application);
                 context.SaveChanges();
             }

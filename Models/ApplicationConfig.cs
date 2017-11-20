@@ -18,9 +18,9 @@ namespace Stolons.Models
         public string ContactPhoneNumber { get; set; } = "06 64 86 66 93";
         [Display(Name = "Courriel de contact")]
         public string ContactMailAddress { get; set; } = "contact@stolons.org";
-        //Chronium pour PDF
-        [Display(Name = "Chemin complet vers chronium")]
-        public string ChroniumFullPath { get; set; } = @"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe";
+        //Chromium pour PDF
+        [Display(Name = "Chemin complet vers chromium")]
+        public string ChromiumFullPath { get; set; } = @"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe";
         //Mails
         [Display(Name = "Courriel d'envoi des mails")]
         public string MailAddress { get; set; } = "ne_pas_repondre@stolons.org";

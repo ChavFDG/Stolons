@@ -50,10 +50,10 @@ namespace Stolons.Controllers
 			    });
 	    }
 
-        [ActionName("TestChroniumPath")]
-        public bool TestChroniumPath(string chroniumPath)
+        [ActionName("TestChromiumPath")]
+        public bool TestChromiumPath(string chromiumPath)
         {
-            return System.IO.File.Exists("chroniumPath");
+            return System.IO.File.Exists(chromiumPath);
         }
 
         // POST: Stolon/Edit/5
