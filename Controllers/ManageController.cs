@@ -104,6 +104,11 @@ namespace Stolons.Controllers
                 if (result.Succeeded)
                 {
                     await _signInManager.SignInAsync(user, isPersistent: false);
+                    AuthMessageSender.SendEmail(GetCurrentStolon().Label,
+                                                    user.Email,
+                                                    user.Email,
+                                                    "Confirmation de changement de mot de passe",
+                                                    "<h3>Confirmation du changement de mot de passe :</h3><p> Nouveau mot de passe : " + model.NewPassword + "</p>");
                     return RedirectToAction(nameof(Index), new { Message = ManageMessageId.ChangePasswordSuccess });
                 }
                 AddErrors(result);
