@@ -55,7 +55,7 @@
         <div class="form-group">
             <label asp-for="MailPort" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <input asp-for="MailPort" class="form-control" min="0" max="1000" />
+                <input asp-for="MailPort" class="form-control" min="0" max="65535" />
                 <span asp-validation-for="MailPort" class="text-danger" />
             </div>
         </div>
@@ -71,7 +71,7 @@
         <div class="form-group">
             <label asp-for="IsInMaintenance" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <input asp-for="IsInMaintenance" class="form-control" min="0" max="1000" />
+                <input asp-for="IsInMaintenance" class="form-control" />
                 <span asp-validation-for="IsInMaintenance" class="text-danger" />
             </div>
         </div>
