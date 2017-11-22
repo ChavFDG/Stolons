@@ -28,7 +28,9 @@
             @Html.DisplayNameFor(model => model.ChromiumFullPath)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.ChromiumFullPath)
+                @Html.DisplayFor(model => model.ChromiumFullPath)
+                <br />
+                <a asp-action="TestChromiumPath">Tester le chemin vers chronium</a>
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.MailAddress)
@@ -69,7 +71,7 @@
     </dl>
 </div>
 <p>
-    <a asp-action="TestChromiumPath">Tester le chemin vers chronium</a>
+    <a asp-action="TestPDF">Générer un PDF de test</a>
     <br />
     <a asp-action="Edit" class="btn btn-small btn-default">Modifier</a>
 </p>
