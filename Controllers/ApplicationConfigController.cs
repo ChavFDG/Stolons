@@ -66,8 +66,18 @@ namespace Stolons.Controllers
 
             if (ModelState.IsValid)
             {
-                //Configurations.Application = applicationConfig;
-                _context.Update(applicationConfig);
+                ApplicationConfig appConfig = _context.ApplicationConfig.First();
+                appConfig.ChromiumFullPath = applicationConfig.ChromiumFullPath;
+                appConfig.ContactMailAddress = applicationConfig.ContactMailAddress;
+                appConfig.ContactPhoneNumber = applicationConfig.ContactPhoneNumber;
+                appConfig.IsInMaintenance = applicationConfig.IsInMaintenance;
+                appConfig.MailAddress = applicationConfig.MailAddress;
+                appConfig.MailPassword = applicationConfig.MailPassword;
+                appConfig.MailPort = applicationConfig.MailPort;
+                appConfig.MailSmtp = applicationConfig.MailSmtp;
+                appConfig.MaintenanceMessage = applicationConfig.MaintenanceMessage;
+                appConfig.StolonsLabel = applicationConfig.StolonsLabel;
+                _context.Update(appConfig);
                 _context.SaveChanges();
 
                 return RedirectToAction("Index");
