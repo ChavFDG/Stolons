@@ -51,9 +51,10 @@ namespace Stolons.Controllers
 	    }
 
         [ActionName("TestChromiumPath")]
-        public bool TestChromiumPath(string chromiumPath)
+        public bool TestChromiumPath()
         {
-            return System.IO.File.Exists(chromiumPath);
+            ApplicationConfig appConfig = _context.ApplicationConfig.First();
+            return System.IO.File.Exists(appConfig.ChromiumFullPath);
         }
 
         // POST: Stolon/Edit/5
@@ -79,7 +80,7 @@ namespace Stolons.Controllers
                 appConfig.StolonsLabel = applicationConfig.StolonsLabel;
                 _context.Update(appConfig);
                 _context.SaveChanges();
-
+                Application = appConfig;
                 return RedirectToAction("Index");
             }
             return View(applicationConfig);
