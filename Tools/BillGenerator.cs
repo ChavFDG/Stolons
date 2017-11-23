@@ -704,10 +704,8 @@ namespace Stolons.Tools
                 streamWriter.Write(htmlContent);
             }
 
-            string arguments = @"--headless --disable-gpu --print-to-pdf=" + "\"" + fullPath + "\"" + " " + "\"" + tempFilePath + "\"";
-            
+            string arguments = @"--headless --disable-gpu --print-to-pdf=" + "\"" + fullPath + "\"" + " " + "\"file://" + tempFilePath + "\"";
             var proc = Process.Start(Configurations.Application.ChromiumFullPath, arguments);
-            //TODO hum, ca c'est risqué comme facon de faire, mettre la condition sur la fin du process 'proc' plutot...
             proc.WaitForExit();
             while (!File.Exists(fullPath))
             {
