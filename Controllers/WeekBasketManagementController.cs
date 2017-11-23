@@ -111,12 +111,14 @@ namespace Stolons.Controllers
         public string ProducerBill(string billId)
         {
             //Entity framework ? Hum... ouai
-            IBill bill = _context.ProducerBills.Include(x => x.BillEntries).ThenInclude(x => x.ConsumerBill)
-                                                .Include(x => x.BillEntries).ThenInclude(x => x.ProductStock).ThenInclude(x => x.Product)
-                                                .Include(x => x.BillEntries).ThenInclude(x => x.ConsumerBill).ThenInclude(x => x.AdherentStolon).ThenInclude(x => x.Adherent)
-                                                .Include(x => x.BillEntries).ThenInclude(x => x.ConsumerBill).ThenInclude(x => x.BillEntries)
-                                                .Include(x => x.AdherentStolon).ThenInclude(x => x.Adherent)
-                                                .First(x => x.BillId.ToString() == billId);
+            IBill bill = _context.ProducerBills.Include(x => x.AdherentStolon).ThenInclude(x => x.Adherent).First(x => x.BillId.ToString() == billId);
+	    bill.BillEntries = _context.BillEntrys.Where(x => x.ProducerBillId.ToString() == billId).ToList();
+	    foreach (BillEntry billEntry in bill.BillEntries)
+	    {
+		billEntry.ConsumerBill = _context.ConsumerBills.Include(x => x.BillEntries).Include(x => x.AdherentStolon).ThenInclude(x => x.Adherent).First(x => x.BillId == billEntry.ConsumerBillId);
+		billEntry.ProductStock = _context.ProductsStocks.First(x => x.Id == billEntry.ProductStockId);
+		billEntry.ProductStock.Product = _context.Products.First(x => x.Id == billEntry.ProductStock.ProductId);
+	    }
             return JsonConvert.SerializeObject(bill, Formatting.Indented, new JsonSerializerSettings()
             {
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore
