@@ -329,6 +329,9 @@ else
 	      &nbsp;
 	    </div>
 	    <div class="col-lg-5">
+	      <% if (view.saveErrors) { %>
+		<span class="error"><%= view.saveErrors %></span>
+	      <% } %>
 	      <a id="validateCorrection" href="#"class="btn btn-small btn-default" <%= view.valid === true ? "" : "disabled" %> >Valider</a>
 	    </div>
 	  </div>

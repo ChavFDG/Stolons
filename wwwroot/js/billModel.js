@@ -89,7 +89,7 @@ ProducerBillModel = Backbone.Model.extend({
     getProductStockTotal: function(productStockId) {
 	var totalQty = 0;
 
-	if (!this.productStocksTotals[productStockId]) {
+	if (typeof this.productStocksTotals[productStockId] == "undefined") {
 	    //Working with cloned object here because bill entries can be modified
 	    _.forEach(this.get("ClonedBillEntries"), function(entry) {
 		if (entry.ProductStock.get('Id') == productStockId) {

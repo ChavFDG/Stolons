@@ -93,7 +93,6 @@ namespace Stolons.Controllers
         [HttpPost, ActionName("UpdateBillCorrection")]
         public bool UpdateBillCorrection(VmBillCorrection billCorrection)
         {
-            
             return billCorrection != null;
         }
 

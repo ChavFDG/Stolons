@@ -12,7 +12,6 @@ BillsManagement.CorrectionView = Backbone.View.extend({
 	"click .plus": "increment",
 	"click .decrementTotal": "decrementProductTotal",
 	"click .incrementTotal": "incrementProductTotal",
-	//"keyup #correction-reason": "reasonChanged",
 	"change #correction-reason": "reasonChanged",
 	"click #validateCorrection": "save"
     },
@@ -101,10 +100,9 @@ BillsManagement.CorrectionView = Backbone.View.extend({
 	var that = this;
 	this.valid = true;
 
-	//For each locally saved (hence modified) billEntries associated product
 	// validates that the total produdt quatity is equal to the sum of the quantities in billentries.
-	_.each(this.billEntries, function(billEntry, billEntryId) {
-	    var productStockId = billEntry.ProductStock.get("Id");
+	_.each(this.model.getProductStocks(), function(productStock) {
+	    var productStockId = productStock.get("Id");
 	    var billEntries = that.model.getBillEntriesForProductStock(productStockId);
 	    var totalEntriesQty = 0;
 	    _.forEach(billEntries, function(entry) {
@@ -115,27 +113,50 @@ BillsManagement.CorrectionView = Backbone.View.extend({
 		$("#product-col-" + productStockId).toggleClass("correction-col-error", true);
 	    }
 	});
-	$("#validateCorrection").attr("disabled", this.valid);
+	this.reason = $("#correction-reason").val();
+	this.valid = this.valid && _.isEmpty(this.reason);
+	if (this.valid) {
+	    $("#validateCorrection").removeAttr("disabled");
+	} else {
+	    $("#validateCorrection").attr("disabled", "");
+	}
     },
 
     reasonChanged: function(event) {
 	this.reason = $("#correction-reason").val();
+	this.validate();
     },
 
     //Send modified billEntries quantities to serveur
     save: function(event) {
+	var that = this;
 	var data = { "NewQuantities": []};
 	this.reason = $("#correction-reason").val();
 	if (_.isEmpty(this.reason)) {
 	    $("#correction-reason").toggleClass("error", true);
 	    return false;
 	}
-
 	_.each(this.billEntries, function(billEntry, billEntryId) {
 	    data.NewQuantities.push({"BillId": billEntryId, "Quantity": billEntry.Quantity});
 	});
 	data["Reason"] = this.reason;
-	//TODO send to server
+	if (_.isEmpty(data.NewQuantities)) {
+	    location.reload();
+	} else {
+	    var promise = $.ajax({
+		url: "/WeekBasketManagement/UpdateBillCorrection",
+		type: 'POST',
+		data: data
+	    });
+	    promise.then(function(success) {
+		console.log(success);
+		if (!success) {
+		    that.saveErrors = "Erreur lors de la sauvegarde."
+		} else {
+		    location.reload();
+		}
+	    });
+	}
 	event.preventDefault();
 	return false;
     }
