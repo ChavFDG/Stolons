@@ -123,7 +123,7 @@ namespace Stolons.Models
 
         [Display(Name = "Prix unitaire")]
         [Required]
-        public decimal UnitPrice { get; set; }
+        public decimal UnitPrice { get; set; } = 0;
 
         [Display(Name = "Gestion du stock")]
         public StockType StockManagement { get; set; } = StockType.Week;
