@@ -87,13 +87,23 @@ namespace Stolons.Tools
                                 dbContext.SaveChanges();
                                 dbContext.Remove(tempWeekBasketToRemove);
                                 dbContext.SaveChanges();
+                                //Creates new bill entryes 
+                                List<BillEntry> billEntries = new List<BillEntry>();
+                                foreach(var oldBillEntry in weekBasket.BillEntries.ToList())
+                                {
+                                    BillEntry newBillEntry = oldBillEntry.Clone();
+                                    billEntries.Add(newBillEntry);
+                                    dbContext.Remove(oldBillEntry);
+                                    dbContext.Add(newBillEntry);
+                                    dbContext.SaveChanges();
+                                }
+                                dbContext.Remove(weekBasket);
+                                dbContext.SaveChanges();
 
-                                //Generate bill for consumer                            
-                                ConsumerBill consumerBill = CreateBill<ConsumerBill>(weekBasket.AdherentStolon, weekBasket.BillEntries);
+                                //Generate bill for consumer
+                                ConsumerBill consumerBill = CreateBill<ConsumerBill>(weekBasket.AdherentStolon, billEntries);
                                 consumerBill.HtmlBillContent = GenerateHtmlBillContent(consumerBill, dbContext);
                                 dbContext.Add(consumerBill);
-                                dbContext.SaveChanges();
-                                dbContext.Remove(weekBasket);
                                 dbContext.SaveChanges();
 
 

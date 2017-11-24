@@ -342,7 +342,7 @@ namespace Stolons.Models
         public bool HasBeenModified { get; set; }
 
 
-        
+
 
 
 
@@ -390,21 +390,23 @@ namespace Stolons.Models
 
         public BillEntry Clone()
         {
-            BillEntry clonedBillEntry = new BillEntry();
-            clonedBillEntry.ConsumerBillId = this.ConsumerBillId;
-            clonedBillEntry.ProducerBillId = this.ProducerBillId;
-            clonedBillEntry.ProductStockId = this.ProductStockId;
-            clonedBillEntry.FamillyId = this.FamillyId;
-            clonedBillEntry.Familly = this.Familly;
-            clonedBillEntry.Name = this.Name;
-            clonedBillEntry.WeightPrice = this.WeightPrice;
-            clonedBillEntry.UnitPrice = this.UnitPrice;
-            clonedBillEntry.Tax = this.Tax;
-            clonedBillEntry.TaxEnum = this.TaxEnum;
-            clonedBillEntry.ProductUnit = this.ProductUnit;
-            clonedBillEntry.Quantity = this.Quantity;
-            clonedBillEntry.HasBeenModified = this.HasBeenModified;
-	    clonedBillEntry.Type = this.Type;
+            BillEntry clonedBillEntry = new BillEntry
+            {
+                ConsumerBillId = this.ConsumerBillId,
+                ProducerBillId = this.ProducerBillId,
+                ProductStockId = this.ProductStockId,
+                FamillyId = this.FamillyId,
+                Familly = this.Familly,
+                Name = this.Name,
+                WeightPrice = this.WeightPrice,
+                UnitPrice = this.UnitPrice,
+                Tax = this.Tax,
+                TaxEnum = this.TaxEnum,
+                ProductUnit = this.ProductUnit,
+                Quantity = this.Quantity,
+                HasBeenModified = this.HasBeenModified,
+                Type = this.Type
+            };
             return clonedBillEntry;
         }
 
@@ -420,7 +422,7 @@ namespace Stolons.Models
             billEntry.Tax = productStock.Product.Tax;
             billEntry.TaxEnum = productStock.Product.TaxEnum;
             billEntry.ProductUnit = productStock.Product.ProductUnit;
-	    billEntry.Type = productStock.Product.Type;
+            billEntry.Type = productStock.Product.Type;
             return billEntry;
         }
     }
