@@ -462,7 +462,7 @@ namespace Stolons.Tools
             StringBuilder orderBuilder = new StringBuilder();
             //Entete de facture
             //  Producteur
-            orderBuilder.AppendLine("<h3> Commande n°" + bill.OrderNumber + "</h3>");
+            orderBuilder.AppendLine("<h2> Commande n°" + bill.OrderNumber + "</h2>");
             orderBuilder.AppendLine("<p>" + bill.Adherent.CompanyName + "<br>");
             orderBuilder.AppendLine("<Année : " + DateTime.Now.Year + "<br>");
             orderBuilder.AppendLine("Semaine : " + DateTime.Now.GetIso8601WeekOfYear() + "<br></p>");
@@ -517,6 +517,8 @@ namespace Stolons.Tools
             orderBuilder.AppendLine("</table>");
 
             #endregion Par client
+
+            orderBuilder.AppendLine("<h3>Facturation</h3>");
             orderBuilder.AppendLine("<p>" + "Montant total de la commande  " + bill.OrderAmount.ToString("0.00") + "€<br>");
             orderBuilder.AppendLine("Montant total du % du Stolons " + bill.FeeAmount.ToString("0.00") + "€<br>");
             orderBuilder.AppendLine("Montant total à percevoir     <b>" + bill.BillAmount.ToString("0.00") + "€</b> <i>(Dont " + bill.TaxAmount.ToString("0.00") + "€ TVA)</i></p>");

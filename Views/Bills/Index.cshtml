@@ -2,192 +2,130 @@
 @using Stolons.Helpers
 @using Stolons.Models
 
-<h2>Mes Factures</h2>
+
+<h2>Mes Factures et bon de commandes</h2>
 
 <div class="boxContainer">
-
-    @if (Model.Any())
-    {
-
-        <div class="col-lg-4">
-
-        </div>
-        <div class="col-lg-8">
-
-        </div>
+    <div class="col-lg-4">
         <table class="table">
             <tr>
                 <th>
-                    @Html.DisplayNameFor(model => model.EditionDate)
+                    Bon de commandes
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.BillNumber)
+                    Montant
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.State)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.OrderAmount)
-                </th>
-                <th>
-                </th>
-                <th>
+
                 </th>
             </tr>
-            @{
-                decimal total = 0;
-                foreach (var item in Model.OrderBy(x => x.EditionDate))
-                {
-                    total += item.OrderAmount;
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.EditionDate)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.BillNumber)
-                        </td>
-                        <td>
-                            @(EnumHelper<BillState>.GetDisplayValue(@item.State))
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.OrderAmount) €
-                        </td>
-                        <td>
-                            <a asp-action="ShowBill" asp-route-id="@item.BillNumber" class="btn btn-small btn-default">Afficher</a>
-                        </td>
-                        <td>
-                            @{
-                                <a href="@Configurations.GetBillUrl(item)" class="btn btn-small btn-default">Télécharger</a>
-                            }
-                        </td>
-                    </tr>
+            <tbody class="clickable-table">
+                @{
+                    decimal total = 0;
+                    foreach (var item in Model.Where(x=>x.State == BillState.Pending).OrderBy(x => x.EditionDate))
+                    {
+                        total += item.OrderAmount;
+                        <tr data-content='@((item as ProducerBill).HtmlOrderContent)'>
+                            <td>
+                                <i>
+                                    Le @item.EditionDate.ToString("d")
+                                    n°@Html.DisplayFor(modelItem => (item as ProducerBill).OrderNumber)
+                                    A @Html.DisplayFor(modelItem => item.Stolon.Label)
+                                </i>
+                            </td>
+                            <td>
+                                @item.OrderAmount.ToString("0.00")€
+                                <br />
+                                @switch (item.State)
+                                {
+                                    case BillState.Delivered:
+                                        @("Livré")
+                                        break;
+                                    case BillState.Paid:
+                                        @("Payé")
+                                        break;
+                                    case BillState.Pending:
+                                        @("(A livrer)")
+                                        break;
+                                }
+                            </td>
+                            <td>
+                                <a class="btn btn-small btn-default" href="@(Configurations.GetOrderUrl(item as ProducerBill))">
+                                    Télécharger
+                                </a>
+                            </td>
+                        </tr>
+                    }
                 }
-            }
+            </tbody>
         </table>
-        <h3>Total des factures : @total €</h3>
+        <p>Montant total : @total.ToString("0.00") €</p>
+        <table class="table">
+            <tr>
+                <th>
+                    Factures
+                </th>
+                <th>
+                    Montant
+                </th>
+                <th>
 
-                                    /*
-                                    @if (Model.First() is ProducerBill)
-                                    {
-                                        <table class="table">
-                                            <tr>
-                                                <th>
-                                                    @Html.DisplayNameFor(model => model.EditionDate)
-                                                </th>
-                                                <th>
-                                                    @Html.DisplayNameFor(model => model.BillNumber)
-                                                </th>
-                                                <th>
-                                                    @Html.DisplayNameFor(model => model.State)
-                                                </th>
-                                                <th>
-                                                    Total TTC
-                                                </th>
-                                                <th>
-                                                    TVA
-                                                </th>
-                                                <th>
-                                                    Total HT
-                                                </th>
-                                                <th>
-                                                </th>
-                                                <th>
-                                                </th>
-                                            </tr>
-                                            @{
-                                                foreach (var item in Model.Cast<ProducerBill>())
-                                                {
-                                                    <tr>
-                                                        <td>
-                                                            @Html.DisplayFor(modelItem => item.EditionDate)
-                                                        </td>
-                                                        <td>
-                                                            @Html.DisplayFor(modelItem => item.BillNumber)
-                                                        </td>
-                                                        <td>
-                                                            @(EnumHelper<BillState>.GetDisplayValue(@item.State))
-                                                        </td>
-                                                        <td>
-                                                            @Html.DisplayFor(modelItem => item.BillAmount) €
-                                                        </td>
-                                                        <td>
-                                                            @Html.DisplayFor(modelItem => item.TaxAmount) €
-                                                        </td>
-                                                        <td>
-                                                            @(item.BillAmount - item.TaxAmount) €
-                                                        </td>
-                                                        <td>
-                                                            <a asp-action="ShowBill" asp-route-id="@item.BillNumber" class="btn btn-small btn-default">Afficher</a>
-                                                        </td>
-                                                        <td>
-                                                            @{
-                                                                <a href="@Configurations.GetUrl(item)" class="btn btn-small btn-default">Télécharger</a>
-                                                            }
-                                                        </td>
-                                                    </tr>
-                                                    }
-                                            }
-                                        </table>
-                                    }
-                                    else
-                                    {
-                                        <table class="table">
-                                            <tr>
-                                                <th>
-                                                    @Html.DisplayNameFor(model => model.EditionDate)
-                                                </th>
-                                                <th>
-                                                    @Html.DisplayNameFor(model => model.BillNumber)
-                                                </th>
-                                                <th>
-                                                    @Html.DisplayNameFor(model => model.State)
-                                                </th>
-                                                <th>
-                                                    @Html.DisplayNameFor(model => model.OrderAmount)
-                                                </th>
-                                                <th>
-                                                </th>
-                                                <th>
-                                                </th>
-                                            </tr>
-                                            @{
-                                                decimal total = 0;
-                                                foreach (var item in Model)
-                                                {
-                                                    total += item.OrderAmount;
-                                                    <tr>
-                                                        <td>
-                                                            @Html.DisplayFor(modelItem => item.EditionDate)
-                                                        </td>
-                                                        <td>
-                                                            @Html.DisplayFor(modelItem => item.BillNumber)
-                                                        </td>
-                                                        <td>
-                                                            @(EnumHelper<BillState>.GetDisplayValue(@item.State))
-                                                        </td>
-                                                        <td>
-                                                            @Html.DisplayFor(modelItem => item.OrderAmount) €
-                                                        </td>
-                                                        <td>
-                                                            <a asp-action="ShowBill" asp-route-id="@item.BillNumber" class="btn btn-small btn-default">Afficher</a>
-                                                        </td>
-                                                        <td>
-                                                            @{
-                                                                <a href="@Configurations.GetUrl(item)" class="btn btn-small btn-default">Télécharger</a>
-                                                            }
-                                                        </td>
-                                                    </tr>
-                                                                }
-                                            }
-                                        </table>
-                                        <h3>Total des factures : @total €</h3>
+                </th>
+            </tr>
+            <tbody class="clickable-table">
+                @{
+                    total = 0;
+                    foreach (var item in Model.Where(x => x.State != BillState.Pending).OrderBy(x => x.EditionDate))
+                    {
+                        total += item.OrderAmount;
+                        <tr data-content='@item.HtmlBillContent'>
+                            <td>
+                                <i>
+                                    Le @item.EditionDate.ToString("d")
+                                    n°@Html.DisplayFor(modelItem => item.BillNumber)
+                                    A @Html.DisplayFor(modelItem => item.Stolon.Label)
+                                </i>
+                            </td>
+                            <td>
+                                @item.OrderAmount.ToString("0.00")€
+                                <br />
+                                @switch (item.State)
+                                {
+                                    case BillState.Delivered:
+                                        @("Livré")
+                                        break;
+                                    case BillState.Paid:
+                                        @("Payé")
+                                        break;
+                                    case BillState.Pending:
+                                        @("(A livrer)")
+                                        break;
+                                }
+                            </td>
+                            <td>
+                                <a class="btn btn-small btn-default" href="@(Configurations.GetBillUrl(item))">
+                                    Télécharger
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="col-lg-8">
+        <div id="billContent">
 
-                                    }*/
-
-    }
-    else
-    {
-        <p>Aucune facture</p>
-    }
-
+        </div>
+    </div>
 </div>
+
+<script>
+    $(document).ready(function () {
+        $('.clickable-table tr').click(function () {
+            var content = $(this).data("content");
+            $('#billContent').html(content);
+        });
+
+    });
+</script>
