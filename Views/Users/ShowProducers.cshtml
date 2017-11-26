@@ -23,6 +23,9 @@
             @Html.DisplayNameFor(item => item.AdherentsStolon.First().LocalId)
         </th>
         <th>
+            @Html.DisplayNameFor(item => item.AdherentsStolon.First().Adherent.SellerType)
+        </th>
+        <th>
             @Html.DisplayNameFor(item => item.AdherentsStolon.First().Adherent.CompanyName)
         </th>
         <th>
@@ -54,6 +57,9 @@
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.LocalId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Adherent.SellerType)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Adherent.CompanyName)

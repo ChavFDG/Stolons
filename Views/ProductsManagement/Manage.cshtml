@@ -165,10 +165,10 @@
             </div>
         </div>*@
         <div class="form-group">
-            <label asp-for="Product.Fridge" class="col-md-2 control-label"></label>
+            <label asp-for="Product.Storage" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <input asp-for="Product.Fridge" class="form-control" />
-                <span asp-validation-for="Product.Fridge" class="text-danger" />
+                <select asp-for="Product.Storage" asp-items="@(Html.GetEnumSelectList<Stolons.Models.Product.StorageType>())" class="form-control"></select>
+                <span asp-validation-for="Product.Storage" class="text-danger" />
             </div>
         </div>
         <!-- just to make the current product familly accessible by js -->

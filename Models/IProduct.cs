@@ -9,6 +9,7 @@ namespace Stolons.Models
         int AverageQuantity { get; set; }
         string Description { get; set; }
         DateTime DLC { get; set; }
+        Product.StorageType Storage { get; set; }
         ProductFamilly Familly { get; set; }
         Guid FamillyId { get; set; }
         string HeavyPath { get; }

@@ -165,6 +165,9 @@ namespace Stolons.Models
         [Display(Name = "DLC")]
         public DateTime DLC { get; set; }
 
+        [Display(Name = "Stockage")]
+        public StorageType Storage { get; set; } = StorageType.Basket;
+
         [Display(Name = "Type de vente")]
         [Required]
         public SellType Type { get; set; }
@@ -405,7 +408,9 @@ namespace Stolons.Models
                 ProductUnit = this.ProductUnit,
                 Quantity = this.Quantity,
                 HasBeenModified = this.HasBeenModified,
-                Type = this.Type
+                Type = this.Type,
+                DLC = this.DLC,
+                Storage = this.Storage
             };
             return clonedBillEntry;
         }
@@ -423,6 +428,8 @@ namespace Stolons.Models
             billEntry.TaxEnum = productStock.Product.TaxEnum;
             billEntry.ProductUnit = productStock.Product.ProductUnit;
             billEntry.Type = productStock.Product.Type;
+            billEntry.DLC = productStock.Product.DLC;
+            billEntry.Storage = productStock.Product.Storage;
             return billEntry;
         }
     }

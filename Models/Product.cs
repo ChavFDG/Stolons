@@ -106,8 +106,8 @@ namespace Stolons.Models
         [Display(Name = "DLC")]
         public DateTime DLC { get; set; }
 
-        [Display(Name = "Stocker dans un réfrigérateur")]
-        public bool Fridge { get; set; }
+        [Display(Name = "Stockage")]
+        public StorageType Storage { get; set; } = StorageType.Basket;
 
         [Display(Name = "Type de vente")]
         [Required]
@@ -320,6 +320,16 @@ namespace Stolons.Models
             Fixed = 1,
             [Display(Name = "Illimité", Description = "Le stock est illimité et n'a pas besoin d'être remis à jour chaque semaine.")]
             Unlimited = 2
+        }
+
+        public enum StorageType
+        {
+            [Display(Name = "Panier (température ambiante)")]
+            Basket = 0,
+            [Display(Name = "Réfrégirateur (0° -5°)")]
+            Fridge = 1,
+            [Display(Name = "Congélateur (-15° -18°)")]
+            Freezer = 2
         }
 
         public string GetQuantityString(decimal quantity)

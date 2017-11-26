@@ -354,7 +354,7 @@ namespace Stolons.Tools
                 builder.AppendLine("<p>Année : " + DateTime.Now.Year);
                 builder.AppendLine("<br>Semaine : " + DateTime.Now.GetIso8601WeekOfYear());
                 builder.AppendLine("<br><b>Nombre de panier : " + consumersBills.Count + "</b></p>");
-                builder.AppendLine("<p>Adhérents ayant un panier : <small>");
+                builder.AppendLine("<p>Adhérents ayant un panier : <small><br>");
                 consumersBills.OrderBy(x => x.AdherentStolon.LocalId)
                                             .ForEach(x => builder.AppendLine("<a href=\"#" + x.AdherentStolon.LocalId + "\">" + x.AdherentStolon.GetNumberSurnameName() + "</a><br>"));
                 builder.AppendLine("</small></p>");

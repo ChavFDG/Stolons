@@ -37,20 +37,20 @@
             </tr>
             @foreach (var item in Model.ProducerBills.Where(x => x.State == BillState.Delivered))
             {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.AdherentStolon.LocalId)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Adherent.CompanyName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Adherent.PhoneNumber)
-                </td>
-                <td>
-                    @if (Model.ActiveAdherentStolon.Authorized(Role.Admin) || Model.ActiveAdherentStolon.Adherent.IsWebAdmin)
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.AdherentStolon.LocalId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Adherent.CompanyName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Adherent.PhoneNumber)
+                    </td>
+                    <td>
+                        @if (Model.ActiveAdherentStolon.Authorized(Role.Admin) || Model.ActiveAdherentStolon.Adherent.IsWebAdmin)
                     {
-                        @Html.ActionLink(
+                            @Html.ActionLink(
                             "Valider paiement de la facture",
                             "UpdateProducerBill",
                             new { billNumber = item.BillNumber },
@@ -60,20 +60,20 @@
                                 @class = "btn btn-small btn-default"
                             }
             )    }
-                </td>
-                <td>
-                    @{
-                        <a href="@Configurations.GetBillUrl(item)">@(item.BillAmount + "€" + " (" + item.FeeAmount + "€) - " + item.BillNumber)</a>
-                    }
-                </td>
-            </tr>
+                    </td>
+                    <td>
+                        @{
+                            <a href="@Configurations.GetBillUrl(item)">@(item.BillAmount.ToString("0.00") + "€" + " (" + item.FeeAmount.ToString("0.00") + "€) - " + item.BillNumber)</a>
+                        }
+                    </td>
+                </tr>
                             }
         </table>
-                        }
-                        else
-                        {
-                            <p>Aucune facture à régler</p>
-                        }
+                            }
+                            else
+                            {
+                                <p>Aucune facture à régler</p>
+                            }
 
 </div>
 
@@ -190,7 +190,7 @@
                     </td>
                     <td>
                         @{
-                            <a href="@Configurations.GetBillUrl(item)">@(item.OrderAmount + "€ - " + item.BillNumber)</a>
+                            <a href="@Configurations.GetBillUrl(item)">@(item.OrderAmount.ToString("0.00") + "€ - " + item.BillNumber)</a>
                         }
                     </td>
                 </tr>
@@ -247,7 +247,7 @@
                                 <col>
                                 </col>
                                 <% _.forEach(producerBill.getProductStocks(), function(productStock) { %>
-                                <col id="product-col-<%= productStock.get(" Id") %>">
+                                <col id="product-col-<%= productStock.get("Id") %>">
                                 </col>
                                 <% }); %>
                             </colgroup>
@@ -259,7 +259,7 @@
                                     </th>
                                     <% _.forEach(producerBill.getProductStocks(), function(productStock) { %>
                                     <td class="correction-product-description productMgtImage">
-                                        <img src="<%= productStock.get(" Product").getPictureUrl("light") %>">
+                                        <img src="<%= productStock.get("Product").getPictureUrl("light") %>">
                                         <span><%= productStock.get("Product").get("Name") %></span>
                                     </td>
                                     <% }); %>
