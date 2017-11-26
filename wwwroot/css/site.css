@@ -639,8 +639,15 @@ img.warning {
     max-height: 25px;
 }
 
-#tmpBasket {
+#basket__wrapper {
     position: static; /* will be fixed on scroll offset Y > 300 (300 is the header height) */
+}
+#basket__wrapper.fixed {
+    position: fixed;
+    top: 20px;
+    max-height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 #tmpBasket .table {
     max-width: 260px;
