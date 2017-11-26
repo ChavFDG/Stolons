@@ -77,6 +77,9 @@ namespace Stolons.Models.Users
 
         #region Producer
 
+        [Display(Name = "Type de vendeur")]
+        public SellerType SellerType { get; set; } = SellerType.Producer;
+
         [Display(Name = "Raison sociale")]
         public string CompanyName { get; set; }
         [Display(Name = "Superficie en m²")]
@@ -159,9 +162,17 @@ namespace Stolons.Models.Users
             this.WebSiteLink = adherent.WebSiteLink;
         }
 
-        #endregion Produce
+        #endregion Producer
 
     }
 
-
+    public enum SellerType
+    {
+        [Display(Name = "Producteur")]
+        Producer = 0,
+        [Display(Name = "Transformateur")]
+        Transformer = 1,
+        [Display(Name = "Distributeur")]
+        Distributor = 2
+    }
 }

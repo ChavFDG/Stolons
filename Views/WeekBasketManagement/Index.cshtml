@@ -37,20 +37,20 @@
             </tr>
             @foreach (var item in Model.ProducerBills.Where(x => x.State == BillState.Delivered))
             {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.AdherentStolon.LocalId)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Adherent.CompanyName)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Adherent.PhoneNumber)
-                    </td>
-                    <td>
-                        @if (Model.ActiveAdherentStolon.Authorized(Role.Admin) || Model.ActiveAdherentStolon.Adherent.IsWebAdmin)
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AdherentStolon.LocalId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Adherent.CompanyName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Adherent.PhoneNumber)
+                </td>
+                <td>
+                    @if (Model.ActiveAdherentStolon.Authorized(Role.Admin) || Model.ActiveAdherentStolon.Adherent.IsWebAdmin)
                     {
-                            @Html.ActionLink(
+                        @Html.ActionLink(
                             "Valider paiement de la facture",
                             "UpdateProducerBill",
                             new { billNumber = item.BillNumber },
@@ -60,20 +60,20 @@
                                 @class = "btn btn-small btn-default"
                             }
             )    }
-                    </td>
-                    <td>
-                        @{
-                            <a href="@Configurations.GetBillUrl(item)">@(item.BillAmount + "€" + " (" + item.FeeAmount + "€) - " + item.BillNumber)</a>
-                        }
-                    </td>
-                </tr>
+                </td>
+                <td>
+                    @{
+                        <a href="@Configurations.GetBillUrl(item)">@(item.BillAmount + "€" + " (" + item.FeeAmount + "€) - " + item.BillNumber)</a>
+                    }
+                </td>
+            </tr>
                             }
         </table>
-                            }
-                            else
-                            {
-                                <p>Aucune facture à régler</p>
-                            }
+                        }
+                        else
+                        {
+                            <p>Aucune facture à régler</p>
+                        }
 
 </div>
 

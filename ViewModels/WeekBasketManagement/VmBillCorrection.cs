@@ -7,6 +7,8 @@ namespace Stolons.ViewModels.WeekBasketManagement
 {
     public class VmBillCorrection
     {
+        public Guid ProducerBillId { get; set; }
+
         public string Reason { get; set; }
 
         public List<BillIdQuantity> NewQuantities { get; set; } = new List<BillIdQuantity>();

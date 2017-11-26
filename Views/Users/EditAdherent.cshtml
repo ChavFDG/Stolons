@@ -58,7 +58,7 @@
 
     @if (Model.Edition == Stolons.ViewModels.Adherents.AdherentEdition.Consumer)
     {
-        <input asp-for="Adherent.CompanyName" hidden="hidden" />
+            <input asp-for="Adherent.CompanyName" hidden="hidden" />
             <input asp-for="Adherent.Area" hidden="hidden" />
             <input asp-for="Adherent.ExploitationPicuresSerialized" hidden="hidden" />
             <input asp-for="Adherent.Production" hidden="hidden" />
@@ -67,6 +67,7 @@
             <input asp-for="Adherent.WebSiteLink" hidden="hidden" />
             <input asp-for="Adherent.Latitude" hidden="hidden" />
             <input asp-for="Adherent.Longitude" hidden="hidden" />
+            <input asp-for="Adherent.SellerType" hidden="hidden" />
     }
     else
     {
@@ -161,8 +162,14 @@
 
     @if (Model.Edition == Stolons.ViewModels.Adherents.AdherentEdition.Producer)
     {
-        <h3>Informations producteur</h3>
-
+        <h3>Informations producteur</h3>        
+        <div class="form-group">
+            <label asp-for="Adherent.SellerType" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <select asp-for="Adherent.SellerType" asp-items="@(Html.GetEnumSelectList<Stolons.Models.Users.SellerType>())" class="form-control"></select>
+                <span asp-validation-for="Adherent.SellerType" class="text-danger" />
+            </div>
+        </div>
         <div class="form-group">
             <label asp-for="Adherent.CompanyName" class="col-md-2 control-label"></label>
             <div class="col-md-10">

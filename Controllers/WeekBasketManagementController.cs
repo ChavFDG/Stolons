@@ -93,7 +93,37 @@ namespace Stolons.Controllers
         [HttpPost, ActionName("UpdateBillCorrection")]
         public bool UpdateBillCorrection(VmBillCorrection billCorrection)
         {
-            return billCorrection != null;
+            try
+            {
+                billCorrection.Reason = "Modification le : " + DateTime.Now.ToString() + "\n\rRaison : " + billCorrection.Reason + "\n\r\n\r" ;
+                ProducerBill bill = _context.ProducerBills.Include(x => x.BillEntries).First(x => x.BillId == billCorrection.ProducerBillId);
+                bill.ModificationReason = billCorrection.Reason;
+                bill.HasBeenModified = true;
+                List<Guid?> modifiedBills = new List<Guid?>();
+                foreach (var billQuantity in billCorrection.NewQuantities)
+                {
+                    var billEntry = bill.BillEntries.First(x => x.Id == billQuantity.BillId);
+                    billEntry.Quantity = billQuantity.Quantity;
+                    billEntry.HasBeenModified = true;
+                    if (!modifiedBills.Any(x => x == billEntry.ConsumerBillId))
+                        modifiedBills.Add(billEntry.ConsumerBillId);
+                }
+                _context.SaveChanges();
+                bill.HtmlBillContent = BillGenerator.GenerateHtmlBillContent(bill, _context);
+                foreach (var billId in modifiedBills)
+                {
+                    var billToModify = _context.ConsumerBills.First(x => x.BillId == billId);
+                    billToModify.ModificationReason += billCorrection.Reason;
+                    billToModify.HasBeenModified = true;
+                }
+                _context.SaveChanges();
+
+            }
+            catch(Exception except)
+            {
+                return false;
+            }
+            return true;
         }
 
         // GET: ShowBill
