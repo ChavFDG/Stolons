@@ -209,6 +209,12 @@ namespace Stolons.Tools
                                 }
                             }
                             dbContext.SaveChanges();
+                            //Send email to all adherent that have subscribe to product by mail
+                            foreach(var adherentStolon in dbContext.AdherentStolons.Where(x=>x.StolonId == stolon.Id && x.Adherent.ReceivedProductListByEmail))
+                            {
+
+                            }
+
                         }
                         lastModes[stolon.Id] = currentMode;
                     }
@@ -309,7 +315,7 @@ namespace Stolons.Tools
         private static void AddBootstrap(this StringBuilder builder)
         {
             builder.Insert(0, "<head><link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css\"></head><body>");
-            builder.Append("</body>");
+            builder.AppendLine("</body>");
 
         }
 
@@ -448,7 +454,6 @@ namespace Stolons.Tools
             }
             builder.AddBootstrap();
             builder.AddFooterAndHeaderRemoval();
-            builder.AddFooterAndHeaderRemoval();
             bill.HtmlBillContent = builder.ToString();
 
             return bill;
@@ -527,7 +532,7 @@ namespace Stolons.Tools
             return orderBuilder.ToString();
         }
 
-        private static string GenerateHtmlBillContent(ProducerBill bill, ApplicationDbContext dbContext)
+        public static string GenerateHtmlBillContent(ProducerBill bill, ApplicationDbContext dbContext)
         {
             //Calcul total amount
             decimal totalAmount = 0;
@@ -617,6 +622,9 @@ namespace Stolons.Tools
             billBuilder.AppendLine("</tr>");
             billBuilder.AppendLine("</table>");
 
+            billBuilder.AddBootstrap();
+            billBuilder.AddFooterAndHeaderRemoval();
+
             return billBuilder.ToString();
         }
 
@@ -658,6 +666,7 @@ namespace Stolons.Tools
             builder.AppendLine("</table>");
             builder.AppendLine("<p>Montant total : " + bill.OrderAmount.ToString("0.00") + " €</p>");
             builder.AddBootstrap();
+            builder.AddFooterAndHeaderRemoval();
             return builder.ToString();
         }
 
