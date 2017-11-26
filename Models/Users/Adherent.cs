@@ -158,6 +158,7 @@ namespace Stolons.Models.Users
             this.ReceivedInformationsEmail = adherent.ReceivedInformationsEmail;
             this.ReceivedProductListByEmail = adherent.ReceivedProductListByEmail;
             this.StartDate = adherent.StartDate;
+            this.SellerType = adherent.SellerType;
             this.Surname = adherent.Surname;
             this.WebSiteLink = adherent.WebSiteLink;
         }
