@@ -125,9 +125,9 @@ ProducerBillModel = Backbone.Model.extend({
     getQuantityString: function(product, quantity) {
 	if (product.Type == 1) {
 	    if (quantity > 1) {
-		return  quantity + " pièce";
-	    } else {
 		return  quantity + " pièces";
+	    } else {
+		return  quantity + " pièce";
 	    }
 	} else {
 	    var qty = quantity * product.QuantityStep;

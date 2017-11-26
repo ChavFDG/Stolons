@@ -12,7 +12,7 @@ BillsManagement.CorrectionView = Backbone.View.extend({
         "click .plus": "increment",
         "click .decrementTotal": "decrementProductTotal",
         "click .incrementTotal": "incrementProductTotal",
-        "change #correction-reason": "reasonChanged",
+        "keyup #correction-reason": "reasonChanged",
         "click #validateCorrection": "save"
     },
 
@@ -100,7 +100,7 @@ BillsManagement.CorrectionView = Backbone.View.extend({
         var that = this;
         this.valid = true;
 
-        // validates that the total produdt quatity is equal to the sum of the quantities in billentries.
+        // validates that the total product quantity is equal to the sum of the quantities in billentries.
         _.each(this.model.getProductStocks(), function (productStock) {
             var productStockId = productStock.get("Id");
             var billEntries = that.model.getBillEntriesForProductStock(productStockId);
@@ -114,7 +114,7 @@ BillsManagement.CorrectionView = Backbone.View.extend({
             }
         });
         this.reason = $("#correction-reason").val();
-        this.valid = this.valid && _.isEmpty(this.reason);
+        this.valid = this.valid && !_.isEmpty(this.reason);
         if (this.valid) {
             $("#validateCorrection").removeAttr("disabled");
         } else {
@@ -130,7 +130,13 @@ BillsManagement.CorrectionView = Backbone.View.extend({
     //Send modified billEntries quantities to serveur
     save: function (event) {
         var that = this;
-        var data = { "NewQuantities": [] };
+	if ($(event.currentTarget).attr("disabled")) {
+	    return false;
+	}
+        var data = {
+	    "NewQuantities": [],
+	    "ProducerBillId": that.model.get("BillId")
+	};
         this.reason = $("#correction-reason").val();
         if (_.isEmpty(this.reason)) {
             $("#correction-reason").toggleClass("error", true);
@@ -152,6 +158,7 @@ BillsManagement.CorrectionView = Backbone.View.extend({
                 console.log(success);
                 if (!success) {
                     that.saveErrors = "Erreur lors de la sauvegarde."
+		    that.render();
                 } else {
                     location.reload();
                 }
