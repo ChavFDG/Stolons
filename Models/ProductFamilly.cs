@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -16,7 +17,7 @@ namespace Stolons.Models
         public ProductType Type { get; set; }
 
         [Display(Name = "Image")] //Lien vers l'image du label
-        public string Image { get; set; }
+        public string Image { get; set; } = Path.Combine(Configurations.ProductsTypeAndFamillyIconsStockagesPath, "default.jpg");
 
         public ProductFamilly()
         {

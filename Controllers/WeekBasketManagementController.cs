@@ -96,7 +96,7 @@ namespace Stolons.Controllers
             try
             {
                 billCorrection.Reason = "Modification le : " + DateTime.Now.ToString() + "\n\rRaison : " + billCorrection.Reason + "\n\r\n\r" ;
-                ProducerBill bill = _context.ProducerBills.Include(x => x.BillEntries).First(x => x.BillId == billCorrection.ProducerBillId);
+                ProducerBill bill = _context.ProducerBills.Include(x => x.BillEntries).Include(x=>x.AdherentStolon).First(x => x.BillId == billCorrection.ProducerBillId);
                 bill.ModificationReason = billCorrection.Reason;
                 bill.HasBeenModified = true;
                 List<Guid?> modifiedBills = new List<Guid?>();
@@ -109,7 +109,10 @@ namespace Stolons.Controllers
                         modifiedBills.Add(billEntry.ConsumerBillId);
                 }
                 _context.SaveChanges();
+                bill = _context.ProducerBills.Include(x => x.BillEntries).Include(x => x.AdherentStolon).Include(x => x.AdherentStolon.Stolon).Include(x => x.AdherentStolon.Adherent).First(x => x.BillId == billCorrection.ProducerBillId);
+                bill.BillEntries.ForEach(x => x.ProductStock = _context.ProductsStocks.Include(y=>y.Product).First(stock => stock.Id == x.ProductStockId));
                 bill.HtmlBillContent = BillGenerator.GenerateHtmlBillContent(bill, _context);
+                BillGenerator.GenerateBillPDF(bill);
                 foreach (var billId in modifiedBills)
                 {
                     var billToModify = _context.ConsumerBills.First(x => x.BillId == billId);
