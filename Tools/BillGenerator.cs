@@ -210,9 +210,15 @@ namespace Stolons.Tools
                             }
                             dbContext.SaveChanges();
                             //Send email to all adherent that have subscribe to product by mail
-                            foreach(var adherentStolon in dbContext.AdherentStolons.Where(x=>x.StolonId == stolon.Id && x.Adherent.ReceivedProductListByEmail))
+                            string htmlMessage = "Bonjour, les commandes sont ouverte chez " + stolon.Label +". Vous pouvez dès maintenant et jusqu'à " + stolon.DeliveryAndStockUpdateDayStartDate.ToFrench() + " " + stolon.DeliveryAndStockUpdateDayStartDateHourStartDate + ":" + stolon.DeliveryAndStockUpdateDayStartDateMinuteStartDate + " commander vos produits";
+                            //TODO générer un jolie message avec la liste des produits
+                            foreach(var adherentStolon in dbContext.AdherentStolons.Include(x=>x.Adherent).Where(x=>x.StolonId == stolon.Id && x.Adherent.ReceivedProductListByEmail))
                             {
-
+                                AuthMessageSender.SendEmail(stolon.Label,
+                                                                adherentStolon.Adherent.Email,
+                                                                adherentStolon.Adherent.Name + " " + adherentStolon.Adherent.Surname,
+                                                                "Commande ouverte chez " + stolon.Label,
+                                                                htmlMessage);
                             }
 
                         }
