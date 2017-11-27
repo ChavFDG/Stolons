@@ -82,6 +82,24 @@ ProductStockModel = Backbone.Model.extend({
 	return weight + " " + productUnit;
     },
 
+    //Stock restant en fonction du type de vente et de la quanity step
+    getRemainingQuantityStock: function() {
+	if (this.get("Product").get("Type") == 1) {
+	    return this.get("RemainingStock");
+	} else {
+	    return (this.get("RemainingStock") * 1000) / this.get("Product").get("QuantityStep");
+	}
+    },
+
+    //Stock restant en fonction du type de vente et de la quanity step
+    getWeekQuantityStock: function() {
+	if (this.get("Product").get("Type") == 1) {
+	    return this.get("WeekStock");
+	} else {
+	    return (this.get("WeekStock") * 1000) / this.get("Product").get("QuantityStep");
+	}
+    },
+    
     //Si tu as besoin de faire des changements sur les données sur le JSON avant de les rentrer dans le model
     parse: function (data) {
         data.Product = new ProductModel(data.Product);
