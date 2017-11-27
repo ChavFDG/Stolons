@@ -63,12 +63,12 @@ var StockMgtViewModal = Backbone.View.extend({
         var weekStock = Math.abs(parseFloat($("#WeekStock").val()));
 
         if (this.currentProductStock.get("Product").get("Type") != 1) {
-            if ((weekStock * 1000) % this.currentProductStock.get("Product").get("QuantityStep") != 0) {
+            if ((Math.abs(weekStock * 1000) % this.currentProductStock.get("Product").get("QuantityStep")) != 0) {
                 this.validation.weekStockError = "Le stock doit être divisible par le palier de vente (" + this.currentProductStock.get("Product").get("QuantityStepString") + ").";
                 this.render();
                 return;
             }
-	    weekStock = (weekStock * this.currentProductStock.get("Product").get("QuantityStep") / 1000);
+	    weekStock = (weekStock * parseInt(this.currentProductStock.get("Product").get("QuantityStep")) / 1000);
         } else {
             if (!this.isInt(weekStock)) {
                 this.validation.weekStockError = "Le nombre de pièces doit être un nombre entier.";
@@ -85,12 +85,12 @@ var StockMgtViewModal = Backbone.View.extend({
         var remainingStock = Math.abs(parseFloat($("#RemainingStock").val()));
 
         if (this.currentProductStock.get("Product").get("Type") != 1) {
-            if (remainingStock % this.currentProductStock.get("Product").get("QuantityStep") != 0) {
+            if (Math.abs(remainingStock * 1000) % this.currentProductStock.get("Product").get("QuantityStep") != 0) {
                 this.validation.remainingStockError = "Le stock doit être divisible par le palier de vente.";
                 this.render();
                 return;
             }
-	    remainingStock = (remainingStock * this.currentProductStock.get("Product").get("QuantityStep") / 1000);
+	    remainingStock = (remainingStock * parseInt(this.currentProductStock.get("Product").get("QuantityStep")) / 1000);
         } else {
             if (!this.isInt(remainingStock)) {
                 this.validation.remainingStockError = "Le nombre de pièces doit être un nombre entier.";
