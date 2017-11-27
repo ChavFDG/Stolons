@@ -68,6 +68,7 @@ var StockMgtViewModal = Backbone.View.extend({
                 this.render();
                 return;
             }
+	    weekStock = (weekStock * this.currentProductStock.get("Product").get("QuantityStep") / 1000);
         } else {
             if (!this.isInt(weekStock)) {
                 this.validation.weekStockError = "Le nombre de pièces doit être un nombre entier.";
@@ -84,11 +85,12 @@ var StockMgtViewModal = Backbone.View.extend({
         var remainingStock = Math.abs(parseFloat($("#RemainingStock").val()));
 
         if (this.currentProductStock.get("Product").get("Type") != 1) {
-            if ((remainingStock * 1000) % this.currentProductStock.get("Product").get("QuantityStep") != 0) {
+            if (remainingStock % this.currentProductStock.get("Product").get("QuantityStep") != 0) {
                 this.validation.remainingStockError = "Le stock doit être divisible par le palier de vente.";
                 this.render();
                 return;
             }
+	    remainingStock = (remainingStock * this.currentProductStock.get("Product").get("QuantityStep") / 1000);
         } else {
             if (!this.isInt(remainingStock)) {
                 this.validation.remainingStockError = "Le nombre de pièces doit être un nombre entier.";
