@@ -82,12 +82,12 @@ ProductStockModel = Backbone.Model.extend({
 	return weight + " " + productUnit;
     },
 
-    //Stock restant en fonction du type de vente et de la quanity step
+    //Stock restant en fonction du type de vente et de la quantity step
     getRemainingQuantityStock: function() {
 	if (this.get("Product").get("Type") == 1) {
 	    return this.get("RemainingStock");
 	} else {
-	    return (this.get("RemainingStock") * 1000) / this.get("Product").get("QuantityStep");
+	    return (this.get("RemainingStock") * this.get("Product").get("QuantityStep")) / 1000;
 	}
     },
 
@@ -96,7 +96,7 @@ ProductStockModel = Backbone.Model.extend({
 	if (this.get("Product").get("Type") == 1) {
 	    return this.get("WeekStock");
 	} else {
-	    return (this.get("WeekStock") * 1000) / this.get("Product").get("QuantityStep");
+	    return (this.get("WeekStock") * this.get("Product").get("QuantityStep")) / 1000;
 	}
     },
     

@@ -68,7 +68,7 @@ var StockMgtViewModal = Backbone.View.extend({
                 this.render();
                 return;
             }
-	    weekStock = (weekStock * parseInt(this.currentProductStock.get("Product").get("QuantityStep")) / 1000);
+	    weekStock = ((weekStock * 1000) / parseInt(this.currentProductStock.get("Product").get("QuantityStep")));
         } else {
             if (!this.isInt(weekStock)) {
                 this.validation.weekStockError = "Le nombre de pièces doit être un nombre entier.";
@@ -90,7 +90,7 @@ var StockMgtViewModal = Backbone.View.extend({
                 this.render();
                 return;
             }
-	    remainingStock = (remainingStock * parseInt(this.currentProductStock.get("Product").get("QuantityStep")) / 1000);
+	    remainingStock = ((remainingStock * 1000) / parseInt(this.currentProductStock.get("Product").get("QuantityStep")));
         } else {
             if (!this.isInt(remainingStock)) {
                 this.validation.remainingStockError = "Le nombre de pièces doit être un nombre entier.";
