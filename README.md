@@ -1,13 +1,13 @@
 # Stolons
 
-Stolons est un site web visant à promouvoir la vente directe producteurs-consomateurs de produits locaux.
+Stolons est un site web visant à promouvoir la vente directe producteurs-consommateurs de produits locaux.
 
 Les points forts du pogramme en quelques mots:
 * Site web multi-structure (un seul identifiant pour plusieurs associations, paramètres sur mesure pour votre association)
 * Gestion associative (adhérents, synpatisants, cotisations)
 * Gestion des droits (bénévole, producteur, utilisateur, administrateur)
 * Gestion des produits (par producteur, différents types de vente, gestion des stocks)
-* Gestion des factures (création excel/pdf des factures producteurs et consomateurs, TVA)
+* Gestion des factures (création excel/pdf des factures producteurs et consommateurs, TVA)
 * Vitrine d'achat (panier de produits modifiable, recherche par catégories de produits)
 * Notifications par mail
 

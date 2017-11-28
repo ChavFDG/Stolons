@@ -86,7 +86,7 @@ namespace Stolons.Controllers
             List<IAdherent> users = new List<IAdherent>();
             users.AddRange(_context.Sympathizers.Where(x=>x.StolonId == stolon.Id && x.ReceivedInformationsEmail).ToList());
             users.AddRange(_context.Adherents.Include(x=>x.AdherentStolons).Where(x=>x.AdherentStolons.Any(consStol=>consStol.StolonId == stolon.Id)).ToList());
-            //On peut envoyer deux fois à un producteur qui est un consomateur
+            //On peut envoyer deux fois à un producteur qui est un consommateur
             users.AddRange(_context.Adherents.Include(x => x.AdherentStolons).Where(x => x.AdherentStolons.Any(consStol => consStol.StolonId == stolon.Id)).ToList());
             return View("Report",  SendMail(users.Distinct(),mailMessage));
         }

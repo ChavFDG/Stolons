@@ -35,7 +35,7 @@
             }
             @if (Model.AdherentStolon.IsProducer && Model.ActiveAdherentStolon.Authorized(Role.Admin))
             {
-                <li><a asp-action="SetAsConsumer" asp-controller="Users" asp-route-id="@Model.AdherentStolon.Id">Passer consomateur</a></li>
+                <li><a asp-action="SetAsConsumer" asp-controller="Users" asp-route-id="@Model.AdherentStolon.Id">Passer consommateur</a></li>
             }
         </ul>
     </div>

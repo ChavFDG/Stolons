@@ -172,8 +172,6 @@ namespace Stolons.Models.Users
         [Display(Name = "Producteur")]
         Producer = 0,
         [Display(Name = "Transformateur")]
-        Transformer = 1,
-        [Display(Name = "Distributeur")]
-        Distributor = 2
+        Transformer = 1
     }
 }
