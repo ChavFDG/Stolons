@@ -46,9 +46,9 @@ namespace Stolons.Controllers
         // GET: UpdateConsumerBill
         public IActionResult UpdateConsumerBill(string billNumber, PaymentMode paymentMode)
         {
-            ConsumerBill bill = _context.ConsumerBills.Include(x => x.AdherentStolon).First(x => x.BillNumber == billNumber);
+            ConsumerBill bill = _context.ConsumerBills.Include(x => x.AdherentStolon).ThenInclude(x => x.Adherent).First(x => x.BillNumber == billNumber);
             bill.State = BillState.Paid;
-            //_context.Update(bill);
+            _context.Update(bill);
             //Transaction
             Transaction transaction = new Transaction(
                 GetCurrentStolon(),
@@ -56,11 +56,12 @@ namespace Stolons.Controllers
                 TransactionCategory.BillPayement,
                 paymentMode == PaymentMode.Token ? 0 : bill.OrderAmount,
                 "Paiement de la facture " + bill.BillNumber + " par " + bill.Adherent.Name + "( " + bill.Adherent.Id + " ) en " + EnumHelper<PaymentMode>.GetDisplayValue(paymentMode));
-            //_context.Add(transaction);
+            _context.Add(transaction);
             //Save
-            // _context.SaveChanges();
-            return RedirectToAction("Index");
+	    _context.SaveChanges();
+	    return RedirectToAction("Index");
         }
+
         // GET: UpdateProducerBill
         public IActionResult UpdateProducerBill(string billNumber)
         {
