@@ -11,6 +11,9 @@ namespace Stolons.Models
         [Key]
         public Guid Id { get; set; }
 
+        [Display(Name = "Adresse du site web")]
+        public string StolonsUrl { get; set; } = "www.stolons.org";
+
         [Display(Name = "Libellé des Stolons")]
         public string StolonsLabel { get; set; } = "Association Stolons";
 

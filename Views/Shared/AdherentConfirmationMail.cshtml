@@ -5,6 +5,6 @@
 }
 
 <h2>@ViewData["Title"]</h2>
-<h3>Votre compte vient d'être créé, retrouvez dès maintenant les produits locaux de nos producteurs sur www.stolons.org</h3>
+<h3>Votre compte vient d'être créé, retrouvez dès maintenant les produits locaux de nos producteurs sur <a href="@Configurations.Application.StolonsUrl"></a> @Configurations.Application.StolonsUrl</h3>
 
 @Html.Partial("Templates/RememberCredentialTemplate")

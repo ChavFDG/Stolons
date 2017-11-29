@@ -8,6 +8,13 @@
 
         <h4>Informations</h4>
         <div class="form-group">
+            <label asp-for="StolonsUrl" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="StolonsUrl" class="form-control" />
+                <span asp-validation-for="StolonsUrl" class="text-danger" />
+            </div>
+        </div>
+        <div class="form-group">
             <label asp-for="StolonsLabel" class="col-md-2 control-label"></label>
             <div class="col-md-10">
                 <input asp-for="StolonsLabel" class="form-control" />
