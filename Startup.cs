@@ -101,7 +101,7 @@ namespace Stolons
         {
             //Change culture to English
             // Configure the localization options
-            app.UseRequestLocalization(new RequestLocalizationOptions() { DefaultRequestCulture = new RequestCulture("En-Gb") });
+            app.UseRequestLocalization(new RequestLocalizationOptions() { DefaultRequestCulture = new RequestCulture("fr-FR") });
             //
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug(LogLevel.Debug);
