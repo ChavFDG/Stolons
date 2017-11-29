@@ -93,6 +93,7 @@ namespace Stolons.Controllers
                 appConfig.MailSmtp = applicationConfig.MailSmtp;
                 appConfig.MaintenanceMessage = applicationConfig.MaintenanceMessage;
                 appConfig.StolonsLabel = applicationConfig.StolonsLabel;
+                appConfig.StolonsUrl = applicationConfig.StolonsUrl;
                 _context.Update(appConfig);
                 _context.SaveChanges();
                 Application = appConfig;
