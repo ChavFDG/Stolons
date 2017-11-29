@@ -130,8 +130,11 @@ namespace Stolons.Tools
                                 bill.HtmlBillContent = GenerateHtmlBillContent(bill, dbContext);
                                 bill.HtmlOrderContent = GenerateHtmlOrderContent(bill, dbContext);
                                 producerBills.Add(bill);
-                                dbContext.Add(bill);
-                                dbContext.SaveChanges();
+                                if(billEntries.Any())
+                                {
+                                    dbContext.Add(bill);
+                                    dbContext.SaveChanges();
+                                }
                             }
 
                             //Stolons

@@ -49,6 +49,11 @@ namespace Stolons.Controllers
             ConsumerBill bill = _context.ConsumerBills.Include(x => x.AdherentStolon).ThenInclude(x => x.Adherent).First(x => x.BillNumber == billNumber);
             bill.State = BillState.Paid;
             _context.Update(bill);
+            if(paymentMode == PaymentMode.Token)
+            {
+                bill.AdherentStolon.Token -= bill.OrderAmount;
+                _context.Update(bill.AdherentStolon);
+            }
             //Transaction
             Transaction transaction = new Transaction(
                 GetCurrentStolon(),
@@ -58,14 +63,14 @@ namespace Stolons.Controllers
                 "Paiement de la facture " + bill.BillNumber + " par " + bill.Adherent.Name + "( " + bill.Adherent.Id + " ) en " + EnumHelper<PaymentMode>.GetDisplayValue(paymentMode));
             _context.Add(transaction);
             //Save
-	    _context.SaveChanges();
-	    return RedirectToAction("Index");
+            _context.SaveChanges();
+            return RedirectToAction("Index");
         }
 
         // GET: UpdateProducerBill
         public IActionResult UpdateProducerBill(string billNumber)
         {
-            ProducerBill bill = _context.ProducerBills.Include(x => x.AdherentStolon).ThenInclude(x=>x.Adherent).First(x => x.BillNumber == billNumber);
+            ProducerBill bill = _context.ProducerBills.Include(x => x.AdherentStolon).ThenInclude(x => x.Adherent).First(x => x.BillNumber == billNumber);
             bill.State++;
             _context.Update(bill);
             if (bill.State == BillState.Paid)
@@ -96,8 +101,8 @@ namespace Stolons.Controllers
         {
             try
             {
-                billCorrection.Reason = "Modification le : " + DateTime.Now.ToString() + "\n\rRaison : " + billCorrection.Reason + "\n\r\n\r" ;
-                ProducerBill bill = _context.ProducerBills.Include(x => x.BillEntries).Include(x=>x.AdherentStolon).First(x => x.BillId == billCorrection.ProducerBillId);
+                billCorrection.Reason = "Modification le : " + DateTime.Now.ToString() + "\n\rRaison : " + billCorrection.Reason + "\n\r\n\r";
+                ProducerBill bill = _context.ProducerBills.Include(x => x.BillEntries).Include(x => x.AdherentStolon).First(x => x.BillId == billCorrection.ProducerBillId);
                 bill.ModificationReason = billCorrection.Reason;
                 bill.HasBeenModified = true;
                 List<Guid?> modifiedBills = new List<Guid?>();
@@ -111,7 +116,7 @@ namespace Stolons.Controllers
                 }
                 _context.SaveChanges();
                 bill = _context.ProducerBills.Include(x => x.BillEntries).Include(x => x.AdherentStolon).Include(x => x.AdherentStolon.Stolon).Include(x => x.AdherentStolon.Adherent).First(x => x.BillId == billCorrection.ProducerBillId);
-                bill.BillEntries.ForEach(x => x.ProductStock = _context.ProductsStocks.Include(y=>y.Product).First(stock => stock.Id == x.ProductStockId));
+                bill.BillEntries.ForEach(x => x.ProductStock = _context.ProductsStocks.Include(y => y.Product).First(stock => stock.Id == x.ProductStockId));
                 bill.HtmlBillContent = BillGenerator.GenerateHtmlBillContent(bill, _context);
                 BillGenerator.GenerateBillPDF(bill);
                 foreach (var billId in modifiedBills)
@@ -123,7 +128,7 @@ namespace Stolons.Controllers
                 _context.SaveChanges();
 
             }
-            catch(Exception except)
+            catch (Exception except)
             {
                 return false;
             }
@@ -145,13 +150,13 @@ namespace Stolons.Controllers
         {
             //Entity framework ? Hum... ouai
             IBill bill = _context.ProducerBills.Include(x => x.AdherentStolon).ThenInclude(x => x.Adherent).First(x => x.BillId.ToString() == billId);
-	    bill.BillEntries = _context.BillEntrys.Where(x => x.ProducerBillId.ToString() == billId).ToList();
-	    foreach (BillEntry billEntry in bill.BillEntries)
-	    {
-		billEntry.ConsumerBill = _context.ConsumerBills.Include(x => x.BillEntries).Include(x => x.AdherentStolon).ThenInclude(x => x.Adherent).First(x => x.BillId == billEntry.ConsumerBillId);
-		billEntry.ProductStock = _context.ProductsStocks.First(x => x.Id == billEntry.ProductStockId);
-		billEntry.ProductStock.Product = _context.Products.First(x => x.Id == billEntry.ProductStock.ProductId);
-	    }
+            bill.BillEntries = _context.BillEntrys.Where(x => x.ProducerBillId.ToString() == billId).ToList();
+            foreach (BillEntry billEntry in bill.BillEntries)
+            {
+                billEntry.ConsumerBill = _context.ConsumerBills.Include(x => x.BillEntries).Include(x => x.AdherentStolon).ThenInclude(x => x.Adherent).First(x => x.BillId == billEntry.ConsumerBillId);
+                billEntry.ProductStock = _context.ProductsStocks.First(x => x.Id == billEntry.ProductStockId);
+                billEntry.ProductStock.Product = _context.Products.First(x => x.Id == billEntry.ProductStock.ProductId);
+            }
             return JsonConvert.SerializeObject(bill, Formatting.Indented, new JsonSerializerSettings()
             {
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore
