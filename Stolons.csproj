@@ -101,5 +101,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="wwwroot\bills\" />
+    <Folder Include="wwwroot\images\financers\" />
   </ItemGroup>
 </Project>
