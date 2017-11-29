@@ -6,14 +6,14 @@ Paiement en ligne  :
 
 MISE à jour post core pour v2 :
 - Changer l'image par défaut des news par autre chose que l'image de starwars
-- Ajouter une fonction d'envoie de mail à tout le monde, aux producteurs, aux consomateurs
+- Ajouter une fonction d'envoie de mail à tout le monde, aux producteurs, aux consommateurs
 - Possibilité d'ajouter des catégories et types
 - Bug cotisation, si septembre ça divise par 2
 - Page produits publiques: separer les produits de la semaine de tous ceux enregistres
 - Changer l'image par défaut des news par autre chose que l'image de starwars
 - Virer "éngagé dans le bio"
 - Dans la table Stolon
-- Ajout de la cotisation sympathisant / consomateur / producteur 
+- Ajout de la cotisation sympathisant / consommateur / producteur 
 - Ajout du mois de début de cotisation
 - Création de la table Transaction pour la gestion de la comptabilité de la structure
 - Mutualisé la l'ajout / édition des adhérents ( comme pour les producteurs )

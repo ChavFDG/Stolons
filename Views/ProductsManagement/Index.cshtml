@@ -226,7 +226,7 @@
                         <div class="form-group">
                             <label for="WeekStock" class="col-md-4 control-label">Stock proposé: </label>
                             <div class="col-md-4">
-                                <input id="WeekStock" name="WeekStock" class="form-control" min="0" type="number" step="<%= productStock.get("Product").QuantityStep / 1000 || 1 %>" value="<%= productStock.get("WeekStock") %>" />
+                                <input id="WeekStock" name="WeekStock" class="form-control" min="0" type="number" step="<%= productStock.get("Product").QuantityStep / 1000 || 1 %>" value="<%= productStock.getWeekQuantityStock() %>" />
                                 <span id="WeekStockError" class="text-danger"><%= validation.weekStockError %></span>
                             </div>
                             <div class="col-md-4">
@@ -239,7 +239,7 @@
                         <div class="form-group">
                             <label for="RemainingStock" class="col-md-4 control-label">Il reste en stock : </label>
                             <div class="col-md-4">
-                                <input id="RemainingStock" name="RemainingStock" class="form-control" min="0" type="number" step="<%= productStock.get(" QuantityStep") / 1000 || 1 %>" value="<%= productStock.get("RemainingStock") %>" />
+                                <input id="RemainingStock" name="RemainingStock" class="form-control" min="0" type="number" step="<%= productStock.get("Product").get("QuantityStep") / 1000 || 1 %>" value="<%= productStock.getRemainingQuantityStock() %>" />
                                 <span id="RemainingStockError" class="text-danger"><%= validation.remainingStockError %></span>
                             </div>
                             <div class="col-md-4">
