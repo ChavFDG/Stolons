@@ -21,6 +21,8 @@ namespace Stolons.Services
         /// </summary>
         public static void SendEmail(string senderLabel, string email, string name, string subject, string message,byte[] attachment = null,string attachmentName ="Facture")
         {
+            if (String.IsNullOrWhiteSpace(name))
+                name = email;
             var mimeMessage = new MimeMessage();
             mimeMessage.From.Add(new MailboxAddress(senderLabel, Configurations.Application.MailAddress));
             mimeMessage.To.Add(new MailboxAddress(name, email));

@@ -129,7 +129,7 @@ namespace Stolons.Controllers
 
             //Send mail
             ForgotPasswordEmailViewModel vmodel = new ForgotPasswordEmailViewModel(stolonsUser, link);
-            AuthMessageSender.SendEmail(Configurations.Application.StolonsLabel, stolonsUser.Email, "", "Stolons: Oubli de votre mot de passe", base.RenderPartialViewToString("ResetPasswordEmailTemplate", vmodel), null, null);
+            AuthMessageSender.SendEmail(Configurations.Application.StolonsLabel, stolonsUser.Email, stolonsUser.Name, "Stolons: Oubli de votre mot de passe", base.RenderPartialViewToString("ResetPasswordEmailTemplate", vmodel), null, null);
             return View("ForgotPasswordConfirmation");
         }
 

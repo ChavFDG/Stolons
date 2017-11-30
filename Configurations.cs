@@ -13,7 +13,7 @@ using Stolons.Models.Users;
 
 namespace Stolons
 {
-    
+
 
     public static class Configurations
     {
@@ -27,9 +27,11 @@ namespace Stolons
                 #if DEBUG
                     return @"localhost:5000";
                 #endif
+
                 #if REALEASE
-                     return siteWebAddress = @"www.stolons.org";
+                     return Application.StolonsUrl;
                 #endif
+
             }
         }
 
@@ -60,14 +62,14 @@ namespace Stolons
 
         #region FileManagement
 
-        public static string StolonLogoStockagePath = Path.Combine("uploads", "images","logos");
-        public static string ServiceImageStockagePath = Path.Combine("images","services");
+        public static string StolonLogoStockagePath = Path.Combine("uploads", "images", "logos");
+        public static string ServiceImageStockagePath = Path.Combine("images", "services");
         public static string BillsStockagePath = Path.Combine("bills");
         public static string NewsImageStockagePath = Path.Combine("uploads", "images", "news");
         public static string AvatarStockagePath = Path.Combine("uploads", "images", "avatars");
         public static string ProductsTypeAndFamillyIconsStockagesPath = Path.Combine("images", "productFamilies");
-        public static string ProductsStockagePathLight = Path.Combine("uploads", "images", "products","light");
-        public static string ProductsStockagePathHeavy = Path.Combine("uploads", "images", "products","heavy");
+        public static string ProductsStockagePathLight = Path.Combine("uploads", "images", "products", "light");
+        public static string ProductsStockagePathHeavy = Path.Combine("uploads", "images", "products", "heavy");
         public static string DefaultProductImageFullPath = Path.Combine("uploads", "images", "products", "Default.png");
         public static string DefaultImageFileName = "default.jpg";
         private static string _labelImagePath = Path.Combine("images", "labels");
@@ -128,7 +130,7 @@ namespace Stolons
                 File.Delete(toDelete);
         }
 
-        public static void DeleteFile(this IHostingEnvironment environment,  string filePath,string fileName)
+        public static void DeleteFile(this IHostingEnvironment environment, string filePath, string fileName)
         {
             if (String.IsNullOrWhiteSpace(fileName))
                 return;
@@ -137,13 +139,13 @@ namespace Stolons
 
         public static string UploadBase64Image(this IHostingEnvironment environment, string base64data, string path, string pictureName = null)
         {
-            if(string.IsNullOrWhiteSpace(base64data))
+            if (string.IsNullOrWhiteSpace(base64data))
                 return Configurations.DefaultImageFileName;
             base64data = base64data.Remove(0, base64data.IndexOf(',') + 1);
             byte[] data = Convert.FromBase64String(base64data);
 
             string uploads = Path.Combine(environment.WebRootPath, path);
-            if(string.IsNullOrWhiteSpace(pictureName))
+            if (string.IsNullOrWhiteSpace(pictureName))
                 pictureName = Guid.NewGuid().ToString() + ".jpg";
             string filePath = Path.Combine(uploads, pictureName);
             using (var file = File.Create(filePath))
@@ -162,7 +164,7 @@ namespace Stolons
             string filePath = Path.Combine(uploads, fileName);
             await uploadFile.SaveAsAsync(filePath);
 
-            return Path.Combine(path,fileName);
+            return Path.Combine(path, fileName);
         }
 
 
