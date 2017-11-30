@@ -59,14 +59,14 @@ namespace Stolons.Controllers
         public IActionResult JsonProductsStocks()
         {
             var productsStocks = _context.ProductsStocks
-		.Include(x => x.AdherentStolon)
-		.ThenInclude(x => x.Adherent)
-		.Include(x => x.AdherentStolon)
+		//.Include(x => x.AdherentStolon)
+		//.ThenInclude(x => x.Adherent)
+		//.Include(x => x.AdherentStolon)
 		.Include(x => x.Product)
-		.ThenInclude(x => x.Producer)
-		.Include(x => x.Product)
+		//.Include(x => x.Product)
 		.ThenInclude(x => x.Familly)
 		.ThenInclude(x => x.Type)
+		.Include(x => x.Product.Producer)
 		.Where(x => x.AdherentStolon.StolonId == GetCurrentStolon().Id && x.State == Product.ProductState.Enabled)
 		.AsNoTracking()
 		.ToList();
