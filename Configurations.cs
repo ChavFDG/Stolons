@@ -28,7 +28,7 @@ namespace Stolons
                     return @"localhost:5000";
                 #endif
 
-                #if REALEASE
+                #if RELEASE
                      return Application.StolonsUrl;
                 #endif
 

@@ -59,17 +59,17 @@ namespace Stolons.Controllers
         public IActionResult JsonProductsStocks()
         {
             var productsStocks = _context.ProductsStocks
-		.Include(x => x.AdherentStolon)
-		.ThenInclude(x => x.Adherent)
-		.Include(x => x.AdherentStolon)
-		.Include(x => x.Product)
-		.ThenInclude(x => x.Producer)
-		.Include(x => x.Product)
-		.ThenInclude(x => x.Familly)
-		.ThenInclude(x => x.Type)
-		.Where(x => x.AdherentStolon.StolonId == GetCurrentStolon().Id && x.State == Product.ProductState.Enabled)
-		.AsNoTracking()
-		.ToList();
+            .Include(x => x.AdherentStolon)
+            .ThenInclude(x => x.Adherent)
+            .Include(x => x.AdherentStolon)
+            .Include(x => x.Product)
+            .ThenInclude(x => x.Producer)
+            .Include(x => x.Product)
+            .ThenInclude(x => x.Familly)
+            .ThenInclude(x => x.Type)
+            .Where(x => x.AdherentStolon.StolonId == GetCurrentStolon().Id && x.State == Product.ProductState.Enabled)
+            .AsNoTracking()
+            .ToList();
             return Json(productsStocks);
         }
 
@@ -78,15 +78,15 @@ namespace Stolons.Controllers
         public IActionResult JsonPublicProductsStocks()
         {
             var productsStocks = _context.ProductsStocks
-		.Include(x => x.AdherentStolon)
-		.ThenInclude(x => x.Adherent)
-		.Include(x => x.AdherentStolon)
-		.Include(x => x.Product)
-		.ThenInclude(x => x.Familly)
-		.ThenInclude(x => x.Type)
-		.Where(x => x.AdherentStolon.StolonId == GetCurrentStolon().Id)
-		.AsNoTracking()
-		.ToList();
+            .Include(x => x.AdherentStolon)
+            .ThenInclude(x => x.Adherent)
+            .Include(x => x.AdherentStolon)
+            .Include(x => x.Product)
+            .ThenInclude(x => x.Familly)
+            .ThenInclude(x => x.Type)
+            .Where(x => x.AdherentStolon.StolonId == GetCurrentStolon().Id)
+            .AsNoTracking()
+            .ToList();
             return Json(productsStocks);
         }
 
@@ -95,9 +95,9 @@ namespace Stolons.Controllers
         public IActionResult JsonProductTypes()
         {
             var ProductTypes = _context.ProductTypes
-		.Include(x => x.ProductFamilly)
-		.AsNoTracking()
-		.ToList();
+        .Include(x => x.ProductFamilly)
+        .AsNoTracking()
+        .ToList();
             return Json(ProductTypes);
         }
 
@@ -138,11 +138,11 @@ namespace Stolons.Controllers
                 return null;
             }
             ValidatedWeekBasket validatedWeekBasket = _context.ValidatedWeekBaskets
-		.Include(x => x.AdherentStolon)
-		.Include(x => x.AdherentStolon.Adherent)
-		.Include(x => x.BillEntries)
-		.AsNoTracking()
-		.FirstOrDefault(x => x.AdherentStolon.Id == adherentStolon.Id);
+        .Include(x => x.AdherentStolon)
+        .Include(x => x.AdherentStolon.Adherent)
+        .Include(x => x.BillEntries)
+        .AsNoTracking()
+        .FirstOrDefault(x => x.AdherentStolon.Id == adherentStolon.Id);
 
             if (validatedWeekBasket != null)
             {
@@ -402,7 +402,7 @@ namespace Stolons.Controllers
                         }
                     }
                 }
-                
+
                 _context.SaveChanges();
                 //On supprime toute les BillEntry du tempWeekBasket
                 _context.BillEntrys.RemoveRange(_context.BillEntrys.Where(x => x.TempWeekBasketId == tempWeekBasket.Id).ToList());
