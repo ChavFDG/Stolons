@@ -20,6 +20,8 @@ namespace Stolons.Models
         [Display(Name = "Catégories du produit")] //Lien vers l'image du label
         public List<ProductFamilly> ProductFamilly { get; set; } = new List<ProductFamilly>();
 
+        public bool CanBeRemoved { get; set; } = true;
+
         public ProductType()
         {
         }

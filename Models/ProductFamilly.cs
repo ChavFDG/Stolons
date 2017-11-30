@@ -19,6 +19,8 @@ namespace Stolons.Models
         [Display(Name = "Image")] //Lien vers l'image du label
         public string Image { get; set; } = Path.Combine(Configurations.ProductsTypeAndFamillyIconsStockagesPath, "default.jpg");
 
+        public bool CanBeRemoved { get; set; } = true;
+
         public ProductFamilly()
         {
         }

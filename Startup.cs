@@ -207,19 +207,20 @@ namespace Stolons
             CreateProductFamily(context, bevarages, "Alcools", "alcool.jpg");
             CreateProductFamily(context, bevarages, "Sans alcool", "sans_alcool.jpg");
 
-            ProductType other = CreateProductType(context, "Autres", "autres.jpg");
-            CreateProductFamily(context, other, "Non définie");
+            ProductType other = CreateProductType(context, "Autres", "autres.jpg",false);
+            DefaultFamily = CreateProductFamily(context, other, "Non définie", null, false);
             CreateProductFamily(context, other, "Savons", "savon.jpg");
 
             context.SaveChanges();
         }
 
-        private ProductType CreateProductType(ApplicationDbContext context, string name, string imageName = null)
+        private ProductType CreateProductType(ApplicationDbContext context, string name, string imageName = null,bool canBeRemoved = true)
         {
             ProductType type = context.ProductTypes.FirstOrDefault(x => x.Name == name);
             if (type == null)
             {
                 type = new ProductType(name);
+                type.CanBeRemoved = canBeRemoved;
                 context.ProductTypes.Add(type);
                 if (imageName != null)
                 {
@@ -229,12 +230,13 @@ namespace Stolons
             return type;
         }
 
-        private ProductFamilly CreateProductFamily(ApplicationDbContext context, ProductType type, string name, string imageName = null)
+        private ProductFamilly CreateProductFamily(ApplicationDbContext context, ProductType type, string name, string imageName = null, bool canBeRemoved = true)
         {
             ProductFamilly family = context.ProductFamillys.FirstOrDefault(x => x.FamillyName == name);
             if (family == null)
             {
                 family = new ProductFamilly(type, name);
+                type.CanBeRemoved = canBeRemoved;
                 if (imageName != null)
                 {
                     family.Image = Path.Combine(Configurations.ProductsTypeAndFamillyIconsStockagesPath, imageName);

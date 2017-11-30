@@ -57,7 +57,8 @@ namespace Stolons
             int toReturn = toNumber - fromNumber;
             return toReturn;
         }
-
+        
+        public static ProductFamilly DefaultFamily { get; internal set; }
         #endregion Configuration
 
         #region FileManagement

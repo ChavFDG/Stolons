@@ -107,7 +107,7 @@ namespace Stolons.Controllers
             if (!AuthorizedProducer())
                 return Unauthorized();
 
-            Product product = id == null ? new Product() { Familly = _context.ProductFamillys.FirstOrDefault(x => x.FamillyName == "Non définie") } : _context.Products.Include(x => x.Familly).First(x => x.Id == id);
+            Product product = id == null ? new Product() { Familly = _context.ProductFamillys.First(x=>x.Id ==  Configurations.DefaultFamily.Id) } : _context.Products.Include(x => x.Familly).First(x => x.Id == id);
             return View(new ProductEditionViewModel(GetActiveAdherentStolon(), product, _context, id == null));
 
         }
@@ -481,13 +481,13 @@ namespace Stolons.Controllers
                 return Unauthorized();
             var category = _context.ProductTypes.Include(x => x.ProductFamilly).FirstOrDefault(x => x.Id == categoryId);
             if (category == null)
-            {
                 return StatusCode(400);
-            }
             var products = _context.Products.Where(x => x.Familly.Type.Id == categoryId).ToList();
+            var defaultFamilly = _context.ProductFamillys.First(x => x.Id == Configurations.DefaultFamily.Id);
             foreach (Product product in products)
             {
-                product.Familly = null;
+                product.Familly = defaultFamilly;
+                _context.Update(product);
             }
             foreach (ProductFamilly family in category.ProductFamilly)
             {
@@ -509,9 +509,11 @@ namespace Stolons.Controllers
                 return StatusCode(400);
             }
             var products = _context.Products.Where(x => x.Familly.Id == familyId).ToList();
+            var defaultFamilly = _context.ProductFamillys.First(x => x.Id == Configurations.DefaultFamily.Id);
             foreach (Product product in products)
             {
-                product.Familly = null;
+                product.Familly = defaultFamilly;
+                _context.Update(product);
             }
             _context.ProductFamillys.Remove(family);
             _context.SaveChanges();
