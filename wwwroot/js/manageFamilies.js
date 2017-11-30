@@ -271,14 +271,17 @@ MainView = Backbone.View.extend({
     nodeSelected: function(event, data) {
 	var node = data.node;
 
-	console.log("node selected", arguments);
 	if (data.action === "select_node") {
 	    this.selectedNode = node;
 	} else {
 	    this.selectedNode = null;
 	}
 	if (this.selectedNode) {
-	    $("#delete").attr("disabled", false);
+	    if (this.selectedNode.original && this.selectedNode.original.CanBeRemoved === true) {
+		$("#delete").attr("disabled", false);
+	    } else {
+		$("#delete").attr("disabled", true);
+	    }
 	    $("#rename").attr("disabled", false);
 	    $("#updatePicture").attr("disabled", false);
 	} else {
