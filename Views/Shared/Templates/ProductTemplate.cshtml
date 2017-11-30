@@ -46,7 +46,7 @@
         <div class="product__producer" title="<%= product.Producer.CompanyName %>">
             <div class="product__producer__avatar" data-toggle="tooltip" title="Voir détails producteur">
                 <a href="#" onclick="ProducerModalView.open('<%= productStock.Id %>');return false;">
-                    <img class="avatar" src="<%= productStock.AdherentStolon.Adherent.AvatarFilePath %>" />
+                    <img class="avatar" src="<%= productModel.get('Producer').AvatarFilePath %>" />
                 </a>
             </div>
             <div class="product__producer__companyname">
