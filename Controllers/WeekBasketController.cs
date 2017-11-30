@@ -156,6 +156,8 @@ namespace Stolons.Controllers
         {
             TempWeekBasket tempWeekBasket = _context.TempsWeekBaskets.Include(x => x.AdherentStolon).Include(x => x.AdherentStolon.Adherent).Include(x => x.BillEntries).First(x => x.Id.ToString() == weekBasketId);
             tempWeekBasket.RetrieveProducts(_context);
+            if (tempWeekBasket.BillEntries.Any(x => x.ProductStockId.ToString() == productStockId))
+                return Json(tempWeekBasket);//On a déjà le produit
             ProductStockStolon ProductStock = _context.ProductsStocks.Include(x => x.Product).ThenInclude(x => x.Producer).Single(x => x.Id.ToString() == productStockId);
             BillEntry billEntry = BillEntry.CloneFromProduct(ProductStock);
             billEntry.ProductStock = _context.ProductsStocks.Include(x => x.AdherentStolon).Include(x => x.Product).First(x => x.Id.ToString() == productStockId);
