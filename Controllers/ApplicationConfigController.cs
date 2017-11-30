@@ -48,12 +48,10 @@ namespace Stolons.Controllers
             return View(_context.ApplicationConfig.First());
         }
 
-	    [HttpGet, ActionName("CurrentMode"), Route("api/currentMode")]
-	    public string JsonCurrentMode() {
-	        return JsonConvert.SerializeObject(GetCurrentStolon().GetMode(), Formatting.Indented, new JsonSerializerSettings() {
-		        ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-			    });
-	    }
+	[HttpGet, ActionName("CurrentMode"), Route("api/currentMode")]
+	public IActionResult JsonCurrentMode() {
+	    return Json(GetCurrentStolon().GetMode());
+	}
 
         [ActionName("TestChromiumPath")]
         public bool TestChromiumPath()

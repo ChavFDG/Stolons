@@ -32,11 +32,9 @@ namespace Stolons.Controllers
         {
 
         }
-        
-
 
         [HttpPost, ActionName("AddMessage")]
-        public string AddMessage(string message, DateTime date)
+        public IActionResult AddMessage(string message, DateTime date)
         {
             var adherentStolon = GetActiveAdherentStolon();
             _context.ChatMessages.Add(new ChatMessage(adherentStolon, message));
@@ -46,7 +44,7 @@ namespace Stolons.Controllers
         }
 
         [HttpPost, ActionName("GetPreviousMessage")]
-        public string GetPreviousMessages(DateTime date)
+        public IActionResult GetPreviousMessages(DateTime date)
         {
             date = date.AddMilliseconds(1);
             var adherentStolon = GetActiveAdherentStolon();
@@ -54,14 +52,11 @@ namespace Stolons.Controllers
                 = new ChatMessageListViewModel(adherentStolon, 
                 _context.ChatMessages.Include(x => x.PublishBy).Include(x => x.PublishBy.Stolon).Include(x => x.PublishBy.Adherent)
                     .Where(x => x.PublishBy.StolonId == adherentStolon.StolonId && x.DateOfPublication < date).OrderBy(x => x.DateOfPublication).ToList());
-            return JsonConvert.SerializeObject(chatMessagesViewModel, Formatting.Indented, new JsonSerializerSettings()
-            {
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-            });
+            return Json(chatMessagesViewModel);
         }
 
         [HttpPost, ActionName("GetNewMessages")]
-        public string GetNewMessages(DateTime date)
+        public IActionResult GetNewMessages(DateTime date)
         {
             date = date.AddMilliseconds(1);
             var adherentStolon = GetActiveAdherentStolon();
@@ -69,10 +64,7 @@ namespace Stolons.Controllers
                 = new ChatMessageListViewModel(adherentStolon,
                 _context.ChatMessages.Include(x => x.PublishBy).Include(x => x.PublishBy.Stolon).Include(x => x.PublishBy.Adherent)
                     .Where(x => x.PublishBy.StolonId == adherentStolon.StolonId && x.DateOfPublication > date).OrderBy(x => x.DateOfPublication).ToList());
-            return JsonConvert.SerializeObject(chatMessagesViewModel, Formatting.Indented, new JsonSerializerSettings()
-            {
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-            });
+            return Json(chatMessagesViewModel);
         }
 
     }

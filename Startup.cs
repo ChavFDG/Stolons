@@ -15,10 +15,12 @@ using System.IO;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using System.Threading;
+using Microsoft.Extensions.Configuration.UserSecrets;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using static Stolons.Configurations;
 using Stolons.Tools;
 using Stolons.Models.Users;
-using Microsoft.Extensions.Configuration.UserSecrets;
-using static Stolons.Configurations;
 using System.Globalization;
 using DinkToPdf.Contracts;
 using DinkToPdf;
@@ -74,7 +76,11 @@ namespace Stolons
                             .AddEntityFrameworkStores<ApplicationDbContext>()
                             .AddDefaultTokenProviders();
 
-                services.AddMvc();
+                services.AddMvc().AddJsonOptions(options =>
+			{
+			    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+			    options.SerializerSettings.ContractResolver = new DefaultContractResolver();
+			});
 
                 //Password policy
                 //stackoverflow.com/questions/27831597/how-do-i-define-the-password-rules-for-identity-in-asp-net-5-mvc-6-vnext

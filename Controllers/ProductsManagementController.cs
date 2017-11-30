@@ -40,7 +40,7 @@ namespace Stolons.Controllers
                 .Include(x => x.Products).ThenInclude(x => x.ProductStocks).ThenInclude(x => x.AdherentStolon).ThenInclude(x => x.Stolon)
                 .Include(x => x.Products).ThenInclude(x=>x.Familly)
                 .Include(x => x.Products).ThenInclude(x => x.Familly.Type)
-                .Include(x => x.AdherentStolons).FirstOrDefault(x => x.Id == producer.Id);
+                .Include(x => x.AdherentStolons).AsNoTracking().FirstOrDefault(x => x.Id == producer.Id);
             producer.AdherentStolons.ForEach(adherentStolon => adherentStolon.Stolon = _context.Stolons.First(stolon => stolon.Id == adherentStolon.StolonId));
             var products = _context.Products.Include(x=>x.ProductStocks).Include(m => m.Familly).Include(m => m.Familly.Type).Where(x => x.Producer == producer).OrderBy(x=>x.Name).ToList();
             foreach (var prod in products)
@@ -55,30 +55,34 @@ namespace Stolons.Controllers
             ProductsViewModel vm = new ProductsViewModel(GetActiveAdherentStolon(), products, producer);
             return View(vm);
         }
-        
+
         [HttpGet, ActionName("ProducerProducts"), Route("api/producerProducts")]
-        public string JsonProducerProducts()
+        public IActionResult JsonProducerProducts()
         {
             if (!AuthorizedProducer())
-                return "401";
+                return Unauthorized();
 
             Adherent producer = GetCurrentAdherentSync() as Adherent;
             List<ProductStockViewModel> vmProductsStock = new List<ProductStockViewModel>();
-            var productsStock = _context.ProductsStocks.Include(x=>x.AdherentStolon).ThenInclude(x=>x.Stolon).Include(x=>x.Product).ThenInclude(m => m.Familly).ThenInclude(m => m.Type).Where(x => x.AdherentStolon.AdherentId== producer.Id).ToList();
+            var productsStock = _context.ProductsStocks
+		.Include(x=>x.AdherentStolon)
+		.ThenInclude(x=>x.Stolon)
+		.Include(x=>x.Product)
+		.ThenInclude(m => m.Familly)
+		.ThenInclude(m => m.Type)
+		.AsNoTracking()
+		.Where(x => x.AdherentStolon.AdherentId== producer.Id).ToList();
            
             foreach (var productStock in productsStock)
             {
                 int orderedQty = 0;
-                foreach (var validateWeekBasket in _context.ValidatedWeekBaskets.Include(x=>x.AdherentStolon).ThenInclude(x=>x.Adherent).Include(x => x.BillEntries).ToList())
+                foreach (var validateWeekBasket in _context.ValidatedWeekBaskets.Include(x=>x.AdherentStolon).ThenInclude(x=>x.Adherent).Include(x => x.BillEntries).AsNoTracking().ToList())
                 {
                     validateWeekBasket.BillEntries.Where(x => x.ProductStockId == productStock.Id).ToList().ForEach(x => orderedQty += x.Quantity);
                 }
                 vmProductsStock.Add(new ProductStockViewModel(GetActiveAdherentStolon(), productStock, orderedQty));
             }
-            return JsonConvert.SerializeObject(vmProductsStock, Formatting.Indented, new JsonSerializerSettings()
-            {
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-            });
+            return Json(vmProductsStock);
         }
 
         // GET: ProductsManagement/Details/5

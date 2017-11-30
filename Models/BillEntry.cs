@@ -43,7 +43,6 @@ namespace Stolons.Models
         [ForeignKey(nameof(ProductStockId))]
         public ProductStockStolon ProductStock { get; set; }
 
-
         [NotMapped]
         public Guid ProductId
         {

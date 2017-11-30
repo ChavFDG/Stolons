@@ -146,21 +146,18 @@ namespace Stolons.Controllers
         }
 
         [HttpGet, ActionName("ProducerBill"), Route("api/producerBill")]
-        public string ProducerBill(string billId)
+        public IActionResult ProducerBill(string billId)
         {
-            //Entity framework ? Hum... ouai
-            IBill bill = _context.ProducerBills.Include(x => x.AdherentStolon).ThenInclude(x => x.Adherent).First(x => x.BillId.ToString() == billId);
-            bill.BillEntries = _context.BillEntrys.Where(x => x.ProducerBillId.ToString() == billId).ToList();
-            foreach (BillEntry billEntry in bill.BillEntries)
+            IBill bill = _context.ProducerBills.Include(x => x.AdherentStolon).ThenInclude(x => x.Adherent).AsNoTracking().First(x => x.BillId.ToString() == billId);
+            bill.BillEntries = _context.BillEntrys.Include(x => x.ProductStock).Where(x => x.ProducerBillId.ToString() == billId).AsNoTracking().ToList();
+
+	    foreach (BillEntry billEntry in bill.BillEntries)
             {
-                billEntry.ConsumerBill = _context.ConsumerBills.Include(x => x.BillEntries).Include(x => x.AdherentStolon).ThenInclude(x => x.Adherent).First(x => x.BillId == billEntry.ConsumerBillId);
+                billEntry.ConsumerBill = _context.ConsumerBills.Include(x => x.BillEntries).ThenInclude(x => x.ProductStock).ThenInclude(x => x.Product).Include(x => x.AdherentStolon).ThenInclude(x => x.Adherent).AsNoTracking().First(x => x.BillId == billEntry.ConsumerBillId);
                 billEntry.ProductStock = _context.ProductsStocks.First(x => x.Id == billEntry.ProductStockId);
                 billEntry.ProductStock.Product = _context.Products.First(x => x.Id == billEntry.ProductStock.ProductId);
             }
-            return JsonConvert.SerializeObject(bill, Formatting.Indented, new JsonSerializerSettings()
-            {
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-            });
+            return Json(bill);
         }
 
         // [HttpGet, ActionName("CustomersForBill"), Route("api/billCustomers")]

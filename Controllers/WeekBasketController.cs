@@ -56,53 +56,53 @@ namespace Stolons.Controllers
 
         [AllowAnonymous]
         [HttpGet, ActionName("Products"), Route("api/products")]
-        public string JsonProductsStocks()
+        public IActionResult JsonProductsStocks()
         {
             var productsStocks = _context.ProductsStocks
-        .Include(x => x.AdherentStolon)
-        .ThenInclude(x => x.Adherent)
-        .Include(x => x.AdherentStolon)
-        .Include(x => x.Product)
-        .ThenInclude(x => x.Familly)
-        .ThenInclude(x => x.Type)
-        .Where(x => x.AdherentStolon.StolonId == GetCurrentStolon().Id && x.State == Product.ProductState.Enabled).ToList();
-            return JsonConvert.SerializeObject(productsStocks, Formatting.Indented, new JsonSerializerSettings()
-            {
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-            });
+		.Include(x => x.AdherentStolon)
+		.ThenInclude(x => x.Adherent)
+		.Include(x => x.AdherentStolon)
+		.Include(x => x.Product)
+		.ThenInclude(x => x.Producer)
+		.Include(x => x.Product)
+		.ThenInclude(x => x.Familly)
+		.ThenInclude(x => x.Type)
+		.Where(x => x.AdherentStolon.StolonId == GetCurrentStolon().Id && x.State == Product.ProductState.Enabled)
+		.AsNoTracking()
+		.ToList();
+            return Json(productsStocks);
         }
 
         [AllowAnonymous]
         [HttpGet, ActionName("PublicProducts"), Route("api/publicProducts")]
-        public string JsonPublicProductsStocks()
+        public IActionResult JsonPublicProductsStocks()
         {
             var productsStocks = _context.ProductsStocks
-                                             .Include(x => x.AdherentStolon)
-                                                 .ThenInclude(x => x.Adherent)
-                                             .Include(x => x.AdherentStolon)
-                                             .Include(x => x.Product)
-                                                 .ThenInclude(x => x.Familly)
-                                                     .ThenInclude(x => x.Type)
-                                             .Where(x => x.AdherentStolon.StolonId == GetCurrentStolon().Id).ToList();
-            return JsonConvert.SerializeObject(productsStocks, Formatting.Indented, new JsonSerializerSettings()
-            {
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-            });
+		.Include(x => x.AdherentStolon)
+		.ThenInclude(x => x.Adherent)
+		.Include(x => x.AdherentStolon)
+		.Include(x => x.Product)
+		.ThenInclude(x => x.Familly)
+		.ThenInclude(x => x.Type)
+		.Where(x => x.AdherentStolon.StolonId == GetCurrentStolon().Id)
+		.AsNoTracking()
+		.ToList();
+            return Json(productsStocks);
         }
 
         [AllowAnonymous]
         [HttpGet, ActionName("ProductTypes"), Route("api/productTypes")]
-        public string JsonProductTypes()
+        public IActionResult JsonProductTypes()
         {
-            var ProductTypes = _context.ProductTypes.Include(x => x.ProductFamilly).ToList();
-            return JsonConvert.SerializeObject(ProductTypes, Formatting.Indented, new JsonSerializerSettings()
-            {
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-            });
+            var ProductTypes = _context.ProductTypes
+		.Include(x => x.ProductFamilly)
+		.AsNoTracking()
+		.ToList();
+            return Json(ProductTypes);
         }
 
         [HttpGet, ActionName("TmpWeekBasket"), Route("api/tmpWeekBasket")]
-        public string JsonTmpWeekBasket()
+        public IActionResult JsonTmpWeekBasket()
         {
             var adherentStolon = GetActiveAdherentStolon();
             if (adherentStolon == null)
@@ -125,33 +125,34 @@ namespace Stolons.Controllers
             {
                 tempWeekBasket.RetrieveProducts(_context);
             }
-            return JsonConvert.SerializeObject(tempWeekBasket, Formatting.Indented, new JsonSerializerSettings()
-            {
-                ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-            });
+            return Json(tempWeekBasket);
         }
 
         [HttpGet, ActionName("ValidatedWeekBasket"), Route("api/validatedWeekBasket")]
-        public string JsonValidatedWeekBasket()
+        public IActionResult JsonValidatedWeekBasket()
         {
             var adherentStolon = GetActiveAdherentStolon();
+
             if (adherentStolon == null)
             {
                 return null;
             }
-            ValidatedWeekBasket validatedWeekBasket = _context.ValidatedWeekBaskets.Include(x => x.AdherentStolon).Include(x => x.AdherentStolon.Adherent).Include(x => x.BillEntries).FirstOrDefault(x => x.AdherentStolon.Id == adherentStolon.Id);
+            ValidatedWeekBasket validatedWeekBasket = _context.ValidatedWeekBaskets
+		.Include(x => x.AdherentStolon)
+		.Include(x => x.AdherentStolon.Adherent)
+		.Include(x => x.BillEntries)
+		.AsNoTracking()
+		.FirstOrDefault(x => x.AdherentStolon.Id == adherentStolon.Id);
+
             if (validatedWeekBasket != null)
             {
                 validatedWeekBasket.RetrieveProducts(_context);
             }
-            return JsonConvert.SerializeObject(validatedWeekBasket, Formatting.Indented, new JsonSerializerSettings()
-            {
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-            });
+            return Json(validatedWeekBasket);
         }
 
         [HttpPost, ActionName("AddToBasket"), Route("api/addToBasket")]
-        public string AddToBasket(string weekBasketId, string productStockId)
+        public IActionResult AddToBasket(string weekBasketId, string productStockId)
         {
             TempWeekBasket tempWeekBasket = _context.TempsWeekBaskets.Include(x => x.AdherentStolon).Include(x => x.AdherentStolon.Adherent).Include(x => x.BillEntries).First(x => x.Id.ToString() == weekBasketId);
             tempWeekBasket.RetrieveProducts(_context);
@@ -165,28 +166,19 @@ namespace Stolons.Controllers
             tempWeekBasket.Validated = IsBasketValidated(tempWeekBasket);
             tempWeekBasket.RetrieveProducts(_context);
             _context.SaveChanges();
-            return JsonConvert.SerializeObject(tempWeekBasket, Formatting.Indented, new JsonSerializerSettings()
-            {
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-            });
+            return Json(tempWeekBasket);
         }
 
         [HttpPost, ActionName("PlusProduct"), Route("api/incrementProduct")]
-        public string PlusProduct(string weekBasketId, string productStockId)
+        public IActionResult PlusProduct(string weekBasketId, string productStockId)
         {
-            return JsonConvert.SerializeObject(AddProductQuantity(weekBasketId, productStockId, +1), Formatting.Indented, new JsonSerializerSettings()
-            {
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-            });
+            return Json(AddProductQuantity(weekBasketId, productStockId, +1));
         }
 
         [HttpPost, ActionName("MinusProduct"), Route("api/decrementProduct")]
-        public string MinusProduct(string weekBasketId, string productStockId)
+        public IActionResult MinusProduct(string weekBasketId, string productStockId)
         {
-            return JsonConvert.SerializeObject(AddProductQuantity(weekBasketId, productStockId, -1), Formatting.Indented, new JsonSerializerSettings()
-            {
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-            });
+            return Json(AddProductQuantity(weekBasketId, productStockId, -1));
         }
 
         private TempWeekBasket AddProductQuantity(string weekBasketId, string productStockId, int quantity)
@@ -240,7 +232,7 @@ namespace Stolons.Controllers
         }
 
         [HttpPost, ActionName("RemoveBillEntry"), Route("api/removeBillEntry")]
-        public string RemoveBillEntry(string weekBasketId, string productStockId)
+        public IActionResult RemoveBillEntry(string weekBasketId, string productStockId)
         {
             TempWeekBasket tempWeekBasket = _context.TempsWeekBaskets.Include(x => x.AdherentStolon).Include(x => x.AdherentStolon.Adherent).Include(x => x.BillEntries).First(x => x.Id.ToString() == weekBasketId);
             tempWeekBasket.RetrieveProducts(_context);
@@ -249,15 +241,12 @@ namespace Stolons.Controllers
             _context.Remove(billEntry);
             tempWeekBasket.Validated = IsBasketValidated(tempWeekBasket);
             _context.SaveChanges();
-            return JsonConvert.SerializeObject(tempWeekBasket, Formatting.Indented, new JsonSerializerSettings()
-            {
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-            });
+            return Json(tempWeekBasket);
         }
 
         //Unused for now
         [HttpPost, ActionName("ResetBasket"), Route("api/resetBasket")]
-        public string ResetBasket(string basketId)
+        public IActionResult ResetBasket(string basketId)
         {
             TempWeekBasket tempWeekBasket = _context.TempsWeekBaskets.Include(x => x.AdherentStolon).Include(x => x.AdherentStolon.Adherent).First(x => x.Id.ToString() == basketId);
             ValidatedWeekBasket validatedWeekBasket = _context.ValidatedWeekBaskets.Include(x => x.AdherentStolon).Include(x => x.AdherentStolon.Adherent).Include(x => x.BillEntries).FirstOrDefault(x => x.Adherent.Id == tempWeekBasket.Adherent.Id);
@@ -277,10 +266,7 @@ namespace Stolons.Controllers
             tempWeekBasket.Validated = true;
             _context.SaveChanges();
             tempWeekBasket.RetrieveProducts(_context);
-            return JsonConvert.SerializeObject(tempWeekBasket, Formatting.Indented, new JsonSerializerSettings()
-            {
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-            });
+            return Json(tempWeekBasket);
         }
 
         /**

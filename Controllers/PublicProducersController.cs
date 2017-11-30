@@ -32,16 +32,12 @@ namespace Stolons.Controllers
 
         [AllowAnonymous]
         [HttpGet, ActionName("Producers"), Route("api/producers")]
-        public string JsonProductsStocks()
+        public IActionResult JsonProductsStocks()
         {
             Stolon stolon = GetCurrentStolon();
-            
-            var producers = _context.Adherents.Include(x => x.AdherentStolons).Where(x => x.AdherentStolons.Any(adhSto => adhSto.IsProducer && adhSto.StolonId == stolon.Id)).ToList(); ;
+            var producers = _context.Adherents.Include(x => x.AdherentStolons).AsNoTracking().Where(x => x.AdherentStolons.Any(adhSto => adhSto.IsProducer && adhSto.StolonId == stolon.Id)).ToList();
 
-            return JsonConvert.SerializeObject(producers, Formatting.Indented, new JsonSerializerSettings()
-            {
-                ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-            });
+            return Json(producers);
         }
     }
 }

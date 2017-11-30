@@ -114,7 +114,7 @@ TmpWeekBasketModel = Backbone.Model.extend(
                 type: 'post',
                 success: function (response) {
                     if (response) {
-                        self.set(JSON.parse(response));
+                        self.set(response);
                     }
                 }
             });
@@ -131,7 +131,7 @@ TmpWeekBasketModel = Backbone.Model.extend(
                 type: 'post',
                 success: function (response) {
                     if (response) {
-                        self.set(JSON.parse(response));
+                        self.set(response);
                     }
                 }
             });
@@ -148,7 +148,7 @@ TmpWeekBasketModel = Backbone.Model.extend(
                 type: 'post',
                 success: function (response) {
                     if (response) {
-                        self.set(JSON.parse(response));
+                        self.set(response);
                     }
                 }
             });
@@ -165,7 +165,7 @@ TmpWeekBasketModel = Backbone.Model.extend(
                 type: 'post',
                 success: function (response) {
                     if (response) {
-                        self.set(JSON.parse(response));
+                        self.set(response);
                     }
                 }
             });
@@ -180,7 +180,7 @@ TmpWeekBasketModel = Backbone.Model.extend(
                 },
                 type: 'post',
                 success: function (response) {
-                    self.set(JSON.parse(response));
+                    self.set(response);
                 }
             });
         }
