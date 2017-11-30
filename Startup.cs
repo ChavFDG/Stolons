@@ -236,7 +236,7 @@ namespace Stolons
             if (family == null)
             {
                 family = new ProductFamilly(type, name);
-                type.CanBeRemoved = canBeRemoved;
+                family.CanBeRemoved = canBeRemoved;
                 if (imageName != null)
                 {
                     family.Image = Path.Combine(Configurations.ProductsTypeAndFamillyIconsStockagesPath, imageName);

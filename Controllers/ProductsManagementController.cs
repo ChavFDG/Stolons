@@ -482,6 +482,8 @@ namespace Stolons.Controllers
             var category = _context.ProductTypes.Include(x => x.ProductFamilly).FirstOrDefault(x => x.Id == categoryId);
             if (category == null)
                 return StatusCode(400);
+            if (!category.CanBeRemoved)
+                return StatusCode(401, "Cette catégorie ne peut être supprimé");
             var products = _context.Products.Where(x => x.Familly.Type.Id == categoryId).ToList();
             var defaultFamilly = _context.ProductFamillys.First(x => x.Id == Configurations.DefaultFamily.Id);
             foreach (Product product in products)
@@ -508,6 +510,8 @@ namespace Stolons.Controllers
             {
                 return StatusCode(400);
             }
+            if (!family.CanBeRemoved)
+                return StatusCode(401, "Cette famille ne peut être supprimé");
             var products = _context.Products.Where(x => x.Familly.Id == familyId).ToList();
             var defaultFamilly = _context.ProductFamillys.First(x => x.Id == Configurations.DefaultFamily.Id);
             foreach (Product product in products)
