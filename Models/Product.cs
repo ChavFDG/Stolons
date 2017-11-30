@@ -326,7 +326,7 @@ namespace Stolons.Models
         {
             [Display(Name = "Panier (température ambiante)")]
             Basket = 0,
-            [Display(Name = "Réfrigirateur (0° -5°)")]
+            [Display(Name = "Réfrigérateur  (0° -5°)")]
             Fridge = 1,
             [Display(Name = "Congélateur (-15° -18°)")]
             Freezer = 2
