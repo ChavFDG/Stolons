@@ -47,6 +47,16 @@
         $('input#create-adherent').on('click', function () {
             return formValidation.valid('editAdherent');
         });
+
+        var longitude = document.getElementById('longitude');
+        longitude.onchange = function () {
+            $("#longitude").val($("#longitude").val().replace('.', ','));
+        };
+
+        var latitude = document.getElementById('latitude');
+        latitude.onchange = function () {
+            $("#latitude").val($("#latitude").val().replace('.', ','));
+        };
     });
 </script>
 <div class="form-horizontal">
@@ -58,8 +68,8 @@
 
     @if (Model.Edition == Stolons.ViewModels.Adherents.AdherentEdition.Consumer)
     {
-            <input asp-for="Adherent.CompanyName" hidden="hidden" />
-            <input asp-for="Adherent.Area" hidden="hidden" />
+        <input asp-for="Adherent.CompanyName" hidden="hidden" />
+        <input asp-for="Adherent.Area" hidden="hidden" />
             <input asp-for="Adherent.ExploitationPicuresSerialized" hidden="hidden" />
             <input asp-for="Adherent.Production" hidden="hidden" />
             <input asp-for="Adherent.OpenText" hidden="hidden" />
@@ -92,7 +102,7 @@
     <div class="form-group">
         <label asp-for="Adherent.Email" class="col-md-2 control-label required"></label>
         <div class="col-md-10">
-            <input asp-for="Adherent.Email" class="form-control" data-type="email"/>
+            <input asp-for="Adherent.Email" class="form-control" data-type="email" />
             <span asp-validation-for="Adherent.Email" class="text-danger" />
         </div>
     </div>
@@ -100,7 +110,7 @@
         <label asp-for="Adherent.AvatarFileName" class="col-md-2 control-label"></label>
         <div class="col-md-10">
             <input id="avatarImage" type="file" accept="image/*" class="form-control">
-            <input type="hidden" name="uploadAvatar"/>
+            <input type="hidden" name="uploadAvatar" />
         </div>
         <div class="col-md-4">
             <img id="image1Preview" src="@("\\"+ Model.Adherent.AvatarFilePath)" class="imgPreview" />
@@ -162,7 +172,7 @@
 
     @if (Model.Edition == Stolons.ViewModels.Adherents.AdherentEdition.Producer)
     {
-        <h3>Informations producteur</h3>        
+        <h3>Informations producteur</h3>
         <div class="form-group">
             <label asp-for="Adherent.SellerType" class="col-md-2 control-label"></label>
             <div class="col-md-10">
@@ -213,10 +223,12 @@
             </div>
         </div>
 
+        <h3>Coordonnées GPS de mon exploitation</h3>
+        <p>Pour facilement trouver vos coordonées GPS utilisé le site <a href="http://www.coordonnees-gps.fr/" target="_blank">www.coordonnees-gps.fr</a> et reporter les valeurs de latitude et longitude.</p>
         <div class="form-group">
             <label asp-for="Adherent.Latitude" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <input asp-for="Adherent.Latitude" class="form-control" data-val-number="La latitude doit être un nombre." />
+                <input asp-for="Adherent.Latitude" id="latitude" class="form-control" data-val-number="La latitude doit être un nombre." />
                 <span asp-validation-for="Adherent.Latitude" class="text-danger" />
             </div>
         </div>
@@ -224,14 +236,9 @@
         <div class="form-group">
             <label asp-for="Adherent.Longitude" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <input asp-for="Adherent.Longitude" class="form-control" data-val-number="La longitude doit être un nombre." />
+                <input asp-for="Adherent.Longitude" id="longitude" class="form-control" data-val-number="La longitude doit être un nombre." />
                 <span asp-validation-for="Adherent.Longitude" class="text-danger" />
             </div>
         </div>
-
-	<div class="form-group">
-	    <label class="col-md-4 control-label">Trouvez vos coordonnées: </label>
-	    <span><a href="http://www.coordonnees-gps.fr/" target="_blank">www.coordonnees-gps.fr</a></span>
-	</div>
     }
 </div>
