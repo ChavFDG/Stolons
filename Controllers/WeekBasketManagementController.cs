@@ -60,7 +60,7 @@ namespace Stolons.Controllers
                 TransactionType.Inbound,
                 TransactionCategory.BillPayement,
                 paymentMode == PaymentMode.Token ? 0 : bill.OrderAmount,
-                "Paiement de la facture " + bill.BillNumber + " par " + bill.Adherent.Name + "( " + bill.Adherent.Id + " ) en " + EnumHelper<PaymentMode>.GetDisplayValue(paymentMode));
+                "Paiement de la facture " + bill.BillNumber + " par " + bill.Adherent.Name + "( " + bill.AdherentStolon.LocalId + " ) en " + EnumHelper<PaymentMode>.GetDisplayValue(paymentMode));
             _context.Add(transaction);
             //Save
             _context.SaveChanges();
@@ -81,14 +81,14 @@ namespace Stolons.Controllers
                     Transaction.TransactionType.Outbound,
                     Transaction.TransactionCategory.ProducerRefound,
                     bill.BillAmount,
-                    "Paiement de la facture " + bill.BillNumber + " à " + bill.Adherent.CompanyName + " ( " + bill.Adherent.Id + " )");
+                    "Paiement de la facture " + bill.BillNumber + " à " + bill.Adherent.CompanyName + " ( " + bill.AdherentStolon.LocalId + " )");
                 _context.Add(prodRefound);
                 Transaction comitionInbound = new Transaction(
                     GetCurrentStolon(),
                     Transaction.TransactionType.Inbound,
                     Transaction.TransactionCategory.ProducersFee,
                     bill.FeeAmount,
-                    "Encaissement de la commission de la facture " + bill.BillNumber + " de " + bill.Adherent.CompanyName + " ( " + bill.Adherent.Id + " )");
+                    "Encaissement de la commission de la facture " + bill.BillNumber + " de " + bill.Adherent.CompanyName + " ( " + bill.AdherentStolon.LocalId + " )");
                 _context.Add(comitionInbound);
             }
             //Save

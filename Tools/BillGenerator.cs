@@ -617,7 +617,7 @@ namespace Stolons.Tools
                 billBuilder.AppendLine("<td></td>");
                 billBuilder.AppendLine("<td></td>");
                 billBuilder.AppendLine("<td></td>");
-                billBuilder.AppendLine("<td>TAV " + tax.Key + "%</td>");
+                billBuilder.AppendLine("<td>TVA " + tax.Key + "%</td>");
                 billBuilder.AppendLine("<td>" + taxAmount.ToString("0.00") + " €</td>");
                 billBuilder.AppendLine("</tr>");
                 bill.TaxAmount += taxAmount;

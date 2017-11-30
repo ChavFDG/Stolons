@@ -82,8 +82,8 @@ namespace Stolons.Models.Users
 
         [Display(Name = "Raison sociale")]
         public string CompanyName { get; set; }
-        [Display(Name = "Superficie en m²")]
-        public int Area { get; set; }
+        [Display(Name = "Superficie en ha")]
+        public decimal Area { get; set; }
 
         private IList<string> _ExploitationPictures;
         [Display(Name = "Galerie d'exploitations")]
