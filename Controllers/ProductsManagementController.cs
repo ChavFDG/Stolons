@@ -69,7 +69,6 @@ namespace Stolons.Controllers
             foreach (var productStock in productsStock)
             {
                 int orderedQty = 0;
-                List<BillEntry> billEntries = new List<BillEntry>();
                 foreach (var validateWeekBasket in _context.ValidatedWeekBaskets.Include(x=>x.AdherentStolon).ThenInclude(x=>x.Adherent).Include(x => x.BillEntries).ToList())
                 {
                     validateWeekBasket.BillEntries.Where(x => x.ProductStockId == productStock.Id).ToList().ForEach(x => orderedQty += x.Quantity);
