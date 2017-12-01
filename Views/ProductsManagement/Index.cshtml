@@ -115,18 +115,18 @@
             <td>
                 @Html.DisplayFor(model => item.UnitPrice) @("€")
                 @{
-                    @if (item.QuantityStep != 0)
-                    {
-                        @(" par ")
-                        @Html.DisplayFor(model => item.QuantityStepString)
+                        @if (item.Type == Product.SellType.Weigh)
+                        {
+                            @(" par ")
+                            @Html.DisplayFor(model => item.QuantityStepString)
+                        }
+                        @if (!item.HideWeightPrice && item.WeightPrice != 0)
+                        {
+                            <br />
+                            @Html.DisplayFor(model => item.WeightPrice)@("€/")
+                            @Html.DisplayFor(model => item.ProductUnit)
+                        }
                     }
-                    @if (!item.HideWeightPrice && item.WeightPrice != 0)
-                    {
-                        <br />
-                        @Html.DisplayFor(model => item.WeightPrice)@("€/")
-                        @Html.DisplayFor(model => item.ProductUnit)
-                    }
-                }
             </td>
             <td>
                 Vente : @(EnumHelper<Product.SellType>.GetDisplayValue(@item.Type))
