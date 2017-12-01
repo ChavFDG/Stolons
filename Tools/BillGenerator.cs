@@ -728,6 +728,8 @@ namespace Stolons.Tools
         {
             string tempFileName = Guid.NewGuid().ToString().Remove(5) + ".html";
             //Création du fichier temporaire
+            if (!Directory.Exists(Path.Combine(Configurations.Environment.WebRootPath, "temp")))
+                Directory.CreateDirectory(Path.Combine(Configurations.Environment.WebRootPath, "temp"));
             string tempFilePath = Path.Combine(Configurations.Environment.WebRootPath, "temp", tempFileName);
             using (var streamWriter = File.CreateText(tempFilePath))
             {

@@ -149,7 +149,6 @@ namespace Stolons
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
-
             List<Stolon> stolons = CreateStolons(context);
             await CreateAdminAccount(context, userManager, stolons.First());
             CreateProductCategories(context);
