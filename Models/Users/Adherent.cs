@@ -120,7 +120,7 @@ namespace Stolons.Models.Users
             }
         }
 
-        public virtual ICollection<Product> Products { get; set; }
+        public ICollection<Product> Products { get; set; }
 
         [Display(Name = "Production")]
         public string Production { get; set; }

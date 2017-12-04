@@ -28,6 +28,7 @@ ProductTypesModel = Backbone.Collection.extend({
     comparator: "Name"
 });
 
+//Actually ProductStocks...
 ProductsModel = Backbone.Collection.extend(
     {
         defaults: [],
@@ -309,7 +310,7 @@ FiltersView = Backbone.View.extend({
 	$('#filters > li.dropdown').hover(function() {
 	    $(this).find('.dropdown-menu').stop(true, true).delay(0).fadeIn(1000);
 	}, function() {
-	    $(this).find('.dropdown-menu').stop(true, true).delay(600).fadeOut(200);
+	    $(this).find('.dropdown-menu').stop(true, true).delay(300).fadeOut(200);
 	});
 	this.$('#search').on("input", _.bind(function () {
             this.filterProducts();
@@ -363,7 +364,7 @@ ProducerModalView = Backbone.View.extend({
     template: _.template($("#producerModalTemplate").html()),
 
     open: function (productId) {
-        this.renderModal(WeekBasket.ProductsModel.get(productId).get("AdherentStolon").Adherent);
+        this.renderModal(WeekBasket.ProductsModel.get(productId).get("Product").get("Producer"));
     },
 
     onClose: function () {

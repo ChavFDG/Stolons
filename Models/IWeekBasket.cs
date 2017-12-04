@@ -24,7 +24,7 @@ namespace Stolons.Models
             {
                 if (billEntry.ProductStock == null)
                 {
-                    billEntry.ProductStock = context.ProductsStocks.Include(x => x.AdherentStolon).Include(x => x.Product).Include(x => x.AdherentStolon.Adherent).First(x => x.Id == billEntry.ProductStockId);
+                    billEntry.ProductStock = context.ProductsStocks.Include(x => x.AdherentStolon).Include(x => x.Product).Include(x => x.AdherentStolon.Adherent).AsNoTracking().First(x => x.Id == billEntry.ProductStockId);
                 }
             }
         }
