@@ -7,7 +7,7 @@
     <PackageId>Stolons</PackageId>
     <UserSecretsId>aspnet-Stolons-855e912a-d4c0-4fb5-9b21-56c22521968d</UserSecretsId>
     <PackageTargetFallback>$(PackageTargetFallback);dotnet5.6;dnxcore50;portable-net45+win8</PackageTargetFallback>
-    <RuntimeFrameworkVersion>1.0.4</RuntimeFrameworkVersion>
+    <RuntimeFrameworkVersion>1.1.1</RuntimeFrameworkVersion>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Views\NewFolder\**" />

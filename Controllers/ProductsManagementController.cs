@@ -38,11 +38,11 @@ namespace Stolons.Controllers
             Adherent producer = await GetCurrentAdherentAsync() as Adherent;
             producer = _context.Adherents
                 .Include(x => x.Products).ThenInclude(x => x.ProductStocks).ThenInclude(x => x.AdherentStolon).ThenInclude(x => x.Stolon)
-                .Include(x => x.Products).ThenInclude(x=>x.Familly)
+                .Include(x => x.Products).ThenInclude(x => x.Familly)
                 .Include(x => x.Products).ThenInclude(x => x.Familly.Type)
                 .Include(x => x.AdherentStolons).AsNoTracking().FirstOrDefault(x => x.Id == producer.Id);
             producer.AdherentStolons.ForEach(adherentStolon => adherentStolon.Stolon = _context.Stolons.First(stolon => stolon.Id == adherentStolon.StolonId));
-            var products = _context.Products.Include(x=>x.ProductStocks).Include(m => m.Familly).Include(m => m.Familly.Type).Where(x => x.Producer == producer).OrderBy(x=>x.Name).ToList();
+            var products = _context.Products.Include(x => x.ProductStocks).Include(m => m.Familly).Include(m => m.Familly.Type).Where(x => x.Producer == producer).OrderBy(x => x.Name).ToList();
             foreach (var prod in products)
             {
                 foreach (var stock in prod.ProductStocks)
@@ -65,18 +65,18 @@ namespace Stolons.Controllers
             Adherent producer = GetCurrentAdherentSync() as Adherent;
             List<ProductStockViewModel> vmProductsStock = new List<ProductStockViewModel>();
             var productsStock = _context.ProductsStocks
-		.Include(x=>x.AdherentStolon)
-		.ThenInclude(x=>x.Stolon)
-		.Include(x=>x.Product)
-		.ThenInclude(m => m.Familly)
-		.ThenInclude(m => m.Type)
-		.AsNoTracking()
-		.Where(x => x.AdherentStolon.AdherentId== producer.Id).ToList();
-           
+        .Include(x => x.AdherentStolon)
+        .ThenInclude(x => x.Stolon)
+        .Include(x => x.Product)
+        .ThenInclude(m => m.Familly)
+        .ThenInclude(m => m.Type)
+        .AsNoTracking()
+        .Where(x => x.AdherentStolon.AdherentId == producer.Id).ToList();
+
             foreach (var productStock in productsStock)
             {
                 int orderedQty = 0;
-                foreach (var validateWeekBasket in _context.ValidatedWeekBaskets.Include(x=>x.AdherentStolon).ThenInclude(x=>x.Adherent).Include(x => x.BillEntries).AsNoTracking().ToList())
+                foreach (var validateWeekBasket in _context.ValidatedWeekBaskets.Include(x => x.AdherentStolon).ThenInclude(x => x.Adherent).Include(x => x.BillEntries).AsNoTracking().ToList())
                 {
                     validateWeekBasket.BillEntries.Where(x => x.ProductStockId == productStock.Id).ToList().ForEach(x => orderedQty += x.Quantity);
                 }
@@ -111,7 +111,7 @@ namespace Stolons.Controllers
             if (!AuthorizedProducer())
                 return Unauthorized();
 
-            Product product = id == null ? new Product() { Familly = _context.ProductFamillys.First(x=>x.Id ==  Configurations.DefaultFamily.Id) } : _context.Products.Include(x => x.Familly).First(x => x.Id == id);
+            Product product = id == null ? new Product() { Familly = _context.ProductFamillys.First(x => x.Id == Configurations.DefaultFamily.Id) } : _context.Products.Include(x => x.Familly).First(x => x.Id == id);
             return View(new ProductEditionViewModel(GetActiveAdherentStolon(), product, _context, id == null));
 
         }
@@ -138,8 +138,8 @@ namespace Stolons.Controllers
                 if (!String.IsNullOrWhiteSpace(vmProduct.MainPictureLight))
                 {
                     string pictureName = Guid.NewGuid().ToString() + ".jpg";
-                    _environment.UploadBase64Image( vmProduct.MainPictureLight, Configurations.ProductsStockagePathLight, pictureName);
-                    _environment.UploadBase64Image( vmProduct.MainPictureHeavy, Configurations.ProductsStockagePathHeavy, pictureName);
+                    _environment.UploadBase64Image(vmProduct.MainPictureLight, Configurations.ProductsStockagePathLight, pictureName);
+                    _environment.UploadBase64Image(vmProduct.MainPictureHeavy, Configurations.ProductsStockagePathHeavy, pictureName);
                     if (vmProduct.IsNew || vmProduct.Product.Pictures.Count == 0)
                     {
                         //Add
@@ -156,8 +156,8 @@ namespace Stolons.Controllers
                 if (!String.IsNullOrWhiteSpace(vmProduct.Picture2Light))
                 {
                     string pictureName = Guid.NewGuid().ToString() + ".jpg";
-                    _environment.UploadBase64Image( vmProduct.MainPictureLight, Configurations.ProductsStockagePathLight, pictureName);
-                    _environment.UploadBase64Image( vmProduct.MainPictureHeavy, Configurations.ProductsStockagePathHeavy, pictureName);
+                    _environment.UploadBase64Image(vmProduct.MainPictureLight, Configurations.ProductsStockagePathLight, pictureName);
+                    _environment.UploadBase64Image(vmProduct.MainPictureHeavy, Configurations.ProductsStockagePathHeavy, pictureName);
                     if (!vmProduct.IsNew)
                     {
                         _environment.DeleteFile(Configurations.ProductsStockagePathLight, vmProduct.Product.Pictures[1]);
@@ -173,8 +173,8 @@ namespace Stolons.Controllers
                 if (!String.IsNullOrWhiteSpace(vmProduct.Picture3Light))
                 {
                     string pictureName = Guid.NewGuid().ToString() + ".jpg";
-                    _environment.UploadBase64Image( vmProduct.MainPictureLight, Configurations.ProductsStockagePathLight, pictureName);
-                    _environment.UploadBase64Image( vmProduct.MainPictureHeavy, Configurations.ProductsStockagePathHeavy, pictureName);
+                    _environment.UploadBase64Image(vmProduct.MainPictureLight, Configurations.ProductsStockagePathLight, pictureName);
+                    _environment.UploadBase64Image(vmProduct.MainPictureHeavy, Configurations.ProductsStockagePathHeavy, pictureName);
                     if (!vmProduct.IsNew)
                     {
                         _environment.DeleteFile(Configurations.ProductsStockagePathLight, vmProduct.Product.Pictures[2]);
@@ -207,7 +207,7 @@ namespace Stolons.Controllers
             vmProduct.RefreshTypes(_context);
             return View(vmProduct);
         }
-        
+
         public IActionResult Delete(Guid id)
         {
             if (!AuthorizedProducer())
@@ -218,13 +218,13 @@ namespace Stolons.Controllers
             _context.SaveChanges();
             return RedirectToAction("Index");
         }
-        
+
         public IActionResult Archive(Guid id)
         {
             if (!AuthorizedProducer())
                 return Unauthorized();
 
-            Product product = _context.Products.Include(x=>x.ProductStocks).FirstOrDefault(x => x.Id == id);
+            Product product = _context.Products.Include(x => x.ProductStocks).FirstOrDefault(x => x.Id == id);
             product.IsArchive = true;
             product.ProductStocks.ToList().ForEach(x => x.State = Product.ProductState.Disabled);
             _context.SaveChanges();
@@ -256,7 +256,7 @@ namespace Stolons.Controllers
             return RedirectToAction("Index");
 
         }
-        
+
         public IActionResult EnableAllStockProduct()
         {
             if (!AuthorizedProducer())
@@ -269,33 +269,33 @@ namespace Stolons.Controllers
             _context.SaveChanges();
             return RedirectToAction("Index");
         }
-        
+
         public IActionResult EnableAllStockProductForStolon(Guid? adherentStolonId)
         {
             if (!AuthorizedProducer())
                 return Unauthorized();
 
-            foreach (var product in _context.ProductsStocks.Include(x => x.AdherentStolon).Where(x => x.AdherentStolon.Id == adherentStolonId &&  x.State == Product.ProductState.Stock).ToList())
+            foreach (var product in _context.ProductsStocks.Include(x => x.AdherentStolon).Where(x => x.AdherentStolon.Id == adherentStolonId && x.State == Product.ProductState.Stock).ToList())
             {
                 product.State = Product.ProductState.Enabled;
             }
             _context.SaveChanges();
             return RedirectToAction("Index");
         }
-        
+
         public IActionResult DisableAllProductForStolon(Guid adherentStolonId)
         {
             if (!AuthorizedProducer())
                 return Unauthorized();
 
-            foreach (var product in _context.ProductsStocks.Include(x => x.AdherentStolon).Where(x => x.AdherentStolonId == adherentStolonId && x.State != Product.ProductState.Disabled ).ToList())
+            foreach (var product in _context.ProductsStocks.Include(x => x.AdherentStolon).Where(x => x.AdherentStolonId == adherentStolonId && x.State != Product.ProductState.Disabled).ToList())
             {
                 product.State = Product.ProductState.Disabled;
             }
             _context.SaveChanges();
             return RedirectToAction("Index");
         }
-        
+
         public IActionResult Enable(Guid? id)
         {
             if (!AuthorizedProducer())
@@ -322,7 +322,7 @@ namespace Stolons.Controllers
             return RedirectToAction("Index");
         }
 
-        
+
         public IActionResult EnableAllStockProductForSpecified(Guid? adherentStolonId)
         {
             if (!AuthorizedProducer())
@@ -335,7 +335,7 @@ namespace Stolons.Controllers
             _context.SaveChanges();
             return RedirectToAction("Index");
         }
-        
+
         public IActionResult DisableAllProductForSpecified(Guid? adherentStolonId)
         {
             if (!AuthorizedProducer())
@@ -350,15 +350,15 @@ namespace Stolons.Controllers
         }
 
 
-        
+
         [HttpPost, ActionName("ChangeStock")]
         public IActionResult ChangeStock(Guid id, decimal stockDiff)
         {
             if (!AuthorizedProducer())
                 return Unauthorized();
-	    var productStock = _context.ProductsStocks.First(x => x.Id == id);
+            var productStock = _context.ProductsStocks.First(x => x.Id == id);
             productStock.WeekStock = productStock.WeekStock + stockDiff;
-	    productStock.RemainingStock = productStock.WeekStock;
+            productStock.RemainingStock = productStock.WeekStock;
             _context.SaveChanges();
             return Ok();
         }
@@ -369,16 +369,16 @@ namespace Stolons.Controllers
             if (!AuthorizedProducer())
                 return "401";
             var productStock = _context.ProductsStocks.First(x => x.Id == id);
-	    //TODO verify that remaining stock >= 0
-	    if (productStock.RemainingStock + stockDiff < 0)
-	    {
-		return "Erreur: impossible de baisser le stock (stock restant: " + productStock.RemainingStock+ ")";
-	    }
+            //TODO verify that remaining stock >= 0
+            if (productStock.RemainingStock + stockDiff < 0)
+            {
+                return "Erreur: impossible de baisser le stock (stock restant: " + productStock.RemainingStock + ")";
+            }
             productStock.RemainingStock = productStock.RemainingStock + stockDiff;
             _context.SaveChanges();
             return "ok";
         }
-        
+
         [HttpGet, ActionName("ManageFamilies")]
         public IActionResult ManageFamilies()
         {
@@ -386,7 +386,7 @@ namespace Stolons.Controllers
                 return Unauthorized();
             return View();
         }
-        
+
         [HttpPost, ActionName("CreateCategory")]
         public IActionResult CreateCategory(string categoryName)
         {
@@ -397,7 +397,7 @@ namespace Stolons.Controllers
             _context.SaveChanges();
             return Ok();
         }
-        
+
         [HttpPost, ActionName("CreateFamily")]
         public IActionResult CreateFamily(Guid categoryId, string familyName)
         {
@@ -413,7 +413,7 @@ namespace Stolons.Controllers
             _context.SaveChanges();
             return Ok();
         }
-        
+
         [HttpPost, ActionName("RenameCategory")]
         public IActionResult RenameCategory(Guid categoryId, string newCategoryName)
         {
@@ -429,7 +429,7 @@ namespace Stolons.Controllers
             return Ok();
         }
 
-        
+
         [HttpPost, ActionName("RenameFamily")]
         public IActionResult RenameFamily(Guid familyId, string newFamilyName)
         {
@@ -444,7 +444,7 @@ namespace Stolons.Controllers
             _context.SaveChanges();
             return Ok();
         }
-        
+
         [HttpPost, ActionName("UpdateCategoryPicture")]
         public async Task<IActionResult> UpdateCategoryPicture(Guid categoryId, IFormFile picture)
         {
@@ -460,7 +460,7 @@ namespace Stolons.Controllers
             _context.SaveChanges();
             return Ok();
         }
-        
+
         [HttpPost, ActionName("UpdateFamilyPicture")]
         public async Task<IActionResult> UpdateFamilyPicture(Guid familyId, IFormFile picture)
         {
@@ -477,7 +477,7 @@ namespace Stolons.Controllers
             _context.SaveChanges();
             return Ok();
         }
-        
+
         [HttpPost, ActionName("DeleteCategory")]
         public IActionResult DeleteCategory(Guid categoryId)
         {
@@ -503,7 +503,7 @@ namespace Stolons.Controllers
             _context.SaveChanges();
             return Ok();
         }
-        
+
         [HttpPost, ActionName("DeleteFamily")]
         public IActionResult DeleteFamily(Guid familyId)
         {
