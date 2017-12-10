@@ -84,6 +84,10 @@ ProductStockModel = Backbone.Model.extend({
 
     //Stock restant en fonction du type de vente et de la quantity step
     getRemainingQuantityStock: function() {
+	// Stock illimité
+	if (this.get("Product").get("StockManagement") == 2) {
+	    return Infinity;
+	}
 	if (this.get("Product").get("Type") == 1) {
 	    return this.get("RemainingStock");
 	} else {
@@ -91,7 +95,7 @@ ProductStockModel = Backbone.Model.extend({
 	}
     },
 
-    //Stock restant en fonction du type de vente et de la quanity step
+    //Stock restant en fonction du type de vente et de la quantity step
     getWeekQuantityStock: function() {
 	if (this.get("Product").get("Type") == 1) {
 	    return this.get("WeekStock");
