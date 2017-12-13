@@ -140,9 +140,14 @@
 </div>
 
 <div class="boxContainer">
-    <h4>Adhérent(s) ayant commandé un panier cette semaine</h4>
+    <h4>Adhérent(s) ayant commandé un panier cette semaine : 
+    @Model.ConsumerBills.Count
+        /
+    @Model.WeekStolonsBill.Consumers
+    </h4>
     @if (Model.ConsumerBills.Any())
     {
+        
         <table class="table">
             <tr>
                 <th>
@@ -167,7 +172,7 @@
                     Facture
                 </th>
             </tr>
-            @foreach (var item in Model.ConsumerBills)
+            @foreach (var item in Model.ConsumerBills.OrderBy(x=>x.AdherentStolon.LocalId))
             {
                 <tr>
                     <td>

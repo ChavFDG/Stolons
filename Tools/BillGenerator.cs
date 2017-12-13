@@ -113,6 +113,7 @@ namespace Stolons.Tools
                             List<ConsumerBill> consumerBills = dbContext.ConsumerBills.Include(x => x.BillEntries).ThenInclude(x => x.ProductStock).ThenInclude(x => x.Product)
                                                                                         .Include(x => x.AdherentStolon).ThenInclude(x => x.Adherent)
                                                                                         .Include(x => x.AdherentStolon).ThenInclude(x => x.Stolon)
+                                                                                        .Where(x=>x.Stolon.Id == stolon.Id && x.EditionDate.GetIso8601WeekOfYear() == DateTime.Now.GetIso8601WeekOfYear() && x.EditionDate.Year == DateTime.Now.Year)
                                                                                         .ToList();
                             //Producer (creates bills)
                             foreach (var producer in dbContext.AdherentStolons.Include(x => x.Adherent).Include(x => x.Stolon).Where(x => x.StolonId == stolon.Id && x.IsProducer).ToList())
@@ -139,6 +140,7 @@ namespace Stolons.Tools
 
                             //Stolons
                             StolonsBill stolonsBill = GenerateBill(stolon, consumerBills, dbContext);
+                            stolonsBill.Producers = producerBills.Count;
                             if (dbContext.StolonsBills.Any(x => x.BillNumber == stolonsBill.BillNumber))
                             {
                                 StolonsBill tempBill = dbContext.StolonsBills.FirstOrDefault(x => x.BillNumber == stolonsBill.BillNumber);
@@ -344,7 +346,8 @@ namespace Stolons.Tools
             {
                 Stolon = stolon,
                 Amount = 0,
-                ProducersFee = stolon.ProducersFee
+                ProducersFee = stolon.ProducersFee,
+                Consumers = consumersBills.Count
             };
 
             if (!consumersBills.Any())
@@ -398,8 +401,8 @@ namespace Stolons.Tools
                             builder.AppendLine("</tr>");
 
                         }
-                        builder.AppendLine("</table>");
                     }
+                    builder.AppendLine("</table>");
                     if (count != consumersBills.Count)
                         builder.AppendLine("<div style=\"page-break-after:always\"></div>");
 

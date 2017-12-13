@@ -218,6 +218,12 @@ namespace Stolons.Models
 
         [Display(Name = "Commission")]
         public int ProducersFee { get; set; }
+        
+        [Display(Name = "Nombre d'adhérent ayant commandé")]
+        public int Consumers { get; set; }
+
+        [Display(Name = "Nombre de producteur ayant à livrer")]
+        public int Producers { get; set; }
 
         [NotMapped]
         public decimal FeeAmount
