@@ -17,8 +17,12 @@
                                 <li>
                                     Stock restant:
                                     <b>
-                                        <%= product.RemainingStock %>
-                                        <%= productStockModel.getStockUnitString() %>
+					<% if (product.StockManagement === 2) { %>
+					  Illimité
+					<% } else { %>
+                                           <%= productStockModel.getRemainingQuantityStock() %>
+					   <%= productStockModel.getStockUnitString() %>
+					<% } %>
                                     </b>
                                 </li>
                                 <li class="productModal-pricing">
