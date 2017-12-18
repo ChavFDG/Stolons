@@ -143,7 +143,7 @@
     <h4>Adhérent(s) ayant commandé un panier cette semaine : 
     @Model.ConsumerBills.Count
         /
-    @Model.WeekStolonsBill.Consumers
+    @Model.WeekStolonsBill?.Consumers
     </h4>
     @if (Model.ConsumerBills.Any())
     {
