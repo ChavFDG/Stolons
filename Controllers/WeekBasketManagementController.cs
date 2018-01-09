@@ -15,6 +15,7 @@ using static Stolons.Models.Transactions.Transaction;
 using Stolons.Models.Transactions;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Text;
 
 namespace Stolons.Controllers
 {
@@ -94,6 +95,42 @@ namespace Stolons.Controllers
             //Save
             _context.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+        public string RegenerateOrders()
+        {
+            var stolon = GetCurrentStolon();
+            var consumersBills = _context.ConsumerBills.Include(x => x.AdherentStolon).ThenInclude(x => x.Adherent).Include(x => x.AdherentStolon).ThenInclude(x => x.Stolon).Where(x => x.State == BillState.Pending && x.AdherentStolon.StolonId == stolon.Id).OrderBy(x => x.Adherent.Id).ToList();
+            var producersBills = _context.ProducerBills.Include(x => x.AdherentStolon).ThenInclude(x => x.Adherent).Include(x => x.AdherentStolon).ThenInclude(x => x.Stolon).Where(x => x.State != BillState.Paid && x.AdherentStolon.StolonId == stolon.Id).OrderBy(x => x.Adherent.Id).ToList();
+            var weekStolonBill = _context.StolonsBills.Include(x => x.Stolon).Where(x => x.StolonId == stolon.Id).ToList().FirstOrDefault(x => x.BillNumber.EndsWith(DateTime.Now.Year + "_" + DateTime.Now.GetIso8601WeekOfYear()));
+            DateTime start = DateTime.Now;
+            StringBuilder report = new StringBuilder();
+            report.Append("Rapport de génération des commandes : ");
+            report.AppendLine("- stolon : " + stolon.Label);
+            report.AppendLine("- annnée : " + DateTime.Now.Year);
+            report.AppendLine("- semaine : " + DateTime.Now.GetIso8601WeekOfYear());
+            report.AppendLine();
+            Dictionary<ConsumerBill, bool> consumers = new Dictionary<ConsumerBill, bool>();
+            consumersBills.ForEach(x => consumers.Add(x, BillGenerator.GenerateBillPDF(x)));
+            Dictionary<ProducerBill, bool> producers = new Dictionary<ProducerBill, bool>();
+            producersBills.ForEach(x => producers.Add(x, BillGenerator.GenerateOrderPDF(x)));
+            bool stolonBill = BillGenerator.GeneratePDF(weekStolonBill.HtmlBillContent, weekStolonBill.FilePath);
+            report.AppendLine("RESUME : ");
+            report.AppendLine("Commandes consomateurs générés : " + consumers.Count(x => x.Value == true) + "/" + consumers.Count);
+            report.AppendLine("Commandes producteurs générés : " + producers.Count(x => x.Value == true) + "/" + producers.Count);
+            report.AppendLine("Commandes stolons généré : " + stolonBill);
+            report.AppendLine("DETAILS : ");
+            report.AppendLine("-- Consomateurs ok : ");
+            consumers.Where(x => x.Value).ToList().ForEach(consumer => report.AppendLine(consumer.Key.AdherentStolon.LocalId + " " + consumer.Key.Adherent.Name.ToUpper() + " " + consumer.Key.Adherent.Surname));
+            report.AppendLine("-- Consomateurs nok : ");
+            consumers.Where(x => x.Value == false).ToList().ForEach(consumer => report.AppendLine(consumer.Key.AdherentStolon.LocalId + " " + consumer.Key.Adherent.Name.ToUpper() + " " + consumer.Key.Adherent.Surname));
+            report.AppendLine("-- Producteurs ok : ");
+            producers.Where(x => x.Value).ToList().ForEach(producer => report.AppendLine(producer.Key.AdherentStolon.LocalId + " " + producer.Key.Adherent.Name.ToUpper() + " " + producer.Key.Adherent.Surname));
+            report.AppendLine("-- Producteurs nok : ");
+            producers.Where(x => x.Value == false).ToList().ForEach(producer => report.AppendLine(producer.Key.AdherentStolon.LocalId + " " + producer.Key.Adherent.Name.ToUpper() + " " + producer.Key.Adherent.Surname));
+            report.AppendLine();
+            report?.AppendLine(" --Temps d'exécutions de la générations : " + (DateTime.Now - start));
+            return report.ToString();
         }
 
         [HttpPost, ActionName("UpdateBillCorrection")]

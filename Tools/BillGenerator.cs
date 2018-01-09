@@ -736,7 +736,8 @@ namespace Stolons.Tools
         public static bool GeneratePDF(string htmlContent, string fullPath)
         {
             string tempFileName = Guid.NewGuid().ToString().Remove(5) + ".html";
-            Thread.CurrentThread.Name = "Generating PDF : " + tempFileName + " thread";
+            if(Thread.CurrentThread.Name == null)
+                Thread.CurrentThread.Name = "Generating PDF : " + tempFileName + " thread";
             //Création du fichier temporaire
             if (!Directory.Exists(Path.Combine(Configurations.Environment.WebRootPath, "temp")))
                 Directory.CreateDirectory(Path.Combine(Configurations.Environment.WebRootPath, "temp"));
@@ -748,21 +749,9 @@ namespace Stolons.Tools
 
             string arguments = @"--headless --disable-gpu --print-to-pdf=" + "\"" + fullPath + "\"" + " " + "\"file://" + tempFilePath + "\"";
             var proc = Process.Start(Configurations.Application.ChromiumFullPath, arguments);
-            proc.WaitForExit();
-
-            int timeOut = 0;
-            while (!File.Exists(fullPath))
-            {
-                if (timeOut == 60)
-                {
-                    File.Delete(tempFilePath);
-                    return false;
-                }
-                Thread.Sleep(1000);
-                timeOut++;
-            }
+            proc.WaitForExit(120000);
             File.Delete(tempFilePath);
-            return true;
+            return File.Exists(fullPath);
         }
 
         public static int GetIso8601WeekOfYear(this DateTime time)
