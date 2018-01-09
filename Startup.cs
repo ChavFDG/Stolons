@@ -157,8 +157,9 @@ namespace Stolons
             await InitializeSampleAndTestData(serviceProvider, context, userManager, stolons.First());
 #endif
             Configurations.Environment = env;
-
+            
             Thread billManager = new Thread(() => BillGenerator.ManageBills());
+
             billManager.Start();
         }
 

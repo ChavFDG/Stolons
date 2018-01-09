@@ -29,7 +29,8 @@ namespace Stolons.Tools
             {
                 foreach (Stolon stolon in dbContext.Stolons.ToList())
                 {
-                    lastModes.Add(stolon.Id, stolon.GetMode());
+                    if (!lastModes.Keys.Contains(stolon.Id))
+                        lastModes.Add(stolon.Id, stolon.GetMode());
                 }
             }
             do
@@ -81,7 +82,9 @@ namespace Stolons.Tools
                             foreach (var weekBasket in consumerWeekBaskets)
                             {
                                 //Remove TempWeekBasket and linked billEntry
-                                var tempWeekBasketToRemove = dbContext.TempsWeekBaskets.First(x => x.AdherentStolonId == weekBasket.AdherentStolon.Id);
+                                var tempWeekBasketToRemove = dbContext.TempsWeekBaskets.FirstOrDefault(x => x.AdherentStolonId == weekBasket.AdherentStolon.Id);
+                                if (tempWeekBasketToRemove == null)
+                                    continue;
                                 var linkedBillEntriesToRemove = dbContext.BillEntrys.Where(x => x.TempWeekBasketId == tempWeekBasketToRemove.Id).ToList();
                                 dbContext.RemoveRange(linkedBillEntriesToRemove);
                                 dbContext.SaveChanges();
@@ -89,7 +92,7 @@ namespace Stolons.Tools
                                 dbContext.SaveChanges();
                                 //Creates new bill entryes 
                                 List<BillEntry> billEntries = new List<BillEntry>();
-                                foreach(var oldBillEntry in weekBasket.BillEntries.ToList())
+                                foreach (var oldBillEntry in weekBasket.BillEntries.ToList())
                                 {
                                     BillEntry newBillEntry = oldBillEntry.Clone();
                                     billEntries.Add(newBillEntry);
@@ -113,7 +116,7 @@ namespace Stolons.Tools
                             List<ConsumerBill> consumerBills = dbContext.ConsumerBills.Include(x => x.BillEntries).ThenInclude(x => x.ProductStock).ThenInclude(x => x.Product)
                                                                                         .Include(x => x.AdherentStolon).ThenInclude(x => x.Adherent)
                                                                                         .Include(x => x.AdherentStolon).ThenInclude(x => x.Stolon)
-                                                                                        .Where(x=>x.Stolon.Id == stolon.Id && x.EditionDate.GetIso8601WeekOfYear() == DateTime.Now.GetIso8601WeekOfYear() && x.EditionDate.Year == DateTime.Now.Year)
+                                                                                        .Where(x => x.Stolon.Id == stolon.Id && x.EditionDate.GetIso8601WeekOfYear() == DateTime.Now.GetIso8601WeekOfYear() && x.EditionDate.Year == DateTime.Now.Year)
                                                                                         .ToList();
                             //Producer (creates bills)
                             foreach (var producer in dbContext.AdherentStolons.Include(x => x.Adherent).Include(x => x.Stolon).Where(x => x.StolonId == stolon.Id && x.IsProducer).ToList())
@@ -131,7 +134,7 @@ namespace Stolons.Tools
                                 bill.HtmlBillContent = GenerateHtmlBillContent(bill, dbContext);
                                 bill.HtmlOrderContent = GenerateHtmlOrderContent(bill, dbContext);
                                 producerBills.Add(bill);
-                                if(billEntries.Any())
+                                if (billEntries.Any())
                                 {
                                     dbContext.Add(bill);
                                     dbContext.SaveChanges();
@@ -191,7 +194,7 @@ namespace Stolons.Tools
                             foreach (var bill in producerBills)
                             {
                                 Task.Factory.StartNew(() => { GenerateOrderPdfAndSendEmail(bill); });
-                                
+
                             }
 
                             //Bills (save bills and send mails to user)
@@ -215,9 +218,9 @@ namespace Stolons.Tools
                             }
                             dbContext.SaveChanges();
                             //Send email to all adherent that have subscribe to product by mail
-                            string htmlMessage = "Bonjour, les commandes sont ouverte chez " + stolon.Label +". Vous pouvez dès maintenant et jusqu'à " + stolon.DeliveryAndStockUpdateDayStartDate.ToFrench() + " " + stolon.DeliveryAndStockUpdateDayStartDateHourStartDate + ":" + stolon.DeliveryAndStockUpdateDayStartDateMinuteStartDate + " commander vos produits";
+                            string htmlMessage = "Bonjour, les commandes sont ouverte chez " + stolon.Label + ". Vous pouvez dès maintenant et jusqu'à " + stolon.DeliveryAndStockUpdateDayStartDate.ToFrench() + " " + stolon.DeliveryAndStockUpdateDayStartDateHourStartDate + ":" + stolon.DeliveryAndStockUpdateDayStartDateMinuteStartDate + " commander vos produits";
                             //TODO générer un jolie message avec la liste des produits
-                            foreach(var adherentStolon in dbContext.AdherentStolons.Include(x=>x.Adherent).Where(x=>x.StolonId == stolon.Id && x.Adherent.ReceivedProductListByEmail))
+                            foreach (var adherentStolon in dbContext.AdherentStolons.Include(x => x.Adherent).Where(x => x.StolonId == stolon.Id && x.Adherent.ReceivedProductListByEmail))
                             {
                                 AuthMessageSender.SendEmail(stolon.Label,
                                                                 adherentStolon.Adherent.Email,
@@ -250,18 +253,20 @@ namespace Stolons.Tools
                 else
                 {
                     //Generate pdf file
-                    GenerateOrderPDF(bill);
+                    bool hasFile = GenerateOrderPDF(bill);
                     //Send mail to producer
                     try
                     {
+                        string message = bill.HtmlOrderContent;
+                        if (hasFile)
+                            message += "<h3>En pièce jointe votre bon de commande de la semaine chez " + bill.Stolon.Label + " (Bon de commande " + bill.BillNumber + ")</h3>";
                         AuthMessageSender.SendEmail(bill.AdherentStolon.Stolon.Label,
-                                                        bill.Adherent.Email,
-                                                        bill.Adherent.CompanyName,
-                                                        "Votre bon de commande de la semaine chez " + bill.Stolon.Label + " (Bon de commande " + bill.BillNumber + ")",
-                                                        bill.HtmlOrderContent
-                                                        + "<h3>En pièce jointe votre bon de commande de la semaine chez " + bill.Stolon.Label + " (Bon de commande " + bill.BillNumber + ")</h3>",
-                                                        File.ReadAllBytes(bill.GetOrderFilePath()),
-                                                        "Bon de commande " + bill.GetOrderFileName());
+                                                    bill.Adherent.Email,
+                                                    bill.Adherent.CompanyName,
+                                                    "Votre bon de commande de la semaine chez " + bill.Stolon.Label + " (Bon de commande " + bill.BillNumber + ")",
+                                                    message,
+                                                    hasFile ? File.ReadAllBytes(bill.GetOrderFilePath()) : null,
+                                                    "Bon de commande " + bill.GetOrderFileName());
                     }
                     catch (Exception exept)
                     {
@@ -277,18 +282,20 @@ namespace Stolons.Tools
                                                 "Erreur lors de la génération de la facture " + bill.BillNumber + " à " + bill.Adherent.Email,
                                                 "Message d'erreur : " + exept.Message);
             }
-
         }
         private static void GenerateOrderPdfAndSendEmail(ConsumerBill bill)
         {
             try
             {
                 //Generate pdf file
-                GenerateBillPDF(bill);
+                bool hasFile = GenerateBillPDF(bill);
                 //Send mail to consumer
                 string message = "<h3>" + bill.AdherentStolon.Stolon.OrderDeliveryMessage + "</h3>";
                 message += "<br/>";
-                message += "<h4>En pièce jointe votre commande de la semaine (Commande " + bill.BillNumber + ")</h4>";
+                message += "<h4>Votre comande de la semaine (Commande " + bill.BillNumber + ")" + ")</h4>";
+                message += bill.HtmlBillContent;
+                if (hasFile)
+                    message += "<br/><h4>Retrouver aussi en pièce jointe votre commande de la semaine (Commande " + bill.BillNumber + ")</h4>";
                 if (bill.AdherentStolon.Token > 0)
                     message += "<p>Vous avez " + bill.AdherentStolon.Token + "Ṩ, pensez à payer avec vos stols lors de la récupération de votre commande.</p>";
 
@@ -299,7 +306,7 @@ namespace Stolons.Tools
                                                 bill.Adherent.Name,
                                                 "Votre commande de la semaine (Commande " + bill.BillNumber + ")",
                                                 message,
-                                                File.ReadAllBytes(bill.GetBillFilePath()),
+                                                hasFile ? File.ReadAllBytes(bill.GetBillFilePath()) : null,
                                                 "Commande " + bill.GetBillFileName());
                 }
                 catch (Exception exept)
@@ -327,7 +334,6 @@ namespace Stolons.Tools
         {
             builder.Insert(0, "<head><link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css\"></head><body>");
             builder.AppendLine("</body>");
-
         }
 
         private static void AddFooterAndHeaderRemoval(this StringBuilder builder)
@@ -717,19 +723,20 @@ namespace Stolons.Tools
             return orderNumber;
         }
 
-        public static void GenerateOrderPDF(ProducerBill bill)
+        public static bool GenerateOrderPDF(ProducerBill bill)
         {
-            GeneratePDF(bill.HtmlOrderContent, bill.GetOrderFilePath());
+            return GeneratePDF(bill.HtmlOrderContent, bill.GetOrderFilePath());
         }
 
-        public static void GenerateBillPDF(IBill bill)
+        public static bool GenerateBillPDF(IBill bill)
         {
-            GeneratePDF(bill.HtmlBillContent, bill.GetBillFilePath());
+            return GeneratePDF(bill.HtmlBillContent, bill.GetBillFilePath());
         }
 
-        public static void GeneratePDF(string htmlContent, string fullPath)
+        public static bool GeneratePDF(string htmlContent, string fullPath)
         {
             string tempFileName = Guid.NewGuid().ToString().Remove(5) + ".html";
+            Thread.CurrentThread.Name = "Generating PDF : " + tempFileName + " thread";
             //Création du fichier temporaire
             if (!Directory.Exists(Path.Combine(Configurations.Environment.WebRootPath, "temp")))
                 Directory.CreateDirectory(Path.Combine(Configurations.Environment.WebRootPath, "temp"));
@@ -742,11 +749,20 @@ namespace Stolons.Tools
             string arguments = @"--headless --disable-gpu --print-to-pdf=" + "\"" + fullPath + "\"" + " " + "\"file://" + tempFilePath + "\"";
             var proc = Process.Start(Configurations.Application.ChromiumFullPath, arguments);
             proc.WaitForExit();
+
+            int timeOut = 0;
             while (!File.Exists(fullPath))
             {
-                Thread.Sleep(100);
+                if (timeOut == 60)
+                {
+                    File.Delete(tempFilePath);
+                    return false;
+                }
+                Thread.Sleep(1000);
+                timeOut++;
             }
             File.Delete(tempFilePath);
+            return true;
         }
 
         public static int GetIso8601WeekOfYear(this DateTime time)
