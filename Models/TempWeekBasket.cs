@@ -30,6 +30,7 @@ namespace Stolons.Models
         [Display(Name = "Produits")]
         public List<BillEntry> BillEntries { get; set; }
 
+	[NotMapped]
         public bool Validated { get; set; }
 
 	[NotMapped]
