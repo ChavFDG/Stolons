@@ -72,6 +72,8 @@ namespace Stolons.Controllers
         public IActionResult UpdateProducerBill(string billNumber)
         {
             ProducerBill bill = _context.ProducerBills.Include(x => x.AdherentStolon).ThenInclude(x => x.Adherent).First(x => x.BillNumber == billNumber);
+
+
             bill.State++;
             _context.Update(bill);
             if (bill.State == BillState.Paid)
