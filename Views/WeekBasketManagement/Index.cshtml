@@ -8,9 +8,9 @@
 @if (Model.Stolon.GetMode() == Stolon.Modes.DeliveryAndStockUpdate && Model.WeekStolonsBill != null)
 {
     <h4>Les paniers de la semaine </h4>
-    <a href="@Model.WeekStolonsBill.UrlPath" class="btn btn-small btn-default">Télécharger les factures utilisateur de la semaine</a>
-    <p> </p>
-    <a asp-action="ShowStolonsBill" asp-route-id="@Model.WeekStolonsBill.BillNumber" class="btn btn-small btn-default">Afficher les factures utilisateur de la semaine</a>
+    <a target="_blank" href="@Model.WeekStolonsBill.UrlPath" class="btn btn-small btn-default">Télécharger les factures utilisateur de la semaine</a>
+    <p></p>
+    <a target="_blank" asp-action="ShowStolonsBill" asp-route-id="@Model.WeekStolonsBill.BillNumber" class="btn btn-small btn-default">Afficher les factures utilisateur de la semaine</a>
     @if (Model.ActiveAdherentStolon.Authorized(Role.Admin))
     {
         <p> </p>
@@ -69,7 +69,7 @@
                     </td>
                     <td>
                         @{
-                            <a href="@Configurations.GetBillUrl(item)">@(item.BillAmount.ToString("0.00") + "€" + " (" + item.FeeAmount.ToString("0.00") + "€) - " + item.BillNumber)</a>
+                            <a target="_blank" href="@Configurations.GetBillUrl(item)">@(item.BillAmount.ToString("0.00") + "€" + " (" + item.FeeAmount.ToString("0.00") + "€) - " + item.BillNumber)</a>
                         }
                     </td>
                 </tr>
@@ -132,7 +132,7 @@
                     </td>
                     <td>
                         @{
-                            <a href="@Configurations.GetOrderUrl(item)">@(item.OrderNumber)</a>
+                            <a target="_blank" href="@Configurations.GetOrderUrl(item)">@(item.OrderNumber)</a>
                         }
                     </td>
                 </tr>
