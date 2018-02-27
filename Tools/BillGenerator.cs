@@ -748,7 +748,19 @@ namespace Stolons.Tools
             }
 
             string arguments = @"--headless --disable-gpu --print-to-pdf=" + "\"" + fullPath + "\"" + " " + "\"file://" + tempFilePath + "\"";
-            var proc = Process.Start(Configurations.Application.ChromiumFullPath, arguments);
+	    var proc = new Process();
+	    var processStartInfo = new ProcessStartInfo();
+	    processStartInfo.CreateNoWindow = true;
+	    processStartInfo.RedirectStandardOutput = true;
+	    processStartInfo.RedirectStandardInput = true;
+	    processStartInfo.UseShellExecute = false;
+	    processStartInfo.Arguments = "--headless --disable-gpu --print-to-pdf=" + "\"" + fullPath + "\"" + " " + "\"file://" + tempFilePath + "\"";
+	    processStartInfo.FileName = Configurations.Application.ChromiumFullPath;
+	    proc.StartInfo = processStartInfo;
+	    proc.OutputDataReceived += (sender, args) => Console.WriteLine("Generate pdf, proc output: {0}", args.Data);
+	    proc.Start();
+	    proc.BeginOutputReadLine();
+
             proc.WaitForExit(120000);
             File.Delete(tempFilePath);
             return File.Exists(fullPath);
