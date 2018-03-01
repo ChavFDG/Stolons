@@ -12,12 +12,13 @@
         }
         <li><a data-toggle="tab" href="@("#consumers"+Model.Stolon.Id)" name="consumers">Consommateurs</a></li>
         <li><a data-toggle="tab" href="@("#producers"+Model.Stolon.Id)" name="producers">Producteurs</a></li>
+	<li style="padding-left: 25%;"><div><input id="userSearch" type="text" placeholder="Rechercher" style="margin=auto;" /></div></li>
     </ul>
 
     <div class="tab-content">
         <div id="@("allUsers"+Model.Stolon.Id)" class="tab-pane active">
             @{
-                Html.RenderPartial("../Users/ShowUsers", Model.IAdherents);
+            Html.RenderPartial("../Users/ShowUsers", Model.IAdherents);
             }
         </div>
         @if (Model.Stolon.UseSympathizer)
@@ -70,6 +71,17 @@
 	     $('a[name="all"]').tab('show');
      }
      $("ul.nav a").on('click', onTabClick);
+     $("#userSearch").on('keyup', function(event) {
+	 var searchString = $(this).val();
+	 console.log("searching: " + searchString);
+	 $("table.table > tbody > tr").filter(function() {
+	     if ($(this).html().toLowerCase().indexOf(searchString.toLowerCase()) != -1) {
+		 $(this).toggleClass("hidden", false);
+	     } else {
+		 $(this).toggleClass("hidden", true);
+	     }
+	 });
+     });
  });
 
  function onTabClick(e) {
