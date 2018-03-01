@@ -201,7 +201,7 @@
                     </td>
                     <td>
                         @{
-                            <a href="@Configurations.GetBillUrl(item)">@(item.OrderAmount.ToString("0.00") + "€ - " + item.BillNumber)</a>
+                            <a target="_blank" href="@Configurations.GetBillUrl(item)">@(item.OrderAmount.ToString("0.00") + "€ - " + item.BillNumber)</a>
                         }
                     </td>
                 </tr>
