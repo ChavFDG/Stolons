@@ -48,12 +48,12 @@
             return formValidation.valid('editAdherent');
         });
 
-        var longitude = document.getElementById('longitude');
+        var longitude = $('#longitude');
         longitude.onchange = function () {
             $("#longitude").val($("#longitude").val().replace('.', ','));
         };
 
-        var latitude = document.getElementById('latitude');
+        var latitude = $('#latitude');
         latitude.onchange = function () {
             $("#latitude").val($("#latitude").val().replace('.', ','));
         };
