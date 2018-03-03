@@ -2,24 +2,27 @@
 
 
 <table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(item => item.Name)
-        </th>
-        <th>
-            @Html.DisplayNameFor(item => item.Surname)
-        </th>
-        <th>
-            @Html.DisplayNameFor(item => item.PostCode)
-        </th>
-        <th>
-            @Html.DisplayNameFor(item => item.Email)
-        </th>
-        <th></th>
-    </tr>
+    <thead>
+	<tr>
+            <th>
+		@Html.DisplayNameFor(item => item.Name)
+            </th>
+            <th>
+		@Html.DisplayNameFor(item => item.Surname)
+            </th>
+            <th>
+		@Html.DisplayNameFor(item => item.PostCode)
+            </th>
+            <th>
+		@Html.DisplayNameFor(item => item.Email)
+            </th>
+            <th></th>
+	</tr>
+    </thead>
+    <tbody>
     @foreach (var item in Model)
     {
-        <tr>
+        <tr class="">
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
@@ -35,5 +38,6 @@
             <th></th>
         </tr>
     }
+    </tbody>
 </table>
 

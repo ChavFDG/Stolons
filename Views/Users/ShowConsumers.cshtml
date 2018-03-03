@@ -12,38 +12,40 @@
         </ul>
     </div>
 
-
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(item => item.AdherentsStolon.First().LocalId)
-        </th>
-        <th>
-            @Html.DisplayNameFor(item => item.AdherentsStolon.First().Adherent.AvatarFileName)
-        </th>
-        <th>
-            @Html.DisplayNameFor(item => item.AdherentsStolon.First().Adherent.Name)
-        </th>
-        <th>
-            @Html.DisplayNameFor(item => item.AdherentsStolon.First().Adherent.Surname)
-        </th>
-        <th>
-            @Html.DisplayNameFor(item => item.AdherentsStolon.First().Adherent.PhoneNumber)
-        </th>
-        <th>
-            @Html.DisplayNameFor(item => item.AdherentsStolon.First().Token)
-        </th>
-        <th>
-            @Html.DisplayNameFor(item => item.AdherentsStolon.First().SubscriptionPaid)
-        </th>
-        <th>
-            @Html.DisplayNameFor(item => item.AdherentsStolon.First().Enable)
-        </th>
-        <th>
-            @Html.DisplayNameFor(item => item.AdherentsStolon.First().Role)
-        </th>
-        <th></th>
-    </tr>
+    <table class="table">
+	<thead>
+	    <tr>
+		<th>
+		    @Html.DisplayNameFor(item => item.AdherentsStolon.First().LocalId)
+		</th>
+		<th>
+		    @Html.DisplayNameFor(item => item.AdherentsStolon.First().Adherent.AvatarFileName)
+		</th>
+		<th>
+		    @Html.DisplayNameFor(item => item.AdherentsStolon.First().Adherent.Name)
+		</th>
+		<th>
+		    @Html.DisplayNameFor(item => item.AdherentsStolon.First().Adherent.Surname)
+		</th>
+		<th>
+		    @Html.DisplayNameFor(item => item.AdherentsStolon.First().Adherent.PhoneNumber)
+		</th>
+		<th>
+		    @Html.DisplayNameFor(item => item.AdherentsStolon.First().Token)
+		</th>
+		<th>
+		    @Html.DisplayNameFor(item => item.AdherentsStolon.First().SubscriptionPaid)
+		</th>
+		<th>
+		    @Html.DisplayNameFor(item => item.AdherentsStolon.First().Enable)
+		</th>
+		<th>
+		    @Html.DisplayNameFor(item => item.AdherentsStolon.First().Role)
+		</th>
+		<th></th>
+	    </tr>
+	</thead>
+	<tbody>
     @foreach (var item in Model.AdherentsStolon)
     {
         <tr>
@@ -111,9 +113,6 @@
                 }
             </td>
         </tr>
-    }
+	}
+	</tbody>
 </table>
-
-
-
-
