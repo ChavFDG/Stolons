@@ -48,10 +48,10 @@
                         @Html.DisplayFor(modelItem => item.AdherentStolon.LocalId)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Adherent.CompanyName)
+                        @Html.DisplayFor(modelItem => item.AdherentStolon.Adherent.CompanyName)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Adherent.PhoneNumber)
+                        @Html.DisplayFor(modelItem => item.AdherentStolon.Adherent.PhoneNumber)
                     </td>
                     <td>
                         @if (Model.ActiveAdherentStolon.Authorized(Role.Admin) || Model.ActiveAdherentStolon.Adherent.IsWebAdmin)
@@ -62,7 +62,7 @@
                             new { billNumber = item.BillNumber },
                             new
                             {
-                                onclick = "return confirm('Confirmation du paiement de " + +item.BillAmount + " à " + item.Adherent.CompanyName + "');",
+                                onclick = "return confirm('Confirmation du paiement de " + +item.BillAmount + " à " + item.AdherentStolon.Adherent.CompanyName + "');",
                                 @class = "btn btn-small btn-default"
                             }
             )    }
@@ -112,10 +112,10 @@
                         @Html.DisplayFor(modelItem => item.AdherentStolon.LocalId)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Adherent.CompanyName)
+                        @Html.DisplayFor(modelItem => item.AdherentStolon.Adherent.CompanyName)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Adherent.PhoneNumber)
+                        @Html.DisplayFor(modelItem => item.AdherentStolon.Adherent.PhoneNumber)
                     </td>
                     <td>
                         @Html.ActionLink(
@@ -124,7 +124,7 @@
                         new { billNumber = item.BillNumber },
                         new
                         {
-                            onclick = "return confirm('Confirmation de la livraison de " + item.Adherent.CompanyName + "');",
+                            onclick = "return confirm('Confirmation de la livraison de " + item.AdherentStolon.Adherent.CompanyName + "');",
                             @class = "btn btn-small btn-default"
                         }
             )
@@ -178,20 +178,20 @@
                     Facture
                 </th>
             </tr>
-            @foreach (var item in Model.ConsumerBills.OrderBy(x=>x.AdherentStolon.LocalId))
+            @foreach (var item in Model.ConsumerBills.OrderBy(x => x.AdherentStolon.LocalId))
             {
                 <tr>
                     <td>
                         @Html.DisplayFor(modelItem => item.AdherentStolon.LocalId)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Adherent.Name)
+                        @Html.DisplayFor(modelItem => item.AdherentStolon.Adherent.Name)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Adherent.Surname)
+                        @Html.DisplayFor(modelItem => item.AdherentStolon.Adherent.Surname)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Adherent.PhoneNumber)
+                        @Html.DisplayFor(modelItem => item.AdherentStolon.Adherent.PhoneNumber)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.AdherentStolon.Token)Ṩ
@@ -249,7 +249,7 @@
                 <div class="modal-body" style="margin: auto;">
                     <div class="row">
                         <div class="col-lg-12">
-                            <h4>Réctification de la livraison producteur (<%= producerBill.get("Adherent").CompanyName %>)</h4>
+                            <h4>Réctification de la livraison producteur (<%= producerBill.get("AdherentStolon").Adherent.CompanyName %>)</h4>
                         </div>
                     </div>
                     <div class="row">

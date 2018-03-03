@@ -18,16 +18,16 @@ namespace Stolons.Models
         [ForeignKey(nameof(AdherentStolonId))]
         public AdherentStolon AdherentStolon { get; set; }
 
-        [NotMapped]
-        [Display(Name = "Adherent")]
-        public Adherent Adherent
-        {
-            get
-            {
-                return AdherentStolon.Adherent;
-            }
-        }
-        
+        // [NotMapped]
+        // [Display(Name = "Adherent")]
+        // public Adherent Adherent
+        // {
+        //     get
+        //     {
+        //         return AdherentStolon.Adherent;
+        //     }
+        // }
+
         public List<BillEntry> BillEntries { get; set; }
 
         [NotMapped]

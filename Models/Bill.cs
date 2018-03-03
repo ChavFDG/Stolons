@@ -50,14 +50,6 @@ namespace Stolons.Models
         [Display(Name = "Numéro de facture")] //Year_WeekNumber_UserId
         public string BillNumber { get; set; }
         public AdherentStolon AdherentStolon { get; set; }
-        
-        public Adherent Adherent
-        {
-            get
-            {
-                return AdherentStolon.Adherent;
-            }
-        }
 
         public List<BillEntry> BillEntries { get; set; }
 
@@ -116,14 +108,6 @@ namespace Stolons.Models
         public string OrderNumber { get; set; }
         public AdherentStolon AdherentStolon { get; set; }
 
-        public Adherent Adherent
-        {
-            get
-            {
-                return AdherentStolon.Adherent;
-            }
-        }
-        
         public List<BillEntry> BillEntries { get; set; }
         
         [Display(Name = "Stolon")]

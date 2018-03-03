@@ -14,49 +14,43 @@ using Stolons.Services;
 using System.IO;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
-using System.Threading;
 using Microsoft.Extensions.Configuration.UserSecrets;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using static Stolons.Configurations;
-using Stolons.Tools;
 using Stolons.Models.Users;
 using System.Globalization;
-using DinkToPdf.Contracts;
-using DinkToPdf;
 using System.Runtime.InteropServices;
 
 namespace Stolons
 {
     public class Startup
     {
-        IHostingEnvironment _environment;
-        public Startup(IHostingEnvironment env)
+        public IHostingEnvironment _environment;
+	public IConfiguration Configuration { get; }
+
+        public Startup(IHostingEnvironment env, IConfiguration configuration)
         {
             var cultureInfo = new CultureInfo("fr-Fr");
 
             CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
             CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 
-
-            Configurations.Environment = env;
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: false)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
-
-            if (env.IsDevelopment())
-            {
-                // For more details on using the user secret store see http://go.microsoft.com/fwlink/?LinkID=532709
-                //builder.AddUserSecrets(); // http://stackoverflow.com/questions/40858155/ef-core-1-1-to-webapi-core-add-migration-fails
-                builder.AddUserSecrets<Startup>();
-            }
             _environment = env;
-            builder.AddEnvironmentVariables();
-            Configuration = builder.Build();
-        }
 
-        public IConfigurationRoot Configuration { get; }
+	    var builder = new ConfigurationBuilder()
+		.SetBasePath(env.ContentRootPath)
+		.AddJsonFile("appsettings.json", optional: true, reloadOnChange: false)
+		.AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
+
+	    if (env.IsEnvironment("Development"))
+	    {
+		builder.AddApplicationInsightsSettings(developerMode: true);
+	    }
+
+	    builder.AddEnvironmentVariables();
+	    Configuration = builder.Build();
+        }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -64,17 +58,16 @@ namespace Stolons
             try
             {
                 // Add converter to DI
-                services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
+                //services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
                 // using (var db = new ApplicationDbContext())
                 // {
                 //     //db.Database.EnsureCreated();
                 //     db.Database.Migrate();
                 // }
-                services.AddDbContext<ApplicationDbContext>();
 
-                services.AddIdentity<ApplicationUser, IdentityRole>()
-                            .AddEntityFrameworkStores<ApplicationDbContext>()
-                            .AddDefaultTokenProviders();
+		//Storing connection string for reuse in ApplicationDbContext
+		Configurations.DBConnectionString = Configuration.GetConnectionString("Stolons");
+                services.AddDbContext<ApplicationDbContext>();
 
                 services.AddMvc().AddJsonOptions(options =>
 			{
@@ -92,18 +85,20 @@ namespace Stolons
                     o.Password.RequireUppercase = false;
                     o.Password.RequiredLength = 1;
                     o.Password.RequireNonAlphanumeric = false;
-                }).AddDefaultTokenProviders();
+                }).AddEntityFrameworkStores<ApplicationDbContext>()
+		    .AddDefaultTokenProviders();
+
+		//services.AddApplicationInsightsTelemetry(Configuration);
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());
                 throw;
             }
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public async void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IServiceProvider serviceProvider, ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IServiceProvider serviceProvider, ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             //Change culture to English
             // Configure the localization options
@@ -121,27 +116,13 @@ namespace Stolons
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-
-                // For more details on creating database during deployment see http://go.microsoft.com/fwlink/?LinkID=615859
-                // try
-                // {
-                //     using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>()
-                //         .CreateScope())
-                //     {
-                //         serviceScope.ServiceProvider.GetService<ApplicationDbContext>()
-                //              .Database.Migrate();
-                //     }
-                // }
-                // catch { }
             }
-            //app.UseIISPlatformHandler(options => options.AuthenticationDescriptions.Clear());  
+
             app.UseStatusCodePagesWithReExecute("/StatusCode/{0}");
 
             app.UseStaticFiles();
 
-            app.UseIdentity();
-
-            // Add external authentication middleware below. To configure them please see http://go.microsoft.com/fwlink/?LinkID=532715
+	    app.UseAuthentication();
 
             app.UseMvc(routes =>
             {
@@ -149,29 +130,31 @@ namespace Stolons
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
-            List<Stolon> stolons = CreateStolons(context);
-            await CreateAdminAccount(context, userManager, stolons.First());
-            CreateProductCategories(context);
-            SetGlobalConfigurations(context);
-#if DEBUG
-            await InitializeSampleAndTestData(serviceProvider, context, userManager, stolons.First());
-#endif
-            Configurations.Environment = env;
-            
-            Thread billManager = new Thread(() => BillGenerator.ManageBills());
-
-            billManager.Start();
+	    Configurations.Environment = env;
         }
 
+	public static void SeedDatabase(IServiceProvider services)
+	{
+	    var dbContext = services.GetRequiredService<ApplicationDbContext>();
+	    var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
 
-        #region Stolons config
-        private async Task InitializeSampleAndTestData(IServiceProvider serviceProvider, ApplicationDbContext context, UserManager<ApplicationUser> userManager, Stolon stolon)
+	    List<Stolon> stolons = CreateStolons(dbContext);
+            CreateAdminAccount(dbContext, userManager, stolons.First());
+            CreateProductCategories(dbContext);
+            SetGlobalConfigurations(dbContext);
+	    #if DEBUG
+            InitializeSampleAndTestData(dbContext, userManager, stolons.First());
+	    #endif
+	}
+
+	#region Stolons config
+        private static void InitializeSampleAndTestData(ApplicationDbContext context, UserManager<ApplicationUser> userManager, Stolon stolon)
         {
-            await CreateTestAcount(context, userManager, stolon);
+	        CreateTestAcount(context, userManager, stolon);
             CreateProductsSamples(context);
         }
 
-        private void SetGlobalConfigurations(ApplicationDbContext context)
+        private static void SetGlobalConfigurations(ApplicationDbContext context)
         {
 
             if (context.ApplicationConfig.Any())
@@ -191,7 +174,7 @@ namespace Stolons
 
         }
 
-        private void CreateProductCategories(ApplicationDbContext context)
+        private static void CreateProductCategories(ApplicationDbContext context)
         {
             ProductType fresh = CreateProductType(context, "Produits frais");
             CreateProductFamily(context, fresh, "Fruits", "fruits.jpg");
@@ -220,7 +203,7 @@ namespace Stolons
             context.SaveChanges();
         }
 
-        private ProductType CreateProductType(ApplicationDbContext context, string name, string imageName = null,bool canBeRemoved = true)
+        private static ProductType CreateProductType(ApplicationDbContext context, string name, string imageName = null,bool canBeRemoved = true)
         {
             ProductType type = context.ProductTypes.FirstOrDefault(x => x.Name == name);
             if (type == null)
@@ -236,7 +219,7 @@ namespace Stolons
             return type;
         }
 
-        private ProductFamilly CreateProductFamily(ApplicationDbContext context, ProductType type, string name, string imageName = null, bool canBeRemoved = true)
+        private static ProductFamilly CreateProductFamily(ApplicationDbContext context, ProductType type, string name, string imageName = null, bool canBeRemoved = true)
         {
             ProductFamilly family = context.ProductFamillys.FirstOrDefault(x => x.FamillyName == name);
             if (family == null)
@@ -252,7 +235,7 @@ namespace Stolons
             return family;
         }
 
-        private void CreateProductsSamples(ApplicationDbContext context)
+        private static void CreateProductsSamples(ApplicationDbContext context)
         {
             if (context.Products.Any())
                 return;
@@ -367,8 +350,7 @@ namespace Stolons
             }
         }
 
-
-        private List<Stolon> CreateStolons(ApplicationDbContext context)
+        private static List<Stolon> CreateStolons(ApplicationDbContext context)
         {
             if (context.Stolons.Any())
                 return context.Stolons.ToList();
@@ -421,9 +403,9 @@ namespace Stolons
             return stolons;
         }
 
-        private async Task CreateAdminAccount(ApplicationDbContext context, UserManager<ApplicationUser> userManager, Stolon stolon)
+        private static void CreateAdminAccount(ApplicationDbContext context, UserManager<ApplicationUser> userManager, Stolon stolon)
         {
-            await CreateAcount(context,
+            CreateAcount(context,
                     userManager,
                     "PARAVEL",
                     "Damien",
@@ -432,7 +414,7 @@ namespace Stolons
                     Role.Admin,
                     stolon,
                     true);
-            await CreateAcount(context,
+             CreateAcount(context,
                     userManager,
                     "MICHON",
                     "Nicolas",
@@ -441,7 +423,7 @@ namespace Stolons
                     Role.Admin,
                     stolon,
                     true);
-            await CreateAcount(context,
+             CreateAcount(context,
                     userManager,
                     "TESTON",
                     "Arnaud",
@@ -452,9 +434,9 @@ namespace Stolons
                     true);
         }
 
-        private async Task CreateTestAcount(ApplicationDbContext context, UserManager<ApplicationUser> userManager, Stolon stolon)
+        private static void CreateTestAcount(ApplicationDbContext context, UserManager<ApplicationUser> userManager, Stolon stolon)
         {
-            await CreateAcount(context,
+            CreateAcount(context,
                     userManager,
                     "Maurice",
                     "Robert",
@@ -467,7 +449,7 @@ namespace Stolons
                     true);
         }
 
-        private async Task CreateAcount(ApplicationDbContext context, UserManager<ApplicationUser> userManager, string name, string surname, string email, string password, Role role, Stolon stolon, bool isWebAdmin, bool isProducer = false, bool createOnlyIfTableEmpty = false)
+        private static void CreateAcount(ApplicationDbContext context, UserManager<ApplicationUser> userManager, string name, string surname, string email, string password, Role role, Stolon stolon, bool isWebAdmin, bool isProducer = false, bool createOnlyIfTableEmpty = false)
         {
             if (createOnlyIfTableEmpty)
             {
@@ -495,7 +477,7 @@ namespace Stolons
                 Enable = true,
                 Role = role
             };
-            adherentStolon.LocalId = context.AdherentStolons.Where(x => x.StolonId == stolon.Id).Max(x => x.LocalId) + 1;
+            adherentStolon.LocalId = context.AdherentStolons.Where(x => x.StolonId == stolon.Id).Select(x => x.LocalId).DefaultIfEmpty(0).Max() + 1;
 
             if (isProducer)
             {
@@ -505,8 +487,6 @@ namespace Stolons
                 adherentStolon.IsProducer = true;
             }
 
-
-
             context.Adherents.Add(adherent);
             context.AdherentStolons.Add(adherentStolon);
             context.SaveChanges();
@@ -515,10 +495,8 @@ namespace Stolons
             var appUser = new ApplicationUser { UserName = adherent.Email, Email = adherent.Email };
             appUser.User = adherent;
 
-            var result = await userManager.CreateAsync(appUser, password);
+            userManager.CreateAsync(appUser, password).Wait();
             #endregion Creating linked application data
-
-
         }
 
         #endregion Stolons config

@@ -124,7 +124,7 @@ namespace Stolons.Controllers
                 return String.IsNullOrWhiteSpace(filePathToDelete) || filePathToDelete.EndsWith(Configurations.DefaultImageFileName) ? null : Path.GetFileName(filePathToDelete);
 
             string uploads = Path.Combine(_environment.WebRootPath, stockagePath);
-            string fileName = Guid.NewGuid().ToString() + "_" + ContentDispositionHeaderValue.Parse(uploadFile.ContentDisposition).FileName.Trim('"');
+            string fileName = Guid.NewGuid().ToString() + "_" + ContentDispositionHeaderValue.Parse(uploadFile.ContentDisposition).FileName.Trim();
             await uploadFile.SaveAsAsync(Path.Combine(uploads, fileName));
             return fileName;
         }

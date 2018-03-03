@@ -47,31 +47,22 @@ namespace Stolons.Models
         //Messages
         public DbSet<ChatMessage> ChatMessages { get; set; }
 
-
         //Adherent Stolons
         public DbSet<AdherentStolon> AdherentStolons { get; set; }
 
-        //private readonly IHostingEnvironment env;
-
-        public ApplicationDbContext() : base()
+	public ApplicationDbContext() : base()
         {
-            //this.env = env;
         }
 
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-                : base(options)
+	public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+	    : base(options)
         {
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.EnableSensitiveDataLogging();
-	    var builder = new ConfigurationBuilder()
-		.SetBasePath(Configurations.Environment.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false);
-	    var configuration = builder.Build();
-	    var connectionString = configuration.GetConnectionString("Stolons");
-	    optionsBuilder.UseNpgsql(connectionString);
+	    optionsBuilder.UseNpgsql(Configurations.DBConnectionString);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

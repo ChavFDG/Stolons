@@ -30,17 +30,24 @@ namespace Stolons.Controllers
         {
             Adherent stolonsUser = await this.GetCurrentAdherentAsync();
             List<ConsumerBill> bills = new List<ConsumerBill>();
-            _context.ConsumerBills.Include(x=>x.AdherentStolon).Include(x=>x.AdherentStolon.Adherent).Include(x => x.AdherentStolon.Stolon).Where(x => x.Adherent.Email == stolonsUser.Email).ToList().ForEach(x => bills.Add(x));
+            _context.ConsumerBills
+		.Include(x => x.AdherentStolon)
+		.Include(x => x.AdherentStolon.Adherent)
+		.Include(x => x.AdherentStolon.Stolon)
+		.Where(x => x.AdherentStolon.Adherent.Email == stolonsUser.Email)
+		.AsNoTracking()
+		.ToList()
+		.ForEach(x => bills.Add(x));
             return View(bills);
         }
-        
+
         // GET: ShowBill
         public IActionResult ShowBill(string id)
         {
             IBill bill = _context.ConsumerBills.FirstOrDefault(x => x.BillNumber == id);
-            if(bill != null)
+            if (bill != null)
                 return View(bill);
-            bill = _context.ProducerBills.Include(x=>x.Adherent).FirstOrDefault(x => x.BillNumber == id);
+            bill = _context.ProducerBills.Include(x => x.AdherentStolon).FirstOrDefault(x => x.BillNumber == id);
             if (bill != null)
                 return View(bill);
             //Bill not found

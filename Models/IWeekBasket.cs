@@ -12,7 +12,7 @@ namespace Stolons.Models
         Guid Id { get; set; }
         Guid AdherentStolonId { get; set; }
         AdherentStolon AdherentStolon { get; set; }
-        Adherent Adherent { get; }
+        //Adherent Adherent { get; }
         List<BillEntry> BillEntries { get; set; }
     }
 

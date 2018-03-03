@@ -37,8 +37,22 @@ namespace Stolons.Controllers
             var adherentStolon = GetActiveAdherentStolon();
             VmWeekBasketManagement vm = new VmWeekBasketManagement(adherentStolon);
             vm.Stolon = GetCurrentStolon();
-            vm.ConsumerBills = _context.ConsumerBills.Include(x => x.AdherentStolon).ThenInclude(x => x.Adherent).Include(x => x.AdherentStolon).ThenInclude(x => x.Stolon).Where(x => x.State == BillState.Pending && x.AdherentStolon.StolonId == stolon.Id).OrderBy(x => x.Adherent.Id).ToList();
-            vm.ProducerBills = _context.ProducerBills.Include(x => x.AdherentStolon).ThenInclude(x => x.Adherent).Include(x => x.AdherentStolon).ThenInclude(x => x.Stolon).Where(x => x.State != BillState.Paid && x.AdherentStolon.StolonId == stolon.Id).OrderBy(x => x.Adherent.Id).ToList();
+            vm.ConsumerBills = _context.ConsumerBills
+		.Include(x => x.AdherentStolon)
+		.Include(x => x.AdherentStolon.Adherent)
+		.Include(x => x.AdherentStolon.Stolon)
+		.Where(x => x.State == BillState.Pending && x.AdherentStolon.StolonId == stolon.Id)
+		.OrderBy(x => x.AdherentStolon.Adherent.Id)
+		.AsNoTracking()
+		.ToList();
+            vm.ProducerBills = _context.ProducerBills
+		.Include(x => x.AdherentStolon)
+		.Include(x => x.AdherentStolon.Adherent)
+		.Include(x => x.AdherentStolon.Stolon)
+		.Where(x => x.State != BillState.Paid && x.AdherentStolon.StolonId == stolon.Id)
+		.OrderBy(x => x.AdherentStolon.Adherent.Id)
+		.AsNoTracking()
+		.ToList();
             vm.StolonsBills = _context.StolonsBills.Include(x => x.Stolon).Where(x => x.StolonId == stolon.Id).ToList();
             vm.WeekStolonsBill = vm.StolonsBills.FirstOrDefault(x => x.BillNumber.EndsWith(DateTime.Now.Year + "_" + DateTime.Now.GetIso8601WeekOfYear()));
             return View(vm);
@@ -47,10 +61,10 @@ namespace Stolons.Controllers
         // GET: UpdateConsumerBill
         public IActionResult UpdateConsumerBill(string billNumber, PaymentMode paymentMode)
         {
-            ConsumerBill bill = _context.ConsumerBills.Include(x => x.AdherentStolon).ThenInclude(x => x.Adherent).First(x => x.BillNumber == billNumber);
+            ConsumerBill bill = _context.ConsumerBills.Include(x => x.AdherentStolon).Include(x => x.AdherentStolon.Adherent).First(x => x.BillNumber == billNumber);
             bill.State = BillState.Paid;
             _context.Update(bill);
-            if(paymentMode == PaymentMode.Token)
+            if (paymentMode == PaymentMode.Token)
             {
                 bill.AdherentStolon.Token -= bill.OrderAmount;
                 _context.Update(bill.AdherentStolon);
@@ -61,7 +75,7 @@ namespace Stolons.Controllers
                 TransactionType.Inbound,
                 TransactionCategory.BillPayement,
                 paymentMode == PaymentMode.Token ? 0 : bill.OrderAmount,
-                "Paiement de la facture " + bill.BillNumber + " par " + bill.Adherent.Name + "( " + bill.AdherentStolon.LocalId + " ) en " + EnumHelper<PaymentMode>.GetDisplayValue(paymentMode));
+                "Paiement de la facture " + bill.BillNumber + " par " + bill.AdherentStolon.Adherent.Name + "( " + bill.AdherentStolon.LocalId + " ) en " + EnumHelper<PaymentMode>.GetDisplayValue(paymentMode));
             _context.Add(transaction);
             //Save
             _context.SaveChanges();
@@ -71,8 +85,10 @@ namespace Stolons.Controllers
         // GET: UpdateProducerBill
         public IActionResult UpdateProducerBill(string billNumber)
         {
-            ProducerBill bill = _context.ProducerBills.Include(x => x.AdherentStolon).ThenInclude(x => x.Adherent).First(x => x.BillNumber == billNumber);
-
+            ProducerBill bill = _context.ProducerBills
+		.Include(x => x.AdherentStolon)
+		.Include(x => x.AdherentStolon.Adherent)
+		.First(x => x.BillNumber == billNumber);
 
             bill.State++;
             _context.Update(bill);
@@ -84,14 +100,14 @@ namespace Stolons.Controllers
                     Transaction.TransactionType.Outbound,
                     Transaction.TransactionCategory.ProducerRefound,
                     bill.BillAmount,
-                    "Paiement de la facture " + bill.BillNumber + " à " + bill.Adherent.CompanyName + " ( " + bill.AdherentStolon.LocalId + " )");
+                    "Paiement de la facture " + bill.BillNumber + " Ã  " + bill.AdherentStolon.Adherent.CompanyName + " ( " + bill.AdherentStolon.LocalId + " )");
                 _context.Add(prodRefound);
                 Transaction comitionInbound = new Transaction(
                     GetCurrentStolon(),
                     Transaction.TransactionType.Inbound,
                     Transaction.TransactionCategory.ProducersFee,
                     bill.FeeAmount,
-                    "Encaissement de la commission de la facture " + bill.BillNumber + " de " + bill.Adherent.CompanyName + " ( " + bill.AdherentStolon.LocalId + " )");
+                    "Encaissement de la commission de la facture " + bill.BillNumber + " de " + bill.AdherentStolon.Adherent.CompanyName + " ( " + bill.AdherentStolon.LocalId + " )");
                 _context.Add(comitionInbound);
             }
             //Save
@@ -102,14 +118,32 @@ namespace Stolons.Controllers
         public string RegenerateOrders()
         {
             var stolon = GetCurrentStolon();
-            var consumersBills = _context.ConsumerBills.Include(x => x.AdherentStolon).ThenInclude(x => x.Adherent).Include(x => x.AdherentStolon).ThenInclude(x => x.Stolon).Where(x => x.State == BillState.Pending && x.AdherentStolon.StolonId == stolon.Id).OrderBy(x => x.Adherent.Id).ToList();
-            var producersBills = _context.ProducerBills.Include(x => x.AdherentStolon).ThenInclude(x => x.Adherent).Include(x => x.AdherentStolon).ThenInclude(x => x.Stolon).Where(x => x.State != BillState.Paid && x.AdherentStolon.StolonId == stolon.Id).OrderBy(x => x.Adherent.Id).ToList();
-            var weekStolonBill = _context.StolonsBills.Include(x => x.Stolon).Where(x => x.StolonId == stolon.Id).ToList().FirstOrDefault(x => x.BillNumber.EndsWith(DateTime.Now.Year + "_" + DateTime.Now.GetIso8601WeekOfYear()));
+            var consumersBills = _context.ConsumerBills
+		.Include(x => x.AdherentStolon)
+		.Include(x => x.AdherentStolon.Adherent)
+		.Include(x => x.AdherentStolon.Stolon)
+		.Where(x => x.State == BillState.Pending && x.AdherentStolon.StolonId == stolon.Id)
+		.OrderBy(x => x.AdherentStolon.Adherent.Id)
+		.ToList();
+            var producersBills = _context.ProducerBills
+		.Include(x => x.AdherentStolon)
+		.Include(x => x.AdherentStolon.Adherent)
+		.Include(x => x.AdherentStolon.Stolon)
+		.Where(x => x.State != BillState.Paid && x.AdherentStolon.StolonId == stolon.Id)
+		.OrderBy(x => x.AdherentStolon.Adherent.Id)
+		.ToList();
+
+            var weekStolonBill = _context.StolonsBills
+		.Include(x => x.Stolon)
+		.Where(x => x.StolonId == stolon.Id)
+		.ToList()
+		.FirstOrDefault(x => x.BillNumber.EndsWith(DateTime.Now.Year + "_" + DateTime.Now.GetIso8601WeekOfYear()));
+
             DateTime start = DateTime.Now;
             StringBuilder report = new StringBuilder();
-            report.Append("Rapport de génération des commandes : ");
+            report.Append("Rapport de gÃ©nÃ©ration des commandes : ");
             report.AppendLine("- stolon : " + stolon.Label);
-            report.AppendLine("- annnée : " + DateTime.Now.Year);
+            report.AppendLine("- annÃ©e : " + DateTime.Now.Year);
             report.AppendLine("- semaine : " + DateTime.Now.GetIso8601WeekOfYear());
             report.AppendLine();
             Dictionary<ConsumerBill, bool> consumers = new Dictionary<ConsumerBill, bool>();
@@ -118,20 +152,20 @@ namespace Stolons.Controllers
             producersBills.ForEach(x => producers.Add(x, BillGenerator.GenerateOrderPDF(x)));
             bool stolonBill = BillGenerator.GeneratePDF(weekStolonBill.HtmlBillContent, weekStolonBill.FilePath);
             report.AppendLine("RESUME : ");
-            report.AppendLine("Commandes consomateurs générés : " + consumers.Count(x => x.Value == true) + "/" + consumers.Count);
-            report.AppendLine("Commandes producteurs générés : " + producers.Count(x => x.Value == true) + "/" + producers.Count);
-            report.AppendLine("Commandes stolons généré : " + stolonBill);
+            report.AppendLine("Commandes consomateurs gÃ©nÃ©rÃ©es : " + consumers.Count(x => x.Value == true) + "/" + consumers.Count);
+            report.AppendLine("Commandes producteurs gÃ©nÃ©rÃ©es : " + producers.Count(x => x.Value == true) + "/" + producers.Count);
+            report.AppendLine("Commandes stolons gÃ©nÃ©rÃ©es : " + stolonBill);
             report.AppendLine("DETAILS : ");
             report.AppendLine("-- Consomateurs ok : ");
-            consumers.Where(x => x.Value).ToList().ForEach(consumer => report.AppendLine(consumer.Key.AdherentStolon.LocalId + " " + consumer.Key.Adherent.Name.ToUpper() + " " + consumer.Key.Adherent.Surname));
+            consumers.Where(x => x.Value).ToList().ForEach(consumer => report.AppendLine(consumer.Key.AdherentStolon.LocalId + " " + consumer.Key.AdherentStolon.Adherent.Name.ToUpper() + " " + consumer.Key.AdherentStolon.Adherent.Surname));
             report.AppendLine("-- Consomateurs nok : ");
-            consumers.Where(x => x.Value == false).ToList().ForEach(consumer => report.AppendLine(consumer.Key.AdherentStolon.LocalId + " " + consumer.Key.Adherent.Name.ToUpper() + " " + consumer.Key.Adherent.Surname));
+            consumers.Where(x => x.Value == false).ToList().ForEach(consumer => report.AppendLine(consumer.Key.AdherentStolon.LocalId + " " + consumer.Key.AdherentStolon.Adherent.Name.ToUpper() + " " + consumer.Key.AdherentStolon.Adherent.Surname));
             report.AppendLine("-- Producteurs ok : ");
-            producers.Where(x => x.Value).ToList().ForEach(producer => report.AppendLine(producer.Key.AdherentStolon.LocalId + " " + producer.Key.Adherent.Name.ToUpper() + " " + producer.Key.Adherent.Surname));
+            producers.Where(x => x.Value).ToList().ForEach(producer => report.AppendLine(producer.Key.AdherentStolon.LocalId + " " + producer.Key.AdherentStolon.Adherent.Name.ToUpper() + " " + producer.Key.AdherentStolon.Adherent.Surname));
             report.AppendLine("-- Producteurs nok : ");
-            producers.Where(x => x.Value == false).ToList().ForEach(producer => report.AppendLine(producer.Key.AdherentStolon.LocalId + " " + producer.Key.Adherent.Name.ToUpper() + " " + producer.Key.Adherent.Surname));
+            producers.Where(x => x.Value == false).ToList().ForEach(producer => report.AppendLine(producer.Key.AdherentStolon.LocalId + " " + producer.Key.AdherentStolon.Adherent.Name.ToUpper() + " " + producer.Key.AdherentStolon.Adherent.Surname));
             report.AppendLine();
-            report?.AppendLine(" --Temps d'exécutions de la générations : " + (DateTime.Now - start));
+            report?.AppendLine(" --Temps d'execution de la gÃ©nÃ©ration : " + (DateTime.Now - start));
             return report.ToString();
         }
 
@@ -167,8 +201,9 @@ namespace Stolons.Controllers
                 _context.SaveChanges();
 
             }
-            catch (Exception except)
+            catch (Exception ex)
             {
+                Console.WriteLine(ex.ToString());
                 return false;
             }
             return true;

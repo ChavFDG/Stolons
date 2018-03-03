@@ -20,18 +20,19 @@ namespace Stolons
         #region Configuration
 
 
-        public static string SiteUrl
+	public static string DBConnectionString { get; set; }
+
+	public static string SiteUrl
         {
             get
             {
                 #if DEBUG
-                    return @"localhost:5000";
+		return @"localhost:5000";
                 #endif
 
                 #if RELEASE
-                     return Application.StolonsUrl;
+		return Application.StolonsUrl;
                 #endif
-
             }
         }
 
@@ -160,7 +161,7 @@ namespace Stolons
         public static async Task<string> UploadImageFile(this IHostingEnvironment environment, IFormFile uploadFile, string path)
         {
             string uploads = Path.Combine(environment.WebRootPath, path);
-            string fileName = Guid.NewGuid().ToString() + "_" + ContentDispositionHeaderValue.Parse(uploadFile.ContentDisposition).FileName.Trim('"');
+            string fileName = Guid.NewGuid().ToString() + "_" + ContentDispositionHeaderValue.Parse(uploadFile.ContentDisposition).FileName.Trim();
 
             string filePath = Path.Combine(uploads, fileName);
             await uploadFile.SaveAsAsync(filePath);
