@@ -5,20 +5,21 @@
 
 <h2>Mes commandes</h2>
 
-<div class="boxContainer">
-    <div class="col-lg-4">
+<div class="boxContainer row">
+    <div class="col-lg-5 col-md-5">
         <table class="table">
-            <tr>
-                <th>
-                    Commande
-                </th>
-                <th>
-                    Montant
-                </th>
-                <th>
-
-                </th>
-            </tr>
+	    <thead>
+		<tr>
+                    <th>
+			Commande
+                    </th>
+                    <th>
+			Montant
+                    </th>
+                    <th>
+                    </th>
+		</tr>
+	    </thead>
             <tbody class="clickable-table">
                 @{
                     decimal total = 0;
@@ -50,7 +51,7 @@
                                     }
                             </td>
                             <td>
-                                <a class="btn btn-small btn-default" href="@(Configurations.GetBillUrl(item))">
+                                <a class="btn btn-small btn-default" target="_blank" href="@(Configurations.GetBillUrl(item))">
                                     Télécharger
                                 </a>
                             </td>
@@ -61,7 +62,7 @@
         </table>
         <p>Montant total : @total.ToString("0.00") €</p>
     </div>
-    <div class="col-lg-8">
+    <div class="col-lg-7 col-md-7">
         <div id="billContent">
 
         </div>
