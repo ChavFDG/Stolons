@@ -19,7 +19,6 @@ namespace Stolons
     {
         #region Configuration
 
-
 	public static string DBConnectionString { get; set; }
 
 	public static string SiteUrl
@@ -36,22 +35,14 @@ namespace Stolons
             }
         }
 
-        private static IHostingEnvironment _environment;
-        public static IHostingEnvironment Environment
-        {
-            get
-            {
-                return _environment;
-            }
+        public static IHostingEnvironment Environment;
 
-            set
-            {
-                _environment = value;
-            }
-        }
-        public static ApplicationConfig Application;
+	public static ApplicationConfig Application;
 
-        public static int GetDaysDiff(DayOfWeek from, DayOfWeek to)
+	public static string DebugMailSmtp = "locahost";
+	public static int DebugMailPort = 25;
+
+	public static int GetDaysDiff(DayOfWeek from, DayOfWeek to)
         {
             int fromNumber = from == DayOfWeek.Sunday ? 7 : Convert.ToInt32(from);
             int toNumber = to == DayOfWeek.Sunday ? 7 : Convert.ToInt32(to);

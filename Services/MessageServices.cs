@@ -12,14 +12,14 @@ using System.Threading.Tasks;
 
 namespace Stolons.Services
 {
-    public static class AuthMessageSender 
+    public static class AuthMessageSender
     {
 
         /// <summary>
         /// MAIL KIT
         /// Info : http://dotnetthoughts.net/how-to-send-emails-from-aspnet-core/
         /// </summary>
-        public static void SendEmail(string senderLabel, string email, string name, string subject, string message,byte[] attachment = null,string attachmentName ="Facture")
+        public static void SendEmail(string senderLabel, string email, string name, string subject, string message, byte[] attachment = null, string attachmentName="Facture")
         {
             if (String.IsNullOrWhiteSpace(name))
                 name = email;
@@ -28,23 +28,28 @@ namespace Stolons.Services
             mimeMessage.To.Add(new MailboxAddress(name, email));
             mimeMessage.Subject = subject;
             var bodyBuilder = new BodyBuilder();
-            if(attachment != null)
-                bodyBuilder.Attachments.Add(attachmentName,attachment);
+            if (attachment != null)
+                bodyBuilder.Attachments.Add(attachmentName, attachment);
             bodyBuilder.HtmlBody = message;
             mimeMessage.Body = bodyBuilder.ToMessageBody();
             try
             {
                 using (var client = new SmtpClient())
                 {
-                    
-                    client.Connect(Configurations.Application.MailSmtp, Configurations.Application.MailPort, false);
-                    client.AuthenticationMechanisms.Remove("XOAUTH2");
-                    // Note: since we don't have an OAuth2 token, disable
-                    // the XOAUTH2 authentication mechanism.
-                    client.Authenticate(Configurations.Application.MailAddress, Configurations.Application.MailPassword);
-                    client.Send(mimeMessage);
-                    client.Disconnect(true);
-                    
+		    if (Configurations.Environment.EnvironmentName == "Debug" || Configurations.Environment.EnvironmentName == "Development")
+		    {
+			client.Connect(Configurations.DebugMailSmtp, Configurations.DebugMailPort, false);
+		    }
+		    else
+		    {
+			client.Connect(Configurations.Application.MailSmtp, Configurations.Application.MailPort, false);
+			client.AuthenticationMechanisms.Remove("XOAUTH2");
+			// Note: since we don't have an OAuth2 token, disable
+			// the XOAUTH2 authentication mechanism.
+			client.Authenticate(Configurations.Application.MailAddress, Configurations.Application.MailPassword);
+		    }
+		    client.Send(mimeMessage);
+		    client.Disconnect(true);
                 }
             }
 	    catch (Exception except)
@@ -55,10 +60,8 @@ namespace Stolons.Services
 
         public static Task SendSmsAsync(string number, string message)
         {
-
-
-            // Plug in your SMS service here to send a text message.
+	    // Plug in your SMS service here to send a text message.
             return Task.FromResult(0);
         }
-    }   
+    }
 }
