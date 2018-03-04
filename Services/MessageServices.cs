@@ -1,7 +1,6 @@
 ﻿using MailKit;
 using MailKit.Net.Smtp;
 using MimeKit;
-using Stolons.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +8,9 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using Stolons.Models;
+using Microsoft.Extensions.Logging; 
+using Stolons.Helpers;
 
 namespace Stolons.Services
 {
@@ -39,6 +41,11 @@ namespace Stolons.Services
 		    if (Configurations.Environment.EnvironmentName == "Debug" || Configurations.Environment.EnvironmentName == "Development")
 		    {
 			client.Connect(Configurations.DebugMailSmtp, Configurations.DebugMailPort, false);
+			client.AuthenticationMechanisms.Remove("XOAUTH2");
+			// Note: since we don't have an OAuth2 token, disable
+			// the XOAUTH2 authentication mechanism.
+			if (Configurations.DebugMailUser != null && Configurations.DebugMailPassword != null)
+			    client.Authenticate(Configurations.DebugMailUser, Configurations.DebugMailPassword);
 		    }
 		    else
 		    {
@@ -54,7 +61,7 @@ namespace Stolons.Services
             }
 	    catch (Exception except)
             {
-                Console.WriteLine("Error on sending mail : " + except.Message);
+                DotnetHelper.getLogger<String>().LogError("Error on sending mail : " + except.Message);
             }
         }
 

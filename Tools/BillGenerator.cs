@@ -26,15 +26,15 @@ namespace Stolons.Tools
     {
         private static Dictionary<Guid, Stolon.Modes> lastModes = new Dictionary<Guid, Stolon.Modes>();
 
-	private static IWebHost WebHost;
+	private static ILogger<String> Logger;
 
-	public static void ManageBills(IWebHost host)
+	public static void ManageBills()
         {
-	    WebHost = host;
+	    Logger = DotnetHelper.getLogger<String>();
 	    GetCurrentStolonsModes();
             while (true)
             {
-		using (var scope = DotnetHelper.getScope(host))
+		using (var scope = DotnetHelper.getNewScope())
 		{
 		    using (ApplicationDbContext dbContext = DotnetHelper.getDbContext(scope))
 		    {
@@ -66,7 +66,7 @@ namespace Stolons.Tools
 
 	private static void GetCurrentStolonsModes()
 	{
-	    using (var scope = DotnetHelper.getScope(WebHost))
+	    using (var scope = DotnetHelper.getNewScope())
 	    {
 		using (ApplicationDbContext dbContext = DotnetHelper.getDbContext(scope))
 		{
@@ -147,7 +147,7 @@ namespace Stolons.Tools
 	    List<ProducerBill> producerBills = new List<ProducerBill>();
 	    List<ConsumerBill> consumerBills = dbContext.ConsumerBills
 		.Include(x => x.BillEntries)
-		.Include(x => x.BillEntries.Select(y => y.ProductStock))
+		.ThenInclude(x => x.ProductStock)
 		.ThenInclude(x => x.Product)
 		.Include(x => x.AdherentStolon)
 		.Include(x => x.AdherentStolon.Adherent)
@@ -265,7 +265,7 @@ namespace Stolons.Tools
 		    }
 		    catch (Exception exept)
 		    {
-			Console.WriteLine("Error on sending mail " + exept);
+			Logger.LogError("Error on sending mail " + exept);
 		    }
 		}
 	    }
@@ -306,7 +306,7 @@ namespace Stolons.Tools
 		}
 		catch (Exception exept)
 		{
-		    Console.WriteLine("Error on sending mail " + exept);
+		    Logger.LogError("Error on sending mail " + exept);
 		}
 	    }
 	    catch (Exception exept)
@@ -749,7 +749,7 @@ namespace Stolons.Tools
 	    processStartInfo.Arguments = "--headless --disable-gpu --print-to-pdf=" + "\"" + fullPath + "\"" + " " + "\"file://" + tempFilePath + "\"";
 	    processStartInfo.FileName = Configurations.Application.ChromiumFullPath;
 	    proc.StartInfo = processStartInfo;
-	    proc.OutputDataReceived += (sender, args) => Console.WriteLine("Generate pdf, proc output: {0}", args.Data);
+	    proc.OutputDataReceived += (sender, args) => Logger.LogDebug("Generate pdf, proc output: {0}", args.Data);
 	    proc.Start();
 	    proc.BeginOutputReadLine();
 

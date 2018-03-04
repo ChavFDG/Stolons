@@ -19,11 +19,15 @@ namespace Stolons
         {
 	    var host = BuildWebHost(args);
 
-	    Thread billManager = new Thread(() => BillGenerator.ManageBills(host));
+	    //Register webhost in Stolons configs
+	    Configurations.WebHost = host;
+
+	    Thread billManager = new Thread(() => BillGenerator.ManageBills());
 	    billManager.Start();
 
-	    //var scopeFactory = host.Services.GetRequiredService<IServiceScopeFactory>();
-	    using (var scope = DotnetHelper.getScope(host))
+	    var logger = DotnetHelper.getLogger<Program>();
+
+	    using (var scope = DotnetHelper.getNewScope())
 	    {
 		var services = scope.ServiceProvider;
 		try
@@ -32,7 +36,6 @@ namespace Stolons
 		}
 		catch (Exception ex)
 		{
-		    var logger = services.GetRequiredService<ILogger<Program>>();
 		    logger.LogError(ex, "An error occurred seeding the DB.");
 		}
 	    }
@@ -40,9 +43,9 @@ namespace Stolons
 	    try
 	    {
 		host.Run();
-	    } catch (StackOverflowException e)
+	    } catch (Exception e)
 	    {
-		Console.WriteLine("Catched exception....fck it");
+		logger.LogError("Server is dead, catched exception. Bye cruel world");
 		throw e;
 	    }
         }
