@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Http;
 using Stolons.Helpers;
 using Stolons.Models.Users;
@@ -35,12 +36,24 @@ namespace Stolons
             }
         }
 
+	public static IWebHost WebHost;
+
         public static IHostingEnvironment Environment;
 
 	public static ApplicationConfig Application;
 
-	public static string DebugMailSmtp = "locahost";
+	public static String DebugMailSmtp = "localhost";
 	public static int DebugMailPort = 25;
+	public static String DebugMailUser = null;
+	public static String DebugMailPassword = null;
+
+	public static void SetupMailDebug(IConfigurationSection debugMailSection)
+	{
+	    DebugMailSmtp = debugMailSection.GetValue<String>("SmtpAddr");
+	    DebugMailPort = debugMailSection.GetValue<int>("SmtpPort");
+	    DebugMailUser = debugMailSection.GetValue<String>("AuthUser");
+	    DebugMailPassword = debugMailSection.GetValue<String>("AuthPassword");
+	}
 
 	public static int GetDaysDiff(DayOfWeek from, DayOfWeek to)
         {

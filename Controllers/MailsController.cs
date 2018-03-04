@@ -6,6 +6,7 @@ using Stolons.Models;
 using System;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Net.Http.Headers;
+using Microsoft.Extensions.Logging;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
@@ -30,8 +31,6 @@ namespace Stolons.Controllers
             IServiceProvider serviceProvider) : base(serviceProvider, userManager, context, environment, signInManager)
         {   
         }
-
-
 
         // GET: News
         public IActionResult Index(MailMessage mailMessage)
@@ -110,7 +109,7 @@ namespace Stolons.Controllers
                     }
                     catch(Exception ex)
                     {
-                        Console.WriteLine(ex.ToString());
+                        DotnetHelper.getLogger<MailsController>().LogError(ex.ToString());
                         report.MailsNotSended++;
                     }
                 }
