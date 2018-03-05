@@ -3,7 +3,6 @@
 @using Stolons.Models
 @using Stolons.ViewModels.ProductsManagement
 
-
 <h2>Gestion de mes produits et de mes stocks</h2>
 
 <p>
@@ -11,6 +10,7 @@
 </p>
 <table class="table productsMgtTable">
     <tr>
+	<th></th>
         <th>
             Image
         </th>
@@ -62,6 +62,9 @@
     @foreach (var item in Model.Products.Where(x => !x.IsArchive))
     {
         <tr>
+	    <td>
+		<a data-productId="@item.Id" class="productPreview btn btn-small btn-default" title="">aperçu vitrine</a>
+	    </td>
             <td class="productMgtImage">
                 <div>
                     @{
@@ -375,8 +378,8 @@
 
                         }
 
-
-
-
+<!-- Include the public product template -->
+@{ await Html.RenderPartialAsync("Templates/PublicProductTemplate"); }
+			    
 <script src="/js/productModel.js"></script>
 <script src="/js/productsManagement.js"></script>

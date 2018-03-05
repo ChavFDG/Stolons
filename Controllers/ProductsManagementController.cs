@@ -22,9 +22,9 @@ namespace Stolons.Controllers
     public class ProductsManagementController : BaseController
     {
         public ProductsManagementController(ApplicationDbContext context, IHostingEnvironment environment,
-            UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager,
-            IServiceProvider serviceProvider) : base(serviceProvider, userManager, context, environment, signInManager)
+					    UserManager<ApplicationUser> userManager,
+					    SignInManager<ApplicationUser> signInManager,
+					    IServiceProvider serviceProvider) : base(serviceProvider, userManager, context, environment, signInManager)
         {
 
         }
@@ -65,14 +65,15 @@ namespace Stolons.Controllers
             Adherent producer = GetCurrentAdherentSync() as Adherent;
             List<ProductStockViewModel> vmProductsStock = new List<ProductStockViewModel>();
             var productsStock = _context.ProductsStocks
-        .Include(x => x.AdherentStolon)
-        .ThenInclude(x => x.Stolon)
-        .Include(x => x.Product)
-        .ThenInclude(m => m.Familly)
-        .ThenInclude(m => m.Type)
-        .AsNoTracking()
-        .Where(x => x.AdherentStolon.AdherentId == producer.Id).ToList();
-
+		.Include(x => x.AdherentStolon)
+		.ThenInclude(x => x.Stolon)
+		.Include(x => x.Product)
+		.ThenInclude(x => x.Producer)
+		.Include(x => x.Product)
+		.ThenInclude(m => m.Familly)
+		.ThenInclude(m => m.Type)
+		.AsNoTracking()
+		.Where(x => x.AdherentStolon.AdherentId == producer.Id).ToList();
             foreach (var productStock in productsStock)
             {
                 int orderedQty = 0;

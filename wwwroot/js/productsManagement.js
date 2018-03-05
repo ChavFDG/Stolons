@@ -1,4 +1,31 @@
 
+var setupProductPreviewTooltip = function() {
+    console.log("Setting up tooltips");
+    $(".productPreview").each(function() {
+	var publicProductTemplate = _.template($("#publicProductTemplate").html());
+	var productId = $(this).attr("data-productId");
+	var productStockModel = window.ProductsModel.findWhere({ProductId: productId});
+
+	$(this).tooltip(
+	    {
+		track: true,
+		classes: {
+		    "ui-tooltip": "productPreviewTooltip",
+		    "ui-tooltip-content": "productPreviewTooltipContent"
+		},
+		hide: false,
+		show: false,
+		content: publicProductTemplate(
+		    {
+			product: productStockModel.get("Product").toJSON(),
+			productModel: productStockModel.get("Product"),
+			productStock:  productStockModel.toJSON(),
+			productStockModel:  productStockModel
+		    })
+	    });
+    });
+};
+
 var ProductsStockCollection = Backbone.Collection.extend(
     {
         defaults: [],
@@ -25,6 +52,8 @@ var ProductsStockCollection = Backbone.Collection.extend(
 );
 
 window.ProductsModel = new ProductsStockCollection();
+//Setup preview tooltips once models are avaible
+ProductsModel.on('sync', setupProductPreviewTooltip);
 
 var StockMgtViewModal = Backbone.View.extend({
 
