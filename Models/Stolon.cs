@@ -104,6 +104,7 @@ namespace Stolons.Models
         public int BasketPickUpStartHour { get; set; } = 17;
         [Display(Name = "Minute")]
         public int BasketPickUpStartMinute { get; set; } = 30;
+	[Display(Name = "Jour")]
         public DayOfWeek BasketPickEndUpDay { get; set; } = DayOfWeek.Thursday;
         [Display(Name = "Heure")]
         public int BasketPickUpEndHour { get; set; } = 19;
