@@ -8,15 +8,17 @@
                     <div class="producerModalAvatar">
                         <img class="avatar" src="<%= producer.AvatarFilePath %>" />
                     </div>
-                    <span class="producerModalName"><a href="/producers/index"><%= producer.CompanyName %></a></span>
+                    <span class="producerModalName"><a href="/producers/index">Détail du producteur "<%= producer.CompanyName %>"</a></span>
                 </div>
 	        </div>
 	        <div class="modal-body">
 	          <ul class="producerInfoList">
+		<% if (!_.isEmpty(producer.Adress)) { %>
                 <li>
                     <label>Adresse: </label>
                     <span><%= producer.Adress %></span>
                 </li>
+		<% } %>
 	            <li>
 	              <label>Proprietaire: </label>
 	              <span><%= producer.Name %> <%= producer.Surname %> </span>

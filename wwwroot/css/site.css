@@ -593,6 +593,10 @@ img.warning {
     padding-left: 10px;
 }
 
+.producerModalName > a {
+    color: #fff !important;
+}
+
 .producerModalAvatar {
     margin-right: auto;
     display: inline-block;
@@ -829,17 +833,13 @@ div#links {
     margin: 30px 0;
 }
 
-a {
+a:hover, a:active {
+    text-decoration: underline;
     color: #008000;
 }
 
-    a:hover, a:active {
-        text-decoration: underline;
-        color: #008000;
-    }
-
 .modals a {
-    /* color: #fff; */
+    color: #008000;
 }
 
 button[type=button] {
