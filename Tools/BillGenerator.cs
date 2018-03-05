@@ -152,7 +152,7 @@ namespace Stolons.Tools
 		.Include(x => x.AdherentStolon)
 		.Include(x => x.AdherentStolon.Adherent)
 		.Include(x => x.AdherentStolon.Stolon)
-		.Where(x => x.Stolon.Id == stolon.Id && x.EditionDate.GetIso8601WeekOfYear() == DateTime.Now.GetIso8601WeekOfYear() && x.EditionDate.Year == DateTime.Now.Year)
+		.Where(x => x.AdherentStolon.Stolon.Id == stolon.Id && x.EditionDate.GetIso8601WeekOfYear() == DateTime.Now.GetIso8601WeekOfYear() && x.EditionDate.Year == DateTime.Now.Year)
 		.ToList();
 
 	    //Producer (creates bills)
@@ -242,8 +242,8 @@ namespace Stolons.Tools
 		    AuthMessageSender.SendEmail(bill.AdherentStolon.Stolon.Label,
 						bill.AdherentStolon.Adherent.Email,
 						bill.AdherentStolon.Adherent.CompanyName,
-						"Aucune commande chez " + bill.Stolon.Label + " cette semaine.",
-						"<h3>Aucune commande chez  " + bill.Stolon.Label + " cette semaine.");
+						"Aucune commande chez " + bill.AdherentStolon.Stolon.Label + " cette semaine.",
+						"<h3>Aucune commande chez  " + bill.AdherentStolon.Stolon.Label + " cette semaine.");
 		}
 		else
 		{
@@ -254,11 +254,11 @@ namespace Stolons.Tools
 		    {
 			string message = bill.HtmlOrderContent;
 			if (hasFile)
-			    message += "<h3>En pièce jointe votre bon de commande de la semaine chez " + bill.Stolon.Label + " (Bon de commande " + bill.BillNumber + ")</h3>";
+			    message += "<h3>En pièce jointe votre bon de commande de la semaine chez " + bill.AdherentStolon.Stolon.Label + " (Bon de commande " + bill.BillNumber + ")</h3>";
 			AuthMessageSender.SendEmail(bill.AdherentStolon.Stolon.Label,
 						    bill.AdherentStolon.Adherent.Email,
 						    bill.AdherentStolon.Adherent.CompanyName,
-						    "Votre bon de commande de la semaine chez " + bill.Stolon.Label + " (Bon de commande " + bill.BillNumber + ")",
+						    "Votre bon de commande de la semaine chez " + bill.AdherentStolon.Stolon.Label + " (Bon de commande " + bill.BillNumber + ")",
 						    message,
 						    hasFile ? File.ReadAllBytes(bill.GetOrderFilePath()) : null,
 						    "Bon de commande " + bill.GetOrderFileName());

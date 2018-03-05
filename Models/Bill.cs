@@ -21,8 +21,6 @@ namespace Stolons.Models
 
         List<BillEntry> BillEntries { get; set; }
 
-        Stolon Stolon { get; }
-
         [Display(Name = "Etat")]
         BillState State { get; set; }
 
@@ -52,15 +50,6 @@ namespace Stolons.Models
         public AdherentStolon AdherentStolon { get; set; }
 
         public List<BillEntry> BillEntries { get; set; }
-
-        [Display(Name = "Stolon")]
-        public Stolon Stolon
-        {
-            get
-            {
-                return AdherentStolon.Stolon;
-            }
-        }
 
         [Display(Name = "Date d'édition de la facture")]
         public DateTime EditionDate { get; set; }
@@ -109,15 +98,6 @@ namespace Stolons.Models
         public AdherentStolon AdherentStolon { get; set; }
 
         public List<BillEntry> BillEntries { get; set; }
-        
-        [Display(Name = "Stolon")]
-        public Stolon Stolon
-        {
-            get
-            {
-                return AdherentStolon.Stolon;
-            }
-        }
 
         [Display(Name = "Date d'édition de la facture")]
         public DateTime EditionDate { get; set; }
