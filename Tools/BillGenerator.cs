@@ -28,11 +28,13 @@ namespace Stolons.Tools
 
 	private static ILogger<String> Logger;
 
+	private static bool shouldRun = true;
+
 	public static void ManageBills()
         {
 	    Logger = DotnetHelper.getLogger<String>();
 	    GetCurrentStolonsModes();
-            while (true)
+            while (shouldRun)
             {
 		using (var scope = DotnetHelper.getNewScope())
 		{
@@ -62,6 +64,11 @@ namespace Stolons.Tools
 		}
 		Thread.Sleep(5000);
 	    }
+	}
+
+	public static void StopThread()
+	{
+	    shouldRun = false;
 	}
 
 	private static void GetCurrentStolonsModes()

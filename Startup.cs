@@ -9,18 +9,20 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Stolons.Models;
-using Stolons.Services;
 using System.IO;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Configuration.UserSecrets;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using static Stolons.Configurations;
-using Stolons.Models.Users;
 using System.Globalization;
 using System.Runtime.InteropServices;
+using static Stolons.Configurations;
+using Stolons.Helpers;
+using Stolons.Models.Users;
+using Stolons.Models;
+using Stolons.Services;
+using Stolons.Tools;
 
 namespace Stolons
 {
@@ -82,7 +84,7 @@ namespace Stolons
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IServiceProvider serviceProvider, ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IServiceProvider serviceProvider, ApplicationDbContext context, UserManager<ApplicationUser> userManager, IApplicationLifetime applicationLifetime)
         {
             //Change culture to English
             // Configure the localization options
@@ -116,7 +118,15 @@ namespace Stolons
 		    });
 	    Configurations.Environment = env;
 	    Configurations.SetupMailDebug(Configuration.GetSection("MailDebug"));
+
+	    applicationLifetime.ApplicationStopping.Register(OnShutdown);
         }
+
+	public static void OnShutdown()
+	{
+	    DotnetHelper.getLogger<Startup>().LogWarning("Server is shutting down");
+	    BillGenerator.StopThread();
+	}
 
 	public static void SeedDatabase(IServiceProvider services)
 	{
