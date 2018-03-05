@@ -288,9 +288,8 @@ img.warning {
 /*-- PUBLIC PRODUCER --*/
 
 .producerOpenText {
-    padding-top: 10px;
-    font-weigh: 50;
-    font-size: 17px
+    padding: 10px;
+    margin: 10px;
 }
 
 .public_Prod_avatar > img {
