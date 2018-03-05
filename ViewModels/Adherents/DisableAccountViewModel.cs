@@ -21,6 +21,6 @@ namespace Stolons.ViewModels.Adherents
         public AdherentStolon AdherentStolon { get; set; }
 
         [Display(Name = "Raison :")]
-        public string Comment { get; set; } = "Entrer la raison de la désactivation";
+        public string Comment { get; set; }
     }
 }

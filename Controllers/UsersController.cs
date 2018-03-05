@@ -273,17 +273,15 @@ namespace Stolons.Controllers
             if (!Authorized(Role.Volunteer))
                 return Unauthorized();
             //
-            vmAdherentStolon.AdherentStolon.DisableReason = comment;
-            vmAdherentStolon.AdherentStolon.Enable = false;
+	    var adherentStolon = _context.AdherentStolons.FirstOrDefault(x => x.Id == vmAdherentStolon.AdherentStolon.Id);
+            adherentStolon.DisableReason = comment;
+            adherentStolon.Enable = false;
             //Update
-            _context.AdherentStolons.Update(vmAdherentStolon.AdherentStolon);
+            _context.AdherentStolons.Update(adherentStolon);
             //Save
             _context.SaveChanges();
             return RedirectToAction("Index");
         }
-
-
-
 
         public PartialViewResult _PartialCreditToken(Guid id)
         {
