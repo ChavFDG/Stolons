@@ -19,30 +19,30 @@
     }
 }
 
-<div class="boxContainer">
-    <h4>Facture à régler aux producteurs </h4>
-    @if (Model.ProducerBills.Any(x => x.State == BillState.Delivered))
-    {
-        <table class="table">
-            <tr>
-                <th>
-                    Numéro
-                </th>
-                <th>
-                    Raison social
-                </th>
-                <th>
-                    Téléphone
-                </th>
-                <th>
-                    Etat
-                </th>
-                <th>
-                    Facture
-                </th>
-            </tr>
-            @foreach (var item in Model.ProducerBills.Where(x => x.State == BillState.Delivered))
-            {
+	<div class="boxContainer">
+	    <h4>Facture à régler aux producteurs </h4>
+	    @if (Model.ProducerBills.Any(x => x.State == BillState.Delivered))
+	    {
+            <table class="table">
+		<tr>
+                    <th>
+			Numéro
+                    </th>
+                    <th>
+			Raison social
+                    </th>
+                    <th>
+			Téléphone
+                    </th>
+                    <th>
+			Etat
+                    </th>
+                    <th>
+			Facture
+                    </th>
+		</tr>
+		@foreach (var item in Model.ProducerBills.Where(x => x.State == BillState.Delivered))
+		{
                 <tr>
                     <td>
                         @Html.DisplayFor(modelItem => item.AdherentStolon.LocalId)
@@ -55,58 +55,58 @@
                     </td>
                     <td>
                         @if (Model.ActiveAdherentStolon.Authorized(Role.Admin) || Model.ActiveAdherentStolon.Adherent.IsWebAdmin)
-                    {
-                            @Html.ActionLink(
+			{
+                        @Html.ActionLink(
                             "Valider paiement de la facture",
                             "UpdateProducerBill",
-                            new { billNumber = item.BillNumber },
+                            new { billId = item.BillId, state = ((int) item.State) + 1 },
                             new
                             {
                                 onclick = "return confirm('Confirmation du paiement de " + +item.BillAmount + " à " + item.AdherentStolon.Adherent.CompanyName + "');",
                                 @class = "btn btn-small btn-default"
                             }
-            )    }
+			)    }
                     </td>
                     <td>
                         @{
                             <a target="_blank" href="@Configurations.GetBillUrl(item)">@(item.BillAmount.ToString("0.00") + "€" + " (" + item.FeeAmount.ToString("0.00") + "€) - " + item.BillNumber)</a>
-                        }
+                            }
                     </td>
                 </tr>
-                            }
-        </table>
-                            }
-                            else
-                            {
-                                <p>Aucune facture à régler</p>
-                            }
-
-</div>
-
-<div class="boxContainer">
-    <h4>Producteur(s) ayant une commande à livrer cette semaine </h4>
-    @if (Model.ProducerBills.Any(x => x.State == BillState.Pending))
-    {
-        <table class="table">
-            <tr>
-                <th>
-                    Numéro
-                </th>
-                <th>
-                    Raison social
-                </th>
-                <th>
-                    Téléphone
-                </th>
-                <th>
-                    Etat
-                </th>
-                <th>
-                    Bon de commande
-                </th>
-            </tr>
-            @foreach (var item in Model.ProducerBills.Where(x => x.State == BillState.Pending))
+                }
+            </table>
+            }
+            else
             {
+            <p>Aucune facture à régler</p>
+            }
+
+	</div>
+
+	<div class="boxContainer">
+	    <h4>Producteur(s) ayant une commande à livrer cette semaine </h4>
+	    @if (Model.ProducerBills.Any(x => x.State == BillState.Pending))
+	    {
+            <table class="table">
+		<tr>
+                    <th>
+			Numéro
+                    </th>
+                    <th>
+			Raison social
+                    </th>
+                    <th>
+			Téléphone
+                    </th>
+                    <th>
+			Etat
+                    </th>
+                    <th>
+			Bon de commande
+                    </th>
+		</tr>
+		@foreach (var item in Model.ProducerBills.Where(x => x.State == BillState.Pending))
+		{
                 <tr>
                     <td>
                         @Html.DisplayFor(modelItem => item.AdherentStolon.LocalId)
@@ -119,67 +119,67 @@
                     </td>
                     <td>
                         @Html.ActionLink(
-                        "Valider la livraison",
-                        "UpdateProducerBill",
-                        new { billNumber = item.BillNumber },
-                        new
-                        {
-                            onclick = "return confirm('Confirmation de la livraison de " + item.AdherentStolon.Adherent.CompanyName + "');",
-                            @class = "btn btn-small btn-default"
-                        }
-            )
+                            "Valider la livraison",
+                            "UpdateProducerBill",
+                            new { billId = item.BillId, state = ((int) item.State) + 1 },
+                            new
+                            {
+				onclick = "return confirm('Confirmation de la livraison de " + item.AdherentStolon.Adherent.CompanyName + "');",
+				@class = "btn btn-small btn-default"
+                            }
+			)
                         <a href="#" class="btn btn-small btn-default" onclick="openCorrectionModal('@item.BillId'); return false;">Réctifier la livraison</a>
                     </td>
                     <td>
                         @{
                             <a target="_blank" href="@Configurations.GetOrderUrl(item)">@(item.OrderNumber)</a>
-                        }
+                         }
                     </td>
                 </tr>
-                            }
-        </table>
-                            }
-                            else
-                            {
-                                <p>Plus de command à livrer ou payer par / aux producteurs</p>
-                            }
-</div>
-
-<div class="boxContainer">
-    <h4>Adhérent(s) ayant commandé un panier cette semaine : 
-    @Model.ConsumerBills.Count
-        /
-    @Model.WeekStolonsBill?.Consumers
-    </h4>
-    @if (Model.ConsumerBills.Any())
-    {
-        
-        <table class="table">
-            <tr>
-                <th>
-                    Numéro
-                </th>
-                <th>
-                    Nom
-                </th>
-                <th>
-                    Prénom
-                </th>
-                <th>
-                    Téléphone
-                </th>
-                <th>
-                    Stols
-                </th>
-                <th>
-                    Etat
-                </th>
-                <th>
-                    Facture
-                </th>
-            </tr>
-            @foreach (var item in Model.ConsumerBills.OrderBy(x => x.AdherentStolon.LocalId))
+                }
+            </table>
+            }
+            else
             {
+            <p>Plus de commande à livrer ou payer par / aux producteurs</p>
+            }
+	</div>
+
+	<div class="boxContainer">
+	    <h4>Adhérent(s) ayant commandé un panier cette semaine : 
+		@Model.ConsumerBills.Count
+		/
+		@Model.WeekStolonsBill?.Consumers
+	    </h4>
+	    @if (Model.ConsumerBills.Any())
+	    {
+            
+            <table class="table">
+		<tr>
+                    <th>
+			Numéro
+                    </th>
+                    <th>
+			Nom
+                    </th>
+                    <th>
+			Prénom
+                    </th>
+                    <th>
+			Téléphone
+                    </th>
+                    <th>
+			Stols
+                    </th>
+                    <th>
+			Etat
+                    </th>
+                    <th>
+			Facture
+                    </th>
+		</tr>
+		@foreach (var item in Model.ConsumerBills.OrderBy(x => x.AdherentStolon.LocalId))
+		{
                 <tr>
                     <td>
                         @Html.DisplayFor(modelItem => item.AdherentStolon.LocalId)
@@ -197,30 +197,30 @@
                         @Html.DisplayFor(modelItem => item.AdherentStolon.Token)Ṩ
                     </td>
                     <td>
-                        <a href="#" class="btn btn-small btn-default open-consumer-modal" billNumber="@item.BillNumber" canUseToken="@(Convert.ToInt32(item.AdherentStolon.Token >= item.OrderAmount))">Valider la récupération et le paiement</a>
+                        <a href="#" class="btn btn-small btn-default open-consumer-modal" billId="@item.BillId" canUseToken="@(Convert.ToInt32(item.AdherentStolon.Token >= item.OrderAmount))">Valider la récupération et le paiement</a>
                     </td>
                     <td>
                         @{
                             <a target="_blank" href="@Configurations.GetBillUrl(item)">@(item.OrderAmount.ToString("0.00") + "€ - " + item.BillNumber)</a>
-                        }
+                            }
                     </td>
                 </tr>
-                            }
-        </table>
-                            }
-                            else
-                            {
-                                <p>Plus de panier cette semaine</p>
-                            }
-</div>
+                }
+            </table>
+            }
+            else
+            {
+            <p>Plus de panier cette semaine</p>
+            }
+	</div>
 
-<div id="consumerBillModal" class="modal fade"></div>
+	<div id="consumerBillModal" class="modal fade"></div>
 
-<div id="correctionModal" class="modal fade"></div>
+	<div id="correctionModal" class="modal fade"></div>
 
-<script id="consumerBillModalTemplate" type="text/template">
-    <div class="modals">
-        <div class="modal-dialog" style="width: 250px;">
+	<script id="consumerBillModalTemplate" type="text/template">
+	 <div class="modals">
+         <div class="modal-dialog" style="width: 250px;">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
@@ -235,13 +235,13 @@
                     <a href="/WeekBasketManagement/UpdateConsumerBill?paymentMode=2&billNumber=<%= billNumber %>" class="credit btn btn-small btn-default">Espèces</a>
                 </div>
             </div>
-        </div>
-    </div>
-</script>
+         </div>
+	 </div>
+	</script>
 
-<script id="correctionModalTemplate" type="text/template">
-    <div class="modals">
-        <div class="modal-dialog" id="correction-modal-dialog">
+	<script id="correctionModalTemplate" type="text/template">
+	 <div class="modals">
+         <div class="modal-dialog" id="correction-modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
@@ -352,40 +352,40 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-</script>
+         </div>
+	 </div>
+	</script>
 
-<script>
-    ConsumerBillModalView = Backbone.View.extend({
-        el: '#consumerBillModal',
-        template: _.template($("#consumerBillModalTemplate").html()),
-        open: function (bill, canUseToken) {
-            this.render(bill, canUseToken);
-        },
-        render: function (bill, canUseToken) {
-            this.$el.html(this.template({ billNumber: bill, canUseToken: canUseToken }));
-            this.$el.modal('show');
-        }
-    });
+	<script>
+	 ConsumerBillModalView = Backbone.View.extend({
+             el: '#consumerBillModal',
+             template: _.template($("#consumerBillModalTemplate").html()),
+             open: function (bill, canUseToken) {
+		 this.render(bill, canUseToken);
+             },
+             render: function (bill, canUseToken) {
+		 this.$el.html(this.template({ billNumber: bill, canUseToken: canUseToken }));
+		 this.$el.modal('show');
+             }
+	 });
 
-    $(function () {
-        var consumerBillModalView = new ConsumerBillModalView();
-        $('a.open-consumer-modal').click(function () {
-            consumerBillModalView.open($(this).attr('billNumber'), $(this).attr('canUseToken'));
-            return false;
-        });
-    });
+	 $(function () {
+             var consumerBillModalView = new ConsumerBillModalView();
+             $('a.open-consumer-modal').click(function () {
+		 consumerBillModalView.open($(this).attr('billNumber'), $(this).attr('canUseToken'));
+		 return false;
+             });
+	 });
 
-    openCorrectionModal = function (billId) {
-        producerBillModel = new ProducerBillModel(billId);
-        producerBillModel.on("sync", function () {
-            CorrectionView = new BillsManagement.CorrectionView(producerBillModel);
-            CorrectionView.open();
-        }, this);
-    };
-</script>
+	 openCorrectionModal = function (billId) {
+             producerBillModel = new ProducerBillModel(billId);
+             producerBillModel.on("sync", function () {
+		 CorrectionView = new BillsManagement.CorrectionView(producerBillModel);
+		 CorrectionView.open();
+             }, this);
+	 };
+	</script>
 
-<script src="/js/billModel.js"></script>
-<script src="/js/productModel.js"></script>
-<script src="/js/billsManagement.js"></script>
+	<script src="/js/billModel.js"></script>
+	<script src="/js/productModel.js"></script>
+	<script src="/js/billsManagement.js"></script>

@@ -59,9 +59,9 @@ namespace Stolons.Controllers
         }
 
         // GET: UpdateConsumerBill
-        public IActionResult UpdateConsumerBill(string billNumber, PaymentMode paymentMode)
+        public IActionResult UpdateConsumerBill(Guid billId, PaymentMode paymentMode)
         {
-            ConsumerBill bill = _context.ConsumerBills.Include(x => x.AdherentStolon).Include(x => x.AdherentStolon.Adherent).First(x => x.BillNumber == billNumber);
+            ConsumerBill bill = _context.ConsumerBills.Include(x => x.AdherentStolon).Include(x => x.AdherentStolon.Adherent).First(x => x.BillId == billId);
             bill.State = BillState.Paid;
             _context.Update(bill);
             if (paymentMode == PaymentMode.Token)
@@ -83,14 +83,15 @@ namespace Stolons.Controllers
         }
 
         // GET: UpdateProducerBill
-        public IActionResult UpdateProducerBill(string billNumber)
+	//validate bill payement
+        public IActionResult UpdateProducerBill(Guid billId, int state)
         {
             ProducerBill bill = _context.ProducerBills
 		.Include(x => x.AdherentStolon)
 		.Include(x => x.AdherentStolon.Adherent)
-		.First(x => x.BillNumber == billNumber);
+		.First(x => x.BillId == billId);
 
-            bill.State++;
+            bill.State = (BillState) state;
             _context.Update(bill);
             if (bill.State == BillState.Paid)
             {
