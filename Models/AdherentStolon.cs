@@ -32,14 +32,14 @@ namespace Stolons.Models
         [Display(Name = "Identifiant")]
         public int LocalId { get; set; }
         //
-        public Guid StolonId { get; set; }
+        public Guid? StolonId { get; set; }
         [ForeignKey(nameof(StolonId))]
         public virtual Stolon Stolon { get; set; }
         //
         public Guid AdherentId { get; set; }
         [ForeignKey(nameof(AdherentId))]
         public virtual Adherent Adherent { get; set; }
-        
+
         //
         public bool IsActiveStolon { get; protected set; }
 

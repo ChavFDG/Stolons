@@ -51,9 +51,6 @@ namespace Stolons.Controllers
             return PartialView(new AdherentStolonViewModel(GetActiveAdherentStolon(), adherentStolon));
         }
 
-
-
-
         public virtual PartialViewResult _PartialAddAdherent(AdherentEdition edition, Guid? stolonId = null)
         {
             Stolon stolon = stolonId == null ? GetCurrentStolon() : _context.Stolons.First(x => x.Id == stolonId);
@@ -195,14 +192,19 @@ namespace Stolons.Controllers
 
             AdherentStolon adherentStolon = _context.AdherentStolons.First(x => x.Id == id);
 
-            //Check if adherent is in an other Stolons
-            if (_context.AdherentStolons.Any(x => x.AdherentId == adherentStolon.AdherentId && x.StolonId != adherentStolon.StolonId))
-            {
-                //Useless ?
-            }
-            //Delete the adherent from this stolons
-            _context.AdherentStolons.Remove(adherentStolon);
-            //Save
+	    //We have to keep producers for bills history
+	    if (adherentStolon.IsProducer && _context.ProducerBills.Any(x => x.AdherentStolon.Id == adherentStolon.Id))
+	    {
+		adherentStolon.StolonId = null;
+		adherentStolon.Stolon.UserStolons.Remove(adherentStolon);
+	    }
+	    else
+	    {
+		//Delete the adherent from this stolons
+		_context.AdherentStolons.Remove(adherentStolon);
+	    }
+
+	    //Save
             _context.SaveChanges();
             return RedirectToAction("Index");
         }
