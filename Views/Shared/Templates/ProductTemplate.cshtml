@@ -19,12 +19,13 @@
 	    </a>
           </div>
           <div class="pr_labels">
+	    <span class="label">
 	    <% _.forEach(product.LabelsSerialized.split(';'), function(label) {
 	       if (!_.isEmpty(label)) {
 	       %>
-	    <div class="pr_label">
-              <img src="/images/labels/<%= label %>.jpg" />
-	    </div>
+	       <div class="pr_label">
+	       <img src="/images/labels/<%= label %>.jpg" />
+		</div>
 	    <% } }); %>
           </div>
         </div>

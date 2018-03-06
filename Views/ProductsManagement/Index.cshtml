@@ -63,7 +63,7 @@
     {
         <tr>
 	    <td>
-		<a data-productId="@item.Id" class="productPreview btn btn-small btn-default" title="">aperçu vitrine</a>
+		<a data-productId="@item.Id" class="productPreview btn btn-small btn-default" title="">Aperçu vitrine</a>
 	    </td>
             <td class="productMgtImage">
                 <div>
@@ -140,17 +140,21 @@
             @foreach (var productStock in item.ProductStocks.OrderBy(x => x.AdherentStolonId))
             {
                 string color = "";
+		string text = "";
                 switch (productStock.State)
                 {
                     case Product.ProductState.Disabled:
-                        color = "#ff0000";
-                        break;
+		    text = "Produit indisponible";
+                    color = "#cb2431";
+                    break;
                     case Product.ProductState.Enabled:
-                        color = "#00ff00";
-                        break;
+                    color = "#2cbe4e";
+		    text = "Produit disponible";
+                    break;
                     case Product.ProductState.Stock:
-                        color = "#ff8000";
-                        break;
+                    color = "#ff8000";
+		    text = "Mise à jour des stocks";
+                    break;
                 }
                 string stockManagementLabel = "";
                 @if (productStock.AdherentStolon.Stolon.GetMode() == Stolon.Modes.Order || item.StockManagement == Product.StockType.Fixed)
@@ -167,11 +171,10 @@
                                            + productStock.Product.GetQuantityString(productStock.WeekStock);
                 }
 
-                <td bgcolor="@(color)">
-
+		<td bgcolor="@(color)">
                     @if (productStock.Product.StockManagement != Product.StockType.Unlimited)
                     {
-                        <input class="btn - small btn - default\" type="submit" value="@stockManagementLabel" onclick="StockMgtViewModal.open('@productStock.Id')" />
+                        <input class="btn btn-default" type="submit" style="color: '@(color)';" value="@stockManagementLabel" onclick="StockMgtViewModal.open('@productStock.Id')" />
                     }
                     else
                     {

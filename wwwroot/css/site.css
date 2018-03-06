@@ -557,6 +557,11 @@ img.warning {
     height: 20px;
 }
 
+.pr_label img:hover {
+    transform: scale(1.5);
+    transition: all 100ms;
+}
+
 .product-bottom {
     /* height: 100px; */
 }
@@ -1154,6 +1159,7 @@ div.chat {
 .productPreviewTooltip {
     max-width: 240px;
     width: 240px;
+    border-radius: 10px;
 }
 
 .productPreviewTooltipContent {
