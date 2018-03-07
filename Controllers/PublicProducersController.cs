@@ -23,6 +23,7 @@ namespace Stolons.Controllers
 
         // GET: PublicProducers
         [AllowAnonymous]
+	[Route("PublicProducers/{id?}")]
         public IActionResult Index()
         {
             Stolon stolon = GetCurrentStolon();

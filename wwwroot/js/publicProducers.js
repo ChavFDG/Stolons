@@ -21,6 +21,17 @@ ProducersCollection = Backbone.Collection.extend(
 	    this.fetch();
 	},
 
+	getFromAdherentId: function(id) {
+	    var producer;
+	    this.forEach(function(p) {
+		if (p.get("Adherent").Id == id) {
+		    producer = p;
+		    return false;
+		}
+	    });
+	    return producer;
+	},
+
 	//Get the center of producers coordinates for init map view
 	getCenterCoordinates: function() {
 	    var count = 0;
@@ -136,6 +147,14 @@ $(function() {
     PublicProducers.ProducersCollection.on("sync", function() {
 	window.ProducerDetailsView = new ProducerDetailsView();
 	window.ProducerDetailsView.initMap(PublicProducers.ProducersCollection);
+
+	var hash = window.location.hash.substr(1);
+	if (!_.isEmpty(hash)) {
+	    var producer = PublicProducers.ProducersCollection.getFromAdherentId(hash);
+	    if (producer) {
+		window.ProducerDetailsView.selectProducer(producer.get("Id"));
+	    }
+	}
     });
 
 });
