@@ -19,7 +19,6 @@ namespace Stolons.Controllers
             SignInManager<ApplicationUser> signInManager,
             IServiceProvider serviceProvider) : base(serviceProvider, userManager, context, environment, signInManager)
         {
-
         }
 
         // GET: PublicProducers
@@ -27,11 +26,12 @@ namespace Stolons.Controllers
         public IActionResult Index()
         {
             Stolon stolon = GetCurrentStolon();
-	    var producers = _context.Adherents.
-		Include(x => x.AdherentStolons)
-		.Where(x => x.AdherentStolons.Any(adhSto => adhSto.IsProducer && adhSto.StolonId == stolon.Id))
+	    var producers = _context.AdherentStolons
+		.Include(x => x.Adherent)
+		.Where(x => x.IsProducer && x.StolonId == stolon.Id)
 		.AsNoTracking()
 		.ToList();
+
             return View(producers);
         }
 
@@ -40,13 +40,31 @@ namespace Stolons.Controllers
         public IActionResult JsonProductsStocks()
         {
             Stolon stolon = GetCurrentStolon();
-            var producers = _context.Adherents
-		.Include(x => x.AdherentStolons)
+	    var producers = _context.AdherentStolons
+		.Include(x => x.Adherent)
+		.Where(x => x.IsProducer && x.StolonId == stolon.Id)
 		.AsNoTracking()
-		.Where(x => x.AdherentStolons.Any(adhSto => adhSto.IsProducer && adhSto.StolonId == stolon.Id))
 		.ToList();
 
             return Json(producers);
+        }
+
+	[AllowAnonymous]
+        [HttpGet, ActionName("PublicProducerProducts"), Route("api/publicProducerProducts")]
+        public IActionResult JsonPublicProductsStocks(Guid producerStolonId)
+        {
+	    if (producerStolonId == null)
+	    {
+		return Json(new {});
+	    }
+            var productsStocks = _context.ProductsStocks
+		.Include(x => x.Product)
+		.ThenInclude(x => x.Familly)
+		.ThenInclude(x => x.Type)
+		.Where(x => x.AdherentStolonId == producerStolonId)
+		.AsNoTracking()
+		.ToList();
+            return Json(productsStocks);
         }
     }
 }

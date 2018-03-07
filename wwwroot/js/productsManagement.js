@@ -1,6 +1,5 @@
 
 var setupProductPreviewTooltip = function() {
-    console.log("Setting up tooltips");
     $(".productPreview").each(function() {
 	var publicProductTemplate = _.template($("#publicProductTemplate").html());
 	var productId = $(this).attr("data-productId");

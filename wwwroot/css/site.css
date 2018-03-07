@@ -285,11 +285,16 @@ img.warning {
     box-shadow: 0 0 0 3px #fff, 0 0 0 4px #999, 0 2px 5px 4px rgba(0,0,0,.2);
 }
 
-/*-- PUBLIC PRODUCER --*/
+/*-- START PUBLIC PRODUCER --*/
 
 .producersList {
     overflow-y: scroll;
-    max-height: 570px;
+    max-height: 470px;
+}
+
+.producersMap {
+    max-height: 470px;
+    height: 470px;
 }
 
 .mapMarker {
@@ -301,12 +306,30 @@ img.warning {
 .producerOpenText {
     padding: 10px;
     margin: 10px;
+    font-size: 15px;
+    font-family: Georgia, serif;
+    font-style: italic;
+    letter-spacing: 1.25px;
+    line-height: 1.6;
 }
 
 .public_Prod_avatar > img {
     width: 75px;
     height: 75px;
+    vertical-align: middle;
 }
+
+.producerDetailsContainer {
+    margin-top: 10px;
+}
+
+.producerDetailsTitle {
+    font-size: 1.4em;
+    color: #337ab7;
+    padding-left: 10px;
+}
+
+/*-- END PUBLIC PRODUCER --*/
 
 .isa_success {
     color: #4F8A10;
@@ -651,13 +674,21 @@ img.warning {
     display: inline-block;
 }
 
-    .producerModalAvatar img {
-        width: 35px;
-        height: 35px;
-    }
+.producerModalAvatar img {
+    width: 35px;
+    height: 35px;
+}
 
-.producerInfoList > li {
+.producerInfoList li {
     padding: 5px;
+}
+
+.producerInfoList ul {
+    list-style-type: none;
+}
+
+.producerInfoList {
+    padding-top: 20px;
 }
 
 .modals .modal-header .close {
@@ -668,11 +699,11 @@ img.warning {
     display: block !important;
 }
 
-    .modals ul {
-        list-style-type: none;
-        margin: 0;
-        padding: 0;
-    }
+.modals ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
 
 #productModal-desc {
     margin-right: 10px;

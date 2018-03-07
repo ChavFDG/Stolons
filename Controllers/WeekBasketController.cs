@@ -73,23 +73,6 @@ namespace Stolons.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet, ActionName("PublicProducts"), Route("api/publicProducts")]
-        public IActionResult JsonPublicProductsStocks()
-        {
-            var productsStocks = _context.ProductsStocks
-		.Include(x => x.AdherentStolon)
-		.ThenInclude(x => x.Adherent)
-		.Include(x => x.AdherentStolon)
-		.Include(x => x.Product)
-		.ThenInclude(x => x.Familly)
-		.ThenInclude(x => x.Type)
-		.Where(x => x.AdherentStolon.StolonId == GetCurrentStolon().Id)
-		.AsNoTracking()
-		.ToList();
-            return Json(productsStocks);
-        }
-
-        [AllowAnonymous]
         [HttpGet, ActionName("ProductTypes"), Route("api/productTypes")]
         public IActionResult JsonProductTypes()
         {

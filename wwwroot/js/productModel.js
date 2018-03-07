@@ -111,4 +111,90 @@ ProductStockModel = Backbone.Model.extend({
     }
 });
 
+//Actually ProductStocks...
+ProductsModel = Backbone.Collection.extend(
+    {
+        defaults: [],
+
+        model: ProductStockModel,
+
+        url: "/api/Products",
+
+        initialize: function () {
+	    this.fetch();
+        },
+
+	getProductsForFamily: function(family) {
+	    var products = [];
+	    this.forEach(function(productModel) {
+		var productFamilly = productModel.get("Product").get("Familly");
+		if (!_.isEmpty(productFamilly)) {
+		    if (productFamilly.FamillyName == family) {
+			products.push(productModel);
+		    }
+		}
+	    });
+	    return products;
+	},
+
+	getProductsForType: function(typeName) {
+	    var products = [];
+	    this.forEach(function(productModel) {
+		var familly = productModel.get("Product").get("Familly");
+		if (!_.isEmpty(familly)) {
+		    if (familly.Type.Name == typeName) {
+			products.push(productModel);
+		    }
+		}
+	    });
+	    return products;
+	}
+    }
+);
+
+ProducerProductStockCollection = Backbone.Collection.extend(
+    {
+        defaults: [],
+
+        model: ProductStockModel,
+
+        url: function() {
+	    return "/api/publicProducerProducts?producerStolonId=" + this.producerId;
+	},
+
+	//producerId is the adherentStolonId
+        initialize: function (producerId) {
+	    this.producerId = producerId;
+        },
+
+	getProductsForFamily: function(family) {
+	    var products = [];
+	    this.forEach(function(productModel) {
+		var productFamilly = productModel.get("Product").get("Familly");
+		if (!_.isEmpty(productFamilly)) {
+		    if (productFamilly.FamillyName == family) {
+			products.push(productModel);
+		    }
+		}
+	    });
+	    return products;
+	},
+
+	getProductsForType: function(typeName) {
+	    var products = [];
+	    this.forEach(function(productModel) {
+		var familly = productModel.get("Product").get("Familly");
+		if (!_.isEmpty(familly)) {
+		    if (familly.Type.Name == typeName) {
+			products.push(productModel);
+		    }
+		}
+	    });
+	    return products;
+	}
+    }
+);
+
+
+window.ProductsCollection = ProductsModel;
 window.ProductStockModel = ProductStockModel;

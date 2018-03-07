@@ -28,47 +28,6 @@ ProductTypesModel = Backbone.Collection.extend({
     comparator: "Name"
 });
 
-//Actually ProductStocks...
-ProductsModel = Backbone.Collection.extend(
-    {
-        defaults: [],
-
-        model: ProductStockModel,
-
-        url: "/api/Products",
-
-        initialize: function () {
-	    this.fetch();
-        },
-
-	getProductsForFamily: function(family) {
-	    var products = [];
-	    this.forEach(function(productModel) {
-		var productFamilly = productModel.get("Product").get("Familly");
-		if (!_.isEmpty(productFamilly)) {
-		    if (productFamilly.FamillyName == family) {
-			products.push(productModel);
-		    }
-		}
-	    });
-	    return products;
-	},
-
-	getProductsForType: function(typeName) {
-	    var products = [];
-	    this.forEach(function(productModel) {
-		var familly = productModel.get("Product").get("Familly");
-		if (!_.isEmpty(familly)) {
-		    if (familly.Type.Name == typeName) {
-			products.push(productModel);
-		    }
-		}
-	    });
-	    return products;
-	}
-    }
-);
-
 TmpWeekBasketModel = Backbone.Model.extend(
     {
         url: "/api/TmpWeekBasket",
@@ -601,7 +560,6 @@ ValidatedWeekBasketView = Backbone.View.extend(
         }
     }
 );
-
 
 var initModels = function () {
     var def = $.Deferred();
