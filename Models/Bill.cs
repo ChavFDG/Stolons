@@ -96,7 +96,7 @@ namespace Stolons.Models
         public string BillNumber { get; set; }
         public string OrderNumber { get; set; }
         public AdherentStolon AdherentStolon { get; set; }
-
+	
         public List<BillEntry> BillEntries { get; set; }
 
         [Display(Name = "Date d'édition de la facture")]

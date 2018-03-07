@@ -287,6 +287,17 @@ img.warning {
 
 /*-- PUBLIC PRODUCER --*/
 
+.producersList {
+    overflow-y: scroll;
+    max-height: 570px;
+}
+
+.mapMarker {
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+}
+
 .producerOpenText {
     padding: 10px;
     margin: 10px;

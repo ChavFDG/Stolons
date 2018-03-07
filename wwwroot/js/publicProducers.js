@@ -11,7 +11,7 @@ ProducerModel = Backbone.Model.extend(
     }
 );
 
-ProducersModel = Backbone.Collection.extend(
+ProducersCollection = Backbone.Collection.extend(
     {
 	url: "/api/producers",
 
@@ -19,6 +19,22 @@ ProducersModel = Backbone.Collection.extend(
 
 	initialize: function() {
 	    this.fetch();
+	},
+
+	//Get the center of producers coordinates for init map view
+	getCenterCoordinates: function() {
+	    var count = 0;
+	    var latitude = 0;
+	    var longitude = 0;
+
+	    this.forEach(function(producer) {
+		if (producer.get("Latitude") != 0.0 && producer.get("Longitude") != 0.0) {
+		    latitude += producer.get("Latitude");
+		    longitude += producer.get("Longitude");
+		    ++count;
+		}
+	    });
+	    return [latitude / count, longitude / count];
 	}
     }
 );
@@ -33,12 +49,12 @@ ProducerViewModal = Backbone.View.extend({
     },
 
     open: function(producerId) {
-	    this.currentProducer = PublicProducers.ProducersModel.get(producerId);
+	    this.currentProducer = PublicProducers.ProducersCollection.get(producerId);
 	    this.renderModal();
     },
 
     onClose: function() {
-	    this.currentProducer = null;
+	this.currentProducer = null;
         this.$el.off('hidden.bs.modal');
         this.close();
     },
@@ -55,59 +71,64 @@ ProducerViewModal = Backbone.View.extend({
 });
 
 function initMap(producersModel) {
-
-    var privasCenterCoodinates = [44.7177685, 4.596498399999973];
+    
+    var centerCoordinates = PublicProducers.ProducersCollection.getCenterCoordinates();
 
     var markers = {};
 
-    var map = L.map('map').setView(privasCenterCoodinates, 11);
+    var map = L.map('map').setView(centerCoordinates, 9);
 
     var mapLink = '<a href="http://openstreetmap.org">OpenStreetMap</a>';
 
     L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: 'Map data &copy; '+ mapLink , maxZoom: 24}).addTo(map);
 
-    var producerIcon = L.icon({
-	iconUrl: '/images/mapMarker.png',
-	iconSize:     [38, 95], // size of the icon
-	shadowSize:   [50, 64], // size of the shadow
-	iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
-	shadowAnchor: [4, 62],  // the same for the shadow
-	popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
-    });
+    var bounds = [];
 
     //Adding producers markers to the map
     producersModel.forEach(function(producer) {
-	//var popup = L.popup().setContent("<b>" + producer.get("CompanyName") + "</b><br />Cliquer pour voir les détails.");
+	if (producer.get("Latitude") == 0 || producer.get("Longitude") == 0) {
+	    return;
+	}
+	var bound = [producer.get("Latitude"), producer.get("Longitude")];
+	var producerIcon = L.icon({
+	    iconUrl: producer.get("AvatarFilePath"),
+	    iconSize: [48, 45], // size of the shadow
+	    iconAnchor: [24, 62],  // the same for the shadow
+	    shadowUrl: '/images/map_marker.png',
+	    shadowSize: [50, 62], // size of the icon
+	    shadowAnchor: [25, 62], // point of the icon which will correspond to marker's location
+	    className: "mapMarker"
+	});
 
-	var marker = L.marker([producer.get("Latitude"), producer.get("Longitude")], {icon: producerIcon});
-	//marker.bindPopup(popup);
+	var marker = L.marker(bound, {icon: producerIcon});
 	marker.on("click", function() {
-	    ProducerModalView.open(producer.get("Id"));
 	    return false;
 	});
-	marker.addTo(map);
+	marker.addTo(map).bindTooltip(producer.get("CompanyName"));
 	markers[producer.get("Id")] = marker;
+	bounds.push(bound);
     });
 
+    //Recentrage automatique de la carte pour voir tous les points
+    map.fitBounds(bounds);
+
     PublicProducers.selectProducer = function(producerId) {
-	    var producer = PublicProducers.ProducersModel.get(producerId);
+	var producer = PublicProducers.ProducersModel.get(producerId);
 
-	    if (producer.get("Latitude") != 0.0 && producer.get("Longitude") != 0.0) {
-	        //Center the producer on the map
-	        map.panTo([producer.get("Latitude"), producer.get("Longitude")]);
-	        markers[producerId].openPopup();
-	    }
+	if (producer.get("Latitude") != 0.0 && producer.get("Longitude") != 0.0) {
+	    //Center the producer on the map
+	    map.panTo([producer.get("Latitude"), producer.get("Longitude")]);
+	}
     };
-
 }
 
 $(function() {
 
     window.ProducerModalView = new ProducerViewModal();
 
-    PublicProducers.ProducersModel = new ProducersModel();
-    PublicProducers.ProducersModel.on("sync", function() {
-        initMap(PublicProducers.ProducersModel);
+    PublicProducers.ProducersCollection = new ProducersCollection();
+    PublicProducers.ProducersCollection.on("sync", function() {
+        initMap(PublicProducers.ProducersCollection);
     });
 
 });

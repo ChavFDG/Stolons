@@ -27,7 +27,12 @@ namespace Stolons.Controllers
         public IActionResult Index()
         {
             Stolon stolon = GetCurrentStolon();
-            return View(_context.Adherents.Include(x => x.AdherentStolons).Where(x => x.AdherentStolons.Any(adhSto => adhSto.IsProducer && adhSto.StolonId == stolon.Id)).ToList());
+	    var producers = _context.Adherents.
+		Include(x => x.AdherentStolons)
+		.Where(x => x.AdherentStolons.Any(adhSto => adhSto.IsProducer && adhSto.StolonId == stolon.Id))
+		.AsNoTracking()
+		.ToList();
+            return View(producers);
         }
 
         [AllowAnonymous]
@@ -35,7 +40,11 @@ namespace Stolons.Controllers
         public IActionResult JsonProductsStocks()
         {
             Stolon stolon = GetCurrentStolon();
-            var producers = _context.Adherents.Include(x => x.AdherentStolons).AsNoTracking().Where(x => x.AdherentStolons.Any(adhSto => adhSto.IsProducer && adhSto.StolonId == stolon.Id)).ToList();
+            var producers = _context.Adherents
+		.Include(x => x.AdherentStolons)
+		.AsNoTracking()
+		.Where(x => x.AdherentStolons.Any(adhSto => adhSto.IsProducer && adhSto.StolonId == stolon.Id))
+		.ToList();
 
             return Json(producers);
         }
