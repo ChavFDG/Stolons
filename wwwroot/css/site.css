@@ -70,6 +70,14 @@ h3 {
     min-width: 40px;
     margin-right: 10px !important;
 }
+
+#presentation-text {
+    font-size: 15px;
+    letter-spacing: 1.25px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
 /* Set widths on the form inputs since otherwise they're 100% wide */
 input,
 select,
