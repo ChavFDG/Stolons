@@ -102,11 +102,11 @@ var ProducerDetailsView = Backbone.View.extend({
 	    var bound = [producer.get("Adherent").Latitude, producer.get("Adherent").Longitude];
 	    var producerIcon = L.icon({
 		iconUrl: producer.get("Adherent").AvatarFilePath,
-		iconSize: [48, 45], // size of the shadow
-		iconAnchor: [24, 62],  // the same for the shadow
+		iconSize: [30,30], // size of the shadow
+		iconAnchor: [14,26],  // the same for the shadow
 		shadowUrl: '/images/map_marker.png',
-		shadowSize: [50, 62], // size of the icon
-		shadowAnchor: [25, 62], // point of the icon which will correspond to marker's location
+		shadowSize: [68,63], // size of the icon
+		shadowAnchor: [33,31], // point of the icon which will correspond to marker's location
 		className: "mapMarker"
 	    });
 
