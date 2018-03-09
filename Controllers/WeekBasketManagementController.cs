@@ -16,6 +16,7 @@ using Stolons.Models.Transactions;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Text;
+using Stolons.Services;
 
 namespace Stolons.Controllers
 {
@@ -38,21 +39,21 @@ namespace Stolons.Controllers
             VmWeekBasketManagement vm = new VmWeekBasketManagement(adherentStolon);
             vm.Stolon = GetCurrentStolon();
             vm.ConsumerBills = _context.ConsumerBills
-		.Include(x => x.AdherentStolon)
-		.Include(x => x.AdherentStolon.Adherent)
-		.Include(x => x.AdherentStolon.Stolon)
-		.Where(x => x.State == BillState.Pending && x.AdherentStolon.StolonId == stolon.Id)
-		.OrderBy(x => x.AdherentStolon.Adherent.Id)
-		.AsNoTracking()
-		.ToList();
+                                .Include(x => x.AdherentStolon)
+                                .Include(x => x.AdherentStolon.Adherent)
+                                .Include(x => x.AdherentStolon.Stolon)
+                                .Where(x => x.State == BillState.Pending && x.AdherentStolon.StolonId == stolon.Id)
+                                .OrderBy(x => x.AdherentStolon.Adherent.Id)
+                                .AsNoTracking()
+                                .ToList();
             vm.ProducerBills = _context.ProducerBills
-		.Include(x => x.AdherentStolon)
-		.Include(x => x.AdherentStolon.Adherent)
-		.Include(x => x.AdherentStolon.Stolon)
-		.Where(x => x.State != BillState.Paid && x.AdherentStolon.StolonId == stolon.Id)
-		.OrderBy(x => x.AdherentStolon.Adherent.Id)
-		.AsNoTracking()
-		.ToList();
+                                .Include(x => x.AdherentStolon)
+                                .Include(x => x.AdherentStolon.Adherent)
+                                .Include(x => x.AdherentStolon.Stolon)
+                                .Where(x => x.State != BillState.Paid && x.AdherentStolon.StolonId == stolon.Id)
+                                .OrderBy(x => x.AdherentStolon.Adherent.Id)
+                                .AsNoTracking()
+                                .ToList();
             vm.StolonsBills = _context.StolonsBills.Include(x => x.Stolon).Where(x => x.StolonId == stolon.Id).ToList();
             vm.WeekStolonsBill = vm.StolonsBills.FirstOrDefault(x => x.BillNumber.EndsWith(DateTime.Now.Year + "_" + DateTime.Now.GetIso8601WeekOfYear()));
             return View(vm);
@@ -83,15 +84,15 @@ namespace Stolons.Controllers
         }
 
         // GET: UpdateProducerBill
-	//validate bill payement
+        //validate bill payement
         public IActionResult UpdateProducerBill(Guid billId, int state)
         {
             ProducerBill bill = _context.ProducerBills
-		.Include(x => x.AdherentStolon)
-		.Include(x => x.AdherentStolon.Adherent)
-		.First(x => x.BillId == billId);
+                                .Include(x => x.AdherentStolon)
+                                .Include(x => x.AdherentStolon.Adherent)
+                                .First(x => x.BillId == billId);
 
-            bill.State = (BillState) state;
+            bill.State = (BillState)state;
             _context.Update(bill);
             if (bill.State == BillState.Paid)
             {
@@ -120,25 +121,25 @@ namespace Stolons.Controllers
         {
             var stolon = GetCurrentStolon();
             var consumersBills = _context.ConsumerBills
-		.Include(x => x.AdherentStolon)
-		.Include(x => x.AdherentStolon.Adherent)
-		.Include(x => x.AdherentStolon.Stolon)
-		.Where(x => x.State == BillState.Pending && x.AdherentStolon.StolonId == stolon.Id)
-		.OrderBy(x => x.AdherentStolon.Adherent.Id)
-		.ToList();
+                                .Include(x => x.AdherentStolon)
+                                .Include(x => x.AdherentStolon.Adherent)
+                                .Include(x => x.AdherentStolon.Stolon)
+                                .Where(x => x.State == BillState.Pending && x.AdherentStolon.StolonId == stolon.Id)
+                                .OrderBy(x => x.AdherentStolon.Adherent.Id)
+                                .ToList();
             var producersBills = _context.ProducerBills
-		.Include(x => x.AdherentStolon)
-		.Include(x => x.AdherentStolon.Adherent)
-		.Include(x => x.AdherentStolon.Stolon)
-		.Where(x => x.State != BillState.Paid && x.AdherentStolon.StolonId == stolon.Id)
-		.OrderBy(x => x.AdherentStolon.Adherent.Id)
-		.ToList();
+                                .Include(x => x.AdherentStolon)
+                                .Include(x => x.AdherentStolon.Adherent)
+                                .Include(x => x.AdherentStolon.Stolon)
+                                .Where(x => x.State != BillState.Paid && x.AdherentStolon.StolonId == stolon.Id)
+                                .OrderBy(x => x.AdherentStolon.Adherent.Id)
+                                .ToList();
 
             var weekStolonBill = _context.StolonsBills
-		.Include(x => x.Stolon)
-		.Where(x => x.StolonId == stolon.Id)
-		.ToList()
-		.FirstOrDefault(x => x.BillNumber.EndsWith(DateTime.Now.Year + "_" + DateTime.Now.GetIso8601WeekOfYear()));
+                            .Include(x => x.Stolon)
+                            .Where(x => x.StolonId == stolon.Id)
+                            .ToList()
+                            .FirstOrDefault(x => x.BillNumber.EndsWith(DateTime.Now.Year + "_" + DateTime.Now.GetIso8601WeekOfYear()));
 
             DateTime start = DateTime.Now;
             StringBuilder report = new StringBuilder();
@@ -173,31 +174,38 @@ namespace Stolons.Controllers
         [HttpPost, ActionName("UpdateBillCorrection")]
         public bool UpdateBillCorrection(VmBillCorrection billCorrection)
         {
-	    billCorrection.Reason = "Modification le : " + DateTime.Now.ToString() + "\n\rRaison : " + billCorrection.Reason + "\n\r\n\r";
-	    ProducerBill bill = _context.ProducerBills.Include(x => x.BillEntries).Include(x => x.AdherentStolon).First(x => x.BillId == billCorrection.ProducerBillId);
-	    bill.ModificationReason = billCorrection.Reason;
-	    bill.HasBeenModified = true;
-	    List<Guid?> modifiedBills = new List<Guid?>();
-	    foreach (var billQuantity in billCorrection.NewQuantities)
-	    {
-		var billEntry = bill.BillEntries.First(x => x.Id == billQuantity.BillId);
-		billEntry.Quantity = billQuantity.Quantity;
-		billEntry.HasBeenModified = true;
-		if (!modifiedBills.Any(x => x == billEntry.ConsumerBillId))
-		    modifiedBills.Add(billEntry.ConsumerBillId);
-	    }
-	    _context.SaveChanges();
-	    bill = _context.ProducerBills.Include(x => x.BillEntries).Include(x => x.AdherentStolon).Include(x => x.AdherentStolon.Stolon).Include(x => x.AdherentStolon.Adherent).First(x => x.BillId == billCorrection.ProducerBillId);
-	    bill.BillEntries.ForEach(x => x.ProductStock = _context.ProductsStocks.Include(y => y.Product).First(stock => stock.Id == x.ProductStockId));
-	    bill.HtmlBillContent = BillGenerator.GenerateHtmlBillContent(bill, _context);
-	    BillGenerator.GenerateBillPDF(bill);
-	    foreach (var billId in modifiedBills)
-	    {
-		var billToModify = _context.ConsumerBills.First(x => x.BillId == billId);
-		billToModify.ModificationReason += billCorrection.Reason;
-		billToModify.HasBeenModified = true;
-	    }
-	    _context.SaveChanges();
+            billCorrection.Reason = "Modification le : " + DateTime.Now.ToString() + "\n\rRaison : " + billCorrection.Reason + "\n\r\n\r";
+            ProducerBill bill = _context.ProducerBills.Include(x => x.BillEntries).Include(x => x.AdherentStolon).First(x => x.BillId == billCorrection.ProducerBillId);
+            bill.ModificationReason = billCorrection.Reason;
+            bill.HasBeenModified = true;
+            List<Guid?> modifiedBills = new List<Guid?>();
+            foreach (var billQuantity in billCorrection.NewQuantities)
+            {
+                var billEntry = bill.BillEntries.First(x => x.Id == billQuantity.BillId);
+                billEntry.Quantity = billQuantity.Quantity;
+                billEntry.HasBeenModified = true;
+                if (!modifiedBills.Any(x => x == billEntry.ConsumerBillId))
+                    modifiedBills.Add(billEntry.ConsumerBillId);
+            }
+            _context.SaveChanges();
+            bill = _context.ProducerBills.Include(x => x.BillEntries).Include(x => x.AdherentStolon).Include(x => x.AdherentStolon.Stolon).Include(x => x.AdherentStolon.Adherent).First(x => x.BillId == billCorrection.ProducerBillId);
+            bill.BillEntries.ForEach(x => x.ProductStock = _context.ProductsStocks.Include(y => y.Product).First(stock => stock.Id == x.ProductStockId));
+            bill.HtmlBillContent = BillGenerator.GenerateHtmlBillContent(bill, _context);
+            BillGenerator.GenerateBillPDF(bill);
+            foreach (var billId in modifiedBills)
+            {
+                var billToModify = _context.ConsumerBills.Include(x=>x.AdherentStolon.Adherent).First(x => x.BillId == billId);
+                billToModify.ModificationReason += billCorrection.Reason;
+                billToModify.HasBeenModified = true;
+                //Envoie mail user
+                BillGenerator.GenerateBillPDF(billToModify);
+                AuthMessageSender.SendEmail(billToModify.AdherentStolon.Stolon.Label,
+                            billToModify.AdherentStolon.Adherent.Email,
+                            billToModify.AdherentStolon.Adherent.CompanyName,
+                            "Votre bon de commande de la semaine chez " + billToModify.AdherentStolon.Stolon.Label + "a été modifié (Bon de commande " + bill.BillNumber + ")",
+                            "Oops, petit problème, malheureusement tout vos produits ne pourront pas être disponible. Votre commande a été modifié. En voici la raison : " + billCorrection.Reason + "\n\n" + bill.HtmlBillContent);
+            }
+            _context.SaveChanges();
             return true;
         }
 
@@ -217,7 +225,7 @@ namespace Stolons.Controllers
             IBill bill = _context.ProducerBills.Include(x => x.AdherentStolon).ThenInclude(x => x.Adherent).AsNoTracking().First(x => x.BillId.ToString() == billId);
             bill.BillEntries = _context.BillEntrys.Include(x => x.ProductStock).Where(x => x.ProducerBillId.ToString() == billId).AsNoTracking().ToList();
 
-	    foreach (BillEntry billEntry in bill.BillEntries)
+            foreach (BillEntry billEntry in bill.BillEntries)
             {
                 billEntry.ConsumerBill = _context.ConsumerBills.Include(x => x.BillEntries).ThenInclude(x => x.ProductStock).ThenInclude(x => x.Product).Include(x => x.AdherentStolon).ThenInclude(x => x.Adherent).AsNoTracking().First(x => x.BillId == billEntry.ConsumerBillId);
                 billEntry.ProductStock = _context.ProductsStocks.First(x => x.Id == billEntry.ProductStockId);
