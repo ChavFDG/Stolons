@@ -61,7 +61,7 @@ namespace Stolons.Services
             }
 	    catch (Exception except)
             {
-                DotnetHelper.getLogger<String>().LogError("Error on sending mail : " + except.Message);
+                DotnetHelper.GetLogger<String>().LogError("Error on sending mail : " + except.Message);
             }
         }
 

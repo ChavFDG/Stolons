@@ -25,6 +25,8 @@ namespace Stolons.Controllers
         {
         }
 
+       
+
         [AllowAnonymous]
         public IActionResult Index(bool showOldNews = false)
         {
@@ -52,7 +54,7 @@ namespace Stolons.Controllers
         }
 
         /// <summary>
-        /// Contact and infortion about a Stolon
+        /// Contact and information about a Stolon
         /// </summary>
         /// <param name="id">Id of the Stolon</param>
         /// <returns></returns>
@@ -67,6 +69,32 @@ namespace Stolons.Controllers
                 prods.Add(producer, _context.Products.Include(x=>x.Familly).ThenInclude(x=>x.Type).Where(product => product.ProducerId == producer.Id).ToList());
             }
             return View(new StolonContactViewModel(stolon, prods, User.Identity.IsAuthenticated?GetActiveAdherentStolon():null));
+        }
+
+        [Route("Go/{stolonName}")]
+
+        [AllowAnonymous]
+        public IActionResult GoToStolon(string stolonName)
+        {
+            if (!String.IsNullOrWhiteSpace(stolonName))
+            {
+                Stolon stolon = _context.Stolons.FirstOrDefault(x => x.Label == stolonName || x.ShortLabel == stolonName || x.Id.ToString() == stolonName);
+                if (stolon != null)
+                {
+                    if (!User.Identity.IsAuthenticated)
+                    {
+                        return RedirectToAction(nameof(StolonContact), "Home", new { id = stolon.Id });
+                    }
+                    else
+                    {
+                        var adherentStolon = GetActiveAdherentStolon();
+                        if (adherentStolon.StolonId != stolon.Id)
+                            _context.AdherentStolons.FirstOrDefault(x => x.AdherentId == adherentStolon.AdherentId && x.StolonId == stolon.Id)?.SetHasActiveStolon(_context);
+                    }
+                }
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
         [AllowAnonymous]

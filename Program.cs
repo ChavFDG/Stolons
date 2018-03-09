@@ -17,42 +17,43 @@ namespace Stolons
     {
         public static void Main(string[] args)
         {
-	    var host = BuildWebHost(args);
+            var host = BuildWebHost(args);
 
-	    //Register webhost in Stolons configs
-	    Configurations.WebHost = host;
+            //Register webhost in Stolons configs
+            Configurations.WebHost = host;
 
-	    Thread billManager = new Thread(() => BillGenerator.ManageBills());
-	    billManager.Start();
+            Thread billManager = new Thread(() => BillGenerator.ManageBills());
+            billManager.Start();
 
-	    var logger = DotnetHelper.getLogger<Program>();
+            var logger = DotnetHelper.GetLogger<Program>();
 
-	    using (var scope = DotnetHelper.getNewScope())
-	    {
-		var services = scope.ServiceProvider;
-		try
-		{
-		    Startup.SeedDatabase(services);
-		}
-		catch (Exception ex)
-		{
-		    logger.LogError(ex, "An error occurred seeding the DB.");
-		}
-	    }
+            using (var scope = DotnetHelper.GetNewScope())
+            {
+                var services = scope.ServiceProvider;
+                try
+                {
+                    Startup.SeedDatabase(services);
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, "An error occurred seeding the DB.");
+                }
+            }
 
-	    try
-	    {
-		host.Run();
-	    } catch (Exception e)
-	    {
-		logger.LogError("Server is dead, catched exception. Bye cruel world");
-		throw e;
-	    }
+            try
+            {
+                host.Run();
+            }
+            catch (Exception e)
+            {
+                logger.LogError("Server is dead, catched exception. Bye cruel world");
+                throw e;
+            }
         }
 
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-	    .UseStartup<Startup>()
-	    .Build();
+        .UseStartup<Startup>()
+        .Build();
     }
 }

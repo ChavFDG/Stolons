@@ -57,61 +57,11 @@
                         </div>
                     </div>
                 </div>
-                                }
-        </div>
-
-        <h3>Horarires panier</h3>
-        <p class="information">@Model.Stolon.GetStringPickUpTime()</p>
-
-        <h3>Produits</h3>
-        <div class="tiny-pictures">
-            @foreach (var productType in Model.AvailableProductFamillyAndType)
-            {
-                @if (@productType.Key.Image != null)
-                {
-                    <div class="col-xs-12 col-sm-4 col-md-3">
-                        <div class="product">
-                            <div class="product-top">
-                                <div class="pr_img product-top" data-toggle="tooltip" title="Voir détails produit">
-                                    <img src="/@productType.Key.Image" title="@productType.Key.Name" />
-                                </div>
-                                <div class="pr_labels">
-                                    <div class="pr_label">
-                                        <img src="/images/labels/Ab.jpg">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="product-bottom">
-                                <div class="pr_text">
-                                    <div class="pr_name">
-                                        Pain complet
-                                    </div>
-                                    <div class="pr_qtystock">
-                                        <span class="pr_priceQuantity">
-                                            4 € l'unité
-                                            (15.5 € / Kg)
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="pr_actions">
-                                <div class="productQuantityLoading hidden">
-                                    <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate">
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                }
             }
         </div>
-    </div>
-</div>
 
-<div class="row">
-    <div class="col-lg-12 producersMapContainer">
-        <div id="producerModal" class="modals"></div>
-        <div id="map" style="height: 400px"></div>
+        <h3>Horaires panier</h3>
+        <p class="information">@Model.Stolon.GetStringPickUpTime()</p>
     </div>
 </div>
 
@@ -120,7 +70,59 @@
     <div class="col-lg-12 text-center" id="presentation-text">@Model.Stolon.AboutText</div>
 </div>
 
+<div class="row">
+    <h1 class="col-lg-12 text-center">Nos producteurs</h1>
+    <div class="col-lg-12 producersMapContainer">
+        <div id="producerModal" class="modals"></div>
+        <div id="map" style="height: 400px"></div>
+    </div>
+</div>
 
+
+<div class="row">
+    <h1 class="col-lg-12 text-center">Les produits</h1>
+    <div class="tiny-pictures">
+        @foreach (var productType in Model.AvailableProductFamillyAndType)
+        {
+            @if (@productType.Key.Image != null)
+            {
+                <div class="col-xs-12 col-sm-4 col-md-3">
+                    <div class="product">
+                        <div class="product-top">
+                            <div class="pr_img product-top" data-toggle="tooltip" title="Voir détails produit">
+                                <img src="/@productType.Key.Image" title="@productType.Key.Name" />
+                            </div>
+                            <div class="pr_labels">
+                                <div class="pr_label">
+                                    <img src="/images/labels/Ab.jpg">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="product-bottom">
+                            <div class="pr_text">
+                                <div class="pr_name">
+                                    Pain complet
+                                </div>
+                                <div class="pr_qtystock">
+                                    <span class="pr_priceQuantity">
+                                        4 € l'unité
+                                        (15.5 € / Kg)
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pr_actions">
+                            <div class="productQuantityLoading hidden">
+                                <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate">
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
 
 
 @{ await Html.RenderPartialAsync("Templates/ProducerModalTemplate"); }

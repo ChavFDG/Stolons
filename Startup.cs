@@ -29,7 +29,7 @@ namespace Stolons
     public class Startup
     {
         public IHostingEnvironment _environment;
-	public IConfiguration Configuration { get; }
+        public IConfiguration Configuration { get; }
 
         public Startup(IHostingEnvironment env, IConfiguration configuration)
         {
@@ -40,47 +40,47 @@ namespace Stolons
 
             _environment = env;
 
-	    var builder = new ConfigurationBuilder()
-		.SetBasePath(env.ContentRootPath)
-		.AddJsonFile("appsettings.json", optional: true, reloadOnChange: false)
-		.AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
+            var builder = new ConfigurationBuilder()
+            .SetBasePath(env.ContentRootPath)
+            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: false)
+            .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
 
-	    if (env.IsEnvironment("Development"))
-	    {
-		builder.AddApplicationInsightsSettings(developerMode: true);
-	    }
+            if (env.IsEnvironment("Development"))
+            {
+                builder.AddApplicationInsightsSettings(developerMode: true);
+            }
 
-	    builder.AddEnvironmentVariables();
-	    Configuration = builder.Build();
+            builder.AddEnvironmentVariables();
+            Configuration = builder.Build();
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-	    //Storing connection string for reuse in ApplicationDbContext later
-	    Configurations.DBConnectionString = Configuration.GetConnectionString("Stolons");
-	    services.AddDbContext<ApplicationDbContext>();
-	    
-	    services.AddMvc().AddJsonOptions(options =>
-		    {
-			options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
-			options.SerializerSettings.ContractResolver = new DefaultContractResolver();
-		    });
+            //Storing connection string for reuse in ApplicationDbContext later
+            Configurations.DBConnectionString = Configuration.GetConnectionString("Stolons");
+            services.AddDbContext<ApplicationDbContext>();
 
-	    //Password policy
-	    //stackoverflow.com/questions/27831597/how-do-i-define-the-password-rules-for-identity-in-asp-net-5-mvc-6-vnext
-	    services.AddIdentity<ApplicationUser, IdentityRole>(o =>
-		    {
-			// configure identity options
-			o.Password.RequireDigit = false;
-			o.Password.RequireLowercase = false;
-			o.Password.RequireUppercase = false;
-			o.Password.RequiredLength = 1;
-			o.Password.RequireNonAlphanumeric = false;
-		    }).AddEntityFrameworkStores<ApplicationDbContext>()
-		.AddDefaultTokenProviders();
+            services.AddMvc().AddJsonOptions(options =>
+                {
+                    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                    options.SerializerSettings.ContractResolver = new DefaultContractResolver();
+                });
 
-	    //services.AddApplicationInsightsTelemetry(Configuration);
+            //Password policy
+            //stackoverflow.com/questions/27831597/how-do-i-define-the-password-rules-for-identity-in-asp-net-5-mvc-6-vnext
+            services.AddIdentity<ApplicationUser, IdentityRole>(o =>
+                {
+                // configure identity options
+                o.Password.RequireDigit = false;
+                    o.Password.RequireLowercase = false;
+                    o.Password.RequireUppercase = false;
+                    o.Password.RequiredLength = 1;
+                    o.Password.RequireNonAlphanumeric = false;
+                }).AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders();
+
+            //services.AddApplicationInsightsTelemetry(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -108,44 +108,45 @@ namespace Stolons
 
             app.UseStaticFiles();
 
-	    app.UseAuthentication();
+            app.UseAuthentication();
 
             app.UseMvc(routes =>
-		    {
-			routes.MapRoute(
-					name: "default",
-					template: "{controller=Home}/{action=Index}/{id?}");
-		    });
-	    Configurations.Environment = env;
-	    Configurations.SetupMailDebug(Configuration.GetSection("MailDebug"));
+            {
+                routes.MapRoute(
+                        name: "default",
+                        template: "{controller=Home}/{action=Index}/{id?}");
+                
+            });
+            Configurations.Environment = env;
+            Configurations.SetupMailDebug(Configuration.GetSection("MailDebug"));
 
-	    applicationLifetime.ApplicationStopping.Register(OnShutdown);
+            applicationLifetime.ApplicationStopping.Register(OnShutdown);
         }
 
-	public static void OnShutdown()
-	{
-	    DotnetHelper.getLogger<Startup>().LogWarning("Server is shutting down");
-	    BillGenerator.StopThread();
-	}
+        public static void OnShutdown()
+        {
+            DotnetHelper.GetLogger<Startup>().LogWarning("Server is shutting down");
+            BillGenerator.StopThread();
+        }
 
-	public static void SeedDatabase(IServiceProvider services)
-	{
-	    var dbContext = services.GetRequiredService<ApplicationDbContext>();
-	    var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+        public static void SeedDatabase(IServiceProvider services)
+        {
+            var dbContext = services.GetRequiredService<ApplicationDbContext>();
+            var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
 
-	    List<Stolon> stolons = CreateStolons(dbContext);
+            List<Stolon> stolons = CreateStolons(dbContext);
             CreateAdminAccount(dbContext, userManager, stolons.First());
             CreateProductCategories(dbContext);
             SetGlobalConfigurations(dbContext);
-	    #if DEBUG
+#if DEBUG
             InitializeSampleAndTestData(dbContext, userManager, stolons.First());
-	    #endif
-	}
+#endif
+        }
 
-	#region Stolons config
+        #region Stolons config
         private static void InitializeSampleAndTestData(ApplicationDbContext context, UserManager<ApplicationUser> userManager, Stolon stolon)
         {
-	    CreateTestAcount(context, userManager, stolon);
+            CreateTestAcount(context, userManager, stolon);
             CreateProductsSamples(context);
         }
 
@@ -191,14 +192,14 @@ namespace Stolons
             CreateProductFamily(context, bevarages, "Alcools", "alcool.jpg");
             CreateProductFamily(context, bevarages, "Sans alcool", "sans_alcool.jpg");
 
-            ProductType other = CreateProductType(context, "Autres", "autres.jpg",false);
+            ProductType other = CreateProductType(context, "Autres", "autres.jpg", false);
             DefaultFamily = CreateProductFamily(context, other, "Non définie", null, false);
             CreateProductFamily(context, other, "Savons", "savon.jpg");
 
             context.SaveChanges();
         }
 
-        private static ProductType CreateProductType(ApplicationDbContext context, string name, string imageName = null,bool canBeRemoved = true)
+        private static ProductType CreateProductType(ApplicationDbContext context, string name, string imageName = null, bool canBeRemoved = true)
         {
             ProductType type = context.ProductTypes.FirstOrDefault(x => x.Name == name);
             if (type == null)
@@ -401,47 +402,47 @@ namespace Stolons
         private static void CreateAdminAccount(ApplicationDbContext context, UserManager<ApplicationUser> userManager, Stolon stolon)
         {
             CreateAcount(context,
-			 userManager,
-			 "PARAVEL",
-			 "Damien",
-			 "damien.paravel@gmail.com",
-			 "damien.paravel@gmail.com",
-			 Role.Admin,
-			 stolon,
-			 true);
-	    CreateAcount(context,
-			 userManager,
-			 "MICHON",
-			 "Nicolas",
-			 "nicolas.michon@zoho.com",
-			 "nicolas.michon@zoho.com",
-			 Role.Admin,
-			 stolon,
-			 true);
-	    CreateAcount(context,
-			 userManager,
-			 "TESTON",
-			 "Arnaud",
-			 "arnaudteston@gmail.com",
-			 "arnaudteston@gmail.com",
-			 Role.Admin,
-			 stolon,
-			 true);
+             userManager,
+             "PARAVEL",
+             "Damien",
+             "damien.paravel@gmail.com",
+             "damien.paravel@gmail.com",
+             Role.Admin,
+             stolon,
+             true);
+            CreateAcount(context,
+                 userManager,
+                 "MICHON",
+                 "Nicolas",
+                 "nicolas.michon@zoho.com",
+                 "nicolas.michon@zoho.com",
+                 Role.Admin,
+                 stolon,
+                 true);
+            CreateAcount(context,
+                 userManager,
+                 "TESTON",
+                 "Arnaud",
+                 "arnaudteston@gmail.com",
+                 "arnaudteston@gmail.com",
+                 Role.Admin,
+                 stolon,
+                 true);
         }
 
         private static void CreateTestAcount(ApplicationDbContext context, UserManager<ApplicationUser> userManager, Stolon stolon)
         {
             CreateAcount(context,
-			 userManager,
-			 "Maurice",
-			 "Robert",
-			 "chavrouxfdg@hotmail.com",
-			 "chavrouxfdg@hotmail.com",
-			 Role.Adherent,
-			 stolon,
-			 false,
-			 true,
-			 true);
+             userManager,
+             "Maurice",
+             "Robert",
+             "chavrouxfdg@hotmail.com",
+             "chavrouxfdg@hotmail.com",
+             Role.Adherent,
+             stolon,
+             false,
+             true,
+             true);
         }
 
         private static void CreateAcount(ApplicationDbContext context, UserManager<ApplicationUser> userManager, string name, string surname, string email, string password, Role role, Stolon stolon, bool isWebAdmin, bool isProducer = false, bool createOnlyIfTableEmpty = false)
@@ -467,11 +468,11 @@ namespace Stolons
             adherent.IsWebAdmin = isWebAdmin;
 
             AdherentStolon adherentStolon = new AdherentStolon(adherent, stolon, true)
-		{
-		    RegistrationDate = DateTime.Now,
-		    Enable = true,
-		    Role = role
-		};
+            {
+                RegistrationDate = DateTime.Now,
+                Enable = true,
+                Role = role
+            };
             adherentStolon.LocalId = context.AdherentStolons.Where(x => x.StolonId == stolon.Id).Select(x => x.LocalId).DefaultIfEmpty(0).Max() + 1;
 
             if (isProducer)

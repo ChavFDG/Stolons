@@ -109,7 +109,7 @@ namespace Stolons.Controllers
                     }
                     catch(Exception ex)
                     {
-                        DotnetHelper.getLogger<MailsController>().LogError(ex.ToString());
+                        DotnetHelper.GetLogger<MailsController>().LogError(ex.ToString());
                         report.MailsNotSended++;
                     }
                 }

@@ -32,11 +32,11 @@ namespace Stolons.Tools
 
         public static void ManageBills()
         {
-            Logger = DotnetHelper.getLogger<String>();
+            Logger = DotnetHelper.GetLogger<String>();
             GetCurrentStolonsModes();
             while (shouldRun)
             {
-                using (var scope = DotnetHelper.getNewScope())
+                using (var scope = DotnetHelper.GetNewScope())
                 {
                     using (ApplicationDbContext dbContext = DotnetHelper.getDbContext(scope))
                     {
@@ -73,7 +73,7 @@ namespace Stolons.Tools
 
         private static void GetCurrentStolonsModes()
         {
-            using (var scope = DotnetHelper.getNewScope())
+            using (var scope = DotnetHelper.GetNewScope())
             {
                 using (ApplicationDbContext dbContext = DotnetHelper.getDbContext(scope))
                 {

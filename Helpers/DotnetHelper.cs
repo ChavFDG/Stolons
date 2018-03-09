@@ -16,7 +16,7 @@ namespace Stolons.Helpers
     {
 
 	//Create a new Dependency Injection (DI) scpope for use outside standard dotnet DI contexts
-	public static IServiceScope getNewScope()
+	public static IServiceScope GetNewScope()
 	{
 	    var scopeFactory = Configurations.WebHost.Services.GetRequiredService<IServiceScopeFactory>();
 
@@ -32,7 +32,7 @@ namespace Stolons.Helpers
 	}
 
 	//Utility method to get a logger instance outside DI context
-	public static ILogger<T> getLogger<T>() where T : class
+	public static ILogger<T> GetLogger<T>() where T : class
 	{
 	    return Configurations.WebHost.Services.GetRequiredService<ILogger<T>>();
 	}
