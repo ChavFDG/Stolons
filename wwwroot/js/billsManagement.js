@@ -1,6 +1,34 @@
 
 BillsManagement = {}
 
+BillsManagement.ConsumerBillModalView = Backbone.View.extend({
+
+    el: '#consumerBillModal',
+
+    template: _.template($("#consumerBillModalTemplate").html()),
+
+    open: function (event) {
+	var billId = $(event.currentTarget).attr('billId');
+	var canUseToken = $(event.currentTarget).attr('canUseToken');
+	this.render(billId, canUseToken);
+    },
+
+    render: function (billId, canUseToken) {
+	this.$el.html(this.template({ billId: billId, canUseToken: canUseToken }));
+	this.$el.modal('show');
+    }
+});
+
+
+$(function () {
+    var consumerBillModalView = new BillsManagement.ConsumerBillModalView();
+
+    $('a.open-consumer-modal').click(function (ev) {
+	consumerBillModalView.open(ev);
+	return false;
+    });
+});
+
 BillsManagement.CorrectionView = Backbone.View.extend({
 
     el: "#correctionModal",
@@ -27,6 +55,14 @@ BillsManagement.CorrectionView = Backbone.View.extend({
             producerBill: this.model
         }));
         this.validate();
+    },
+
+    openCorrectionModal: function (billId) {
+	producerBillModel = new ProducerBillModel(billId);
+	producerBillModel.on("sync", function () {
+	    CorrectionView = new BillsManagement.CorrectionView(producerBillModel);
+	    CorrectionView.open();
+	}, this);
     },
 
     open: function () {

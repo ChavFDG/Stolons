@@ -128,7 +128,7 @@
 				@class = "btn btn-small btn-default"
                             }
 			)
-                        <a href="#" class="btn btn-small btn-default" onclick="openCorrectionModal('@item.BillId'); return false;">Réctifier la livraison</a>
+                        <a href="#" class="btn btn-small btn-default" onclick="BillsManagement.CorrectionView.openCorrectionModal('@item.BillId'); return false;">Réctifier la livraison</a>
                     </td>
                     <td>
                         @{
@@ -227,12 +227,12 @@
                 </div>
                 <div class="modal-body">
                     <% if (canUseToken == 1) { %>
-                    <a href="/WeekBasketManagement/UpdateConsumerBill?paymentMode=0&billNumber=<%= billNumber %>" class="credit btn btn-small btn-default">Stols</a>
+                    <a href="/WeekBasketManagement/UpdateConsumerBill?paymentMode=0&billId=<%= billId %>" class="credit btn btn-small btn-default">Stols</a>
                     <% } else {%>
                     <a href="#" class="credit btn btn-small btn-default disabled">Stols</a>
                     <% }%>
-                    <a href="/WeekBasketManagement/UpdateConsumerBill?paymentMode=1&billNumber=<%= billNumber %>" class="credit btn btn-small btn-default">Chèque</a>
-                    <a href="/WeekBasketManagement/UpdateConsumerBill?paymentMode=2&billNumber=<%= billNumber %>" class="credit btn btn-small btn-default">Espèces</a>
+                    <a href="/WeekBasketManagement/UpdateConsumerBill?paymentMode=1&billId=<%= billId %>" class="credit btn btn-small btn-default">Chèque</a>
+                    <a href="/WeekBasketManagement/UpdateConsumerBill?paymentMode=2&billId=<%= billId %>" class="credit btn btn-small btn-default">Espèces</a>
                 </div>
             </div>
          </div>
@@ -354,36 +354,6 @@
             </div>
          </div>
 	 </div>
-	</script>
-
-	<script>
-	 ConsumerBillModalView = Backbone.View.extend({
-             el: '#consumerBillModal',
-             template: _.template($("#consumerBillModalTemplate").html()),
-             open: function (bill, canUseToken) {
-		 this.render(bill, canUseToken);
-             },
-             render: function (bill, canUseToken) {
-		 this.$el.html(this.template({ billNumber: bill, canUseToken: canUseToken }));
-		 this.$el.modal('show');
-             }
-	 });
-
-	 $(function () {
-             var consumerBillModalView = new ConsumerBillModalView();
-             $('a.open-consumer-modal').click(function () {
-		 consumerBillModalView.open($(this).attr('billNumber'), $(this).attr('canUseToken'));
-		 return false;
-             });
-	 });
-
-	 openCorrectionModal = function (billId) {
-             producerBillModel = new ProducerBillModel(billId);
-             producerBillModel.on("sync", function () {
-		 CorrectionView = new BillsManagement.CorrectionView(producerBillModel);
-		 CorrectionView.open();
-             }, this);
-	 };
 	</script>
 
 	<script src="/js/billModel.js"></script>
