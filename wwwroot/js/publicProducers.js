@@ -74,13 +74,6 @@ var ProducerDetailsView = Backbone.View.extend({
 	    $('html, body').animate({
 		scrollTop: $("#producerDetailsAnchor").offset().top
 	    }, 1000);
-	    // if ($("#producerDetailsAnchor").is(":visible") == false) {
-	    // 	$("#producerDetailsAnchor")[0].scrollIntoView({
-	    // 	    behavior: "smooth",
-	    // 	    block: "start",
-	    // 	    inline: "nearest"
-	    // 	});
-	    // }
 	});
     },
 
