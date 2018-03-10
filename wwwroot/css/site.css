@@ -1036,6 +1036,13 @@ h1 {
     padding-right: 5px;
 }
 
+.stolon-avatar-dropdown {
+    height: 30px;
+    width: 30px;
+    vertical-align: middle;
+    padding-right: 5px;
+}
+
 .stolon-avatar-banner-container {
     vertical-align: middle;
     padding-top: 10px;
@@ -1058,6 +1065,7 @@ h1 {
         font-size: 40px;
     }
 
+
 .basket-banner-container {
     vertical-align: middle;
     padding: 5px;
@@ -1068,20 +1076,21 @@ h1 {
     border-radius: 10px;
     border-color: grey;
     border: 1px solid;
-    padding-left : 15px
+    padding-left: 15px
 }
 
 .basket-banner-logo {
     height: 26px;
     width: 26px;
-    padding-bottom : 3px;
+    padding-bottom: 3px;
 }
 
 .basket-banner-title {
 }
-.basket-banner-title span {
-    font-size: 20px;
-}
+
+    .basket-banner-title span {
+        font-size: 20px;
+    }
 
 .basket-banner-information {
     font-size: 10px;

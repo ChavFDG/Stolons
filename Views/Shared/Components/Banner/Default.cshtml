@@ -20,7 +20,14 @@
                             {
                                 if (!adherentStolon.IsActiveStolon)
                                 {
-                                    <li><a asp-controller="Home" asp-action="ChangeActiveStolon" asp-route-id="@adherentStolon.StolonId">@adherentStolon.Stolon.Label</a></li>
+                                    <li >
+                                        <a asp-controller="Home" asp-action="ChangeActiveStolon" asp-route-id="@adherentStolon.StolonId">
+                                            <div class="stolon-avatar-banner-container">
+                                                <img src="@adherentStolon.Stolon.LogoFilePath" class="stolon-avatar-dropdown"/>
+                                                @adherentStolon.Stolon.Label
+                                            </div>
+                                        </a>
+                                    </li>
                                 }
                             }
                         </ul>
