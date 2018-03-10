@@ -22,7 +22,7 @@
             <tbody class="clickable-table">
                 @{
                     decimal total = 0;
-                    foreach (var item in Model.Where(x=>x.State == BillState.Pending).OrderBy(x => x.EditionDate))
+                    foreach (var item in Model.Where(x => x.State == BillState.Pending).OrderBy(x => x.EditionDate))
                     {
                         total += item.OrderAmount;
                         <tr data-content='@((item as ProducerBill).HtmlOrderContent)'>
@@ -100,6 +100,17 @@
                                     case BillState.Pending:
                                         @("(A livrer)")
                                         break;
+                                }
+
+
+                                @if (item.HasBeenModified)
+                                {
+                                    <div class="warning-container isa_warning">
+                                        <i class="glyphicon glyphicon-warning-sign"></i>
+                                        <div class="warning-informations right">
+                                            @Html.Raw(item.ModificationReason.Replace("\n\r", "<br/>"))
+                                        </div>
+                                    </div>
                                 }
                             </td>
                             <td>

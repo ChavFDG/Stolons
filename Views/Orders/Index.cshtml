@@ -8,26 +8,26 @@
 <div class="boxContainer row">
     <div class="col-lg-5 col-md-5">
         <table class="table">
-	    <thead>
-		<tr>
+            <thead>
+                <tr>
                     <th>
-			Commande
+                        Commande
                     </th>
                     <th>
-			Montant
+                        Montant
                     </th>
                     <th>
                     </th>
-		</tr>
-	    </thead>
+                </tr>
+            </thead>
             <tbody class="clickable-table">
                 @{
                     decimal total = 0;
                     foreach (var item in Model.OrderBy(x => x.EditionDate))
                     {
-			<div id="html_content_@item.BillId" class="hidden">
-			@item.HtmlBillContent
-			</div>
+                        <div id="html_content_@item.BillId" class="hidden">
+                            @item.HtmlBillContent
+                        </div>
                         total += item.OrderAmount;
                         <tr billId="@item.BillId">
                             <td>
@@ -39,39 +39,37 @@
                             </td>
                             <td>
                                 @item.OrderAmount.ToString("0.00")€
-                                <br/>
-                                    @switch (item.State)
-                                    {
-                                        case BillState.Delivered:
-                                            @("Livré")
-                                            break;
-                                        case BillState.Paid:
-                                            @("Payé")
-                                            break;
-                                        case BillState.Pending:
-                                            @("(A récupérer)")
-                                            break;
-                                    }
+                                <br />
+                                @switch (item.State)
+                                {
+                                    case BillState.Delivered:
+                                        @("Livré")
+                                        break;
+                                    case BillState.Paid:
+                                        @("Payé")
+                                        break;
+                                    case BillState.Pending:
+                                        @("(A récupérer)")
+                                        break;
+                                }
+
+                                @if (item.HasBeenModified)
+                                {
+                                    <div class="warning-container isa_warning">
+                                        <i class="glyphicon glyphicon-warning-sign"></i>                                        
+                                        <div class="warning-informations right">
+                                          @Html.Raw(item.ModificationReason.Replace("\n\r", "<br/>"))
+                                        </div>
+                                    </div>
+                                }
                             </td>
                             <td>
                                 <a class="btn btn-small btn-default" target="_blank" href="@(Configurations.GetBillUrl(item))">
-				    Télécharger
-				</a>
-			</td>
-			</tr>
-			@if (item.HasBeenModified)
-			{
-			    <tr><td colspan="3">
-			    
-			    <div class="warning-container isa_warning">
-			    <i class="glyphicon glyphicon-warning-sign"></i>
-			    Cette commande a été modifiée par le producteur!
-			    <div class="warning-informations right">
-			    @item.ModificationReason
-			    </div>
-			    </div>
-			    </td></tr>
-			}
+                                    Télécharger
+                                </a>
+                            </td>
+                        </tr>
+
                     }
                 }
             </tbody>
@@ -88,10 +86,10 @@
 <script>
     $(document).ready(function () {
         $('.clickable-table tr').click(function () {
-	    var billId =  $(this).attr("billId");
+            var billId = $(this).attr("billId");
             var content = $("#html_content_" + billId).html();
-	    content = $("<textarea />").html(content).text();
+            content = $("<textarea />").html(content).text();
             $('#billContent').html(content);
-	});
+        });
     });
 </script>
