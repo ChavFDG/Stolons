@@ -111,10 +111,10 @@ textarea {
     display: table-cell;
 }
 
-    .bannerAvatar img {
-        max-height: 40px;
-        max-width: 37px;
-    }
+.bannerAvatar img {
+    max-height: 40px;
+    max-width: 37px;
+}
 
 div#login-wrapper {
     margin: 10px;
@@ -158,13 +158,14 @@ img.warning {
     margin-top: 10px;
     float: left;
 }
+
 /* Image */
 .responsiveImage {
     max-width: 100%;
     max-height: 100%;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
+    /* display: block; */
+    /* margin-left: auto; */
+    /* margin-right: auto; */
 }
 
 .oldNews {
@@ -1001,8 +1002,18 @@ h1 {
 .stolon-avatar {
     height: 50px;
     width: 50px;
+    vertical-align: middle;
+    padding-right: 5px;
 }
 
+.stolon-title {
+    padding-top: 10px;
+}
+
+.stolon-title span {
+    color: #016b01;
+    font-size: 28px;
+}
 
 /* custom inclusion of right, left and below tabs */
 

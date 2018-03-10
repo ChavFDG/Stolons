@@ -15,11 +15,15 @@
             </div>
             <div class="col-sm-2" id="logo-stolon"></div>
             <div class=" col-sm-4 text-center">
-                <a asp-controller="Home" asp-action="StolonContact" asp-route-id="@Model.ActiveAdherentStolon.Stolon.Id">
-                    <h1>@Model.ActiveAdherentStolon.Stolon.Label</h1>
-                </a>
+		<div class="stolon-title">
+                    <a asp-controller="Home" asp-action="StolonContact" asp-route-id="@Model.ActiveAdherentStolon.Stolon.Id">
+			<img src="@Model.ActiveAdherentStolon.Stolon.LogoFilePath" class="stolon-avatar" />
+			<span>@Model.ActiveAdherentStolon.Stolon.Label</span>
+                    </a>
+		</div>
                 @if (Model.ActiveAdherentStolon.Adherent.AdherentStolons.Count != 1)
                 {
+		    <div>
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                         <span class="caret"></span>
                     </a>
@@ -32,11 +36,13 @@
                             }
                         }
                     </ul>
-                }
-                <img src="@Model.ActiveAdherentStolon.Stolon.LogoFilePath" class="responsiveImage stolon-avatar" />
-                <p class="information">@Html.Raw(Model.ActiveAdherentStolon.Stolon.Address)</p>
-                <h2>Horaires paniers</h2>
-                <p class="information">@Model.ActiveAdherentStolon.Stolon.GetStringPickUpTime()</p>
+		    </div>
+                    }
+		<div class="stolons-info">
+                    <p class="information">@Html.Raw(Model.ActiveAdherentStolon.Stolon.Address)</p>
+                    <h2>Horaires paniers</h2>
+                    <p class="information">@Model.ActiveAdherentStolon.Stolon.GetStringPickUpTime()</p>
+		</div>
             </div>
         </div>
         <nav class="navbar navbar-default">
