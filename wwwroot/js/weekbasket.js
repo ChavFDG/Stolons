@@ -257,19 +257,17 @@ FiltersView = Backbone.View.extend({
 	    productTypes: this.model.toJSON(),
 	    products: WeekBasket.ProductsModel
 	}));
-	//Register click events on categories
-	this.model.forEach(function(typeModel) {
-	    $("#link_" + typeModel.get("Name")).click(function(e) {
-		var loc = document.location.toString().split('#')[0];
-		var anchor = $(e.target).attr("href");
-		document.location = loc + anchor;
-		return false;
-	    });
-	});
 	$('#filters > li.dropdown').hover(function() {
 	    $(this).find('.dropdown-menu').stop(true, true).delay(0).fadeIn(1000);
 	}, function() {
 	    $(this).find('.dropdown-menu').stop(true, true).delay(300).fadeOut(200);
+	});
+	$('#filters li a').click(function(event) {
+	    var anchor = $(event.currentTarget).attr("href").substr(1);
+	    $('html, body').animate({
+		scrollTop: $("[id='" + anchor + "']").offset().top
+	    }, 1000);
+	    event.preventDefault();
 	});
 	this.$('#search').on("input", _.bind(function () {
             this.filterProducts();
