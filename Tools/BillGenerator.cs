@@ -19,6 +19,7 @@ using Stolons.Services;
 using Stolons.Models;
 using Stolons.Models.Users;
 using static Stolons.Models.Product;
+using Syncfusion.HtmlConverter;
 
 namespace Stolons.Tools
 {
@@ -734,35 +735,33 @@ namespace Stolons.Tools
 
         public static bool GeneratePDF(string htmlContent, string fullPath)
         {
-            string tempFileName = Guid.NewGuid().ToString().Remove(5) + ".html";
-            if (Thread.CurrentThread.Name == null)
-                Thread.CurrentThread.Name = "Generating PDF : " + tempFileName + " thread";
-            //Création du fichier temporaire
-            if (!Directory.Exists(Path.Combine(Configurations.Environment.WebRootPath, "temp")))
-                Directory.CreateDirectory(Path.Combine(Configurations.Environment.WebRootPath, "temp"));
-            string tempFilePath = Path.Combine(Configurations.Environment.WebRootPath, "temp", tempFileName);
-            using (var streamWriter = File.CreateText(tempFilePath))
+            HtmlToPdfConverter htmlConverter = new HtmlToPdfConverter();
+
+            WebKitConverterSettings settings = new WebKitConverterSettings();
+            settings.Margin.All = 8;
+
+            //Set WebKit path
+            if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows))
+                settings.WebKitPath = Path.Combine(Configurations.Environment.ContentRootPath, "lib", "QtBinariesDotNetCore");
+            else
+                settings.WebKitPath = Path.Combine(Configurations.Environment.ContentRootPath, "lib", "QtBinaries");
+
+            //Assign WebKit settings to HTML converter
+            htmlConverter.ConverterSettings = settings;
+
+
+            //Convert URL to PDF
+            Syncfusion.Pdf.PdfDocument document = htmlConverter.Convert(htmlContent, "");
+            
+            //Save and close the PDF document 
+            new FileInfo(fullPath).Directory.Create();
+            using (var streamWriter = File.Create(fullPath))
             {
-                streamWriter.Write(htmlContent);
+                document.Save(streamWriter);
             }
+            document.Close(true);
 
-            string arguments = @"--headless --disable-gpu --print-to-pdf=" + "\"" + fullPath + "\"" + " " + "\"file://" + tempFilePath + "\"";
-            var proc = new Process();
-            var processStartInfo = new ProcessStartInfo();
-            processStartInfo.CreateNoWindow = true;
-            processStartInfo.RedirectStandardOutput = true;
-            processStartInfo.RedirectStandardInput = true;
-            processStartInfo.UseShellExecute = false;
-            processStartInfo.Arguments = "--headless --disable-gpu --print-to-pdf=" + "\"" + fullPath + "\"" + " " + "\"file://" + tempFilePath + "\"";
-            processStartInfo.FileName = Configurations.Application.ChromiumFullPath;
-            proc.StartInfo = processStartInfo;
-            proc.OutputDataReceived += (sender, args) => Logger.LogDebug("Generate pdf, proc output: {0}", args.Data);
-            proc.Start();
-            proc.BeginOutputReadLine();
-
-            proc.WaitForExit(120000);
-            File.Delete(tempFilePath);
-            return File.Exists(fullPath);
+            return true;
         }
 
         public static int GetIso8601WeekOfYear(this DateTime time)

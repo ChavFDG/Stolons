@@ -38,7 +38,7 @@ namespace Stolons
 
 	public static IWebHost WebHost;
 
-        public static IHostingEnvironment Environment;
+    public static IHostingEnvironment Environment;
 
 	public static ApplicationConfig Application;
 
