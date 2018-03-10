@@ -8,41 +8,108 @@
 {
     <div class="nav container">
         <div class="row">
-            <div class="col-sm-6" id="logo">
-                <a asp-controller="Home" asp-action="Index">
-                    <img src="~/images/logos/Logo_HD.png" style="max-width: 300px;" />
-                </a>
-            </div>
-            <div class="col-sm-2" id="logo-stolon"></div>
-            <div class=" col-sm-4 text-center">
-		<div class="stolon-title">
-                    <a asp-controller="Home" asp-action="StolonContact" asp-route-id="@Model.ActiveAdherentStolon.Stolon.Id">
-			<img src="@Model.ActiveAdherentStolon.Stolon.LogoFilePath" class="stolon-avatar" />
-			<span>@Model.ActiveAdherentStolon.Stolon.Label</span>
-                    </a>
-		</div>
+            <div class=" col-sm-1">
                 @if (Model.ActiveAdherentStolon.Adherent.AdherentStolons.Count != 1)
                 {
-		    <div>
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                        <span class="caret"></span>
-                    </a>
-                    <ul class="dropdown-menu">
-                        @foreach (var adherentStolon in Model.ActiveAdherentStolon.Adherent.AdherentStolons)
-                        {
-                            if (!adherentStolon.IsActiveStolon)
+                    <div class="stolon-avatar-banner-container">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <img src="@Model.ActiveAdherentStolon.Stolon.LogoFilePath" class="stolon-avatar-banner" />
+                        </a>
+                        <ul class="dropdown-menu">
+                            @foreach (var adherentStolon in Model.ActiveAdherentStolon.Adherent.AdherentStolons)
                             {
-                                <li><a asp-controller="Home" asp-action="ChangeActiveStolon" asp-route-id="@adherentStolon.StolonId">@adherentStolon.Stolon.Label</a></li>
+                                if (!adherentStolon.IsActiveStolon)
+                                {
+                                    <li><a asp-controller="Home" asp-action="ChangeActiveStolon" asp-route-id="@adherentStolon.StolonId">@adherentStolon.Stolon.Label</a></li>
+                                }
+                            }
+                        </ul>
+                    </div>
+                }
+                else
+                {
+                    <img src="@Model.ActiveAdherentStolon.Stolon.LogoFilePath" class="stolon-avatar-banner" />
+
+                }
+            </div>
+            <div class=" col-sm-8">
+                <div class="stolon-title">
+                    <a asp-controller="Home" asp-action="StolonContact" asp-route-id="@Model.ActiveAdherentStolon.Stolon.Id">
+                        <span>@Model.ActiveAdherentStolon.Stolon.Label</span>
+                    </a>
+                    par
+                    <img src="~/images/logos/Logo_HD.png" style="max-width: 55px;" />
+                </div>
+                <div class="stolons-info">
+                    <p class="information">@Html.Raw(Model.ActiveAdherentStolon.Stolon.Address)</p>
+                </div>
+
+
+            </div>
+            <div class=" col-sm-3 basket-banner-container">
+                <div class="basket-banner-border ">
+                    <div class="basket-banner-title ">
+                        <!--ORDER CASE-->
+                        @if (Model.ActiveAdherentStolon.Stolon.Mode == Stolon.Modes.Order)
+                        {
+
+                            string classToAdd = "";
+                            if (Model.TempWeekBasket != null)
+                            {
+                                if (Model.TempWeekBasket?.Validated == false)
+                                {
+                                    classToAdd = "isa_warning";
+                                }
+                                else
+                                {
+                                    classToAdd = "isa_success";
+                                }
+                            }
+
+                            <a asp-controller="WeekBasket" asp-action="Index" class="@classToAdd">
+                                <img src="/images/panier.jpg" class="basket-banner-logo" />
+                                @if (Model.TempWeekBasket == null)
+                                {
+                                    <span>Commander</span>
+                                }
+                                else
+                                {
+                                    <span>Mon panier (@Model.TempWeekBasket.TotalPrice.ToString("0.00")€)</span>
+
+                                }
+                                @if (Model.TempWeekBasket?.Validated == false)
+                                {
+                                    <div class="warning-container ">
+                                        <i class="glyphicon glyphicon-warning-sign"></i>
+                                        <div class="warning-informations right">
+                                            Le panier n'est pas validé
+                                        </div>
+                                    </div>
+                                }
+                            </a>
+                        }
+                        else
+                        {
+                            <!--DELIVERY CASE-->
+                            if (Model.ConsumerBill == null)
+                            {
+                                <span>Pas de panier cette semaine</span>
+                            }
+                            else
+                            {
+                                <a asp-controller="Orders" asp-action="ShowBill" asp-route-id="@Model.ConsumerBill.BillNumber.ToString()">
+                                    <img src="/images/panier.jpg" class="basket-banner-logo" />
+                                    <span>Voir mon panier (@Model.ConsumerBill.OrderAmount.ToString("0.00")€)</span>
+                                </a>
                             }
                         }
-                    </ul>
-		    </div>
-                    }
-		<div class="stolons-info">
-                    <p class="information">@Html.Raw(Model.ActiveAdherentStolon.Stolon.Address)</p>
-                    <h2>Horaires paniers</h2>
-                    <p class="information">@Model.ActiveAdherentStolon.Stolon.GetStringPickUpTime()</p>
-		</div>
+                    </div>
+                    <div class="basket-banner-information">
+                        <img src="~/images/order.jpg" />Commande : @Model.ActiveAdherentStolon.Stolon.GetStringOrderTime()
+                        <br />
+                        <img src="~/images/delivery.jpg" />Récupération : @Model.ActiveAdherentStolon.Stolon.GetStringPickUpTime()
+                    </div>
+                </div>
             </div>
         </div>
         <nav class="navbar navbar-default">
@@ -57,6 +124,7 @@
                 </div>
                 <div id="navbar" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
+                        <li><a asp-controller="Home" asp-action="Index">Accueil</a></li>
                         <li><a asp-controller="WeekBasket" asp-action="Index">Mon panier</a></li>
                         <li><a asp-controller="PublicProducers" asp-action="Index">Les producteurs</a></li>
                         @if (Model.ActiveAdherentStolon.IsProducer)

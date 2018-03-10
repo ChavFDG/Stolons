@@ -23,9 +23,9 @@ namespace Stolons.Controllers
     {
 
         public WeekBasketController(ApplicationDbContext context, IHostingEnvironment environment,
-				    UserManager<ApplicationUser> userManager,
-				    SignInManager<ApplicationUser> signInManager,
-				    IServiceProvider serviceProvider) : base(serviceProvider, userManager, context, environment, signInManager)
+                    UserManager<ApplicationUser> userManager,
+                    SignInManager<ApplicationUser> signInManager,
+                    IServiceProvider serviceProvider) : base(serviceProvider, userManager, context, environment, signInManager)
         {
         }
 
@@ -59,12 +59,12 @@ namespace Stolons.Controllers
         public IActionResult JsonProductsStocks()
         {
             var productsStocks = _context.ProductsStocks
-		.Include(x => x.Product)
-		.ThenInclude(x => x.Familly)
-		.ThenInclude(x => x.Type)
-		.Where(x => x.AdherentStolon.StolonId == GetCurrentStolon().Id && x.State == Product.ProductState.Enabled)
-		.AsNoTracking()
-		.ToList();
+        .Include(x => x.Product)
+        .ThenInclude(x => x.Familly)
+        .ThenInclude(x => x.Type)
+        .Where(x => x.AdherentStolon.StolonId == GetCurrentStolon().Id && x.State == Product.ProductState.Enabled)
+        .AsNoTracking()
+        .ToList();
             foreach (ProductStockStolon p in productsStocks)
             {
                 p.Product.Producer = _context.Adherents.AsNoTracking().FirstOrDefault(x => x.Id == p.Product.ProducerId);
@@ -77,9 +77,9 @@ namespace Stolons.Controllers
         public IActionResult JsonProductTypes()
         {
             var ProductTypes = _context.ProductTypes
-		.Include(x => x.ProductFamilly)
-		.AsNoTracking()
-		.ToList();
+        .Include(x => x.ProductFamilly)
+        .AsNoTracking()
+        .ToList();
             return Json(ProductTypes);
         }
 
@@ -92,10 +92,10 @@ namespace Stolons.Controllers
                 return null;
             }
             TempWeekBasket tempWeekBasket = _context.TempsWeekBaskets
-		.Include(x => x.BillEntries)
-		.Include(x => x.AdherentStolon)
-		.Include(x => x.AdherentStolon.Adherent)
-		.Where(x => x.AdherentStolon.Id == adherentStolon.Id).FirstOrDefault();
+        .Include(x => x.BillEntries)
+        .Include(x => x.AdherentStolon)
+        .Include(x => x.AdherentStolon.Adherent)
+        .Where(x => x.AdherentStolon.Id == adherentStolon.Id).FirstOrDefault();
 
             if (tempWeekBasket == null)
             {
@@ -112,7 +112,7 @@ namespace Stolons.Controllers
             {
                 tempWeekBasket.RetrieveProducts(_context);
             }
-	    tempWeekBasket.Validated = IsBasketValidated(tempWeekBasket);
+            tempWeekBasket.Validated = IsBasketValidated(tempWeekBasket, _context);
             return Json(tempWeekBasket);
         }
 
@@ -126,11 +126,11 @@ namespace Stolons.Controllers
                 return null;
             }
             ValidatedWeekBasket validatedWeekBasket = _context.ValidatedWeekBaskets
-		.Include(x => x.AdherentStolon)
-		.Include(x => x.AdherentStolon.Adherent)
-		.Include(x => x.BillEntries)
-		.AsNoTracking()
-		.FirstOrDefault(x => x.AdherentStolon.Id == adherentStolon.Id);
+        .Include(x => x.AdherentStolon)
+        .Include(x => x.AdherentStolon.Adherent)
+        .Include(x => x.BillEntries)
+        .AsNoTracking()
+        .FirstOrDefault(x => x.AdherentStolon.Id == adherentStolon.Id);
 
             if (validatedWeekBasket != null)
             {
@@ -263,11 +263,9 @@ namespace Stolons.Controllers
             productStock.RemainingStock += qty;
         }
 
-        public IActionResult Basket()
+        public IActionResult ValidatedBasket()
         {
             Stolon stolon = GetCurrentStolon();
-            // if (stolon.GetMode() == Stolon.Modes.DeliveryAndStockUpdate)
-            //     return Redirect("Index");
             var adherentStolon = GetActiveAdherentStolon();
             if (adherentStolon == null)
             {
@@ -275,13 +273,13 @@ namespace Stolons.Controllers
             }
             ValidatedWeekBasket validatedWeekBasket = _context.ValidatedWeekBaskets.Include(x => x.AdherentStolon).Include(x => x.AdherentStolon.Adherent).Include(x => x.BillEntries).FirstOrDefault(x => x.AdherentStolon.Id == adherentStolon.Id);
             ValidationSummaryViewModel validationSummaryViewModel = new ValidationSummaryViewModel(GetActiveAdherentStolon(), validatedWeekBasket, new List<BillEntry>()) { Total = GetBasketPrice(validatedWeekBasket) };
-            return View("Basket", validationSummaryViewModel);
+            return View("ValidatedBasket", validationSummaryViewModel);
         }
 
         [HttpGet, ActionName("ValidateBasket")]
         public IActionResult ValidateBasket()
         {
-            return View("Basket");
+            return View("ValidatedBasket");
         }
 
         [HttpPost, ActionName("ValidateBasket")]
@@ -419,7 +417,7 @@ namespace Stolons.Controllers
                 ValidationSummaryViewModel validationSummaryViewModel = new ValidationSummaryViewModel(adherentStolon, validatedWeekBasket, rejectedEntries) { Total = GetBasketPrice(validatedWeekBasket) };
                 Services.AuthMessageSender.SendEmail(adherentStolon.Stolon.Label, validatedWeekBasket.AdherentStolon.Adherent.Email, validatedWeekBasket.AdherentStolon.Adherent.Name, subject, base.RenderPartialViewToString("Templates/ValidatedBasketTemplate", validationSummaryViewModel));
                 //Return view
-                return View("Basket", validationSummaryViewModel);
+                return View("ValidatedBasket", validationSummaryViewModel);
             }
             else
             {
@@ -438,7 +436,7 @@ namespace Stolons.Controllers
                 //On lui signale
                 Services.AuthMessageSender.SendEmail(stolon.Label, validatedWeekBasket.AdherentStolon.Adherent.Email, validatedWeekBasket.AdherentStolon.Adherent.Name, "Panier de la semaine annulé", base.RenderPartialViewToString("Templates/ValidatedBasketTemplate", null));
             }
-            return View("Basket");
+            return View("ValidatedBasket");
         }
 
         //Calcul du prix total d'un panier
@@ -456,23 +454,23 @@ namespace Stolons.Controllers
             return price;
         }
 
-        private bool IsBasketValidated(TempWeekBasket tmpBasket)
+        static public bool? IsBasketValidated(TempWeekBasket tempBasket, ApplicationDbContext context)
         {
-            ValidatedWeekBasket validatedBasket = _context.ValidatedWeekBaskets
-		.Include(x => x.AdherentStolon)
-		.Include(x => x.BillEntries)
-		.AsNoTracking()
-		.FirstOrDefault(x => x.AdherentStolon.AdherentId == tmpBasket.AdherentStolon.AdherentId);
+            ValidatedWeekBasket validatedBasket = context.ValidatedWeekBaskets
+                    .Include(x => x.AdherentStolon)
+                    .Include(x => x.BillEntries)
+                    .AsNoTracking()
+                    .FirstOrDefault(x => x.AdherentStolon.AdherentId == tempBasket.AdherentStolon.AdherentId);
 
             if (validatedBasket == null)
             {
                 return false;
             }
-            if (validatedBasket.BillEntries.Count != tmpBasket.BillEntries.Count)
+            if (validatedBasket.BillEntries.Count != tempBasket.BillEntries.Count)
             {
                 return false;
             }
-            foreach (BillEntry billEntry in tmpBasket.BillEntries.ToList())
+            foreach (BillEntry billEntry in tempBasket.BillEntries.ToList())
             {
                 BillEntry validatedEntry = validatedBasket.BillEntries.FirstOrDefault(x => x.ProductStockId == billEntry.ProductStockId);
 

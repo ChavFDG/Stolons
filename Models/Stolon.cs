@@ -104,7 +104,7 @@ namespace Stolons.Models
         public int BasketPickUpStartHour { get; set; } = 17;
         [Display(Name = "Minute")]
         public int BasketPickUpStartMinute { get; set; } = 30;
-	[Display(Name = "Jour")]
+	    [Display(Name = "Jour")]
         public DayOfWeek BasketPickEndUpDay { get; set; } = DayOfWeek.Thursday;
         [Display(Name = "Heure")]
         public int BasketPickUpEndHour { get; set; } = 19;
@@ -204,6 +204,13 @@ namespace Stolons.Models
                 toReturn += " au " + BasketPickEndUpDay.ToFrench();
             }
             toReturn += " à " + String.Format("{0:00}", BasketPickUpEndHour) + "h" + String.Format("{0:00}", BasketPickUpEndMinute);
+            return toReturn;
+        }
+
+        public string GetStringOrderTime()
+        {
+            string toReturn = OrderDayStartDate.ToFrench() + " de " + String.Format("{0:00}", OrderHourStartDate) + "h" + String.Format("{0:00}", OrderMinuteStartDate);
+            toReturn += " au " + DeliveryAndStockUpdateDayStartDate.ToFrench() + " à " + String.Format("{0:00}", DeliveryAndStockUpdateDayStartDateHourStartDate) + "h" + String.Format("{0:00}", DeliveryAndStockUpdateDayStartDateMinuteStartDate);
             return toReturn;
         }
 

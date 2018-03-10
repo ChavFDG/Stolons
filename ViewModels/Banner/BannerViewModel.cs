@@ -9,9 +9,16 @@ namespace Stolons.ViewModels.Banner
 {
     public class BannerViewModel : BaseViewModel
     {
-        public BannerViewModel(AdherentStolon adherentStolon)
+        public BannerViewModel(AdherentStolon adherentStolon, TempWeekBasket tempWeekBasket, ConsumerBill consumerBill)
         {
             ActiveAdherentStolon = adherentStolon;
+            TempWeekBasket = tempWeekBasket;
+            ConsumerBill = consumerBill;
+
         }
+
+        public TempWeekBasket TempWeekBasket { get; set; }
+
+        public ConsumerBill ConsumerBill { get; set; }
     }
 }
