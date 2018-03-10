@@ -350,7 +350,7 @@ img.warning {
 
 .isa_warning {
     color: #9F6000;
-    background-color: #FEEFB3;
+    background: radial-gradient(#FEEFB3, white);
     line-height: 2;
     margin: 5px;
 }
@@ -1038,7 +1038,7 @@ h1 {
 
 .stolon-avatar-banner-container {
     vertical-align: middle;
-    padding-top: 10px;
+    padding-top: 16px;
 }
 
 .stolon-avatar-banner {
@@ -1051,15 +1051,17 @@ h1 {
 }
 
 .stolon-title {
+    padding-top: 7px;
 }
 
-    .stolon-title span {
-        color: #016b01;
-        font-size: 40px;
-    }
+.stolon-title span {
+    color: #016b01;
+    font-size: 40px;
+}
 
 .basket-banner-container {
     vertical-align: middle;
+    align: center;
     padding: 5px;
     padding-right: 15px;
 }
@@ -1068,7 +1070,7 @@ h1 {
     border-radius: 10px;
     border-color: grey;
     border: 1px solid;
-    padding-left : 15px
+    padding-left : 15px;
 }
 
 .basket-banner-logo {
@@ -1079,18 +1081,25 @@ h1 {
 
 .basket-banner-title {
 }
+
+.basket-banner-title img {
+    margin-right: 7px;
+}
+
 .basket-banner-title span {
     font-size: 20px;
 }
 
 .basket-banner-information {
-    font-size: 10px;
+    line-height: 1.8em;
+    font-size: 13px;
 }
 
-    .basket-banner-information img {
-        width: 20px;
-        height: 20px;
-    }
+.basket-banner-information img {
+    width: 32px;
+    height: 32px;
+    padding-right: 7px;
+}
 
 /* custom inclusion of right, left and below tabs */
 
@@ -1305,4 +1314,9 @@ div.chat {
 
 .ui-helper-hidden-accessible {
     display: none;
+}
+
+/* Form validation styles */
+.input-validation-error {
+    border-color: red;
 }
