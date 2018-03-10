@@ -334,7 +334,7 @@ namespace Stolons.Tools
 
         private static void AddBootstrap(this StringBuilder builder)
         {
-            builder.Insert(0, "<head><link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css\"></head><body>");
+            builder.Insert(0, "<meta charset=\"UTF-8\"><head><link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css\"></head><body>");
             builder.AppendLine("</body>");
         }
 
@@ -748,8 +748,7 @@ namespace Stolons.Tools
 
             //Assign WebKit settings to HTML converter
             htmlConverter.ConverterSettings = settings;
-
-
+                        
             //Convert URL to PDF
             Syncfusion.Pdf.PdfDocument document = htmlConverter.Convert(htmlContent, "");
             
