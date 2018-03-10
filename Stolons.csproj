@@ -9,11 +9,12 @@
     <AssetTargetFallback>$(AssetTargetFallback);dotnet5.6;dnxcore50;portable-net45+win8</AssetTargetFallback>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.5" />
     <PackageReference Include="MailKit" Version="2.0.1" />
     <PackageReference Include="morelinq" Version="2.10.0" />
     <PackageReference Include="Npgsql" Version="3.2.7" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="2.0.1" />
+    <PackageReference Include="Syncfusion.HtmlConverter.NETStandard20" Version="16.1200.0.24" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Views\NewFolder\**" />
@@ -71,6 +72,7 @@
     <DotNetCliToolReference Include="Microsoft.DotNet.Watcher.Tools" Version="2.0.0" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="lib\" />
     <Folder Include="wwwroot\bills\" />
     <Folder Include="wwwroot\images\financers\" />
   </ItemGroup>

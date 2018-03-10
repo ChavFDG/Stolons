@@ -76,6 +76,34 @@ namespace Stolons.Controllers
         [AllowAnonymous]
         public IActionResult GoToStolon(string stolonName)
         {
+            //
+            //Initialize HTML to PDF converter
+            Syncfusion.HtmlConverter.HtmlToPdfConverter htmlConverter = new Syncfusion.HtmlConverter.HtmlToPdfConverter();
+
+            Syncfusion.HtmlConverter.WebKitConverterSettings settings = new Syncfusion.HtmlConverter.WebKitConverterSettings();
+
+            //Set WebKit path
+            if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows))
+                settings.WebKitPath = System.IO.Path.Combine(_environment.ContentRootPath, "lib", "QtBinariesDotNetCore");
+            else
+                settings.WebKitPath = System.IO.Path.Combine(_environment.ContentRootPath, "lib", "QtBinaries");
+
+            //Assign WebKit settings to HTML converter
+            htmlConverter.ConverterSettings = settings;
+
+            //Convert URL to PDF
+            Syncfusion.Pdf.PdfDocument document = htmlConverter.Convert("aubenas.stolons.org");
+            
+            //Save and close the PDF document 
+            System.IO.MemoryStream stream = new System.IO.MemoryStream();
+            document.Save(stream);
+            document.Close(true);
+
+            return File(stream.ToArray(), System.Net.Mime.MediaTypeNames.Application.Pdf, "Sample.pdf");
+
+
+
+            //
             if (!String.IsNullOrWhiteSpace(stolonName))
             {
                 Stolon stolon = _context.Stolons.FirstOrDefault(x => x.Label == stolonName || x.ShortLabel == stolonName || x.Id.ToString() == stolonName);
