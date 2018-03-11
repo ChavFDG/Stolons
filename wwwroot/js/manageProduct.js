@@ -22,6 +22,43 @@ ManageProductView = Backbone.View.extend(
 
         initialize: function () {
             this.sellTypeChanged();
+	    //Trigger form validation at page load
+	    $("[name='product-form']").validate({
+		ignore: ":hidden, .skip",
+		debug: true,
+		rules: {
+		    "Product.WeightPrice": {
+			required: true,
+			min: 0.01
+		    },
+		    "price": {
+			required: true,
+			min: 0.01
+		    },
+		    "Product[WeightPrice]": {
+			required: true,
+			min: 0.01
+		    }
+		}
+	    });
+	    $("[name='product-form']").valid({
+		ignore: ":hidden, .skip",
+		debug: true,
+		rules: {
+		    "price": {
+			required: true,
+			min: 0.01
+		    },
+		    "Product.WeightPrice": {
+			required: true,
+			min: 0.01
+		    },
+		    "Product[WeightPrice]": {
+			required: true,
+			min: 0.01
+		    }
+		}
+	    });
         },
 
         sellTypeChanged: function () {
@@ -29,15 +66,15 @@ ManageProductView = Backbone.View.extend(
 
             if (sellType == 1) {
                 //Vente à la pièce, on desactive tout ce qui concerne le poids
-                $("#productWeightUnit").addClass("hidden");
-                $("#productQtyStep").addClass("hidden");
-                $("#productAvgWeight").addClass("hidden");
-                $("#pieceHideWeightPrice").removeClass("hidden");
+                $("#productWeightUnit").toggleClass("hidden", true);
+                $("#productQtyStep").toggleClass("hidden", true);
+                $("#productAvgWeight").toggleClass("hidden", true);
+                $("#pieceHideWeightPrice").toggleClass("hidden", false);
             } else {
-                $("#productWeightUnit").removeClass("hidden");
-                $("#productQtyStep").removeClass("hidden");
-                $("#productAvgWeight").removeClass("hidden");
-                $("#pieceHideWeightPrice").addClass("hidden");
+                $("#productWeightUnit").toggleClass("hidden", false);
+                $("#productQtyStep").toggleClass("hidden", false);
+                $("#productAvgWeight").toggleClass("hidden", false);
+                $("#pieceHideWeightPrice").toggleClass("hidden", true);
             }
             this.updatePriceField();
             this.updateVolumePriceField();
@@ -49,7 +86,7 @@ ManageProductView = Backbone.View.extend(
 
             if (sellType == 1) {
                 $("#unitPrice").removeAttr("readonly");
-                $("#price").val(0);
+                //$("#price").val("");
             } else {
                 $("#unitPrice").attr("readonly", true);
                 var price = $("#price").val();
@@ -85,11 +122,16 @@ ManageProductView = Backbone.View.extend(
 
             if (selected) {
                 $("#price").attr("readonly", true);
-                $("#price").val(0);
+		$("#price").val("");
+                $("#price").toggleClass("skip", true);
+		$("#price").removeClass("input-validation-error");
+		$("#price-error").toggleClass("hidden", true);
             } else if (sellType != 1) {
                 $("#price").removeAttr("readonly");
+		$("#price").toggleClass("skip", false);
             } else {
                 $("#price").removeAttr("readonly");
+		$("#price").toggleClass("skip", false);
             }
         }
     }
@@ -148,6 +190,15 @@ $(function () {
         readURL(this);
     });
 
+    var input = document.getElementById('image');
+    input.onclick = function () {
+        this.value = null;
+    };
+
+    input.onchange = function () {
+        resizeImageToSpecificWidth(600, 'MainPictureHeavy');
+        resizeImageToSpecificWidth(155, 'MainPictureLight');
+    };
 });
 
 function readURL(input) {
@@ -157,7 +208,40 @@ function readURL(input) {
         reader.onload = function (e) {
             $('#image1Preview').attr('src', e.target.result);
         }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
 
+function resizeImageToSpecificWidth(width, type) {
+    var input = document.getElementById('image');
+
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function (event) {
+            var img = new Image();
+            img.onload = function () {
+                var oc = document.createElement('canvas'), octx = oc.getContext('2d');
+                oc.width = img.width;
+                oc.height = img.height;
+                octx.drawImage(img, 0, 0);
+                while (oc.width * 0.5 > width) {
+                    oc.width *= 0.5;
+                    oc.height *= 0.5;
+                    octx.drawImage(oc, 0, 0, oc.width, oc.height);
+                }
+                oc.width = width;
+                oc.height = oc.width * img.height / img.width;
+                octx.drawImage(img, 0, 0, oc.width, oc.height);
+
+                if (type == 'MainPictureLight') {
+                    document.getElementById('image1Preview').src = oc.toDataURL();
+                }
+
+                $('input[name=' + type + ']').val(oc.toDataURL());
+
+            };
+            img.src = event.target.result;
+        };
         reader.readAsDataURL(input.files[0]);
     }
 }

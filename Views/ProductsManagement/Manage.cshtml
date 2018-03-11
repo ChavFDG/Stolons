@@ -14,64 +14,6 @@
 
 <h2>@ViewData["Title"]</h2>
 
-<script>
-    function resizeImageToSpecificWidth(width, type) {
-        var input = document.getElementById('image');
-
-        if (input.files && input.files[0]) {
-            var reader = new FileReader();
-            reader.onload = function (event) {
-                var img = new Image();
-                img.onload = function () {
-                    var oc = document.createElement('canvas'), octx = oc.getContext('2d');
-                    oc.width = img.width;
-                    oc.height = img.height;
-                    octx.drawImage(img, 0, 0);
-                    while (oc.width * 0.5 > width) {
-                        oc.width *= 0.5;
-                        oc.height *= 0.5;
-                        octx.drawImage(oc, 0, 0, oc.width, oc.height);
-                    }
-                    oc.width = width;
-                    oc.height = oc.width * img.height / img.width;
-                    octx.drawImage(img, 0, 0, oc.width, oc.height);
-
-                    if (type == 'MainPictureLight') {
-                        document.getElementById('image1Preview').src = oc.toDataURL();
-                    }
-
-                    $('input[name=' + type + ']').val(oc.toDataURL());
-
-                };
-                img.src = event.target.result;
-            };
-            reader.readAsDataURL(input.files[0]);
-        }
-    }
-
-
-    $(function () {
-        var input = document.getElementById('image');
-        input.onclick = function () {
-            this.value = null;
-        };
-
-        input.onchange = function () {
-            resizeImageToSpecificWidth(600, 'MainPictureHeavy');
-            resizeImageToSpecificWidth(155, 'MainPictureLight');
-        };
-
-        //$('#SellType').onchange = function () {
-        //    if (this.val() == 1)
-        //        $('#price').val(99);
-        //};
-
-        $('form[name=product-form]').on('submit', function () {
-            return formValidation.valid('product-form');
-        });
-    });
-</script>
-
 <form asp-action="Manage" enctype="multipart/form-data" name="product-form">
     <div class="form-horizontal">
         <hr />
@@ -85,14 +27,14 @@
         <div class="form-group">
             <label asp-for="Product.Name" class="col-md-2 control-label required"></label>
             <div class="col-md-10">
-                <input asp-for="Product.Name" class="form-control" data-val-required="Le nom du produit est requis" />
+                <input asp-for="Product.Name" class="form-control" autofocus="autofocus" data-val-required="Le nom du produit est requis" data-val="true" data-val-length="Pour s'afficher correctement le nom du produit doit être de 45 caractères maximum" data-val-length-max="45" placeholder="Nom du produit" />
                 <span asp-validation-for="Product.Name" class="text-danger" />
             </div>
         </div>
         <div class="form-group">
-            <label asp-for="Product.Description" class="col-md-2 control-label"></label>
+            <label asp-for="Product.Description" class="col-md-2 control-label required"></label>
             <div class="col-md-10">
-                <textarea rows="5" asp-for="Product.Description" class="form-control"></textarea>
+                <textarea rows="5" asp-for="Product.Description" class="form-control" placeholder="Description détaillée du produit" data-val-required="La description du produit est requise" data-val="true"></textarea>
                 <span asp-validation-for="Product.Description" class="text-danger" />
             </div>
         </div>
@@ -102,6 +44,9 @@
                 @foreach (Product.Label label in Enum.GetValues(typeof(Product.Label)))
                 {
                     <span>
+			<div class="pr_label">
+			    <img src="/images/labels/@(label.ToString()).jpg" />
+			</div>
                         @(EnumHelper<Product.Label>.GetDisplayValue(label))
                         @if (Model.SelectedLabels.Contains(label.ToString()))
                         {
@@ -135,7 +80,7 @@
                         }
                         else
                         {
-                            <img id="image1Preview" alt="Pas d'image" />
+                            <img id="image1Preview" alt="Pas d'image!" class="isa_warning" />
                         }
                     }
                     else
@@ -145,25 +90,6 @@
                 }
             </div>
         </div>
-        <!-- <div class="form-group"> -->
-        <!--     <label class="col-md-2 control-label">2ieme photo</label> -->
-        <!--     <div class="col-md-10"> -->
-        <!--         <input id="UploadFile2" type="file" accept="image/*" name="UploadFile2" class="form-control" /> -->
-        <!--     </div> -->
-        <!-- </div> -->
-        <!-- <div class="form-group"> -->
-        <!--     <label class="col-md-2 control-label">3ieme photo</label> -->
-        <!--     <div class="col-md-10"> -->
-        <!--         <input id="UploadFile3" type="file" accept="image/*" name="UploadFile3" class="form-control" /> -->
-        <!--     </div> -->
-        <!-- </div> -->
-        @*<div class="form-group">
-            <label asp-for="Product.DLC" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Product.DLC" class="form-control" />
-                <span asp-validation-for="Product.DLC" class="text-danger" />
-            </div>
-        </div>*@
         <div class="form-group">
             <label asp-for="Product.Storage" class="col-md-2 control-label"></label>
             <div class="col-md-10">
@@ -188,7 +114,7 @@
             <label asp-for="Product.Type" class="col-md-2 control-label"></label>
             <div class="col-md-10">
                 <select id="SellType" asp-for="Product.Type" asp-items="Html.GetEnumSelectList<Product.SellType>()" class="form-control"></select>
-                <span asp-validation-for="Product.Type" class="text-danger" />
+                <span validation-for="Product.Type" class="text-danger" />
             </div>
         </div>
         <div id="productWeightUnit" class="form-group">
@@ -199,20 +125,14 @@
             </div>
         </div>
         <div id="productQtyStep" class="form-group">
-            <label asp-for="Product.QuantityStep" class="col-md-2 control-label"></label>
+            <label asp-for="Product.QuantityStep" class="col-md-2 control-label required"></label>
             <div class="col-md-10">
-                <input asp-for="Product.QuantityStep" class="form-control" min="0" data-val-required="Le palier de poids doit être un nombre." />
+                <input asp-for="Product.QuantityStep" class="form-control" min="1" data-min="Le palier de poids doit être supérieur à 0" data-val-min="Le palier de poids doit être supérieur à 0" data-val-required="Le palier de poids doit être un nombre valide"  data-val-number="Le palier de poids doit être un nombre valide" />
                 <span asp-validation-for="Product.QuantityStep" class="text-danger" />
             </div>
         </div>
-        <!-- <div class="form-group" id="productAvgWeight"> -->
-        <!--     <label asp-for="Product.AverageQuantity" class="col-md-2 control-label"></label> -->
-        <!--     <div class="col-md-10"> -->
-        <!--         <input asp-for="Product.AverageQuantity" class="form-control" data-val-required="Le poids moyen doit être un nombre." /> -->
-        <!--         <span asp-validation-for="Product.AverageQuantity" class="text-danger" /> -->
-        <!--     </div> -->
-        <!-- </div> -->
-
+	<fieldset>
+	    <legend>Prix</legend>
         <div id="pieceHideWeightPrice" class="form-group hidden">
             <label for="HideWeightPrice" asp-for="Product.HideWeightPrice" class="col-md-2 control-label"></label>
             <div class="col-md-10">
@@ -221,19 +141,20 @@
             </div>
         </div>
         <div class="form-group">
-            <label id="priceLabel" asp-for="Product.WeightPrice" class="col-md-2 control-label"></label>
+            <label id="priceLabel" asp-for="Product.WeightPrice" class="col-md-2 control-label required"></label>
             <div class="col-md-10">
-                <input id="price" asp-for="Product.WeightPrice" class="form-control" data-val-number="Le prix doit être un nombre." />
+                <input id="price" asp-for="Product.WeightPrice" class="form-control" min="0.01" data-val-required="Le prix au poids est requis" />
                 <span asp-validation-for="Product.WeightPrice" class="text-danger" />
             </div>
         </div>
         <div class="form-group">
             <label asp-for="Product.UnitPrice" class="col-md-2 control-label required"></label>
             <div class="col-md-10">
-                <input id="unitPrice" asp-for="Product.UnitPrice" class="form-control" data-val-required="Le prix unitaire est obligatoire" data-val-number="Le prix unitaire doit être un nombre." />
+                <input id="unitPrice" asp-for="Product.UnitPrice" class="form-control" min="0.01" data-val-required="Le prix unitaire est requis" />
                 <span asp-validation-for="Product.UnitPrice" class="text-danger" />
             </div>
         </div>
+	</fieldset>
         <div class="form-group">
             <label asp-for="Product.TaxEnum" class="col-md-2 control-label"></label>
             <div class="col-md-10">
@@ -253,7 +174,7 @@
         {
             <div class="form-group">
                 <div class="col-md-offset-2 col-md-10">
-                    <input type="submit" id="submit" value="Ajouter" class="btn btn-small btn-default" />
+                    <input type="submit" id="submit" value="Ajouter" formnovalidate class="btn btn-small btn-default" />
                 </div>
             </div>
         }
@@ -261,7 +182,7 @@
         {
             <div class="form-group">
                 <div class="col-md-offset-2 col-md-10">
-                    <input type="submit" id="submit" value="Modifier" class="btn btn-small btn-default" />
+                    <input type="submit" id="submit" value="Modifier" formnovalidate class="btn btn-small btn-default" />
                 </div>
             </div>
         }
@@ -282,9 +203,9 @@
                     <% _.forEach(productTypes, function(productType) { %>
 
                     <optgroup label="<%= productType.Name %>">
-
+     
                         <% _.forEach(productType.ProductFamilly, function (productFamily) { %>
-
+     
                         <option id="<%= productFamily.FamillyName %>" value="<%= productFamily.FamillyName %>" data-image="<%= productFamily.Image %>"
 		      <% if (productFamily.FamillyName == currentFamilly) { %> selected="selected"  <% } %> >
 		<%= productFamily.FamillyName %>
@@ -297,5 +218,7 @@
             </div>
         </div>
     </script>
+
     <script src="/js/manageProduct.js"></script>
+    <script src="/js/formValidation.js"></script>
 }
