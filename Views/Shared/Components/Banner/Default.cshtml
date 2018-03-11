@@ -8,7 +8,7 @@
 {
     <div class="nav container">
         <div class="row">
-            <div class=" col-sm-1">
+            <div class=" col-sm-1 col-xs-2">
                 @if (Model.ActiveAdherentStolon.Adherent.AdherentStolons.Count != 1)
                 {
                     <div class="stolon-avatar-banner-container">
@@ -39,7 +39,7 @@
 
                 }
             </div>
-            <div class=" col-sm-7">
+            <div class=" col-sm-7 col-xs-10">
                 <div class="stolon-title">
                     <a asp-controller="Home" asp-action="StolonContact" asp-route-id="@Model.ActiveAdherentStolon.Stolon.Id">
                         <span>@Model.ActiveAdherentStolon.Stolon.Label</span>
