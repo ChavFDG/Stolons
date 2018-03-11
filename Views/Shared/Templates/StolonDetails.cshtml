@@ -1,4 +1,6 @@
-﻿@model Stolons.ViewModels.Home.StolonContactViewModel
+﻿@using Stolons.ViewModels.PublicProducers
+@using Stolons.ViewModels.Home
+@model StolonContactViewModel
 
 @if (!Model.IsAdherentLogged)
 {
@@ -72,10 +74,17 @@
 
 <div class="row">
     <h1 class="col-lg-12 text-center">Nos producteurs</h1>
-    <div class="col-lg-12 producersMapContainer">
-        <div id="producerModal" class="modals"></div>
-        <div id="map" style="height: 400px"></div>
+    <div class="row">
+        <div class="col-lg-4">
+        </div>
+        <div class="col-lg-8 producersStolonInformations">
+            <br />
+            <br />
+            <span class="producersStolonInformationsNumber">@Model.Producers.Count().ToString()</span><span> producteurs </span>
+            <span class="producersStolonInformationsNumber">@Model.TotalProducts.ToString()</span><span> produits bio et locaux</span>
+        </div>
     </div>
+    @{ Html.RenderPartial("PublicProducersMap", new PublicProducersViewModel(Model.Producers, Model.TotalProducts)); }
 </div>
 
 
@@ -127,5 +136,10 @@
 
 @{ await Html.RenderPartialAsync("Templates/ProducerModalTemplate"); }
 
-<script src="~/lib/leaflet.js"></script>
-<script src="~/js/publicProducers.js"></script>
+@section Scripts {
+
+    <script src="/lib/leaflet.js"></script>
+    <script src="/js/publicProducers.js"></script>
+    <script src="/js/productModel.js"></script>
+
+}

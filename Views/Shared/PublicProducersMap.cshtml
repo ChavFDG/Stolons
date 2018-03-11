@@ -3,20 +3,6 @@
 
 <link rel="stylesheet" href="~/css/leaflet.css" />
 
-
-<div class="row">
-    <div class="col-lg-4" >
-        <h1>Nos producteurs</h1>
-
-    </div>
-    <div class="col-lg-8 producersStolonInformations">
-        <br />
-        <br />
-        <span class="producersStolonInformationsNumber">@Model.Producers.Count().ToString()</span><span> producteurs </span>
-        <span class="producersStolonInformationsNumber">@Model.TotalProducts.ToString()</span><span> produits bio et locaux</span>
-    </div>
-</div>
-
 <div class="row producersListAndMapContainer">
 
     <div class="col-lg-4 producersList">
@@ -58,10 +44,6 @@
         $('#map').toggleClass('producersMapFull', true);
     }
 </script>
-
-
-
-
 
 <script id="producerDetailsTemplate" type="text/template">
     <div class="producerDetailsContainer">
@@ -122,11 +104,3 @@
         </div>
     </div>
 </script>
-
-@section Scripts {
-
-    <script src="/lib/leaflet.js"></script>
-    <script src="/js/publicProducers.js"></script>
-    <script src="/js/productModel.js"></script>
-
-}

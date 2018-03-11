@@ -62,13 +62,22 @@ namespace Stolons.Controllers
         public IActionResult StolonContact(Guid id)
         {
             Stolon stolon = _context.Stolons.FirstOrDefault(x => x.Id == id);
-            Dictionary<Adherent, List<Product>> prods = new Dictionary<Adherent, List<Product>>();
+            Dictionary<AdherentStolon, List<Product>> prods = new Dictionary<AdherentStolon, List<Product>>();
 
-            foreach (var producer in _context.Adherents.Include(x => x.Products).ToList())
-            {
-                prods.Add(producer, _context.Products.Include(x=>x.Familly).ThenInclude(x=>x.Type).Where(product => product.ProducerId == producer.Id).ToList());
-            }
-            return View(new StolonContactViewModel(stolon, prods, User.Identity.IsAuthenticated?GetActiveAdherentStolon():null));
+            var producers = _context.AdherentStolons
+            .Include(x => x.Adherent)
+            .Include(x => x.Adherent.Products)
+            .ThenInclude(x=>x.Familly)
+            .ThenInclude(x=>x.Type)
+            .Where(x => x.IsProducer && x.StolonId == stolon.Id)
+            .AsNoTracking()
+            .ToList();
+
+
+            int totalProducts = _context.ProductsStocks.Include(x => x.Product).Include(x => x.AdherentStolon).Count(x => x.AdherentStolon.StolonId == stolon.Id && !x.Product.IsArchive);
+
+
+            return View(new StolonContactViewModel(stolon, producers, totalProducts, User.Identity.IsAuthenticated?GetActiveAdherentStolon():null));
         }
 
         [Route("Go/{stolonName}")]

@@ -12,10 +12,10 @@ using Stolons.ViewModels.PublicProducers;
 
 namespace Stolons.Controllers
 {
-    public class PublicProducersController : BaseController
+    public class ProducersController : BaseController
     {
 
-        public PublicProducersController(ApplicationDbContext context, IHostingEnvironment environment,
+        public ProducersController(ApplicationDbContext context, IHostingEnvironment environment,
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             IServiceProvider serviceProvider) : base(serviceProvider, userManager, context, environment, signInManager)
@@ -24,7 +24,7 @@ namespace Stolons.Controllers
 
         // GET: PublicProducers
         [AllowAnonymous]
-        [Route("PublicProducers/{id?}")]
+        [Route("Producers/{id?}")]
         public IActionResult Index()
         {
             Stolon stolon = GetCurrentStolon();
