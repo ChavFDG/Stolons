@@ -204,6 +204,10 @@ img.warning {
     margin: 5px 0;
     border-top: 1px solid #ccc;
 }
+.newsAndChatSeparator {
+    border-left: 2px solid #008000;
+    padding-left:20px;
+}
 
 
 .newsListItemHighLight {
@@ -991,10 +995,15 @@ a.main-links {
         color: #fff;
     }
 
+div.chat {
+    height: 60vh;
+    overflow: auto;
+    margin:5px;
+}
+
 .comment {
-    padding: 5px;
     background: #efefef;
-    margin-top: 5px;
+    margin: 5px;
 }
 
     .comment img {
@@ -1006,6 +1015,10 @@ a.main-links {
         margin-top: 10px;
         font-size: 12px;
     }
+
+.chat-add-comment {
+    margin: 5px;
+}
 
 textarea#add-comment {
     width: 100%;
@@ -1075,8 +1088,8 @@ h1 {
 
 .basket-banner-border {
     border-radius: 10px;
-    border-color: grey;
-    border: 1px solid;
+    border-color: #008000 !important;
+    border: 2px solid;
     padding-left: 15px;
 }
 
@@ -1308,10 +1321,6 @@ label.required:after {
     color: #ffffff;
 }
 
-div.chat {
-    height: 500px;
-    overflow: auto;
-}
 
 .productPreviewTooltip {
     max-width: 240px;
@@ -1354,4 +1363,9 @@ div.chat {
     border-color: #008000;
     border-width: 1px;
     border-radius: 50%;
+}
+
+.weekBasketLoadingContrainer{
+    text-align:center;
+    font-size:50px;
 }

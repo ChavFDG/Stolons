@@ -1,8 +1,6 @@
 ﻿@using Stolons.ViewModels.Home
 
 @model HomeViewModel
-
-
 <!-- CODE ARNAUD
     <div class="row">
     <ul class="nav nav-tabs">
@@ -18,7 +16,6 @@
 
 -->
 
-
 <div class="row">
     <div class="col-lg-8">
         <h2>Les nouvelles</h2>
@@ -26,10 +23,13 @@
             Html.RenderPartial("../News/ShowNews", Model.NewsVm);
         }
     </div>
-    <div class="col-lg-4">
-        @{
-            Html.RenderPartial("../Chat/ShowChat", Model.ChatVm);
-        }
+    <div class="col-lg-4 ">
+        <div class="newsAndChatSeparator">
+            <h2>La messagerie</h2>
+            @{
+                Html.RenderPartial("../Chat/ShowChat", Model.ChatVm);
+            }
+        </div>
     </div>
 </div>
 

@@ -489,6 +489,10 @@ ProductsView = Backbone.View.extend(
                         el: "#product-" + productStockModel.get("Id") + " .pr_actions"
                     });
                 productActionView.render();
+                //Hide loading
+                $('#loading').toggleClass('hidden', true);
+                $('#topButton').toggleClass('hidden', false);
+                
             }, this);
         }
     }
@@ -594,8 +598,10 @@ var initViews = function () {
 };
 
 var bootstrapWeekBasket = function () {
+
     initModels();
     initViews();
+
 };
 
 $(function () {
