@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using System;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Stolons.ViewModels.PublicProducers;
 
 namespace Stolons.Controllers
 {
@@ -23,17 +24,20 @@ namespace Stolons.Controllers
 
         // GET: PublicProducers
         [AllowAnonymous]
-	[Route("PublicProducers/{id?}")]
+        [Route("PublicProducers/{id?}")]
         public IActionResult Index()
         {
             Stolon stolon = GetCurrentStolon();
-	    var producers = _context.AdherentStolons
-		.Include(x => x.Adherent)
-		.Where(x => x.IsProducer && x.StolonId == stolon.Id)
-		.AsNoTracking()
-		.ToList();
+            var producers = _context.AdherentStolons
+            .Include(x => x.Adherent)
+            .Where(x => x.IsProducer && x.StolonId == stolon.Id)
+            .AsNoTracking()
+            .ToList();
 
-            return View(producers);
+            int totalProducts = _context.ProductsStocks.Include(x => x.Product).Include(x => x.AdherentStolon).Count(x => x.AdherentStolon.StolonId == stolon.Id && !x.Product.IsArchive);
+
+
+            return View(new PublicProducersViewModel(producers, totalProducts));
         }
 
         [AllowAnonymous]
@@ -41,30 +45,30 @@ namespace Stolons.Controllers
         public IActionResult JsonProductsStocks()
         {
             Stolon stolon = GetCurrentStolon();
-	    var producers = _context.AdherentStolons
-		.Include(x => x.Adherent)
-		.Where(x => x.IsProducer && x.StolonId == stolon.Id)
-		.AsNoTracking()
-		.ToList();
+            var producers = _context.AdherentStolons
+            .Include(x => x.Adherent)
+            .Where(x => x.IsProducer && x.StolonId == stolon.Id)
+            .AsNoTracking()
+            .ToList();
 
             return Json(producers);
         }
 
-	[AllowAnonymous]
+        [AllowAnonymous]
         [HttpGet, ActionName("PublicProducerProducts"), Route("api/publicProducerProducts")]
         public IActionResult JsonPublicProductsStocks(Guid producerStolonId)
         {
-	    if (producerStolonId == null)
-	    {
-		return Json(new {});
-	    }
+            if (producerStolonId == null)
+            {
+                return Json(new { });
+            }
             var productsStocks = _context.ProductsStocks
-		.Include(x => x.Product)
-		.ThenInclude(x => x.Familly)
-		.ThenInclude(x => x.Type)
-		.Where(x => x.AdherentStolonId == producerStolonId)
-		.AsNoTracking()
-		.ToList();
+        .Include(x => x.Product)
+        .ThenInclude(x => x.Familly)
+        .ThenInclude(x => x.Type)
+        .Where(x => x.AdherentStolonId == producerStolonId)
+        .AsNoTracking()
+        .ToList();
             return Json(productsStocks);
         }
     }

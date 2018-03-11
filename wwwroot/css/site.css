@@ -301,14 +301,29 @@ img.warning {
 
 /*-- START PUBLIC PRODUCER --*/
 
+.producersStolonInformations {
+    text-align: center;
+    text-align: right;
+    top: 40px;
+    font-size: 18px;
+}
+.producersStolonInformationsNumber {
+    color: #008000;
+    font-size : 22px;
+}
+
+.producersListAndMapContainer {
+    height: 70vh;
+}
+
+
 .producersList {
     overflow-y: scroll;
-    max-height: 470px;
+    height: 100%;
 }
 
 .producersMap {
-    max-height: 470px;
-    height: 470px;
+    height: 70vh;
 }
 
 .mapMarker {
@@ -328,9 +343,16 @@ img.warning {
 }
 
 .public_Prod_avatar > img {
-    width: 75px;
-    height: 75px;
+    width: 50px;
+    height: 50px;
     vertical-align: middle;
+}
+.public_Prod_CompanyName {
+    color: #008000;
+    font-size: 16px;
+}
+.public_Prod_Production {
+    font-size: 12px;
 }
 
 .producerDetailsContainer {
