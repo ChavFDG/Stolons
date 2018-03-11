@@ -300,12 +300,17 @@ img.warning {
 }
 
 /*-- START PUBLIC PRODUCER --*/
-
+.testtest {
+    display: table-cell;
+    vertical-align: bottom;
+}
 .producersStolonInformations {
+    vertical-align: bottom;
     text-align: center;
     text-align: right;
-    top: 40px;
     font-size: 18px;
+    display: table;
+    line-height:20px;
 }
 .producersStolonInformationsNumber {
     color: #008000;
@@ -316,14 +321,31 @@ img.warning {
     height: 70vh;
 }
 
+.producerDetails {
+    overflow-y: auto;
+    height: 25vh;
+    padding-left: 15px;
+    padding-right: 15px;
+    border-color: #008000;
+    border: 1px solid;
+}
 
 .producersList {
-    overflow-y: scroll;
+    overflow-y: auto;
     height: 100%;
 }
 
-.producersMap {
+.producersMapContainer {
     height: 70vh;
+
+}
+
+.producersMapFull {
+    height: 70vh;
+}
+
+.producersMapHalf {
+    height: 45vh;
 }
 
 .mapMarker {
@@ -333,13 +355,11 @@ img.warning {
 }
 
 .producerOpenText {
-    padding: 10px;
-    margin: 10px;
-    font-size: 15px;
-    font-family: Georgia, serif;
+    font-size: 14px;
     font-style: italic;
-    letter-spacing: 1.25px;
-    line-height: 1.6;
+}
+.producerOpenTextTile {
+    font-size: 18px;
 }
 
 .public_Prod_avatar > img {
@@ -347,6 +367,17 @@ img.warning {
     height: 50px;
     vertical-align: middle;
 }
+.public_Prod_avatar_Detail {
+    width: 60px;
+    height: 60px;
+    vertical-align: middle;
+    text-align: center;
+}
+.public_Prod_avatar_Detail > img {
+    width: 60px;
+    height: 60px;
+}
+
 .public_Prod_CompanyName {
     color: #008000;
     font-size: 16px;
@@ -356,17 +387,23 @@ img.warning {
 }
 
 .producerDetailsContainer {
-    margin-top: 10px;
+
+}
+
+.producerOpenTextContainer{
+    padding:5px;
 }
 
 .producerDetailsTitle {
-    font-size: 1.4em;
-    color: #337ab7;
+    font-size: 22px;
+    color: #008000;
+    padding-left: 10px;
+    padding-bottom: 10px;
+}
+.producerDetailsName {
     padding-left: 10px;
 }
-
 /*-- END PUBLIC PRODUCER --*/
-
 .isa_success {
     color: #4F8A10;
     background-color: #DFF2BF;
@@ -740,16 +777,10 @@ img.warning {
         height: 35px;
     }
 
-.producerInfoList li {
-    padding: 5px;
-}
-
-.producerInfoList ul {
-    list-style-type: none;
-}
 
 .producerInfoList {
     padding-top: 20px;
+    line-height:13px;
 }
 
 .modals .modal-header .close {

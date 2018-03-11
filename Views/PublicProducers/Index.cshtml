@@ -5,11 +5,13 @@
 
 
 <div class="row">
-    <div class="col-lg-4">
+    <div class="col-lg-4" >
         <h1>Nos producteurs</h1>
 
     </div>
     <div class="col-lg-8 producersStolonInformations">
+        <br />
+        <br />
         <span class="producersStolonInformationsNumber">@Model.Producers.Count().ToString()</span><span> producteurs </span>
         <span class="producersStolonInformationsNumber">@Model.TotalProducts.ToString()</span><span> produits bio et locaux</span>
     </div>
@@ -40,72 +42,85 @@
         </table>
     </div>
     <div class="col-lg-8 producersMapContainer">
-        <div id="map" class="producersMap">
+        <div id="map" class="producersMapFull row">
+        </div>
+        <!-- placeholder for js-generated producer details -->
+        <div id="producerDetails" class="producerDetails hidden row">
         </div>
     </div>
 </div>
 
-<hr />
+<script>
 
-<!-- placeholder for js-generated producer details -->
-<div id="producerDetails" class="row">
-</div>
+    function closeProducerDetail() {
+        $('#producerDetails').toggleClass('hidden', true);
+        $('#map').toggleClass('producersMapHalf', false);
+        $('#map').toggleClass('producersMapFull', true);
+    }
+</script>
+
+
+
+
 
 <script id="producerDetailsTemplate" type="text/template">
-    <div class="col-lg-7 producerDetailsContainer">
-        <div class="public_Prod_avatar">
-            <img src="<%= producer.Adherent.AvatarFilePath %>" class="avatar" />
-            <span class="producerDetailsTitle"><%= producer.Adherent.CompanyName %></span>
+    <div class="producerDetailsContainer">
+        <div class="row">
+            <button  class="close" data-dismiss="modal" aria-label="Close" onclick="closeProducerDetail()"><span aria-hidden="true">&times;</span></button>
         </div>
-
-        <div class="producerInfoList">
-            <ul>
-                <% if (!_.isEmpty(producer.Adherent.Adress)) { %>
-                <li>
+        <div class="row">
+            <div class="col-lg-1">
+                <div class="public_Prod_avatar_Detail">
+                    <img src="<%= producer.Adherent.AvatarFilePath %>" class="avatar" />
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <span class="producerDetailsTitle"><%= producer.Adherent.CompanyName %></span>
+                <br />
+                <span class="producerDetailsName"><%= producer.Adherent.Name %> <%= producer.Adherent.Surname %> </span>
+            </div>
+            <div class="col-lg-7">
+                <div class="producerInfoList">
+                    <% if (!_.isEmpty(producer.Adherent.Adress)) { %>
                     <label>Adresse: </label>
                     <span><%= producer.Adherent.Adress %></span>
-                </li>
-                <% } %>
-                <li>
-                    <label>Proprietaire: </label>
-                    <span><%= producer.Adherent.Name %> <%= producer.Adherent.Surname %> </span>
-                </li>
-                <% if (!_.isEmpty(producer.Adherent.Area) || producer.Adherent.Area != 0) { %>
-                <li>
+                    <br>
+                    <% } %>
+                    <% if (!_.isEmpty(producer.Adherent.Area) || producer.Adherent.Area != 0) { %>
+
                     <label>Superficie de production: </label>
-                    <span><%= producer.Adherent.Area %> ha</sup> </span>
-                </li>
-                <% } %>
-                <% if (producer.Adherent.Production) { %>
-                <li>
+                    <span><%= producer.Adherent.Area %> ha </span>
+                    <br>
+                    <% } %>
+                    <% if (producer.Adherent.Production) { %>
+
                     <label>Production: </label>
                     <span><%= producer.Adherent.Production %></span>
-                </li>
-                <% } %>
-                <% if (!_.isEmpty(producer.Adherent.StartDate) || producer.Adherent.StartDate != 0) { %>
-                <li>
+                    <br>
+                    <% } %>
+                    <% if (!_.isEmpty(producer.Adherent.StartDate) || producer.Adherent.StartDate != 0) { %>
+
                     <label>Année d'installation: </label>
                     <span><%= producer.Adherent.StartDate %></span>
-                </li>
-                <% } %>
-                <% if (producer.Adherent.WebSiteLink) { %>
-                <li>
+                    <br>
+                    <% } %>
+                    <% if (producer.Adherent.WebSiteLink) { %>
                     <label>Site web: </label>
                     <a href="<%= producer.Adherent.WebSiteLink %>" target="_blank"><%= producer.Adherent.WebSiteLink %></a>
-                </li>
-                <% } %>
-                <% if (producer.Adherent.OpenText) { %>
-                <li>
-                    <label>Le mot du producteur: </label>
-                    <p class="producerOpenText">
-                        <%= producer.Adherent.OpenText %>
-                    </p>
-                </li>
-                <% } %>
-            </ul>
+                    <br>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+        <div class="row producerOpenTextContainer">
+            <% if (producer.Adherent.OpenText) { %>
+            <label class="producerOpenTextTile">Le mot du producteur :</label>
+            <p class="producerOpenText">
+                "<%= producer.Adherent.OpenText %>"
+            </p>
+            <% } %>
         </div>
     </div>
-    <div id="producerDetailsAnchor"></div>
 </script>
 
 @section Scripts {
