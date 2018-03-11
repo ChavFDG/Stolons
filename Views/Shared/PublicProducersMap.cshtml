@@ -4,7 +4,6 @@
 <link rel="stylesheet" href="~/css/leaflet.css" />
 
 <div class="row producersListAndMapContainer">
-
     <div class="col-lg-4 producersList">
         <table class="table">
             @foreach (var producer in Model.Producers.OrderBy(x => x.Adherent.CompanyName))
@@ -28,6 +27,7 @@
         </table>
     </div>
     <div class="col-lg-8 producersMapContainer">
+        <div id="producerDetailsAnchor"></div>
         <div id="map" class="producersMapFull row">
         </div>
         <!-- placeholder for js-generated producer details -->
@@ -48,7 +48,7 @@
 <script id="producerDetailsTemplate" type="text/template">
     <div class="producerDetailsContainer">
         <div class="row">
-            <button  class="close" data-dismiss="modal" aria-label="Close" onclick="closeProducerDetail()"><span aria-hidden="true">&times;</span></button>
+            <button class="close" data-dismiss="modal" aria-label="Close" onclick="closeProducerDetail()"><span aria-hidden="true">&times;</span></button>
         </div>
         <div class="row">
             <div class="col-lg-1">

@@ -63,16 +63,15 @@ var ProducerDetailsView = Backbone.View.extend({
     render: function (producer) {
         var that = this;
         var deferred = $.Deferred();
-        if (this.producerProducts[producer.get("Id")] == null) {
-            this.producerProducts[producer.get("Id")] = new ProducerProductStockCollection(producer.get("Id"));
-            deferred = this.producerProducts[producer.get("Id")].fetch();
-        } else {
-            deferred.resolve();
-        }
+        deferred.resolve();
 
         $('#producerDetails').toggleClass('hidden', false);
         $('#map').toggleClass('producersMapFull', false);
         $('#map').toggleClass('producersMapHalf', true);
+
+        $('html, body').animate({
+            scrollTop: $("#producerDetailsAnchor").offset().top
+        }, 1000);
 
         deferred.done(function () {
             that.$el.html(that.template({ producer: producer.toJSON() }));
