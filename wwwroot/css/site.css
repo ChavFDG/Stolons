@@ -1061,15 +1061,14 @@ h1 {
     padding-top: 7px;
 }
 
-.stolon-title span {
-    color: #016b01;
-    font-size: 40px;
-}
+    .stolon-title span {
+        color: #016b01;
+        font-size: 40px;
+    }
 
 
 .basket-banner-container {
     vertical-align: middle;
-    align: center;
     padding: 5px;
     padding-right: 15px;
 }
@@ -1078,7 +1077,7 @@ h1 {
     border-radius: 10px;
     border-color: grey;
     border: 1px solid;
-    padding-left: 15px
+    padding-left: 15px;
 }
 
 .basket-banner-logo {
@@ -1088,26 +1087,31 @@ h1 {
 }
 
 .basket-banner-title {
+    text-align: center;
 }
 
-.basket-banner-title img {
-    margin-right: 7px;
-}
+    .basket-banner-title img {
+        margin-right: 7px;
+        width: 42px;
+        height: 42px;
+    }
 
-.basket-banner-title span {
-    font-size: 20px;
-}
+    .basket-banner-title span {
+        font-size: 20px;
+    }
 
 .basket-banner-information {
-    line-height: 1.8em;
-    font-size: 13px;
+    font-size: 12px;
+    font-style: italic;
+    text-align: left;
 }
 
-.basket-banner-information img {
-    width: 32px;
-    height: 32px;
-    padding-right: 7px;
-}
+    .basket-banner-information img {
+        width: 34px;
+        height: 17px;
+        padding-right: 7px;
+        margin: 2px;
+    }
 
 /* custom inclusion of right, left and below tabs */
 
@@ -1327,4 +1331,27 @@ div.chat {
 /* Form validation styles */
 .input-validation-error {
     border-color: red;
+}
+
+.home-step :hover {
+    transform: scale(1.05);
+    transition: all 100ms;
+}
+
+
+    .home-step span {
+        font-size: 17px;
+    }
+
+.topButtonContainer{
+    text-align:center;
+}
+
+#topButton {
+    height:50px;
+    width:50px;
+    color: #008000;
+    border-color: #008000;
+    border-width: 1px;
+    border-radius: 50%;
 }

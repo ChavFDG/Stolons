@@ -36,10 +36,25 @@ else
     <div id="productModal" class="modal fade"></div>
     <div id="producerModal" class="modal fade"></div>
 
+    <div class="row topButtonContainer">
+        <button onclick="topFunction()" id="topButton" title="Remonter" class="btn btn-default">
+            <i class="glyphicon glyphicon-arrow-up"></i>
+        </button>
+    </div>
+
+    <script>
+        // When the user clicks on the button, scroll to the top of the document
+        function topFunction() {
+            var body = $("html, body");
+            body.stop().animate({ scrollTop: 0 }, 500, 'swing', function () {
+            });
+        }
+    </script>
+
     <!-- below are templates definitions to be rendered under placeholders defined above -->
 
     <script id="filtersTemplate" type="text/template">
-    <% _.forEach(productTypes, function(type) { %>
+        <% _.forEach(productTypes, function(type) { %>
         <% var typesProducts = products.getProductsForType(type.Name); %>
         <% if (typesProducts.length > 0) { %>
         <li class="dropdown">
@@ -62,7 +77,7 @@ else
             </ul>
         </li>
         <% } %>
-    <% }); %>
+        <% }); %>
     </script>
 
     <!-- Include the product template -->
@@ -108,37 +123,37 @@ else
 
     <script id="productsTemplate" type="text/template">
         <% _.forEach(productTypes, function(type) { %>
-            <% var typeProducts = products.getProductsForType(type.Name) %>
-            <% if (!_.isEmpty(typeProducts)) { %>
-                <div class="product__type">
-                    <div class="product__type__title">
-                        <div id="<%= type.Name %>" class="anchorProductType">
-                            <%= type.Name.split('').reverse().map(function (l) {
-                                return '<div class="verticaltext">' + l + '</div>';
-                            }).join('') %>
-                            <img src="<%= type.Image %>" class="productCategoryImage" />
-                        </div>
+        <% var typeProducts = products.getProductsForType(type.Name) %>
+        <% if (!_.isEmpty(typeProducts)) { %>
+        <div class="product__type">
+            <div class="product__type__title">
+                <div id="<%= type.Name %>" class="anchorProductType">
+                    <%= type.Name.split('').reverse().map(function (l) {
+                    return '<div class="verticaltext">' + l + '</div>';
+                    }).join('') %>
+                    <img src="<%= type.Image %>" class="productCategoryImage" />
+                </div>
+            </div>
+            <div class="product__type__content">
+                <% _.forEach(type.ProductFamilly, function(family) { %>
+                <% var famillyProducts = products.getProductsForFamily(family.FamillyName) %>
+                <% if (famillyProducts.length > 0)  { %>
+                <div class="product__type__content__familly">
+                    <div class="anchorProductFamily" id="<%= family.FamillyName %>">
+                        <img src="<%= family.Image %>" class="productCategoryImage" />
+                        <%= family.FamillyName %>
                     </div>
-                    <div class="product__type__content">
-                        <% _.forEach(type.ProductFamilly, function(family) { %>
-                            <% var famillyProducts = products.getProductsForFamily(family.FamillyName) %>
-                            <% if (famillyProducts.length > 0)  { %>
-                                <div class="product__type__content__familly">
-                                    <div class="anchorProductFamily" id="<%= family.FamillyName %>">
-                                        <img src="<%= family.Image %>" class="productCategoryImage" />
-                                        <%= family.FamillyName %>
-                                    </div>
-                                    <div class="row">
-                                        <% _.forEach(famillyProducts, function(productModel) { %>
-                                            <div id="product-<%= productModel.get('Id') %>"></div>
-                                        <% }); %>
-                                    </div>
-                                </div>
-                            <% } %>
+                    <div class="row">
+                        <% _.forEach(famillyProducts, function(productModel) { %>
+                        <div id="product-<%= productModel.get('Id') %>"></div>
                         <% }); %>
                     </div>
                 </div>
-            <% } %>
+                <% } %>
+                <% }); %>
+            </div>
+        </div>
+        <% } %>
         <% }); %>
 
         <div id="emptyProducts" class="hidden">

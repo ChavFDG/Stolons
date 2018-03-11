@@ -1,12 +1,22 @@
 ﻿<link rel="stylesheet" href="~/css/leaflet.css" />
 
 <div class="row">
-    <div class="col-lg-12" id="logo">
+    <div class="col-lg-12 text-center" id="logo">
         <img src="~/images/logos/Logo_HD.png" class="responsiveImage" style="max-width: 500px;" />
     </div>
 </div>
 
 <div id="home">
+    <div class="row">
+        <h1 class="col-lg-12 text-center">Et si on mangeait bio et local ?</h1>
+    </div>
+    <div class="row">
+        <div class="col-lg-12" id="links">
+            <div class="col-lg-offset-3 col-lg-3 text-center"><a href="#" class="main-links" data-toggle="modal" data-target="#connexion">Se connecter</a></div>
+            <div class="col-lg-3 text-center"><a href="#" class="main-links" data-toggle="modal" data-target="#get-stolons">Créer un Stolon</a></div>
+        </div>
+    </div>
+
     <div id="producerModal"></div>
     <!--
     <div class="row">
@@ -17,54 +27,67 @@
     </div>
         -->
     <div class="row">
-        <div class="col-lg-12" id="links">
-            <div class="col-lg-offset-3 col-lg-3 text-center"><a href="#" class="main-links" data-toggle="modal" data-target="#connexion">Se connecter</a></div>
-            <div class="col-lg-3 text-center"><a href="#" class="main-links" data-toggle="modal" data-target="#get-stolons">Créer un Stolon</a></div>
-        </div>
-    </div>
-
-    <div class="row">
-        <h1 class="col-lg-12 text-center">Stolons c'est quoi ?</h1>
-        <div class="col-lg-12" id="presentation-text">
-            Stolon est une plateforme libre et open source qui regroupe des structures appelées Stolon qui visent à promouvoir les circuits courts via un site internet et un système de vente hebdomadaire sans engagement. 
-            La plateforme Stolon a été créée par une équipe d’informaticiens bénévoles soutenus par l’association des producteurs bio Agri Bio Ardèche.
-            Les produits proposés au sein des Stolons sont tous certifiés issus de l’Agriculture Biologique, proviennent de moins de 50 kms du lieu de dépôt et sont vendus à un prix de vente directe dans un objectif d’accessibilité au plus grand nombre.
-            <br />Pour toute question et pour bénéficier d'un compte consommateur, veuillez contacter Jeanne d’Agri Bio Ardèche : <a href="mailto:jeanne.ab07@aurabio.org">jeanne.ab07@aurabio.org</a>
-        </div>
-        <div class="col-lg-12 text-center" id="products">
-            <img src="~/images/productFamilies/alcool.jpg"/>
-            <img src="~/images/productFamilies/confitures.jpg" />
-            <img src="~/images/productFamilies/fruits.jpg" />
-            <img src="~/images/productFamilies/legumes.jpg" />
-            <img src="~/images/productFamilies/pain.jpg" />
-            <img src="~/images/productFamilies/produits_laitiers.jpg" />
-        </div>
-    </div>
-
-    <div class="row">
         <h1 class="col-lg-12 text-center">Comment ça marche ?</h1>
-        <a href="#" data-toggle="modal" data-target="#get-stolons">
-            <div class="col-lg-3"><img src="~/images/howitswork/Step1_low.png" class="responsiveImage" /></div>
-            <div class="col-lg-3"><img src="~/images/howitswork/Step2_low.png" class="responsiveImage" /></div>
-            <div class="col-lg-3"><img src="~/images/howitswork/Step3_low.png" class="responsiveImage" /></div>
-            <div class="col-lg-3"><img src="~/images/howitswork/Step4_low.png" class="responsiveImage" /></div>
-        </a>
-    </div>
-
-    <div class="row">
-        <div class="col-lg-12 text-center">
-            <a href="#">Qui sommes nous ?</a>
+        <div class="text-center">
+            <a href="#" data-toggle="modal" data-target="#info-1">
+                <div class="col-lg-3 home-step">
+                    <img src="~/images/howitswork/Step1_low.png" class="responsiveImage" />
+                    <br />
+                    <span>Je me connecte au site</span>
+                </div>
+            </a>
+            <a href="#" data-toggle="modal" data-target="#info-2">
+                <div class="col-lg-3 home-step">
+                    <img src="~/images/howitswork/Step2_low.png" class="responsiveImage" />
+                    <br />
+                    <span>Je compose mon panier</span>
+                </div>
+            </a>
+            <a href="#" data-toggle="modal" data-target="#info-3">
+                <div class="col-lg-3 home-step">
+                    <img src="~/images/howitswork/Step3_low.png" class="responsiveImage" />
+                    <br />
+                    <span>Les producteurs récoltent</span>
+                </div>
+            </a>
+            <a href="#" data-toggle="modal" data-target="#info-4">
+                <div class="col-lg-3 home-step">
+                    <img src="~/images/howitswork/Step4_low.png" class="responsiveImage" />
+                    <br />
+                    <span>Je viens récupérer</span>
+                </div>
+            </a>
         </div>
     </div>
+
 
     <div class="row">
         <h1 class="col-lg-12 text-center">Nos partenaires</h1>
         <img src="~/images/financers/financers.jpg" class="responsiveImage" />
         <div class="col-lg-12 text-center" id="presentation-text">
-            <font size="1" >
+            <font size="1">
                 Le site originel stolons.org(<a href="https://github.com/ChavFDG/Stolons" target="_blank">projet github</a>), open source, a été créé par quatre bénévoles informaticiens en 2016 avec l'appui de producteurs et consommateurs du bassin Privadois (07).
                 <br />Les financeurs ci-dessus ont contribué à l'évolution et la multiplication d'utilisation de la plateforme en 2017.
-            </font>       
+            </font>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <h1 class="col-lg-12 text-center">Stolons c'est quoi ?</h1>
+        <div class="col-lg-12" id="presentation-text">
+            Stolon est une plateforme libre et open source qui regroupe des structures appelées Stolon qui visent à promouvoir les circuits courts via un site internet et un système de vente hebdomadaire sans engagement.
+            La plateforme Stolon a été créée par une équipe d’informaticiens bénévoles soutenus par l’association des producteurs bio Agri Bio Ardèche.
+            Les produits proposés au sein des Stolons sont tous certifiés issus de l’Agriculture Biologique, proviennent de moins de 50 kms du lieu de dépôt et sont vendus à un prix de vente directe dans un objectif d’accessibilité au plus grand nombre.
+            <br />Pour toute question et pour bénéficier d'un compte consommateur, veuillez contacter Jeanne d’Agri Bio Ardèche : <a href="mailto:jeanne.ab07@aurabio.org">jeanne.ab07@aurabio.org</a>
+        </div>
+        <div class="col-lg-12 text-center" id="products">
+            <img src="~/images/productFamilies/alcool.jpg" />
+            <img src="~/images/productFamilies/confitures.jpg" />
+            <img src="~/images/productFamilies/fruits.jpg" />
+            <img src="~/images/productFamilies/legumes.jpg" />
+            <img src="~/images/productFamilies/pain.jpg" />
+            <img src="~/images/productFamilies/produits_laitiers.jpg" />
         </div>
     </div>
 
@@ -90,7 +113,19 @@
                     <h4 class="modal-title">Obtenir Stolons</h4>
                 </div>
                 <div class="modal-body">
-                    <a href="~/documents/20171128_Reglement_StolonsBIO.pdf" >Voir le réglement</a>
+                    <div>
+                        <h3>Informations</h3>
+                        <p>Vous souhaitez créer votre propre drive de produit bio et local ? Avoir des informations sur la plateforme ? Rien de plus simple !</p>
+                        <p>Pour celà contactez Agri Bio Ardèche pour plus d'informations:</p>
+                        <p>Mail: <a href="mailto:agribioardeche@aurabio.org">agribioardeche@aurabio.org</a></p>
+                        <p>Telephone: 04 75 64 82 96</p>
+                    </div>
+                    <div>
+                        <h3>Comment créer mon stolon ?</h3>
+                        <p>Pour créer un stolon il vous suffit de conectaer la structure (information si dessus)</p>
+                        <p>Que vous soiyez producteur seul, groupement de consomateurs ou de producteurs stolons s'adapte à vos besoins. Une seul conditions, être en bio et produire localement ! (<a href="~/documents/20171128_Reglement_StolonsBIO.pdf">Voir le réglement</a>)</p>
+                    </div>
+                    
                     <table class="table">
                         <tr>
                             <th></th>
@@ -118,10 +153,10 @@
                             <td>✓</td>
                         </tr>
                         @*<tr>
-                            <td>Planning</td>
-                            <td>✗</td>
-                            <td>✓</td>
-                        </tr>*@
+                <td>Planning</td>
+                <td>✗</td>
+                <td>✓</td>
+            </tr>*@
                         <tr>
                             <td>Cotisation</td>
                             <td>✗</td>
@@ -143,10 +178,10 @@
                             <td>✓</td>
                         </tr>
                         @*<tr>
-                            <td>Bon plan</td>
-                            <td>✓</td>
-                            <td>✓</td>
-                        </tr>*@
+                <td>Bon plan</td>
+                <td>✓</td>
+                <td>✓</td>
+            </tr>*@
                         <tr>
                             <td>Page personalisable</td>
                             <td>✓</td>
@@ -160,7 +195,8 @@
                         <tr>
                             <td>TARIFS</td>
                             <td>2€/sem (104€/an)</td>
-                            <td>4€/sem (208€/an)<div class="warning-container">
+                            <td>
+                                4€/sem (208€/an)<div class="warning-container">
                                     <i class="glyphicon glyphicon-info-sign"></i>
                                     <div class="warning-informations">
                                         La première année, puis 5€/semaine (260€ par an)
@@ -169,16 +205,92 @@
                             </td>
                         </tr>
                     </table>
-		    <div>
-			<p>Contactez Agri Bio Ardèche pour plus d'informations:</p>
-			<p>Mail: <a href="mailto:agribioardeche@aurabio.org">agribioardeche@aurabio.org</a></p>
-			<p>Telephone: 04 75 64 82 96</p>
-                    </div>
-		</div>
-                <!-- <div class="modal-footer"> -->
-                    <!-- <a href="mailto:jeanne.ab07@aurabio.org" class="btn btn-primary" id="contact-us">Nous contacter</a> -->
-                <!-- </div> -->
+                </div>
             </div>
         </div>
     </div>
+
+
+
+    <div class="modal fade" id="info-1" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Je me connecte au site</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <img src="~/images/howitswork/Step1_med.png" class="responsiveImage" />
+                        </div>
+                        <div class="col-sm-6">
+                            <p>Une fois mon compte créé chez le stolon de mon choix je peux chaque semaine me connecter avec mes identifiants.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="info-2" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Je compose mon panier</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <img src="~/images/howitswork/Step2_med.png" class="responsiveImage" />
+                        </div>
+                        <div class="col-sm-6">
+                            <p>Texte à saisir</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="info-3" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Les producteurs récoltent</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <img src="~/images/howitswork/Step3_med.png" class="responsiveImage" />
+                        </div>
+                        <div class="col-sm-6">
+                            <p>Texte à saisir</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="info-4" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Je viens récupérer mon panier</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <img src="~/images/howitswork/Step4_med.png" class="responsiveImage" />
+                        </div>
+                        <div class="col-sm-6">
+                            <p>Texte à saisir</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>

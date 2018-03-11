@@ -20,10 +20,10 @@
                             {
                                 if (!adherentStolon.IsActiveStolon)
                                 {
-                                    <li >
+                                    <li>
                                         <a asp-controller="Home" asp-action="ChangeActiveStolon" asp-route-id="@adherentStolon.StolonId">
                                             <div class="stolon-avatar-banner-container">
-                                                <img src="@adherentStolon.Stolon.LogoFilePath" class="stolon-avatar-dropdown"/>
+                                                <img src="@adherentStolon.Stolon.LogoFilePath" class="stolon-avatar-dropdown" />
                                                 @adherentStolon.Stolon.Label
                                             </div>
                                         </a>
@@ -61,9 +61,9 @@
                         {
 
                             string classToAdd = "";
-                            if (Model.TempWeekBasket != null)
+                            if (Model.TempWeekBasket != null && Model.TempWeekBasket.TotalPrice != 0)
                             {
-                                if (Model.TempWeekBasket?.Validated == false)
+                                if (Model.TempWeekBasket?.Validated == false )
                                 {
                                     classToAdd = "isa_warning";
                                 }
@@ -75,24 +75,24 @@
 
                             <a asp-controller="WeekBasket" asp-action="Index" class="@classToAdd">
                                 <img src="/images/panier.jpg" class="basket-banner-logo" />
-                                @if (Model.TempWeekBasket == null)
+                                @if (Model.TempWeekBasket == null || Model.TempWeekBasket.TotalPrice == 0)
                                 {
                                     <span>Commander</span>
                                 }
                                 else
                                 {
                                     <span>Mon panier (@Model.TempWeekBasket.TotalPrice.ToString("0.00")€)</span>
-
-                                }
-                                @if (Model.TempWeekBasket?.Validated == false)
-                                {
-                                    <div class="warning-container ">
-                                        <i class="glyphicon glyphicon-warning-sign"></i>
-                                        <div class="warning-informations right">
-                                            Le panier n'est pas validé
+                                    @if (Model.TempWeekBasket?.Validated == false)
+                                    {
+                                        <div class="warning-container ">
+                                            <i class="glyphicon glyphicon-warning-sign"></i>
+                                            <div class="warning-informations right">
+                                                Le panier n'est pas validé
+                                            </div>
                                         </div>
-                                    </div>
+                                    }
                                 }
+
                             </a>
                         }
                         else
