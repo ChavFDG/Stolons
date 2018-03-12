@@ -1456,10 +1456,33 @@ label.required:after {
 #stolonDetails {
     position: absolute;
     z-index: 9999;
-    left: 63%;
+    left: 65%;
     bottom: 0%;
     width: 34%;
     height: 100%;
-    background-color: grey;
+    background-color: #F9F9F9;
+}
+
+.stolonDetailsContainer{
+        margin:5px;
+}
+
+.rowAdjust {
+    margin-left: 15px;
+    margin-right: 15px;
+}
+
+.stolonLogo{
+    height : 50px;
+    width : 50px;
+}
+.stolonLogoContainer {
+    padding-top:25px;
+}
+.closeStolonDetail {
+    margin-right: -15px;
+}
+.buttonGoToStonContainer {
+    text-align: center;
 }
 /* END Home not logged view */
