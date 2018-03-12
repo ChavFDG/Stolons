@@ -2,11 +2,13 @@
 @using Stolons.ViewModels.Home
 @model StolonContactViewModel
 
+<input id="stolon-id" type="text" disabled class="hidden" value="@Model.Stolon.Id.ToString()" />
+
 @if (!Model.IsAdherentLogged)
 {
     <div class="row">
         <div class="col-lg-12" id="logo">
-            <img src="~/images/logos/Logo_HD.png" class="responsiveImage" style="max-width: 500px;" />
+            <img src="~/images/logos/Logo_HD.png" class="responsiveImage" />
         </div>
     </div>
 }
@@ -21,8 +23,6 @@
             @if (!Model.IsAdherentMemberOfStolon)
             {
                 <div class="col-lg-offset-3 col-lg-3 text-center"><a href="#" class="main-links" data-toggle="modal" data-target="#join-us">Rejoignez-nous</a></div>
-
-
                 <div class="modal fade" id="join-us" tabindex="-1" role="dialog">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
@@ -54,14 +54,13 @@
                                 <h4 class="modal-title">Connectez-vous !</h4>
                             </div>
                             @{
-                                Html.RenderPartial("../Account/Login", new LoginViewModel());
+                            Html.RenderPartial("../Account/Login", new LoginViewModel());
                             }
                         </div>
                     </div>
                 </div>
             }
         </div>
-
         <h3>Horaires panier</h3>
         <p class="information">@Model.Stolon.GetStringPickUpTime()</p>
     </div>
@@ -78,8 +77,6 @@
         <div class="col-lg-4">
         </div>
         <div class="col-lg-8 producersStolonInformations">
-            <br />
-            <br />
             <span class="producersStolonInformationsNumber">@Model.Producers.Count().ToString()</span><span> producteurs </span>
             <span class="producersStolonInformationsNumber">@Model.TotalProducts.ToString()</span><span> produits bio et locaux</span>
         </div>
@@ -146,6 +143,4 @@
 
     <script src="/lib/leaflet.js"></script>
     <script src="/js/publicProducers.js"></script>
-    <script src="/js/productModel.js"></script>
-
 }

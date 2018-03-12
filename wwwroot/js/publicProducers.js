@@ -13,11 +13,14 @@ ProducerModel = Backbone.Model.extend(
 
 ProducersCollection = Backbone.Collection.extend(
     {
-        url: "/api/producers",
+        url: function() {
+	    return "/api/producers?stolonId=" + this.stolonId
+	},
 
         model: ProducerModel,
 
-        initialize: function () {
+        initialize: function (stolonId) {
+	    this.stolonId = stolonId;
             this.fetch();
         },
 
@@ -136,11 +139,13 @@ var ProducerDetailsView = Backbone.View.extend({
 });
 
 $(function () {
+    var stolonId = $("#stolon-id").val();
 
-    PublicProducers.ProducersCollection = new ProducersCollection();
+    PublicProducers.ProducersCollection = new ProducersCollection(stolonId);
     PublicProducers.ProducersCollection.on("sync", function () {
         window.ProducerDetailsView = new ProducerDetailsView();
         window.ProducerDetailsView.initMap(PublicProducers.ProducersCollection);
+
 
         var hash = window.location.hash.substr(1);
         if (!_.isEmpty(hash)) {
