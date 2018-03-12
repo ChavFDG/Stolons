@@ -33,6 +33,8 @@ namespace Stolons.ViewModels.Home
 
         public List<AdherentStolon> Producers { get; set; }
 
+        public List<Product> Products { get; set; }
+
         public int TotalProducts { get; set; }
         public StolonContactViewModel(Stolon stolon , List<AdherentStolon> producers, int totalProducts, AdherentStolon activeAdherentStolon = null)
         {

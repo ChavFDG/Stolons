@@ -90,6 +90,12 @@
 
 <div class="row">
     <h1 class="col-lg-12 text-center">Les produits</h1>
+    @foreach (var productType in Model.AvailableProductFamillyAndType)
+    {
+        <img src="/@productType.Key.Image" title="@productType.Key.Name" />
+    }
+
+
     <div class="tiny-pictures">
         @foreach (var productType in Model.AvailableProductFamillyAndType)
         {
