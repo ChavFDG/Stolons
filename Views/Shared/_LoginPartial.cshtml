@@ -8,6 +8,18 @@
 @if (SignInManager.IsSignedIn(User))
 {
     <div class="bannerAccount">
+
+        <div id="stols" class="banner-stols-container">
+            <div class="warning-container ">
+                @(Model.ActiveAdherentStolon.Token) <b>Ṩ</b>
+                <div class="warning-informations right">
+                    Votre portemonnaie virtuel de Ṩ (Stols) vous permet de créditer <br />par avance votre compte en euros auprès de votre Stolon.<br /> Vous avez ensuite la possibilité de régler vos<br /> factures en ligne en utilisant vos Ṩ (Stols).
+                </div>
+            </div>
+        </div>
+
+
+
         @{
             if (Model.ActiveAdherentStolon.Stolon.UseSubscipstion && !Model.ActiveAdherentStolon.SubscriptionPaid)
             {
@@ -21,7 +33,9 @@
                 </div>
             }
         }
-        <div id="stols">@(Model.ActiveAdherentStolon.Token) <b>Ṩ</b></div>
+
+
+
         <a class="dropdown-toggle" data-toggle="dropdown" href="#">
             <div class="bannerAvatar">
                 <img class="avatar" src="@Model.ActiveAdherentStolon.Adherent.AvatarFilePath" />
@@ -31,7 +45,7 @@
         <ul class="dropdown-menu">
             <li><a asp-controller="Manage" asp-action="Index" title="Manage">Mon compte</a></li>
             <li><a asp-controller="Orders" asp-action="Index">Mes commandes</a></li>
-            @if (Model.ActiveAdherentStolon.Adherent.AdherentStolons.Any(x=>x.IsProducer))
+            @if (Model.ActiveAdherentStolon.Adherent.AdherentStolons.Any(x => x.IsProducer))
             {
                 <li><a asp-controller="Bills" asp-action="Index">Mes factures</a></li>
             }
