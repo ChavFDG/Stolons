@@ -79,7 +79,7 @@ namespace Stolons.Controllers
         protected async Task<Adherent> GetCurrentAdherentAsync()
         {
             ApplicationUser user = await _userManager.FindByIdAsync(_userManager.GetUserId(HttpContext.User));
-            
+
             return _context.Adherents.Include(x => x.AdherentStolons).FirstOrDefault(x => x.Email == user.Email);
         }
         protected Adherent GetCurrentAdherentSync()
@@ -90,7 +90,7 @@ namespace Stolons.Controllers
 
         protected Stolon GetCurrentStolon()
         {
-            return _context.Stolons.First(stolon=>stolon.Id ==  GetCurrentAdherentSync().AdherentStolons.First(x=>x.IsActiveStolon).StolonId);
+            return _context.Stolons.First(stolon => stolon.Id == GetCurrentAdherentSync().AdherentStolons.First(x => x.IsActiveStolon).StolonId);
         }
 
 
@@ -104,7 +104,7 @@ namespace Stolons.Controllers
         {
             Adherent adherent = GetCurrentAdherentSync();
             return GetActiveAdherentStolonOf(adherent);
-         }
+        }
 
 
         /// <summary>
