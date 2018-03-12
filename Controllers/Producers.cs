@@ -35,21 +35,27 @@ namespace Stolons.Controllers
             .ToList();
 
             int totalProducts = _context.ProductsStocks.Include(x => x.Product).Include(x => x.AdherentStolon).Count(x => x.AdherentStolon.StolonId == stolon.Id && !x.Product.IsArchive);
-
-
             return View(new PublicProducersViewModel(producers, totalProducts));
         }
 
         [AllowAnonymous]
         [HttpGet, ActionName("Producers"), Route("api/producers")]
-        public IActionResult JsonProductsStocks()
+        public IActionResult JsonProductsStocks(Guid? stolonId)
         {
-            Stolon stolon = GetCurrentStolon();
+	    Stolon stolon;
+	    if (stolonId != null)
+	    {
+		stolon = _context.Stolons.AsNoTracking().FirstOrDefault(x => x.Id == stolonId);
+	    }
+	    else
+	    {
+		stolon = GetCurrentStolon();
+	    }
             var producers = _context.AdherentStolons
-            .Include(x => x.Adherent)
-            .Where(x => x.IsProducer && x.StolonId == stolon.Id)
-            .AsNoTracking()
-            .ToList();
+		.Include(x => x.Adherent)
+		.Where(x => x.IsProducer && x.StolonId == stolon.Id)
+		.AsNoTracking()
+		.ToList();
 
             return Json(producers);
         }

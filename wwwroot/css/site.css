@@ -148,11 +148,16 @@ img.warning {
     white-space: nowrap;
 }
 
-    .warning-informations.right {
-        transform: none;
-    }
+.warning-informations.right {
+    transform: none;
+}
 
-
+#logo img {
+    margin: auto;
+    max-width: 500px;
+    width: 500px;
+    display: block;
+}
 
 .banner-stols-container {
     margin-top: 4px;
@@ -309,7 +314,8 @@ img.warning {
     text-align: right;
     font-size: 18px;
     display: table;
-    line-height:20px;
+    line-height: 20px;
+    padding-bottom: 10px;
 }
 .producersStolonInformationsNumber {
     color: #008000;
@@ -782,8 +788,9 @@ img.warning {
     line-height:13px;
 }
 
-.modals .modal-header .close {
+.close {
     font-size: 30px;
+    padding-left: -5px;
 }
 
 .modals {
