@@ -46,7 +46,7 @@
 	    </tr>
 	</thead>
 	<tbody>
-    @foreach (var item in Model.AdherentsStolon)
+    @foreach (var item in Model.AdherentsStolon.OrderBy(x=>x.LocalId))
     {
         <tr>
             <td>

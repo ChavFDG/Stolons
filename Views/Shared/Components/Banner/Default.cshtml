@@ -21,12 +21,29 @@
                                 if (!adherentStolon.IsActiveStolon)
                                 {
                                     <li>
-                                        <a asp-controller="Home" asp-action="ChangeActiveStolon" asp-route-id="@adherentStolon.StolonId">
+                                        @if (adherentStolon.Enable)
+                                        {
+                                            <a asp-controller="Home" asp-action="ChangeActiveStolon" asp-route-id="@adherentStolon.StolonId">
+                                                <div class="stolon-avatar-banner-container">
+                                                    <img src="@adherentStolon.Stolon.LogoFilePath" class="stolon-avatar-dropdown" />
+                                                    @adherentStolon.Stolon.Label
+                                                </div>
+                                            </a>
+                                        }
+                                        else
+                                        {
                                             <div class="stolon-avatar-banner-container">
                                                 <img src="@adherentStolon.Stolon.LogoFilePath" class="stolon-avatar-dropdown" />
-                                                @adherentStolon.Stolon.Label
+                                                <div class="warning-container isa_warning">
+                                                    @adherentStolon.Stolon.Label
+                                                    <i class="glyphicon glyphicon-warning-sign"></i>
+                                                    <div class="warning-informations right">
+                                                        Votre compte a été bloqué pour la raison suivante :@adherentStolon.DisableReason
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </a>
+
+                                        }
                                     </li>
                                 }
                             }
@@ -63,7 +80,7 @@
                             string classToAdd = "";
                             if (Model.TempWeekBasket != null && Model.TempWeekBasket.TotalPrice != 0)
                             {
-                                if (Model.TempWeekBasket?.Validated == false )
+                                if (Model.TempWeekBasket?.Validated == false)
                                 {
                                     classToAdd = "isa_warning";
                                 }

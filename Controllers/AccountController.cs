@@ -63,8 +63,16 @@ namespace Stolons.Controllers
                     //On regarde si le compte de l'utilisateur est actif
                     if (!activeAdherentStolon.Enable)
                     {
-                        ModelState.AddModelError("LoginFailed", "Votre compte a été bloqué pour la raison suivante : " + activeAdherentStolon.DisableReason);
-                        return View(model);
+                        var otherAdherentStolon = stolonsUser.AdherentStolons.FirstOrDefault(x => x.Enable && x.Id != activeAdherentStolon.Id && x.AdherentId == activeAdherentStolon.AdherentId);
+                        if (otherAdherentStolon == null)
+                        {
+                            ModelState.AddModelError("LoginFailed", "Votre compte a été bloqué pour la raison suivante : " + activeAdherentStolon.DisableReason);
+                            return View(model);
+                        }
+                        else
+                        {
+                            otherAdherentStolon.SetHasActiveStolon(_context);
+                        }
                     }
                     // Il a un mot de passe, on le log si il est bon
                     // This doesn't count login failures towards account lockout

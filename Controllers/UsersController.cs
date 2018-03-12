@@ -77,7 +77,7 @@ namespace Stolons.Controllers
 
             if (ModelState.IsValid)
             {
-                AdherentStolon adherentStolon = new AdherentStolon(_context.Adherents.First(x => x.Email == selectAdherentViewModel.SelectedEmail), _context.Stolons.First(x => x.Id == selectAdherentViewModel.Stolon.Id));
+                AdherentStolon adherentStolon = new AdherentStolon(_context.Adherents.First(x => x.Email == selectAdherentViewModel.SelectedEmail.Trim()), _context.Stolons.First(x => x.Id == selectAdherentViewModel.Stolon.Id));
                 adherentStolon.RegistrationDate = DateTime.Now;
                 adherentStolon.LocalId = _context.AdherentStolons.Where(x => x.StolonId == selectAdherentViewModel.Stolon.Id).Max(x => x.LocalId) + 1;
                 _context.AdherentStolons.Add(adherentStolon);
@@ -190,22 +190,34 @@ namespace Stolons.Controllers
             if (!Authorized(Role.Admin))
                 return Unauthorized();
 
-            AdherentStolon adherentStolon = _context.AdherentStolons.First(x => x.Id == id);
+            AdherentStolon adherentStolon = _context.AdherentStolons.Include(x=>x.Adherent).First(x => x.Id == id);
 
-	    //We have to keep producers for bills history
-	    if (adherentStolon.IsProducer && _context.ProducerBills.Any(x => x.AdherentStolon.Id == adherentStolon.Id))
-	    {
-		adherentStolon.StolonId = null;
-		adherentStolon.Stolon.UserStolons.Remove(adherentStolon);
-	    }
-	    else
-	    {
-		//Delete the adherent from this stolons
-		_context.AdherentStolons.Remove(adherentStolon);
-	    }
-
-	    //Save
+            //We have to keep producers for bills history
+            if (adherentStolon.IsProducer && _context.ProducerBills.Any(x => x.AdherentStolon.Id == adherentStolon.Id))
+            {
+                adherentStolon.StolonId = null;
+                adherentStolon.Stolon.UserStolons.Remove(adherentStolon);
+            }
+            else
+            {
+                //Delete the adherent from this stolons
+                _context.AdherentStolons.Remove(adherentStolon);
+            }
+            //Save
             _context.SaveChanges();
+            //If there adherent is not in any stolon remove it from connexion
+            if (!_context.AdherentStolons.Any(x=>x.AdherentId == adherentStolon.AdherentId))
+            {
+                _userManager.DeleteAsync(_userManager.Users.First(x => x.Email == adherentStolon.Adherent.Email));
+                _context.Adherents.Remove(_context.Adherents.First(x=>x.Id == adherentStolon.AdherentId));
+                _context.SaveChanges();
+            }
+            else
+            {
+                //Give the adherant a new active stolon
+                _context.AdherentStolons.First(x => x.AdherentId == adherentStolon.AdherentId).SetHasActiveStolon(_context);
+                _context.SaveChanges();
+            }
             return RedirectToAction("Index");
         }
 
@@ -275,9 +287,13 @@ namespace Stolons.Controllers
             if (!Authorized(Role.Volunteer))
                 return Unauthorized();
             //
-	    var adherentStolon = _context.AdherentStolons.FirstOrDefault(x => x.Id == vmAdherentStolon.AdherentStolon.Id);
+            var adherentStolon = _context.AdherentStolons.FirstOrDefault(x => x.Id == vmAdherentStolon.AdherentStolon.Id);
             adherentStolon.DisableReason = comment;
             adherentStolon.Enable = false;
+            if(adherentStolon.IsProducer)
+            {
+                _context.ProductsStocks.Where(x => x.AdherentStolonId == adherentStolon.Id).ToList().ForEach(x => x.State = Product.ProductState.Disabled);
+            }
             //Update
             _context.AdherentStolons.Update(adherentStolon);
             //Save
@@ -456,7 +472,7 @@ namespace Stolons.Controllers
         {
             if (!AuthorizedWebAdmin())
                 return Unauthorized();
-            AdherentStolon adherentStolon = _context.AdherentStolons.Include(x=>x.Adherent).First(x => x.Id == id);
+            AdherentStolon adherentStolon = _context.AdherentStolons.Include(x => x.Adherent).First(x => x.Id == id);
             adherentStolon.Adherent.IsWebAdmin = true;
             _context.SaveChanges();
             return RedirectToAction("Index");
@@ -478,9 +494,9 @@ namespace Stolons.Controllers
         /// <param name="id">Adherent Stolon Id</param>
         public IActionResult SetAsProducer(Guid? id)
         {
-            AdherentStolon adherentStolon = _context.AdherentStolons.Include(x=>x.Adherent).ThenInclude(x=>x.Products).First(x => x.Id == id);
+            AdherentStolon adherentStolon = _context.AdherentStolons.Include(x => x.Adherent).ThenInclude(x => x.Products).First(x => x.Id == id);
             adherentStolon.IsProducer = true;
-            foreach(var product in adherentStolon.Adherent.Products)
+            foreach (var product in adherentStolon.Adherent.Products)
             {
                 _context.ProductsStocks.Add(new ProductStockStolon(product.Id, adherentStolon.Id));
             }

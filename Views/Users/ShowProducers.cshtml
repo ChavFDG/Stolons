@@ -54,7 +54,7 @@
 	</tr>
     </thead>
     <tbody>
-    @foreach (var item in Model.AdherentsStolon.Where(x => x.IsProducer))
+    @foreach (var item in Model.AdherentsStolon.Where(x => x.IsProducer).OrderBy(x=>x.LocalId))
     {
         <tr>
             <td>

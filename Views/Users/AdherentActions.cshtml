@@ -35,7 +35,7 @@
                 <li>
                     @Html.ActionLink(
                                    "Activer le compte",
-                                   "Enable",
+                                   "EnableAdherent",
                                    "Users",
                                     new { id = Model.AdherentStolon.Id },
                                     new { onclick = "return confirm('Confirmation de l'activation du compte de " + Model.AdherentStolon.Adherent.Name + " ?');" })

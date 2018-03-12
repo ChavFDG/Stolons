@@ -9,48 +9,48 @@
         @if (Model.Stolon.UseSympathizer)
         {
             <li><a data-toggle="tab" href="@("#sympathizers"+Model.Stolon.Id)" name="sympathizers">Sympathisants</a></li>
-            }
-            <li><a data-toggle="tab" href="@("#consumers"+Model.Stolon.Id)" name="consumers">Consommateurs</a></li>
-            <li><a data-toggle="tab" href="@("#producers"+Model.Stolon.Id)" name="producers">Producteurs</a></li>
-	    <li style="padding-left: 25%;"><div><input id="userSearch" type="text" placeholder="Rechercher" style="margin=auto;" /></div></li>
+        }
+        <li><a data-toggle="tab" href="@("#consumers"+Model.Stolon.Id)" name="consumers">Consommateurs</a></li>
+        <li><a data-toggle="tab" href="@("#producers"+Model.Stolon.Id)" name="producers">Producteurs</a></li>
+        <li style="padding-left: 25%;"><div><input id="userSearch" type="text" placeholder="Rechercher" style="margin=auto;" /></div></li>
     </ul>
 
     <div class="tab-content">
         <div id="@("allUsers"+Model.Stolon.Id)" class="tab-pane active">
             @{
-            Html.RenderPartial("../Users/ShowUsers", Model.IAdherents);
+                Html.RenderPartial("../Users/ShowUsers", Model.IAdherents);
             }
         </div>
         @if (Model.Stolon.UseSympathizer)
         {
             <div id="@("sympathizers"+Model.Stolon.Id)" class="tab-pane">
                 @{
-                Html.RenderPartial("../Users/ShowSympathizers", Model.SympathizersViewModel);
+                    Html.RenderPartial("../Users/ShowSympathizers", Model.SympathizersViewModel);
                 }
             </div>
-            }
-            <div id="@("consumers"+Model.Stolon.Id)" class="tab-pane">
-		@{
-                Html.RenderPartial("../Users/ShowConsumers", Model.AdherentsStolonViewModel);
-		}
-            </div>
-            @if (Model.Stolon.StolonType == Stolon.OrganisationType.Association || Model.ActiveAdherentStolon.Adherent.IsWebAdmin)
-            {
-		<div id="@("producers"+Model.Stolon.Id)" class="tab-pane">
+        }
+        <div id="@("consumers"+Model.Stolon.Id)" class="tab-pane">
             @{
-                Html.RenderPartial("../Users/ShowProducers", Model.AdherentsStolonViewModel);
+                Html.RenderPartial("../Users/ShowConsumers", Model.AdherentsStolonViewModel);
             }
+        </div>
+        @if (Model.Stolon.StolonType == Stolon.OrganisationType.Association || Model.ActiveAdherentStolon.Adherent.IsWebAdmin)
+        {
+            <div id="@("producers"+Model.Stolon.Id)" class="tab-pane">
+                @{
+                    Html.RenderPartial("../Users/ShowProducers", Model.AdherentsStolonViewModel);
+                }
+            </div>
+        }
     </div>
-            }
-    </div>
-    }
+}
 
-    @if (Model.ActiveAdherentStolon.Stolon.StolonType == Stolon.OrganisationType.Producer)
-    {
-	Html.RenderPartial("../Users/ShowConsumers", Model.AdherentsStolonViewModel);
-    }
+@if (Model.ActiveAdherentStolon.Stolon.StolonType == Stolon.OrganisationType.Producer)
+{
+    Html.RenderPartial("../Users/ShowConsumers", Model.AdherentsStolonViewModel);
+}
 
-    <script>
+<script>
 
      $(function() {
 	 var tab = localStorage.getItem("AdherentsTab") || "all";
@@ -312,4 +312,4 @@
 
 
 
-    </script>
+</script>

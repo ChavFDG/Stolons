@@ -6,7 +6,7 @@
 <!--Il n'y a pas d'administrateur à ce Stolon-->
 @if (!Model.AdherentsStolonViewModel.AdherentsStolon.Any(x => x.Role == Role.Admin))
 {
-    <p>Aucun administrateur gére @Model.Stolon.Label</p>
+    <p class="isa_warning">Aucun administrateur gére @Model.Stolon.Label</p>
     @if (Model.Stolon.StolonType == Stolon.OrganisationType.Association)
     {
 
