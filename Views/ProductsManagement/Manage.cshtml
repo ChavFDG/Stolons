@@ -140,10 +140,10 @@
                 <span validation-for="Product.HideWeightPrice" class="text-danger" />
             </div>
         </div>
-        <div class="form-group">
+        <div id="price-container" class="form-group">
             <label id="priceLabel" asp-for="Product.WeightPrice" class="col-md-2 control-label required"></label>
             <div class="col-md-10">
-                <input id="price" asp-for="Product.WeightPrice" class="form-control" min="0.01" data-val-required="Le prix au poids est requis" />
+                <input id="price" asp-for="Product.WeightPrice" class="form-control skip" min="0.01" data-val-required="Le prix au poids est requis" />
                 <span asp-validation-for="Product.WeightPrice" class="text-danger" />
             </div>
         </div>
@@ -174,7 +174,7 @@
         {
             <div class="form-group">
                 <div class="col-md-offset-2 col-md-10">
-                    <input type="submit" id="submit" value="Ajouter" formnovalidate class="btn btn-small btn-default" />
+                    <input type="submit" id="submit" value="Ajouter" class="btn btn-small btn-default" />
                 </div>
             </div>
         }
@@ -182,7 +182,7 @@
         {
             <div class="form-group">
                 <div class="col-md-offset-2 col-md-10">
-                    <input type="submit" id="submit" value="Modifier" formnovalidate class="btn btn-small btn-default" />
+                    <input type="submit" id="submit" value="Modifier" class="btn btn-small btn-default" />
                 </div>
             </div>
         }

@@ -23,42 +23,10 @@ ManageProductView = Backbone.View.extend(
         initialize: function () {
             this.sellTypeChanged();
 	    //Trigger form validation at page load
-	    $("[name='product-form']").validate({
-		ignore: ":hidden, .skip",
-		debug: true,
-		rules: {
-		    "Product.WeightPrice": {
-			required: true,
-			min: 0.01
-		    },
-		    "price": {
-			required: true,
-			min: 0.01
-		    },
-		    "Product[WeightPrice]": {
-			required: true,
-			min: 0.01
-		    }
-		}
-	    });
-	    $("[name='product-form']").valid({
-		ignore: ":hidden, .skip",
-		debug: true,
-		rules: {
-		    "price": {
-			required: true,
-			min: 0.01
-		    },
-		    "Product.WeightPrice": {
-			required: true,
-			min: 0.01
-		    },
-		    "Product[WeightPrice]": {
-			required: true,
-			min: 0.01
-		    }
-		}
-	    });
+	    // $("[name='product-form']").valid({
+	    // 	ignore: ":hidden, .skip",
+	    // 	debug: true
+	    // });
         },
 
         sellTypeChanged: function () {
@@ -109,10 +77,10 @@ ManageProductView = Backbone.View.extend(
 
             if (!selected && sellType == 1 && price == 0) {
                 $("#HideWeightPrice").prop("checked", true);
-                $("#price").attr("readonly", true);
+		$("#price-container").toggleClass("hidden", true);
             } else {
                 $("#HideWeightPrice").prop("checked", false);
-                $("#price").removeAttr("readonly");
+		$("#price-container").toggleClass("hidden", false);
             }
         },
 
@@ -121,17 +89,12 @@ ManageProductView = Backbone.View.extend(
             var selected = $("#HideWeightPrice").is(':checked');
 
             if (selected) {
-                $("#price").attr("readonly", true);
-		$("#price").val("");
-                $("#price").toggleClass("skip", true);
-		$("#price").removeClass("input-validation-error");
-		$("#price-error").toggleClass("hidden", true);
+		$("#price").val(0);
+		$("#price-container").toggleClass("hidden", true);
             } else if (sellType != 1) {
-                $("#price").removeAttr("readonly");
-		$("#price").toggleClass("skip", false);
+		$("#price-container").toggleClass("hidden", false);
             } else {
-                $("#price").removeAttr("readonly");
-		$("#price").toggleClass("skip", false);
+		$("#price-container").toggleClass("hidden", false);
             }
         }
     }

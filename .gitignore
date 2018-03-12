@@ -9,6 +9,7 @@
 *Stolons.sqlite
 [Mm]igrations/
 wwwroot/uploads/images
+wwwroot/temp
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
