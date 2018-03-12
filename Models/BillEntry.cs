@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using static Stolons.Models.Product;
@@ -301,11 +302,11 @@ namespace Stolons.Models
             }
         }
 
-        public string GetFirstImage()
+        public string GetFirstImageFullPath()
         {
             if (_Pictures.Any())
             {
-                return _Pictures[0];
+                return Path.Combine("uploads", "images", "products", _Pictures[0]+".png");
             }
             else
             {

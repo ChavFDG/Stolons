@@ -30,7 +30,7 @@ namespace Stolons.Models
         Product.TAX TaxEnum { get; set; }
         Product.SellType Type { get; set; }
         decimal UnitPrice { get; set; }
-        string GetFirstImage();
+        string GetFirstImageFullPath();
         string GetQuantityString(decimal quantity);
     }
 }

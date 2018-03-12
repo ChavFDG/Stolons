@@ -519,6 +519,10 @@ img.warning {
     z-index: 1;
 }
 
+.publicProductContainer{
+    height: 225px;
+}
+
 .product.Producteur .product__producer__type {
     background-color: #016b01;
 }
@@ -1427,4 +1431,8 @@ label.required:after {
 .weekBasketLoadingContrainer{
     text-align:center;
     font-size:50px;
+}
+
+.showAllProductContainer{
+    text-align:center;
 }

@@ -212,11 +212,11 @@ namespace Stolons.Models
             }
         }
 
-        public string GetFirstImage()
+        public string GetFirstImageFullPath()
         {
             if (_Pictures.Any())
             {
-                return _Pictures[0];
+                return Path.Combine("uploads", "images", "products","light", _Pictures[0]);
             }
             else
             {

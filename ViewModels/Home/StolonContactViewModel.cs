@@ -33,7 +33,7 @@ namespace Stolons.ViewModels.Home
 
         public List<AdherentStolon> Producers { get; set; }
 
-        public List<Product> Products { get; set; }
+        public List<Product> Products { get; set; } = new List<Product>();
 
         public int TotalProducts { get; set; }
         public StolonContactViewModel(Stolon stolon , List<AdherentStolon> producers, int totalProducts, AdherentStolon activeAdherentStolon = null)
@@ -47,6 +47,7 @@ namespace Stolons.ViewModels.Home
             {
                 foreach (var product in producer.Adherent.Products)
                 {
+                    Products.Add(product);
                     if (!AvailableProductFamillyAndType.Keys.Any(x => x.Id == product.Familly.Type.Id))
                         AvailableProductFamillyAndType.Add(product.Familly.Type, new List<ProductFamilly>());
 
