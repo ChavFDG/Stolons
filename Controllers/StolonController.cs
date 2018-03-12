@@ -30,7 +30,6 @@ namespace Stolons.Controllers
 
         }
 
-
         public override IActionResult Index()
         {
             if (!Authorized(Role.Admin))
@@ -40,5 +39,12 @@ namespace Stolons.Controllers
             ViewData["Controller"] = "Stolon";
             return View(new StolonViewModel(activeAdherentStolon, activeAdherentStolon.Stolon));
         }
+
+	[AllowAnonymous]
+	[Route("api/stolons")]
+	public IActionResult JsonGetStolons()
+	{
+	    return Json(_context.Stolons.AsNoTracking().ToList());
+	}
     }
 }
