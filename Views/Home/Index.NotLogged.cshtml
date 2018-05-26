@@ -22,7 +22,7 @@
     <div class="row">
         <h1 class="col-lg-12 text-center">Trouver un Stolon</h1>
         <div class="col-lg-12">
-            <div  class="stolonMapContainer">
+            <div class="stolonMapContainer">
                 <div id="stolons-map">
                 </div>
                 <div id="stolonDetails" class="hidden">
@@ -30,6 +30,28 @@
             </div>
         </div>
     </div>
+
+
+
+
+    <div class="row">
+        <h1 class="col-lg-12 text-center">Stolons, qu'est-ce que c'est ?</h1>
+        <div class="col-lg-12 text-center" id="presentation-text">
+            Stolons est un outil à but non lucratif de commandes hebdomadaires en ligne développé en 2016 par une association citoyenne –Stolon de Privas- et renforcé en 2017 par Agri Bio Ardèche.
+            Le code de l’outil est libre de droit et son développement est participatif : il a mobilisé plusieurs informaticiens bénévoles, consommateurs et producteurs.
+            Les produits alimentaires proposés au sein des Stolons sont tous certifiés issus de l’Agriculture Biologique, proviennent de moins de 50 km du lieu de dépôt et sont vendus au prix de vente directe pratiqué sur le territoire dans un objectif d’accessibilité au plus grand nombre.
+        </div>
+        <div class="col-lg-12 text-center" id="products">
+            <img src="~/images/productFamilies/alcool.jpg" />
+            <img src="~/images/productFamilies/confitures.jpg" />
+            <img src="~/images/productFamilies/fruits.jpg" />
+            <img src="~/images/productFamilies/legumes.jpg" />
+            <img src="~/images/productFamilies/pain.jpg" />
+            <img src="~/images/productFamilies/produits_laitiers.jpg" />
+        </div>
+    </div>
+
+
     <div class="row">
         <h1 class="col-lg-12 text-center">Comment ça marche ?</h1>
         <div class="text-center">
@@ -65,33 +87,13 @@
     </div>
 
 
+
     <div class="row">
         <h1 class="col-lg-12 text-center">Nos partenaires</h1>
-        <img src="~/images/financers/financers.jpg" class="responsiveImage" />
+        <img src="~/images/financers/financers.jpg" class="responsiveImage center-block" />
         <div class="col-lg-12 text-center" id="presentation-text">
-            <font size="1">
-                Le site originel stolons.org(<a href="https://github.com/ChavFDG/Stolons" target="_blank">projet github</a>), open source, a été créé par quatre bénévoles informaticiens en 2016 avec l'appui de producteurs et consommateurs du bassin Privadois (07).
-                <br />Les financeurs ci-dessus ont contribué à l'évolution et la multiplication d'utilisation de la plateforme en 2017.
-            </font>
-        </div>
-    </div>
-
-
-    <div class="row">
-        <h1 class="col-lg-12 text-center">Stolons c'est quoi ?</h1>
-        <div class="col-lg-12" id="presentation-text">
-            Stolon est une plateforme libre et open source qui regroupe des structures appelées Stolon qui visent à promouvoir les circuits courts via un site internet et un système de vente hebdomadaire sans engagement.
-            La plateforme Stolon a été créée par une équipe d’informaticiens bénévoles soutenus par l’association des producteurs bio Agri Bio Ardèche.
-            Les produits proposés au sein des Stolons sont tous certifiés issus de l’Agriculture Biologique, proviennent de moins de 50 kms du lieu de dépôt et sont vendus à un prix de vente directe dans un objectif d’accessibilité au plus grand nombre.
-            <br />Pour toute question et pour bénéficier d'un compte consommateur, veuillez contacter Jeanne d’Agri Bio Ardèche : <a href="mailto:jeanne.ab07@aurabio.org">jeanne.ab07@aurabio.org</a>
-        </div>
-        <div class="col-lg-12 text-center" id="products">
-            <img src="~/images/productFamilies/alcool.jpg" />
-            <img src="~/images/productFamilies/confitures.jpg" />
-            <img src="~/images/productFamilies/fruits.jpg" />
-            <img src="~/images/productFamilies/legumes.jpg" />
-            <img src="~/images/productFamilies/pain.jpg" />
-            <img src="~/images/productFamilies/produits_laitiers.jpg" />
+            Le site originel stolons.org(<a href="https://github.com/ChavFDG/Stolons" target="_blank">projet github</a>), open source, a été créé par quatre bénévoles informaticiens en 2016 avec l'appui de producteurs et consommateurs du bassin Privadois (07).
+            <br />Les financeurs ci-dessus ont contribué à l'évolution et la multiplication d'utilisation de la plateforme en 2017-2018.
         </div>
     </div>
 
@@ -119,22 +121,33 @@
                 <div class="modal-body">
                     <div>
                         <h3>Informations</h3>
-                        <p>Vous souhaitez créer votre propre drive de produit bio et local ? Avoir des informations sur la plateforme ? Rien de plus simple !</p>
-                        <p>Pour celà contactez Agri Bio Ardèche pour plus d'informations:</p>
-                        <p>Mail: <a href="mailto:agribioardeche@aurabio.org">agribioardeche@aurabio.org</a></p>
-                        <p>Telephone: 04 75 64 82 96</p>
+                        <div id="presentation-text">
+                            Vous souhaitez créer votre propre groupement d'achat en ligne de produits bio et locaux ? Avoir des informations sur la plateforme ? Rien de plus simple !<br>
+                            Contactez Agri Bio Ardèche pour plus d'informations:<br>
+                            Mail: <a href="mailto:agribioardeche@aurabio.org">agribioardeche@aurabio.org</a><br>
+                            Telephone: 04 75 64 82 96<br>
+                        </div>
                     </div>
                     <div>
                         <h3>Comment créer mon stolon ?</h3>
-                        <p>Pour créer un stolon il vous suffit de conectaer la structure (information si dessus)</p>
-                        <p>Que vous soiyez producteur seul, groupement de consomateurs ou de producteurs stolons s'adapte à vos besoins. Une seul conditions, être en bio et produire localement ! (<a href="~/documents/20171128_Reglement_StolonsBIO.pdf">Voir le réglement</a>)</p>
-                    </div>
+                        <div id="presentation-text">
+                            L'outil Stolon est proposé à la fois aux producteurs individuels et aux collectifs de producteurs sous réserve du respect des critères suivants: <br />
+                            - produits alimentaires certifiés bio ou en dernière année de conversion à l'AB<br />
+                            - produits localement dans un rayon de 50 km autour du lieu de dépôt<br />
+                            - vendus au prix de vente directe pratiqué sur le territoire.<br />
+                            Si vous souhaitez créer votre propre groupement d'achat en ligne de produits bio et locaux et avoir des informations sur la plateforme, contactez-nous ! Agri Bio Ardèche s'engage à accompagner toutes les créations de Stolon.
 
+                        </div>
+                    </div>
+                    <br />
+                    <div id="presentation-text">
+                        Les tarifs ci-dessous comprennent les coûts d'hébergement et de maintenance du site internet :
+                    </div>
                     <table class="table">
                         <tr>
                             <th></th>
                             <th>PRODUCTEUR</th>
-                            <th>ASSOCIATION</th>
+                            <th>COLLECTIF</th>
                         </tr>
                         <tr>
                             <td>Consommateur</td>
@@ -223,11 +236,11 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-sm-6">
+                        <div class="col-sm-2">
                             <img src="~/images/howitswork/Step1_med.png" class="responsiveImage" />
                         </div>
-                        <div class="col-sm-6">
-                            <p>Une fois mon compte créé chez le stolon de mon choix je peux chaque semaine me connecter avec mes identifiants.</p>
+                        <div class="col-sm-10">
+                            <div id="presentation-text">Une fois mon compte créé chez le stolon de mon choix je peux chaque semaine me connecter avec mes identifiants.</div>
                         </div>
                     </div>
                 </div>
@@ -244,11 +257,13 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-sm-6">
+                        <div class="col-sm-2">
                             <img src="~/images/howitswork/Step2_med.png" class="responsiveImage" />
                         </div>
-                        <div class="col-sm-6">
-                            <p>Texte à saisir</p>
+                        <div class="col-sm-10">
+                            <<div id="presentation-text">
+                                Pendant la période de commande, je peux composer et modifier mon panier en ligne à ma guise.
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -265,82 +280,84 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-sm-6">
+                        <div class="col-sm-2">
                             <img src="~/images/howitswork/Step3_med.png" class="responsiveImage" />
                         </div>
-                        <div class="col-sm-6">
-                            <p>Texte à saisir</p>
+                        <div class="col-sm-10">
+                            <div id="presentation-text">
+                                A la fin de la période de commande, les producteurs reçoivent les bons de commande et préparent les paniers.
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="modal fade" id="info-4" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">Je viens récupérer mon panier</h4>
+        <div class="modal fade" id="info-4" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">Je viens récupérer mon panier</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <img src="~/images/howitswork/Step4_med.png" class="responsiveImage" />
+                            </div>
+                            <div class="col-sm-10">
+                                <div id="presentation-text">
+                                    Je viens récupérer mon panier sur le lieu de dépôt le jour convenu et je paie sur place.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="modal-body">
+            </div>
+        </div>
+
+        <script id="stolonDetailsTemplate" type="text/template">
+            <div class="rowAdjust">
+                <div class="col-xs-12 stolonDetailsContainer">
+                    <div>
+                        <button class="close" onclick="closeStolonDetail()" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div>
                     <div class="row">
-                        <div class="col-sm-6">
-                            <img src="~/images/howitswork/Step4_med.png" class="responsiveImage" />
+                        <div class="col-lg-2 col-xs-1">
+                            <div class="stolonLogoContainer">
+                                <img src="<%= stolon.LogoFilePath %>" class="avatar stolonLogo" />
+                            </div>
                         </div>
-                        <div class="col-sm-6">
-                            <p>Texte à saisir</p>
+                        <div class="col-lg-10 col-xs-2">
+                            <h1><%= stolon.Label %></h1>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script id="stolonDetailsTemplate" type="text/template">
-    <div class="rowAdjust">
-        <div class="col-xs-12 stolonDetailsContainer">
-            <div>
-                <button class="close" onclick="closeStolonDetail()" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            </div>
-            <div class="row">
-                <div class="col-lg-2 col-xs-1">
-                    <div class="stolonLogoContainer">
-                        <img src="<%= stolon.LogoFilePath %>" class="avatar stolonLogo" />
+                    <div class="row">
+                        <span>TODO Nico : Afficher nombre de produit et nombre de producteur à la manière de la page producteur</span>
                     </div>
+                    <div class="row">
+                        <h3>Adresse :</h3>
+                        <span><%= stolon.Address %></span>
+                    </div>
+                    <div class="row">
+                        <h3>Horaires de récupération des paniers :</h3>
+                        <span>TODO Nico : Va mettre l'heure et la date ...</span>
+                    </div>
+                    <br />
+                    <div class="row buttonGoToStonContainer">
+                        <a href="/Home/StolonContact/<%= stolon.Id %>" class="btn btn-primary">Voir ce Stolon</a>
+                    </div>
+
                 </div>
-                <div class="col-lg-10 col-xs-2">
-                    <h1><%= stolon.Label %></h1>
-                </div>
-            </div>
-            <div class="row">
-                <span>TODO Nico : Afficher nombre de produit et nombre de producteur à la manière de la page producteur</span>
-            </div>
-            <div class="row">
-                <h3>Adresse :</h3>
-                <span><%= stolon.Address %></span>
-            </div>
-            <div class="row">
-                <h3>Horraire de récupération :</h3>
-                <span>TODO Nico : Va mettre l'heure et la date ...</span>
-            </div>
-            <br />
-            <div class="row buttonGoToStonContainer">
-                <a href="/Home/StolonContact/<%= stolon.Id %>" class="btn btn-primary">Voir ce Stolon</a>
-            </div>
 
-        </div>
+            </div>
+        </script>
 
-    </div>
-</script>
+        <script>
+            function closeStolonDetail() {
+                $("#stolonDetails").toggleClass("hidden", true);
+            }
+        </script>
 
-<script>
-        function closeStolonDetail() {
-            $("#stolonDetails").toggleClass("hidden", true);
-    }
-</script>
-
-<script src="/js/publicStolons.js"></script>
-<script src="/lib/leaflet.js"></script>
+        <script src="/js/publicStolons.js"></script>
+        <script src="/lib/leaflet.js"></script>
