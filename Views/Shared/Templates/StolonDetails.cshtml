@@ -122,24 +122,6 @@
                             <div class="pr_name">
                                 @product.Name
                             </div>
-                            <div class="pr_qtystock">
-                                <span class="pr_priceQuantity">
-                                    @if (product.Type == Product.SellType.Piece)
-                                    {
-                                        @(product.UnitPrice + "€ l'unité")
-                                    }
-                                    else
-                                    {
-                                        @(product.WeightPrice + "€ pour " + product.QuantityStepString)
-
-                                    }
-                                    @if (product.Type == Product.SellType.Weigh || product.QuantityStep == 1000 || product.HideWeightPrice)
-                                    {
-                                        <br />
-                                        @(product.WeightPrice + "€ / " + product.ProductUnit)
-                                    }
-                                </span>
-                            </div>
                         </div>
                     </div>
                 </div>
