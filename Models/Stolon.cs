@@ -23,10 +23,10 @@ namespace Stolons.Models
         public List<AdherentStolon> UserStolons { get; set; }
         
         //Configuration de la structure
-        [Display(Name = "Libelle de la structure")]
+        [Display(Name = "Libellé de la structure")]
         public string Label { get; set; } = "Mon stolon";
         //Must be unique
-        [Display(Name = "Libelle court (utilisé pour la facturation et l'accès)")]
+        [Display(Name = "Libellé court (utilisé pour la facturation et l'accès)")]
         public string ShortLabel { get; set; } = "MonStol";
 
         [Display(Name = "Logo de la structure")]
@@ -78,7 +78,7 @@ namespace Stolons.Models
 
 
         //Site page text
-        [Display(Name = "Message de récupération du panier (jour, lieu, plage horraire)")]
+        [Display(Name = "Message de récupération du panier (jour, lieu, plage horaire)")]
         public string OrderDeliveryMessage { get; set; } = "Votre panier est disponible :...";
 
         //ORDER
@@ -153,7 +153,7 @@ namespace Stolons.Models
 
         public enum StolonState
         {
-            [Display(Name = "Fermer")]
+            [Display(Name = "Fermé")]
             Closed = 0,
             [Display(Name = "Ouvert")]
             Open = 1
