@@ -1,9 +1,20 @@
+@using Stolons.Helpers;
 @model AdherentStolon
 
-@{
-    ViewData["Title"] = "Bienvenue "+ Model.Adherent.CompanyName +" chez " + Model.Stolon;
-}
 
-<h2>@ViewData["Title"]</h2>
-<h3>Votre compte vient d'être créé, vous pouvez dès maintenant vous rendre sur www.Stolons.org afin de créer vos produits</h3>
+<h2>Bienvenue @(Model.Adherent.CompanyName) chez @Model.Stolon.Label</h2>
+Votre compte vient d'être créé, vous pouvez dès maintenant vous rendre sur <a href="@Configurations.Application.StolonsUrl"></a> afin de mettre en ligne vos produits
+
+<h3>Vos identifiants</h3>
 @Html.Partial("Templates/RememberCredentialTemplate")
+
+<h3>Commandes</h3>
+Les commandes des consommateurs sont ouvertes du @Model.Stolon.OrderDayStartDate.ToFrench() @(Model.Stolon.OrderHourStartDate):@(Model.Stolon.OrderMinuteStartDate) au @Model.Stolon.DeliveryAndStockUpdateDayStartDate.ToFrench() @(Model.Stolon.DeliveryAndStockUpdateDayStartDateHourStartDate):@(Model.Stolon.DeliveryAndStockUpdateDayStartDateMinuteStartDate) sur @Configurations.Application.StolonsUrl
+
+<h3>Récupération du panier</h3>
+La récupérations des paniers à lieux le @Model.Stolon.BasketPickUpStartDay.ToFrench() de @(Model.Stolon.BasketPickUpStartHour):@(Model.Stolon.BasketPickUpStartMinute) à @(Model.Stolon.BasketPickUpEndHour):@(Model.Stolon.BasketPickUpEndMinute) au @Model.Stolon.Address
+
+<h3>Contact</h3>
+Pour toutes questions contactez-nous :
+@Model.Stolon.ContactMailAddress
+@Model.Stolon.PhoneNumber

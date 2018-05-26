@@ -1,10 +1,26 @@
-﻿@model AdherentStolon
+﻿@using Stolons.Helpers;
+@model AdherentStolon
 
-@{
-    ViewData["Title"] = "Bienvenue "+ Model.Adherent.Surname +" "+ Model.Adherent.Name +" chez " + Model.Stolon.Label;
-}
 
-<h2>@ViewData["Title"]</h2>
-<h3>Votre compte vient d'être créé, retrouvez dès maintenant les produits locaux de nos producteurs sur <a href="@Configurations.Application.StolonsUrl"></a> @Configurations.Application.StolonsUrl</h3>
 
+<h2>Bienvenue @Model.Adherent.Surname @Model.Adherent.Name chez @Model.Stolon.Label</h2>
+Votre compte vient d'être créé, retrouvez dès maintenant les produits bio et locaux des producteurs de votre Stolon sur <a href="@Configurations.Application.StolonsUrl"></a> @Configurations.Application.StolonsUrl
+
+<h3>Vos identifiants</h3>
 @Html.Partial("Templates/RememberCredentialTemplate")
+
+<h3>Commandes</h3>
+Les commandes sont ouvertes du @Model.Stolon.OrderDayStartDate.ToFrench() @(Model.Stolon.OrderHourStartDate):@(Model.Stolon.OrderMinuteStartDate) au @Model.Stolon.DeliveryAndStockUpdateDayStartDate.ToFrench() @(Model.Stolon.DeliveryAndStockUpdateDayStartDateHourStartDate):@(Model.Stolon.DeliveryAndStockUpdateDayStartDateMinuteStartDate) sur @Configurations.Application.StolonsUrl
+
+<h3>Récupération du panier</h3>
+Votre panier est disponible le @Model.Stolon.BasketPickUpStartDay.ToFrench() de @(Model.Stolon.BasketPickUpStartHour):@(Model.Stolon.BasketPickUpStartMinute) à @(Model.Stolon.BasketPickUpEndHour):@(Model.Stolon.BasketPickUpEndMinute) au @Model.Stolon.Address
+
+<h3>Contact</h3>
+Pour toutes questions contactez-nous :
+@Model.Stolon.ContactMailAddress
+@Model.Stolon.PhoneNumber
+
+
+
+
+A bientôt !
