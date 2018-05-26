@@ -15,54 +15,60 @@
 <div class="row">
     <div class="col-lg-12 text-center">
         <h1>@Model.Stolon.Label</h1>
-        <p class="information">@Model.Stolon.Address</p>
-        <p class="information">@Model.Stolon.PhoneNumber</p>
-        <p class="information"><a href="mailto:@Model.Stolon.ContactMailAddress">@Model.Stolon.ContactMailAddress</a></p>
+        <div class="col-lg-12 text-center" id="presentation-text">
+            @Model.Stolon.Address
+            <br />
+            @Model.Stolon.PhoneNumber
+            <br />
+            <a href="mailto:@Model.Stolon.ContactMailAddress">@Model.Stolon.ContactMailAddress</a>
+        </div>
+        <h2>Horaires panier</h2>
+        <div class="col-lg-12 text-center" id="presentation-text">
+            @Model.Stolon.GetStringPickUpTime()
+        </div>
 
         <div class="col-lg-12" id="links">
             @if (!Model.IsAdherentMemberOfStolon)
-            {
-                <div class="col-lg-offset-3 col-lg-3 text-center"><a href="#" class="main-links" data-toggle="modal" data-target="#join-us">Rejoignez-nous</a></div>
-                <div class="modal fade" id="join-us" tabindex="-1" role="dialog">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                <h4 class="modal-title">Rejoignez-nous !</h4>
-                            </div>
-                            <div class="modal-body">
-                                Pour nous rejoindre, rien de plus simple. Venez nous voir lors d'une permanence située à l'adresse suivant: <br />
-                                <p class="information text-center">@Model.Stolon.Address</p>
-                                <p class="information text-center">@Model.Stolon.GetStringPickUpTime()</p>
-                                <p class="information text-center">Pour tout renseignement, contactez nous !</p>
-                                <p class="information text-center">@Model.Stolon.PhoneNumber</p>
-                                <p class="information text-center">@Model.Stolon.ContactMailAddress</p>
-                            </div>
+        {
+            <div class="col-lg-offset-3 col-lg-3 text-center"><a href="#" class="main-links" data-toggle="modal" data-target="#join-us">Rejoignez-nous</a></div>
+            <div class="modal fade" id="join-us" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title">Rejoignez-nous !</h4>
+                        </div>
+                        <div class="modal-body">
+                            Pour nous rejoindre, rien de plus simple. Venez nous voir lors d'une permanence située à l'adresse suivant: <br />
+                            <p class="information text-center">@Model.Stolon.Address</p>
+                            <p class="information text-center">@Model.Stolon.GetStringPickUpTime()</p>
+                            <p class="information text-center">Pour tout renseignement, contactez nous !</p>
+                            <p class="information text-center">@Model.Stolon.PhoneNumber</p>
+                            <p class="information text-center">@Model.Stolon.ContactMailAddress</p>
                         </div>
                     </div>
                 </div>
-            }
+            </div>
+    }
             @if (!Model.IsAdherentLogged)
-            {
-                <div class="col-lg-3 text-center"><a href="#" class="main-links" data-toggle="modal" data-target="#connexion">Se connecter</a></div>
+        {
+            <div class="col-lg-3 text-center"><a href="#" class="main-links" data-toggle="modal" data-target="#connexion">Se connecter</a></div>
 
-                <div class="modal fade" id="connexion" tabindex="-1" role="dialog">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                <h4 class="modal-title">Connectez-vous !</h4>
-                            </div>
-                            @{
-                                Html.RenderPartial("../Account/Login", new LoginViewModel());
-                            }
+            <div class="modal fade" id="connexion" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title">Connectez-vous !</h4>
                         </div>
+                        @{
+                        Html.RenderPartial("../Account/Login", new LoginViewModel());
+                        }
                     </div>
                 </div>
-            }
+            </div>
+    }
         </div>
-        <h3>Horaires panier</h3>
-        <p class="information">@Model.Stolon.GetStringPickUpTime()</p>
     </div>
 </div>
 
