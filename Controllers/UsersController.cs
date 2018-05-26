@@ -79,7 +79,10 @@ namespace Stolons.Controllers
             {
                 AdherentStolon adherentStolon = new AdherentStolon(_context.Adherents.First(x => x.Email == selectAdherentViewModel.SelectedEmail.Trim()), _context.Stolons.First(x => x.Id == selectAdherentViewModel.Stolon.Id));
                 adherentStolon.RegistrationDate = DateTime.Now;
-                adherentStolon.LocalId = _context.AdherentStolons.Where(x => x.StolonId == selectAdherentViewModel.Stolon.Id).Max(x => x.LocalId) + 1;
+                if (_context.AdherentStolons.Where(x => x.StolonId == selectAdherentViewModel.Stolon.Id).Any())
+                    adherentStolon.LocalId = _context.AdherentStolons.Where(x => x.StolonId == selectAdherentViewModel.Stolon.Id).Max(x => x.LocalId) + 1;
+                else
+                    adherentStolon.LocalId = 1;
                 _context.AdherentStolons.Add(adherentStolon);
                 _context.SaveChanges();
                 if (selectAdherentViewModel.AddHasProducer)
