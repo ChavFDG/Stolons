@@ -165,7 +165,7 @@ namespace Stolons
         public static async Task<string> UploadImageFile(this IHostingEnvironment environment, IFormFile uploadFile, string path)
         {
             string uploads = Path.Combine(environment.WebRootPath, path);
-            string fileName = Guid.NewGuid().ToString() + "_" + ContentDispositionHeaderValue.Parse(uploadFile.ContentDisposition).FileName.Trim();
+            string fileName = Guid.NewGuid().ToString() + "_" + ContentDispositionHeaderValue.Parse(uploadFile.ContentDisposition).FileName.ToString().Replace("\"", "").Trim();
 
             string filePath = Path.Combine(uploads, fileName);
             await uploadFile.SaveAsAsync(filePath);
