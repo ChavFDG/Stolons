@@ -207,6 +207,9 @@ namespace Stolons.Models
             return toReturn;
         }
 
+	[NotMapped]
+	public String StringPickupTime {get;set;}
+
         public string GetStringOrderTime()
         {
             string toReturn = OrderDayStartDate.ToFrench() + " de " + String.Format("{0:00}", OrderHourStartDate) + "h" + String.Format("{0:00}", OrderMinuteStartDate);
@@ -265,6 +268,10 @@ namespace Stolons.Models
             }
         }
 
+	[NotMapped]
+	public List<AdherentStolon> Producers {get; set;}
 
+	[NotMapped]
+	public List<ProductStockStolon> Products {get; set;}
     }
 }

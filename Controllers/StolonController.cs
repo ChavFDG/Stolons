@@ -44,7 +44,20 @@ namespace Stolons.Controllers
 	[Route("api/stolons")]
 	public IActionResult JsonGetStolons()
 	{
-	    return Json(_context.Stolons.AsNoTracking().ToList());
+	    var stolons = _context.Stolons.AsNoTracking().ToList();
+	    foreach (var stolon in stolons)
+	    {
+		stolon.Producers = _context.AdherentStolons
+		    .Where(x => x.IsProducer && x.StolonId == stolon.Id)
+		    .AsNoTracking()
+		    .ToList();
+		stolon.Products = _context.ProductsStocks
+		    .Where(x => x.AdherentStolon.StolonId == stolon.Id && x.State == Product.ProductState.Enabled)
+		    .AsNoTracking()
+		    .ToList();
+		stolon.StringPickupTime = stolon.GetStringPickUpTime();
+	    }
+	    return Json(stolons);
 	}
     }
 }

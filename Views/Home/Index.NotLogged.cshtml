@@ -86,8 +86,6 @@
         </div>
     </div>
 
-
-
     <div class="row">
         <h1 class="col-lg-12 text-center">Nos partenaires</h1>
         <img src="~/images/financers/financers.jpg" class="responsiveImage center-block" />
@@ -261,7 +259,7 @@
                             <img src="~/images/howitswork/Step2_med.png" class="responsiveImage" />
                         </div>
                         <div class="col-sm-10">
-                            <<div id="presentation-text">
+                            <div id="presentation-text">
                                 Pendant la période de commande, je peux composer et modifier mon panier en ligne à ma guise.
                             </div>
                         </div>
@@ -292,29 +290,30 @@
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="modal fade" id="info-4" tabindex="-1" role="dialog">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title">Je viens récupérer mon panier</h4>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-sm-2">
-                                <img src="~/images/howitswork/Step4_med.png" class="responsiveImage" />
-                            </div>
-                            <div class="col-sm-10">
-                                <div id="presentation-text">
-                                    Je viens récupérer mon panier sur le lieu de dépôt le jour convenu et je paie sur place.
-                                </div>
+    <div class="modal fade" id="info-4" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Je viens récupérer mon panier</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <img src="~/images/howitswork/Step4_med.png" class="responsiveImage" />
+                        </div>
+                        <div class="col-sm-10">
+                            <div id="presentation-text">
+                                Je viens récupérer mon panier sur le lieu de dépôt le jour convenu et je paie sur place.
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
         <script id="stolonDetailsTemplate" type="text/template">
             <div class="rowAdjust">
@@ -333,7 +332,8 @@
                         </div>
                     </div>
                     <div class="row">
-                        <span>TODO Nico : Afficher nombre de produit et nombre de producteur à la manière de la page producteur</span>
+	                <span class="producersStolonInformationsNumber"><%= stolon.Producers.length %> </span> Producteurs
+	                <span class="producersStolonInformationsNumber"><%= stolon.Products.length %> </span> Produits bio et locaux
                     </div>
                     <div class="row">
                         <h3>Adresse :</h3>
@@ -341,15 +341,13 @@
                     </div>
                     <div class="row">
                         <h3>Horaires de récupération des paniers :</h3>
-                        <span>TODO Nico : Va mettre l'heure et la date ...</span>
+	                <span><%= stolon.StringPickupTime %></span>
                     </div>
                     <br />
                     <div class="row buttonGoToStonContainer">
-                        <a href="/Home/StolonContact/<%= stolon.Id %>" class="btn btn-primary">Voir ce Stolon</a>
+                        <a href="/Home/StolonContact/<%= stolon.Id %>" class="btn btn-primary">Voir les détails de ce Stolon</a>
                     </div>
-
                 </div>
-
             </div>
         </script>
 
