@@ -52,7 +52,7 @@ namespace Stolons.Controllers
 		    .AsNoTracking()
 		    .ToList();
 		stolon.Products = _context.ProductsStocks
-		    .Where(x => x.AdherentStolon.StolonId == stolon.Id && x.State == Product.ProductState.Enabled)
+		    .Where(x => x.AdherentStolon.StolonId == stolon.Id)
 		    .AsNoTracking()
 		    .ToList();
 		stolon.StringPickupTime = stolon.GetStringPickUpTime();
