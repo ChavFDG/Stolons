@@ -65,7 +65,7 @@
                 @switch (item.PublishAs)
                 {
                     case Stolons.Models.Messages.NewsPublishAs.Producer:
-		        <a href="/PublicProducers/#@item.PublishBy.Adherent.Id">@(item.PublishBy.Adherent.CompanyName)</a>
+		    <a href="/Producers#@item.PublishBy.Adherent.Id">@(item.PublishBy.Adherent.CompanyName)</a>
                         break;
                     case Stolons.Models.Messages.NewsPublishAs.Stolon:
                         @item.PublishBy.Stolon.Label
