@@ -48,6 +48,7 @@ ManageProductView = Backbone.View.extend(
 		    this.hideWeightPrice();
 		}
             } else {
+		$("#weight-price-container").toggleClass("hidden", false);
                 $("#productWeightUnit").toggleClass("hidden", false);
                 $("#productQtyStep").toggleClass("hidden", false);
                 $("#productAvgWeight").toggleClass("hidden", false);
@@ -83,8 +84,8 @@ ManageProductView = Backbone.View.extend(
 
 	validateWeightPrice: function() {
 	    var price = parseInt($("#price").val());
-	    
-	    if ($("#HideWeightPrice").is(':checked')) {
+
+	    if ($("#HideWeightPrice").is(':checked') && $("#HideWeightPrice").is(':visible')) {
 		return true;
 	    }
 	    if ($("#price").is(':visible')) {
