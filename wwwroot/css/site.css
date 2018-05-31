@@ -1067,35 +1067,19 @@ div.chat {
 }
 
 .comment {
-    position: relative;
-    background: rgba(255, 255, 190, 0.4);
+    background: #efefef;
     margin: 5px;
-    padding: 5px;
-    border: 1px solid;
-    text-align: left;
-    -webkit-border-radius: 30px;
-    -moz-border-radius: 30px;
-    border-radius: 30px;
-    -webkit-box-shadow: 2px 2px 4px #888;
-    -moz-box-shadow: 2px 2px 4px #888;
-    box-shadow: 2px 2px 4px #888;
 }
 
-.comment-content {
-    line-height: 20px;
-    max-width: 250px;
-    overflow-wrap: break-word;
-}
+    .comment img {
+        width: 100%;
+        border-radius: 50%;
+    }
 
-.comment img {
-    width: 100%;
-    border-radius: 50%;
-}
-
-.comment .date {
-    margin-top: 10px;
-    font-size: 12px;
-}
+    .comment .date {
+        margin-top: 10px;
+        font-size: 12px;
+    }
 
 .chat-add-comment {
     margin: 5px;
