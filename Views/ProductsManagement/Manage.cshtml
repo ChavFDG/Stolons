@@ -14,7 +14,7 @@
 
 <h2>@ViewData["Title"]</h2>
 
-<form asp-action="Manage" enctype="multipart/form-data" name="product-form">
+<form id="productForm" asp-action="Manage" enctype="multipart/form-data" name="product-form">
     <div class="form-horizontal">
         <hr />
         <!--HIDDEN-->
@@ -27,7 +27,7 @@
         <div class="form-group">
             <label asp-for="Product.Name" class="col-md-2 control-label required"></label>
             <div class="col-md-10">
-                <input asp-for="Product.Name" class="form-control" autofocus="autofocus" data-val-required="Le nom du produit est requis" data-val="true" data-val-length="Pour s'afficher correctement le nom du produit doit être de 45 caractères maximum" data-val-length-max="45" placeholder="Nom du produit" />
+                <input asp-for="Product.Name" class="form-control" autofocus="autofocus" data-val-required="Le nom du produit est requis" data-val="true" data-val-length="Pour s'afficher correctement le nom du produit doit être de 45 caractères maximum<br />Vous pouvez utiliser la description pour complèter." data-val-length-max="45" placeholder="Nom du produit" />
                 <span asp-validation-for="Product.Name" class="text-danger" />
             </div>
         </div>
@@ -140,11 +140,14 @@
                 <span validation-for="Product.HideWeightPrice" class="text-danger" />
             </div>
         </div>
-        <div id="price-container" class="form-group">
-            <label id="priceLabel" asp-for="Product.WeightPrice" class="col-md-2 control-label required"></label>
+        <div id="weight-price-container" class="form-group">
+            <label id="weightPriceLabel" asp-for="Product.WeightPrice" class="col-md-2 control-label skip"></label>
             <div class="col-md-10">
-                <input id="price" asp-for="Product.WeightPrice" class="form-control skip" min="0.01" data-val-required="Le prix au poids est requis" />
-                <span asp-validation-for="Product.WeightPrice" class="text-danger" />
+                <input id="price" asp-for="Product.WeightPrice" class="form-control skip" data-val="false" />
+                <span id="price-error-container" class="text-danger field-validation-error hidden" data-valmsg-for="Product.WeightPrice" data-valmsg-replace="true">
+		    <span id="price-error">Doit être supérieur ou égal à 0.01.
+		    </span>
+		</span>
             </div>
         </div>
         <div class="form-group">

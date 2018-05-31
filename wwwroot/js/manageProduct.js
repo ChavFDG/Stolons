@@ -16,12 +16,15 @@ ManageProductView = Backbone.View.extend(
         events: {
             "change #SellType": "sellTypeChanged",
             "input #Product_QuantityStep": "updatePriceField",
-            "input #price": "updatePriceField",
-            "change #HideWeightPrice": "toggleVolumePriceField"
+            //"input #price": "updatePriceField",
+	    "change #price": "updatePriceField",
+            "change #HideWeightPrice": "hideWeightPrice",
+	    "submit #productForm": "onSubmit"
         },
 
         initialize: function () {
             this.sellTypeChanged();
+
 	    //Trigger form validation at page load
 	    // $("[name='product-form']").valid({
 	    // 	ignore: ":hidden, .skip",
@@ -38,6 +41,12 @@ ManageProductView = Backbone.View.extend(
                 $("#productQtyStep").toggleClass("hidden", true);
                 $("#productAvgWeight").toggleClass("hidden", true);
                 $("#pieceHideWeightPrice").toggleClass("hidden", false);
+
+		//Hide automatically weightPrice on load if price == 0
+		if (parseInt($("#price").val()) == 0) {
+		    $("#HideWeightPrice").prop('checked', true);
+		    this.hideWeightPrice();
+		}
             } else {
                 $("#productWeightUnit").toggleClass("hidden", false);
                 $("#productQtyStep").toggleClass("hidden", false);
@@ -50,14 +59,16 @@ ManageProductView = Backbone.View.extend(
 
         updatePriceField: function () {
             $("#price").val($("#price").val().replace('.', ','));
+	    if (!this.validateWeightPrice()) {
+		return false;
+	    }
             var sellType = $("#SellType").val();
+	    var price = $("#price").val();
 
             if (sellType == 1) {
                 $("#unitPrice").removeAttr("readonly");
-                //$("#price").val("");
             } else {
                 $("#unitPrice").attr("readonly", true);
-                var price = $("#price").val();
                 var qtyStep = $("#Product_QuantityStep").val();
                 if (price && qtyStep) {
                     var tempPrice = price.replace(',', '.');
@@ -70,33 +81,55 @@ ManageProductView = Backbone.View.extend(
             }
         },
 
+	validateWeightPrice: function() {
+	    var price = parseInt($("#price").val());
+	    
+	    if ($("#HideWeightPrice").is(':checked')) {
+		return true;
+	    }
+	    if ($("#price").is(':visible')) {
+		if (_.isNaN(price) || price < 0.01) {
+		    $("#price-error-container").toggleClass("hidden", false);
+		    return false;
+		} else {
+		    $("#price-error-container").toggleClass("hidden", true);
+		    return true;
+		}
+	    } else {
+		$("#price-error-container").toggleClass("hidden", true);
+		return true;
+	    }
+	    return true;
+	},
+	
         updateVolumePriceField: function () {
             var selected = $("#HideWeightPrice").is(':checked');
             var sellType = $("#SellType").val();
             var price = $("#price").val();
-
-            if (!selected && sellType == 1 && price == 0) {
-                $("#HideWeightPrice").prop("checked", true);
-		$("#price-container").toggleClass("hidden", true);
-            } else {
-                $("#HideWeightPrice").prop("checked", false);
-		$("#price-container").toggleClass("hidden", false);
-            }
         },
 
-        toggleVolumePriceField: function () {
-            var sellType = $("#SellType").val();
+        hideWeightPrice: function () {
             var selected = $("#HideWeightPrice").is(':checked');
 
             if (selected) {
 		$("#price").val(0);
-		$("#price-container").toggleClass("hidden", true);
-            } else if (sellType != 1) {
-		$("#price-container").toggleClass("hidden", false);
-            } else {
-		$("#price-container").toggleClass("hidden", false);
-            }
-        }
+		$("#weight-price-container").toggleClass("hidden", true);
+		$("#price-error-container").toggleClass("hidden", true);
+            } else if ($("#SellType").val() == 1) {
+		$("#weight-price-container").toggleClass("hidden", false);
+	    }
+	    this.validateWeightPrice();
+        },
+
+	onSubmit: function(event) {
+	    if (!this.validateWeightPrice($("#price").val())) {
+		event.preventDefault();
+		return false;
+	    } else {
+		console.log("price ok");
+	    }
+	    return true;
+	}
     }
 );
 
