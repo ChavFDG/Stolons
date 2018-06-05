@@ -16,10 +16,13 @@ namespace Stolons.Models
 
         }
 
+	//Creation of a new product
         public ProductStockStolon(Guid productId, Guid adherentStolonId)
         {
             ProductId = productId;
             AdherentStolonId = adherentStolonId;
+	    WeekStock = 0.0M;
+	    RemainingStock = 0.0M;
         }
 
         [Key]
