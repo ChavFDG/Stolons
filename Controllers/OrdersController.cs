@@ -42,12 +42,12 @@ namespace Stolons.Controllers
         }
 
         // GET: ShowBill
-        public IActionResult ShowBill(string id)
+        public IActionResult ShowOrder(string id)
         {
             IBill bill = _context.ConsumerBills.FirstOrDefault(x => x.BillNumber == id);
             if (bill != null)
                 return View(bill);
-            bill = _context.ProducerBills.Include(x => x.AdherentStolon).FirstOrDefault(x => x.BillNumber == id);
+            bill = _context.ProducerBills.Include(x => x.AdherentStolon).FirstOrDefault(x => x.OrderNumber == id);
             if (bill != null)
                 return View(bill);
             //Bill not found

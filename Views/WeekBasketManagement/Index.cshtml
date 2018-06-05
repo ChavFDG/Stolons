@@ -15,34 +15,34 @@
     {
         <p> </p>
         <a asp-action="RegenerateOrders" class="btn btn-small btn-default">(Test) Regénérer les commandes en pdf</a>
-        
+
     }
 }
 
-	<div class="boxContainer">
-	    <h4>Facture à régler aux producteurs </h4>
-	    @if (Model.ProducerBills.Any(x => x.State == BillState.Delivered))
-	    {
-            <table class="table">
-		<tr>
-                    <th>
-			Numéro
-                    </th>
-                    <th>
-			Raison social
-                    </th>
-                    <th>
-			Téléphone
-                    </th>
-                    <th>
-			Etat
-                    </th>
-                    <th>
-			Facture
-                    </th>
-		</tr>
-		@foreach (var item in Model.ProducerBills.Where(x => x.State == BillState.Delivered))
-		{
+<div class="boxContainer">
+    <h4>Facture à régler aux producteurs </h4>
+    @if (Model.ProducerBills.Any(x => x.State == BillState.Delivered))
+    {
+        <table class="table">
+            <tr>
+                <th>
+                    Numéro
+                </th>
+                <th>
+                    Raison social
+                </th>
+                <th>
+                    Téléphone
+                </th>
+                <th>
+                    Etat
+                </th>
+                <th>
+                    Facture
+                </th>
+            </tr>
+            @foreach (var item in Model.ProducerBills.Where(x => x.State == BillState.Delivered))
+            {
                 <tr>
                     <td>
                         @Html.DisplayFor(modelItem => item.AdherentStolon.LocalId)
@@ -55,58 +55,60 @@
                     </td>
                     <td>
                         @if (Model.ActiveAdherentStolon.Authorized(Role.Admin) || Model.ActiveAdherentStolon.Adherent.IsWebAdmin)
-			{
-                        @Html.ActionLink(
-                            "Valider paiement de la facture",
-                            "UpdateProducerBill",
-                            new { billId = item.BillId, state = ((int) item.State) + 1 },
-                            new
-                            {
-                                onclick = "return confirm('Confirmation du paiement de " + +item.BillAmount + " à " + item.AdherentStolon.Adherent.CompanyName + "');",
-                                @class = "btn btn-small btn-default"
-                            }
-			)    }
+                        {
+                            @Html.ActionLink(
+                                     "Valider paiement de la facture",
+                                     "UpdateProducerBill",
+                                     new { billId = item.BillId, state = ((int)item.State) + 1 },
+                                     new
+                                     {
+                                         onclick = "return confirm('Confirmation du paiement de " + +item.BillAmount + " à " + item.AdherentStolon.Adherent.CompanyName + "');",
+                                         @class = "btn btn-small btn-default"
+                                     }
+                     )       }
                     </td>
                     <td>
                         @{
-                            <a target="_blank" href="@Configurations.GetBillUrl(item)">@(item.BillAmount.ToString("0.00") + "€" + " (" + item.FeeAmount.ToString("0.00") + "€) - " + item.BillNumber)</a>
-                            }
+                            @(item.BillAmount.ToString("0.00") + "€" + " (" + item.FeeAmount.ToString("0.00") + "€) - " + item.BillNumber)
+                            <a class="btn btn-small btn-default" title="Voir" target="_blank" href="/bills/ShowBill/@item.BillNumber"><span class="glyphicon glyphicon glyphicon-eye-open"> </span></a>
+                            <a class="btn btn-small btn-default" title="Télécharger" target="_blank" href="@Configurations.GetBillUrl(item)"><span class="glyphicon glyphicon glyphicon-download-alt"> </span></a>
+                        }
                     </td>
                 </tr>
-                }
-            </table>
             }
-            else
+        </table>
+    }
+    else
+    {
+        <p>Aucune facture à régler</p>
+    }
+
+</div>
+
+<div class="boxContainer">
+    <h4>Producteur(s) ayant une commande à livrer cette semaine </h4>
+    @if (Model.ProducerBills.Any(x => x.State == BillState.Pending))
+    {
+        <table class="table">
+            <tr>
+                <th>
+                    Numéro
+                </th>
+                <th>
+                    Raison social
+                </th>
+                <th>
+                    Téléphone
+                </th>
+                <th>
+                    Etat
+                </th>
+                <th>
+                    Bon de commande
+                </th>
+            </tr>
+            @foreach (var item in Model.ProducerBills.Where(x => x.State == BillState.Pending))
             {
-            <p>Aucune facture à régler</p>
-            }
-
-	</div>
-
-	<div class="boxContainer">
-	    <h4>Producteur(s) ayant une commande à livrer cette semaine </h4>
-	    @if (Model.ProducerBills.Any(x => x.State == BillState.Pending))
-	    {
-            <table class="table">
-		<tr>
-                    <th>
-			Numéro
-                    </th>
-                    <th>
-			Raison social
-                    </th>
-                    <th>
-			Téléphone
-                    </th>
-                    <th>
-			Etat
-                    </th>
-                    <th>
-			Bon de commande
-                    </th>
-		</tr>
-		@foreach (var item in Model.ProducerBills.Where(x => x.State == BillState.Pending))
-		{
                 <tr>
                     <td>
                         @Html.DisplayFor(modelItem => item.AdherentStolon.LocalId)
@@ -119,67 +121,70 @@
                     </td>
                     <td>
                         @Html.ActionLink(
-                            "Valider la livraison",
-                            "UpdateProducerBill",
-                            new { billId = item.BillId, state = ((int) item.State) + 1 },
-                            new
-                            {
-				onclick = "return confirm('Confirmation de la livraison de " + item.AdherentStolon.Adherent.CompanyName + "');",
-				@class = "btn btn-small btn-default"
-                            }
-			)
+                                 "Valider la livraison",
+                                 "UpdateProducerBill",
+                                 new { billId = item.BillId, state = ((int)item.State) + 1 },
+                                 new
+                                 {
+                                     onclick = "return confirm('Confirmation de la livraison de " + item.AdherentStolon.Adherent.CompanyName + "');",
+                                     @class = "btn btn-small btn-default"
+                                 }
+                 )
                         <a href="#" class="btn btn-small btn-default" onclick="BillsManagement.CorrectionView.openCorrectionModal('@item.BillId'); return false;">Réctifier la livraison</a>
                     </td>
                     <td>
                         @{
-                            <a target="_blank" href="@Configurations.GetOrderUrl(item)">@(item.OrderNumber)</a>
-                         }
+                            @(item.OrderAmount.ToString("0.00") + "€ - " + item.OrderNumber)
+                            <a class="btn btn-small btn-default" title="Voir" target="_blank" href="/Orders/ShowOrder/@item.OrderNumber"><span class="glyphicon glyphicon glyphicon-eye-open"> </span></a>
+                            <a class="btn btn-small btn-default" title="Télécharger" target="_blank" href="@Configurations.GetOrderUrl(item)"><span class="glyphicon glyphicon glyphicon-download-alt"> </span></a>
+                        }
                     </td>
                 </tr>
-                }
-            </table>
             }
-            else
-            {
-            <p>Plus de commande à livrer ou payer par / aux producteurs</p>
-            }
-	</div>
+        </table>
+    }
+    else
+    {
+        <p>Plus de commande à livrer ou payer par / aux producteurs</p>
+    }
+</div>
 
-	<div class="boxContainer">
-	    <h4>Adhérent(s) ayant commandé un panier cette semaine : 
-		@Model.ConsumerBills.Count
-		/
-		@Model.WeekStolonsBill?.Consumers
-	    </h4>
-	    @if (Model.ConsumerBills.Any())
-	    {
-            
-            <table class="table">
-		<tr>
-                    <th>
-			Numéro
-                    </th>
-                    <th>
-			Nom
-                    </th>
-                    <th>
-			Prénom
-                    </th>
-                    <th>
-			Téléphone
-                    </th>
-                    <th>
-			Stols
-                    </th>
-                    <th>
-			Etat
-                    </th>
-                    <th>
-			Facture
-                    </th>
-		</tr>
-		@foreach (var item in Model.ConsumerBills.OrderBy(x => x.AdherentStolon.LocalId))
-		{
+<div class="boxContainer">
+    <h4>
+        Adhérent(s) ayant commandé un panier cette semaine :
+        @Model.ConsumerBills.Count
+        /
+        @Model.WeekStolonsBill?.Consumers
+    </h4>
+    @if (Model.ConsumerBills.Any())
+    {
+
+        <table class="table">
+            <tr>
+                <th>
+                    Numéro
+                </th>
+                <th>
+                    Nom
+                </th>
+                <th>
+                    Prénom
+                </th>
+                <th>
+                    Téléphone
+                </th>
+                <th>
+                    Stols
+                </th>
+                <th>
+                    Etat
+                </th>
+                <th>
+                    Facture
+                </th>
+            </tr>
+            @foreach (var item in Model.ConsumerBills.OrderBy(x => x.AdherentStolon.LocalId))
+            {
                 <tr>
                     <td>
                         @Html.DisplayFor(modelItem => item.AdherentStolon.LocalId)
@@ -201,26 +206,28 @@
                     </td>
                     <td>
                         @{
-                            <a target="_blank" href="@Configurations.GetBillUrl(item)">@(item.OrderAmount.ToString("0.00") + "€ - " + item.BillNumber)</a>
-                            }
+                            @(item.OrderAmount.ToString("0.00") + "€ - " + item.BillNumber)
+                            <a class="btn btn-small btn-default" title="Voir" target="_blank" href="/bills/ShowBill/@item.BillNumber"><span class="glyphicon glyphicon glyphicon-eye-open"> </span></a>
+                            <a class="btn btn-small btn-default" title="Télécharger" target="_blank" href="@Configurations.GetBillUrl(item)"><span class="glyphicon glyphicon glyphicon-download-alt"> </span></a>
+                        }
                     </td>
                 </tr>
-                }
-            </table>
             }
-            else
-            {
-            <p>Plus de panier cette semaine</p>
-            }
-	</div>
+        </table>
+    }
+    else
+    {
+        <p>Plus de panier cette semaine</p>
+    }
+</div>
 
-	<div id="consumerBillModal" class="modal fade"></div>
+<div id="consumerBillModal" class="modal fade"></div>
 
-	<div id="correctionModal" class="modal fade"></div>
+<div id="correctionModal" class="modal fade"></div>
 
-	<script id="consumerBillModalTemplate" type="text/template">
-	 <div class="modals">
-         <div class="modal-dialog" style="width: 250px;">
+<script id="consumerBillModalTemplate" type="text/template">
+    <div class="modals">
+        <div class="modal-dialog" style="width: 250px;">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
@@ -235,13 +242,13 @@
                     <a href="/WeekBasketManagement/UpdateConsumerBill?paymentMode=2&billId=<%= billId %>" class="credit btn btn-small btn-default">Espèces</a>
                 </div>
             </div>
-         </div>
-	 </div>
-	</script>
+        </div>
+    </div>
+</script>
 
-	<script id="correctionModalTemplate" type="text/template">
-	 <div class="modals">
-         <div class="modal-dialog" id="correction-modal-dialog">
+<script id="correctionModalTemplate" type="text/template">
+    <div class="modals">
+        <div class="modal-dialog" id="correction-modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
@@ -258,7 +265,7 @@
                                 <col>
                                 </col>
                                 <% _.forEach(producerBill.getProductStocks(), function(productStock) { %>
-                                <col id="product-col-<%= productStock.get("Id") %>">
+                                <col id="product-col-<%= productStock.get(" Id") %>">
                                 </col>
                                 <% }); %>
                             </colgroup>
@@ -270,7 +277,7 @@
                                     </th>
                                     <% _.forEach(producerBill.getProductStocks(), function(productStock) { %>
                                     <td class="correction-product-description productMgtImage">
-                                        <img src="<%= productStock.get("Product").getPictureUrl("light") %>">
+                                        <img src="<%= productStock.get(" Product").getPictureUrl("light") %>">
                                         <span><%= productStock.get("Product").get("Name") %></span>
                                     </td>
                                     <% }); %>
@@ -352,10 +359,10 @@
                     </div>
                 </div>
             </div>
-         </div>
-	 </div>
-	</script>
+        </div>
+    </div>
+</script>
 
-	<script src="/js/billModel.js"></script>
-	<script src="/js/productModel.js"></script>
-	<script src="/js/billsManagement.js"></script>
+<script src="/js/billModel.js"></script>
+<script src="/js/productModel.js"></script>
+<script src="/js/billsManagement.js"></script>
