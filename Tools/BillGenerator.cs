@@ -597,8 +597,8 @@ namespace Stolons.Tools
                 billBuilder.AppendLine("<tr>");
                 billBuilder.AppendLine("<td>" + productBillEntries.Key.Name + "</td>");
                 billBuilder.AppendLine("<td>" + productBillEntries.Key.GetQuantityString(quantity) + "</td>");
-                billBuilder.AppendLine("<td>" + (productBillEntries.Key.TaxEnum == Product.TAX.None ? "NA" : productBillEntries.Key.Tax.ToString()) + " %</td>");
-                billBuilder.AppendLine("<td>" + (productBillEntries.Key.Type == SellType.Piece ? productBillEntries.First().UnitPriceWithoutFeeAndTax : productBillEntries.First().PriceWithoutFeeAndTax) + " €" + "</td>");
+                billBuilder.AppendLine("<td>" + (productBillEntries.Key.TaxEnum == Product.TAX.None ? "NA" : productBillEntries.Key.Tax.ToString("0.00") + " %</td>") );
+                billBuilder.AppendLine("<td>" + (productBillEntries.Key.Type == SellType.Piece ? productBillEntries.First().UnitPriceWithoutFeeAndTax : productBillEntries.First().PriceWithoutFeeAndTax).ToString("0.00") + " €" + "</td>");
                 billBuilder.AppendLine("<td>" + productTotalWithoutTax.ToString("0.00") + " €" + "</td>");
                 billBuilder.AppendLine("</tr>");
                 //Si tax, on ajoute au total du taux de la tva
@@ -626,7 +626,7 @@ namespace Stolons.Tools
                 billBuilder.AppendLine("<td></td>");
                 billBuilder.AppendLine("<td></td>");
                 billBuilder.AppendLine("<td></td>");
-                billBuilder.AppendLine("<td>TVA " + tax.Key + "%</td>");
+                billBuilder.AppendLine("<td>TVA " + tax.Key.ToString("0.00") + "%</td>");
                 billBuilder.AppendLine("<td>" + taxAmount.ToString("0.00") + " €</td>");
                 billBuilder.AppendLine("</tr>");
                 bill.TaxAmount += taxAmount;

@@ -8,9 +8,9 @@
 @if (Model.Stolon.GetMode() == Stolon.Modes.DeliveryAndStockUpdate && Model.WeekStolonsBill != null)
 {
     <h4>Les paniers de la semaine </h4>
-    <a target="_blank" href="@Model.WeekStolonsBill.UrlPath" class="btn btn-small btn-default">Télécharger les factures utilisateur de la semaine</a>
+    <a target="_blank" href="@Model.WeekStolonsBill.UrlPath" class="btn btn-small btn-default"><span class="glyphicon glyphicon glyphicon-download-alt"> </span>  Télécharger les factures utilisateur de la semaine</a>
     <p></p>
-    <a target="_blank" asp-action="ShowStolonsBill" asp-route-id="@Model.WeekStolonsBill.BillNumber" class="btn btn-small btn-default">Afficher les factures utilisateur de la semaine</a>
+    <a target="_blank" asp-action="ShowStolonsBill" asp-route-id="@Model.WeekStolonsBill.BillNumber" class="btn btn-small btn-default"><span class="glyphicon glyphicon glyphicon-eye-open"> </span>  Afficher les factures utilisateur de la semaine</a>
     @if (Model.ActiveAdherentStolon.Authorized(Role.Admin))
     {
         <p> </p>
