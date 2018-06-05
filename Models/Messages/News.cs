@@ -59,7 +59,7 @@ namespace Stolons.Models.Messages
         public DateTime PublishStart { get; set; } = DateTime.Now;
 
         [Required]
-        [Display(Name = "Est afficher en surbrillance")]
+        [Display(Name = "Afficher en surbrillance")]
         public bool IsHighlight { get; set; }
 
         [Required]
@@ -67,7 +67,7 @@ namespace Stolons.Models.Messages
         public DateTime PublishEnd { get; set; }
 
         [Required]
-        [Display(Name = "Publié comme")]
+        [Display(Name = "Publié en tant que")]
         public NewsPublishAs PublishAs { get; set; }
 
     }
