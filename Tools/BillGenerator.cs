@@ -748,19 +748,27 @@ namespace Stolons.Tools
 
             //Assign WebKit settings to HTML converter
             htmlConverter.ConverterSettings = settings;
-                        
-            //Convert URL to PDF
-            Syncfusion.Pdf.PdfDocument document = htmlConverter.Convert(htmlContent, "");
-            
-            //Save and close the PDF document 
-            new FileInfo(fullPath).Directory.Create();
-            using (var streamWriter = File.Create(fullPath))
-            {
-                document.Save(streamWriter);
-            }
-            document.Close(true);
 
-            return true;
+            try
+            {
+                //Convert URL to PDF
+                Syncfusion.Pdf.PdfDocument document = htmlConverter.Convert(htmlContent, "");
+
+                //Save and close the PDF document 
+                new FileInfo(fullPath).Directory.Create();
+                using (var streamWriter = File.Create(fullPath))
+                {
+                    document.Save(streamWriter);
+                }
+                document.Close(true);
+                return true;
+            }
+            catch (Exception except)
+            {
+                Console.WriteLine("Erreur lros de la génération du PDF : " + except);
+                return false;
+            }
+
         }
 
         public static int GetIso8601WeekOfYear(this DateTime time)
