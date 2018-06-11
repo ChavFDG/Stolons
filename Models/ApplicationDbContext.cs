@@ -25,7 +25,7 @@ namespace Stolons.Models
         public DbSet<Sympathizer> Sympathizers { get; set; }
         //Message
         public DbSet<News> News { get; set; }
-        //Bills
+        //
         public DbSet<ConsumerBill> ConsumerBills { get; set; }
         public DbSet<ProducerBill> ProducerBills { get; set; }
         public DbSet<BillEntry> BillEntrys { get; set; }

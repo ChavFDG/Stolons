@@ -14,9 +14,9 @@ using System.Collections.Generic;
 
 namespace Stolons.Controllers
 {
-    public class BillsController : BaseController
+    public class BillsHistoryController : BaseController
     {
-        public BillsController(ApplicationDbContext context, IHostingEnvironment environment,
+        public BillsHistoryController(ApplicationDbContext context, IHostingEnvironment environment,
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             IServiceProvider serviceProvider) : base(serviceProvider, userManager, context, environment, signInManager)
@@ -24,20 +24,20 @@ namespace Stolons.Controllers
 
         }
 
-        // GET: Bills
+        // GET: 
         [Authorize()]
         public async Task<IActionResult> Index()
         {
             Adherent stolonsUser = await this.GetCurrentAdherentAsync();
             List<ProducerBill> bills = new List<ProducerBill>();
             _context.ProducerBills
-		.Include(x => x.AdherentStolon)
-		.Include(x => x.AdherentStolon.Adherent)
-		.Include(x => x.AdherentStolon.Stolon)
-		.Where(x => x.AdherentStolon.Adherent.Email == stolonsUser.Email)
-		.AsNoTracking()
-		.ToList()
-		.ForEach(x => bills.Add(x));
+        .Include(x => x.AdherentStolon)
+        .Include(x => x.AdherentStolon.Adherent)
+        .Include(x => x.AdherentStolon.Stolon)
+        .Where(x => x.AdherentStolon.Adherent.Email == stolonsUser.Email)
+        .AsNoTracking()
+        .ToList()
+        .ForEach(x => bills.Add(x));
             return View(bills);
         }
 
@@ -46,17 +46,17 @@ namespace Stolons.Controllers
         {
             IBill bill = _context.ConsumerBills.FirstOrDefault(x => x.BillNumber == id);
 
-	    if (bill != null)
+            if (bill != null)
                 return View(bill);
             bill = _context.ProducerBills
-		.Include(x => x.AdherentStolon)
-		.Include(x => x.AdherentStolon.Adherent)
-		.AsNoTracking()
-		.FirstOrDefault(x => x.BillNumber == id);
+        .Include(x => x.AdherentStolon)
+        .Include(x => x.AdherentStolon.Adherent)
+        .AsNoTracking()
+        .FirstOrDefault(x => x.BillNumber == id);
             if (bill != null)
                 return View(bill);
             //Bill not found
             return View(null);
-        }        
+        }
     }
 }

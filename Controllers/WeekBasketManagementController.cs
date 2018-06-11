@@ -31,7 +31,7 @@ namespace Stolons.Controllers
 
         }
 
-        // GET: Bills
+        // GET: 
         public IActionResult Index()
         {
             Stolon stolon = GetCurrentStolon();

@@ -24,7 +24,7 @@ namespace Stolons.Controllers
 
         }
 
-        // GET: Bills
+        // GET: 
         [Authorize()]
         public async Task<IActionResult> Index()
         {

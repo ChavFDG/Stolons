@@ -70,7 +70,7 @@
                     <td>
                         @{
                             @(item.BillAmount.ToString("0.00") + "€" + " (" + item.FeeAmount.ToString("0.00") + "€) - " + item.BillNumber)
-                            <a class="btn btn-small btn-default" title="Voir" target="_blank" href="/bills/ShowBill/@item.BillNumber"><span class="glyphicon glyphicon glyphicon-eye-open"> </span></a>
+                            <a class="btn btn-small btn-default" title="Voir" target="_blank" href="/billsHistory/ShowBill/@item.BillNumber"><span class="glyphicon glyphicon glyphicon-eye-open"> </span></a>
                             <a class="btn btn-small btn-default" title="Télécharger" target="_blank" href="@Configurations.GetBillUrl(item)"><span class="glyphicon glyphicon glyphicon-download-alt"> </span></a>
                         }
                     </td>
@@ -207,7 +207,7 @@
                     <td>
                         @{
                             @(item.OrderAmount.ToString("0.00") + "€ - " + item.BillNumber)
-                            <a class="btn btn-small btn-default" title="Voir" target="_blank" href="/bills/ShowBill/@item.BillNumber"><span class="glyphicon glyphicon glyphicon-eye-open"> </span></a>
+                            <a class="btn btn-small btn-default" title="Voir" target="_blank" href="/billsHistory/ShowBill/@item.BillNumber"><span class="glyphicon glyphicon glyphicon-eye-open"> </span></a>
                             <a class="btn btn-small btn-default" title="Télécharger" target="_blank" href="@Configurations.GetBillUrl(item)"><span class="glyphicon glyphicon glyphicon-download-alt"> </span></a>
                         }
                     </td>

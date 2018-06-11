@@ -234,7 +234,7 @@ namespace Stolons.Tools
 
             }
 
-            //Bills (save bills and send mails to user)
+            // (save bills and send mails to user)
             foreach (var bill in consumerBills)
             {
                 Task.Factory.StartNew(() => { GenerateOrderPdfAndSendEmail(bill); });
