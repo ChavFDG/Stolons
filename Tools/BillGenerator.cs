@@ -765,6 +765,7 @@ namespace Stolons.Tools
             }
             catch (Exception except)
             {
+                DotnetHelper.GetLogger<string>().LogError("Erreur lros de la génération du PDF : " + except.Message, except);
                 Console.WriteLine("Erreur lros de la génération du PDF : " + except);
                 return false;
             }
