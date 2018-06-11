@@ -113,13 +113,14 @@ namespace Stolons.Controllers
                     "Encaissement de la commission de la facture " + bill.BillNumber + " de " + bill.AdherentStolon.Adherent.CompanyName + " ( " + bill.AdherentStolon.LocalId + " )");
                 _context.Add(comitionInbound);
             }
-            else if(bill.State == BillState.Delivered)
+            //Save
+            _context.SaveChanges();
+            //
+            if (bill.State == BillState.Delivered)
             {
                 //Generate bill in pdf
                 BillGenerator.GenerateBillPDF(bill);
             }
-            //Save
-            _context.SaveChanges();
             return RedirectToAction("Index");
         }
 
