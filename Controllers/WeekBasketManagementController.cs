@@ -159,7 +159,7 @@ namespace Stolons.Controllers
             consumersBills.ForEach(x => consumers.Add(x, BillGenerator.GenerateBillPDF(x)));
             Dictionary<ProducerBill, bool> producers = new Dictionary<ProducerBill, bool>();
             producersBills.ForEach(x => producers.Add(x, BillGenerator.GenerateOrderPDF(x)));
-            bool stolonBill = BillGenerator.GeneratePDF(weekStolonBill.HtmlBillContent, weekStolonBill.FilePath);
+            bool stolonBill = BillGenerator.GeneratePDF(weekStolonBill.HtmlBillContent, weekStolonBill.GetStolonBillFilePath());
             report.AppendLine("RESUME : ");
             report.AppendLine("Commandes consomateurs générées : " + consumers.Count(x => x.Value == true) + "/" + consumers.Count);
             report.AppendLine("Commandes producteurs générées : " + producers.Count(x => x.Value == true) + "/" + producers.Count);

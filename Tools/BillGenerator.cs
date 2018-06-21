@@ -19,7 +19,7 @@ using Stolons.Services;
 using Stolons.Models;
 using Stolons.Models.Users;
 using static Stolons.Models.Product;
-using Syncfusion.HtmlConverter;
+using PhantomJs.NetCore;
 
 namespace Stolons.Tools
 {
@@ -334,8 +334,8 @@ namespace Stolons.Tools
 
         private static void AddBootstrap(this StringBuilder builder)
         {
-            builder.Insert(0, "<meta charset=\"UTF-8\"><head><link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css\"></head><body>");
-            builder.AppendLine("</body>");
+            builder.Insert(0, "<html><meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><meta charset=\"UTF-8\"><head><link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css\"></head><body>");
+            builder.AppendLine("</body><html>");
         }
 
         private static void AddFooterAndHeaderRemoval(this StringBuilder builder)
@@ -733,40 +733,27 @@ namespace Stolons.Tools
             return GeneratePDF(bill.HtmlBillContent, bill.GetBillFilePath());
         }
 
-        public static bool GeneratePDF(string htmlContent, string fullPath)
+        public static bool GeneratePDF(string htmlContent, string pdfFilePath)
         {
-            HtmlToPdfConverter htmlConverter = new HtmlToPdfConverter();
-
-            WebKitConverterSettings settings = new WebKitConverterSettings();
-            settings.Margin.All = 8;
-
-            //Set WebKit path
-            if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows))
-                settings.WebKitPath = Path.Combine(Configurations.Environment.ContentRootPath, "lib", "QtBinariesDotNetCore");
-            else
-                settings.WebKitPath = Path.Combine(Configurations.Environment.ContentRootPath, "lib", "QtBinaries");
-
-            //Assign WebKit settings to HTML converter
-            htmlConverter.ConverterSettings = settings;
+	    // DotnetHelper.GetLogger<string>().LogError("Génération du PDF : " + pdfFilePath);
 
             try
             {
-                //Convert URL to PDF
-                Syncfusion.Pdf.PdfDocument document = htmlConverter.Convert(htmlContent, "");
+                string currentDirectory = Directory.GetCurrentDirectory();
+                string phantomJsRootFolder = Path.Combine(currentDirectory, "PhantomJSRoot");
 
-                //Save and close the PDF document 
-                new FileInfo(fullPath).Directory.Create();
-                using (var streamWriter = File.Create(fullPath))
-                {
-                    document.Save(streamWriter);
-                }
-                document.Close(true);
+                // the pdf generator needs to know the path to the folder with .exe files.
+                PdfGenerator generator = new PdfGenerator(phantomJsRootFolder);
+
+                // Generate pdf from html and place in the current folder.
+                string pathOftheGeneratedPdf = generator.GeneratePdf(htmlContent, pdfFilePath);
+ 
                 return true;
             }
             catch (Exception except)
             {
-                DotnetHelper.GetLogger<string>().LogError("Erreur lros de la génération du PDF : " + except.Message, except);
-                Console.WriteLine("Erreur lros de la génération du PDF : " + except);
+                DotnetHelper.GetLogger<string>().LogError("Erreur lors de la génération du PDF : " + except.Message, except);
+                Console.WriteLine("Erreur lors de la génération du PDF : " + except);
                 return false;
             }
 
