@@ -158,7 +158,19 @@
                         }
                         @if (Model.ActiveAdherentStolon.Authorized(Role.Volunteer))
                         {
-                            <li><a asp-controller="WeekBasketManagement" asp-action="Index">Gérer les paniers</a></li>
+                            <li class="dropdown">
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                    Gestion des paniers
+                                    <span class="caret"></span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a asp-controller="WeekBasketManagement" asp-action="WeekBaskets">Paniers de la semaine</a></li>
+                                    <li><a asp-controller="WeekBasketManagement" asp-action="History">Historique</a></li>
+                                </ul>
+                            </li>
+
+
+
                             <li><a asp-controller="Users" asp-action="Index">Adhérents</a></li>
                             <li class="dropdown">
                                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">

@@ -1,0 +1,175 @@
+﻿@model Stolons.ViewModels.WeekBasketManagement.VmWeekBasketHistory
+@using Stolons.Helpers
+@using Stolons.Models
+@using Stolons.Tools
+
+
+<h2>Historique des commandes</h2>
+@{
+    var years = Model.StolonsBills.Select(s => s.EditionDate.Year).Distinct().ToList();
+    years.Sort();
+    years.Reverse();
+
+}
+@foreach (var year in years)
+{
+    <div class="boxContainer">
+
+        <h3>@year</h3>
+
+        <table class="table">
+            <tr>
+                <th>
+                    Semaine
+                </th>
+                <th>
+                    Date
+                </th>
+                <th>
+                    Numéro
+                </th>
+                <th>
+                    Consomateurs
+                </th>
+                <th>
+                    Producteurs
+                </th>
+                <th>
+                    CA TTC
+                </th>
+                <th>
+                    Comission total
+                </th>
+                <th>
+                </th>
+                <th>
+                </th>
+            </tr>
+            @foreach (var stolonBill in Model.StolonsBills.Where(x => x.EditionDate.Year == year).OrderByDescending(x => x.EditionDate))
+            {
+                <tr class="collapsableHeader expand">
+                    <td>@stolonBill.EditionDate.GetIso8601WeekOfYear()  </td>
+                    <td>@stolonBill.EditionDate  </td>
+                    <td>@stolonBill.BillNumber</td>
+                    <td>@stolonBill.Consumers </td>
+                    <td>@stolonBill.Producers </td>
+                    <td>@stolonBill.Amount €</td>
+                    <td>@stolonBill.FeeAmount € (@stolonBill.ProducersFee + %)</td>
+                    <td>
+                        <a class="btn btn-small btn-default" title="Voir" asp-action="ShowStolonsBill" asp-route-id="@stolonBill.BillNumber"><span class="glyphicon glyphicon glyphicon-eye-open"> </span></a>
+                        <a class="btn btn-small btn-default" title="Télécharger" target="_blank" href="@stolonBill.UrlPath"><span class="glyphicon glyphicon glyphicon-download-alt"> </span></a>
+                    </td>
+                    <td><span class="sign"></span></td>
+                </tr>
+                <tr>
+                    <td colspan="9">
+                        <h3>@stolonBill.BillNumber du @stolonBill.EditionDate</h3>
+                        <div class="boxContainer">
+                            <h3>Producteurs</h3>
+                            <table class="table">
+                                <tr>
+                                    <th>
+                                        Numéro
+                                    </th>
+                                    <th>
+                                        Raison social
+                                    </th>
+                                    <th>
+                                        Téléphone
+                                    </th>
+                                    <th>
+                                        CA TTC
+                                    </th>
+                                    <th>
+                                        Facture
+                                    </th>
+                                </tr>
+                                @foreach (var item in Model.ProducerBills.Where(x => x.EditionDate.Year == year && x.EditionDate.GetIso8601WeekOfYear() == stolonBill.EditionDate.GetIso8601WeekOfYear()).OrderBy(x => x.AdherentStolon.LocalId))
+                                {
+                                    <tr>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.AdherentStolon.LocalId)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.AdherentStolon.Adherent.CompanyName)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.AdherentStolon.Adherent.PhoneNumber)
+                                        </td>
+                                        <td>
+                                            @(item.BillAmount.ToString("0.00") + "€ TTC")
+                                        </td>
+                                        <td>
+                                            @(item.FeeAmount.ToString("0.00") + "€ TTC")
+                                        </td>
+                                        <td>
+                                            @{
+                                                @item.BillNumber
+                                                <a class="btn btn-small btn-default" title="Voir" target="_blank" href="/billsHistory/ShowBill/@item.BillNumber"><span class="glyphicon glyphicon glyphicon-eye-open"> </span></a>
+                                                <a class="btn btn-small btn-default" title="Télécharger" target="_blank" href="@Configurations.GetBillUrl(item)"><span class="glyphicon glyphicon glyphicon-download-alt"> </span></a>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </table>
+                            <h3>Consomateurs</h3>
+                            <table class="table">
+                                <tr>
+                                    <th>
+                                        Numéro
+                                    </th>
+                                    <th>
+                                        Nom
+                                    </th>
+                                    <th>
+                                        Prénom
+                                    </th>
+                                    <th>
+                                        Motant de la commande
+                                    </th>
+                                    <th>
+                                        Facture
+                                    </th>
+                                </tr>
+                                @foreach (var item in Model.ConsumerBills.Where(x => x.EditionDate.Year == year && x.EditionDate.GetIso8601WeekOfYear() == stolonBill.EditionDate.GetIso8601WeekOfYear()).OrderBy(x => x.AdherentStolon.LocalId))
+                                {
+                                    <tr>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.AdherentStolon.LocalId)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.AdherentStolon.Adherent.Name)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.AdherentStolon.Adherent.Surname)
+                                        </td>
+                                        <td>
+                                            @(item.OrderAmount.ToString("0.00") + "€")
+                                        <td>
+                                            @{
+                                                @item.BillNumber
+                                                <a class="btn btn-small btn-default" title="Voir" target="_blank" href="/billsHistory/ShowBill/@item.BillNumber"><span class="glyphicon glyphicon glyphicon-eye-open"> </span></a>
+                                                <a class="btn btn-small btn-default" title="Télécharger" target="_blank" href="@Configurations.GetBillUrl(item)"><span class="glyphicon glyphicon glyphicon-download-alt"> </span></a>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </table>
+                        </div>
+
+                        <br />
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+
+}
+
+<script>
+    $('.collapsableHeader').click(function () {
+        $(this).toggleClass('expand').nextUntil('tr.collapsableHeader').slideToggle(100);
+    });
+</script>
+
+

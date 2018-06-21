@@ -34,6 +34,40 @@ namespace Stolons.Controllers
         // GET: 
         public IActionResult Index()
         {
+            return View();
+        }
+
+        // GET: 
+        public IActionResult History()
+        {
+            Stolon stolon = GetCurrentStolon();
+            var adherentStolon = GetActiveAdherentStolon();
+            VmWeekBasketHistory vm = new VmWeekBasketHistory(adherentStolon);
+            vm.Stolon = GetCurrentStolon();
+            vm.ConsumerBills = _context.ConsumerBills
+                                .Include(x => x.AdherentStolon)
+                                .Include(x => x.AdherentStolon.Adherent)
+                                .Include(x => x.AdherentStolon.Stolon)
+                                .Where(x => x.AdherentStolon.StolonId == stolon.Id)
+                                .OrderBy(x => x.AdherentStolon.Adherent.Id)
+                                .AsNoTracking()
+                                .ToList();
+            vm.ProducerBills = _context.ProducerBills
+                                .Include(x => x.AdherentStolon)
+                                .Include(x => x.AdherentStolon.Adherent)
+                                .Include(x => x.AdherentStolon.Stolon)
+                                .Where(x => x.AdherentStolon.StolonId == stolon.Id)
+                                .OrderBy(x => x.AdherentStolon.Adherent.Id)
+                                .AsNoTracking()
+                                .ToList();
+            vm.StolonsBills = _context.StolonsBills.Include(x => x.Stolon).Where(x => x.StolonId == stolon.Id).ToList();
+            return View(vm);
+        }
+
+
+        // GET: 
+        public IActionResult WeekBaskets()
+        {
             Stolon stolon = GetCurrentStolon();
             var adherentStolon = GetActiveAdherentStolon();
             VmWeekBasketManagement vm = new VmWeekBasketManagement(adherentStolon);
