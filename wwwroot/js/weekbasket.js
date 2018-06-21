@@ -394,9 +394,6 @@ ProductActionView = Backbone.View.extend(
             var diffQty = this.billEntry.Quantity - validatedQty;
             var stepStock = this.billEntry.ProductStock.RemainingStock;
 
-            if (this.billEntry.Type != 1) {
-                stepStock = (this.billEntry.ProductStock.RemainingStock * 1000) / this.billEntry.ProductStock.Product.QuantityStep;
-            }
             return diffQty < stepStock;
         },
 
@@ -404,7 +401,8 @@ ProductActionView = Backbone.View.extend(
             var validatedBillEntry = WeekBasket.ValidatedWeekBasketModel.getProductEntry(this.productId);
             var validatedQty = (validatedBillEntry && validatedBillEntry.Quantity) || 0;
             var productModel = WeekBasket.ProductsModel.get(this.productId);
-            if (!this.billEntry) {
+
+	    if (!this.billEntry) {
 		//Infinite stock
 		if (productModel.get("Product").get("StockManagement")  == 2) {
 		    return true;
