@@ -97,7 +97,7 @@ namespace Stolons.Models
         public string OrderNumber { get; set; }
         public AdherentStolon AdherentStolon { get; set; }
 	
-        public List<BillEntry> BillEntries { get; set; }
+        public List<BillEntry> BillEntries { get; set; }       
 
         [Display(Name = "Date d'édition de la facture")]
         public DateTime EditionDate { get; set; }
@@ -166,6 +166,10 @@ namespace Stolons.Models
         public string HtmlBillContent { get; set; }
 
         [Key]
+        public Guid StolonBillId { get; set; }
+
+        public List<BillEntry> BillEntries { get; set; }
+
         [Display(Name = "Numéro de facture")] //Year_WeekNumber
         public string BillNumber { get; set; }
 
@@ -188,6 +192,7 @@ namespace Stolons.Models
 
         [Display(Name = "Nombre de producteur ayant à livrer")]
         public int Producers { get; set; }
+        
 
         [NotMapped]
         public decimal FeeAmount

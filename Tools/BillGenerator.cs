@@ -189,6 +189,9 @@ namespace Stolons.Tools
             //Stolons
             StolonsBill stolonsBill = GenerateBill(stolon, consumerBills, dbContext);
             stolonsBill.Producers = producerBills.Count;
+            var allBillEntries = new List<BillEntry>();
+            consumerBills.ForEach(bill => bill.BillEntries.ForEach(billEntry => allBillEntries.Add(billEntry)));
+            stolonsBill.BillEntries = new List<BillEntry>(allBillEntries);
             if (dbContext.StolonsBills.Any(x => x.BillNumber == stolonsBill.BillNumber))
             {
                 StolonsBill tempBill = dbContext.StolonsBills.FirstOrDefault(x => x.BillNumber == stolonsBill.BillNumber);
@@ -382,7 +385,7 @@ namespace Stolons.Tools
                     builder.AppendLine("<p>Facture : " + consumerBill.BillNumber + "</p>");
                     builder.AppendLine("<p>Téléphone : " + consumerBill.AdherentStolon.Adherent.PhoneNumber + "</p>");
                     builder.AppendLine("<p>Total à régler : " + consumerBill.TotalPrice.ToString("0.00") + " €</p>");
-
+                    bill.Amount += consumerBill.TotalPrice;
                     //Create list of bill entry by product
                     var billEntryByProducer = consumerBill.BillEntries.GroupBy(x => x.ProducerBill);
 

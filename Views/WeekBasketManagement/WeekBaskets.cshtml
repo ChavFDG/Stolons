@@ -4,13 +4,15 @@
 @using Stolons.Tools
 
 
+
+
 <h2>Les paniers de la semaine</h2>
 @if (Model.Stolon.GetMode() == Stolon.Modes.DeliveryAndStockUpdate && Model.WeekStolonsBill != null)
 {
     <p>
-        @Model.ConsumerBills.Count paniers cette semaines  
-        <a class="btn btn-small btn-default" title="Télécharger" target="_blank" href="@Model.WeekStolonsBill.UrlPath"><span class="glyphicon glyphicon glyphicon-download-alt"> </span></a>
+        @Model.ConsumerBills.Count paniers cette semaines
         <a class="btn btn-small btn-default" title="Voir" asp-action="ShowStolonsBill" asp-route-id="@Model.WeekStolonsBill.BillNumber"><span class="glyphicon glyphicon glyphicon-eye-open"> </span></a>
+        <a class="btn btn-small btn-default" title="Télécharger" target="_blank" href="/@Model.WeekStolonsBill.UrlPath"><span class="glyphicon glyphicon glyphicon-download-alt"> </span></a>
     </p>
 
 
@@ -63,21 +65,21 @@ else
                         @if (Model.ActiveAdherentStolon.Authorized(Role.Admin) || Model.ActiveAdherentStolon.Adherent.IsWebAdmin)
                         {
                             @Html.ActionLink(
-                                                    "Valider paiement de la facture",
-                                                    "UpdateProducerBill",
-                                                    new { billId = item.BillId, state = ((int)item.State) + 1 },
-                                                    new
-                                                    {
-                                                        onclick = "return confirm('Confirmation du paiement de " + +item.BillAmount + " à " + item.AdherentStolon.Adherent.CompanyName + "');",
-                                                        @class = "btn btn-small btn-default"
-                                                    }
-                                    )}
+                                                         "Valider paiement de la facture",
+                                                         "UpdateProducerBill",
+                                                         new { billId = item.BillId, state = ((int)item.State) + 1 },
+                                                         new
+                                                         {
+                                                             onclick = "return confirm('Confirmation du paiement de " + +item.BillAmount + " à " + item.AdherentStolon.Adherent.CompanyName + "');",
+                                                             @class = "btn btn-small btn-default"
+                                                         }
+                                         )}
                     </td>
                     <td>
                         @{
                             @(item.BillAmount.ToString("0.00") + "€" + " (" + item.FeeAmount.ToString("0.00") + "€) - " + item.BillNumber)
                             <a class="btn btn-small btn-default" title="Voir" target="_blank" href="/billsHistory/ShowBill/@item.BillNumber"><span class="glyphicon glyphicon glyphicon-eye-open"> </span></a>
-                            <a class="btn btn-small btn-default" title="Télécharger" target="_blank" href="@Configurations.GetBillUrl(item)"><span class="glyphicon glyphicon glyphicon-download-alt"> </span></a>
+                            <a class="btn btn-small btn-default" title="Télécharger" target="_blank" href="/@Configurations.GetBillUrl(item)"><span class="glyphicon glyphicon glyphicon-download-alt"> </span></a>
                         }
                     </td>
                 </tr>
@@ -127,22 +129,22 @@ else
                     </td>
                     <td>
                         @Html.ActionLink(
-                                                "Valider la livraison",
-                                                "UpdateProducerBill",
-                                                new { billId = item.BillId, state = ((int)item.State) + 1 },
-                                                new
-                                                {
-                                                    onclick = "return confirm('Confirmation de la livraison de " + item.AdherentStolon.Adherent.CompanyName + "');",
-                                                    @class = "btn btn-small btn-default"
-                                                }
-                                )
+                                                     "Valider la livraison",
+                                                     "UpdateProducerBill",
+                                                     new { billId = item.BillId, state = ((int)item.State) + 1 },
+                                                     new
+                                                     {
+                                                         onclick = "return confirm('Confirmation de la livraison de " + item.AdherentStolon.Adherent.CompanyName + "');",
+                                                         @class = "btn btn-small btn-default"
+                                                     }
+                                     )
                         <a href="#" class="btn btn-small btn-default" onclick="BillsManagement.CorrectionView.openCorrectionModal('@item.BillId'); return false;">Réctifier la livraison</a>
                     </td>
                     <td>
                         @{
                             @(item.OrderAmount.ToString("0.00") + "€ - " + item.OrderNumber)
                             <a class="btn btn-small btn-default" title="Voir" target="_blank" href="/Orders/ShowOrder/@item.OrderNumber"><span class="glyphicon glyphicon glyphicon-eye-open"> </span></a>
-                            <a class="btn btn-small btn-default" title="Télécharger" target="_blank" href="@Configurations.GetOrderUrl(item)"><span class="glyphicon glyphicon glyphicon-download-alt"> </span></a>
+                            <a class="btn btn-small btn-default" title="Télécharger" target="_blank" href="/@Configurations.GetOrderUrl(item)"><span class="glyphicon glyphicon glyphicon-download-alt"> </span></a>
                         }
                     </td>
                 </tr>
@@ -214,7 +216,7 @@ else
                         @{
                             @(item.OrderAmount.ToString("0.00") + "€ - " + item.BillNumber)
                             <a class="btn btn-small btn-default" title="Voir" target="_blank" href="/billsHistory/ShowBill/@item.BillNumber"><span class="glyphicon glyphicon glyphicon-eye-open"> </span></a>
-                            <a class="btn btn-small btn-default" title="Télécharger" target="_blank" href="@Configurations.GetBillUrl(item)"><span class="glyphicon glyphicon glyphicon-download-alt"> </span></a>
+                            <a class="btn btn-small btn-default" title="Télécharger" target="_blank" href="/@Configurations.GetBillUrl(item)"><span class="glyphicon glyphicon glyphicon-download-alt"> </span></a>
                         }
                     </td>
                 </tr>

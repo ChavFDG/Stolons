@@ -26,6 +26,11 @@ namespace Stolons.Models
         [ForeignKey(nameof(ProducerBillId))]
         public virtual ProducerBill ProducerBill { get; set; }
 
+        public Guid? StolonsBillId { get; set; }
+
+        [ForeignKey(nameof(StolonsBillId))]
+        public virtual StolonsBill StolonsBill { get; set; }
+
 
         public Guid? TempWeekBasketId { get; set; }
 

@@ -41,26 +41,35 @@ namespace Stolons.Controllers
         public IActionResult History()
         {
             Stolon stolon = GetCurrentStolon();
+
             var adherentStolon = GetActiveAdherentStolon();
-            VmWeekBasketHistory vm = new VmWeekBasketHistory(adherentStolon);
+
+            var stolonsBills = _context.StolonsBills
+                                .Include(x => x.Stolon)
+                                .Include(x => x.BillEntries)
+                                .Where(x => x.StolonId == stolon.Id)
+                                .ToList();
+
+            var consumersBills = _context.ConsumerBills
+                                .Include(x => x.AdherentStolon)
+                                .Include(x => x.AdherentStolon.Adherent)
+                                .Include(x => x.AdherentStolon.Stolon)
+                                .Where(x => x.AdherentStolon.StolonId == stolon.Id)
+                                .OrderBy(x => x.AdherentStolon.Adherent.Id)
+                                .AsNoTracking()
+                                .ToList();
+
+            var producerBills = _context.ProducerBills
+                                .Include(x => x.AdherentStolon)
+                                .Include(x => x.AdherentStolon.Adherent)
+                                .Include(x => x.AdherentStolon.Stolon)
+                                .Where(x => x.AdherentStolon.StolonId == stolon.Id)
+                                .OrderBy(x => x.AdherentStolon.Adherent.Id)
+                                .AsNoTracking()
+                                .ToList();
+
+            VmWeekBasketHistory vm = new VmWeekBasketHistory(adherentStolon,stolonsBills,consumersBills, producerBills);
             vm.Stolon = GetCurrentStolon();
-            vm.ConsumerBills = _context.ConsumerBills
-                                .Include(x => x.AdherentStolon)
-                                .Include(x => x.AdherentStolon.Adherent)
-                                .Include(x => x.AdherentStolon.Stolon)
-                                .Where(x => x.AdherentStolon.StolonId == stolon.Id)
-                                .OrderBy(x => x.AdherentStolon.Adherent.Id)
-                                .AsNoTracking()
-                                .ToList();
-            vm.ProducerBills = _context.ProducerBills
-                                .Include(x => x.AdherentStolon)
-                                .Include(x => x.AdherentStolon.Adherent)
-                                .Include(x => x.AdherentStolon.Stolon)
-                                .Where(x => x.AdherentStolon.StolonId == stolon.Id)
-                                .OrderBy(x => x.AdherentStolon.Adherent.Id)
-                                .AsNoTracking()
-                                .ToList();
-            vm.StolonsBills = _context.StolonsBills.Include(x => x.Stolon).Where(x => x.StolonId == stolon.Id).ToList();
             return View(vm);
         }
 
@@ -114,7 +123,7 @@ namespace Stolons.Controllers
             _context.Add(transaction);
             //Save
             _context.SaveChanges();
-            return RedirectToAction("Index");
+            return RedirectToAction("WeekBaskets");
         }
 
         // GET: UpdateProducerBill
@@ -155,7 +164,7 @@ namespace Stolons.Controllers
                 //Generate bill in pdf
                 BillGenerator.GenerateBillPDF(bill);
             }
-            return RedirectToAction("Index");
+            return RedirectToAction("WeekBaskets");
         }
 
         public string RegenerateOrders()
