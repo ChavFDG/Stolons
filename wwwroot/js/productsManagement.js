@@ -62,7 +62,8 @@ var StockMgtViewModal = Backbone.View.extend({
         "change #WeekStock": "validateWeekStock",
         "change #RemainingStock": "validateRemainingStock",
         "click #saveStocks": "saveStocks",
-        "click #cancelEditStocks": "closeModal"
+        "click #cancelEditStocks": "closeModal",
+	"click #cancel": "closeModal"
     },
 
     template: _.template($("#stockMgtTemplate").html()),
@@ -136,9 +137,15 @@ var StockMgtViewModal = Backbone.View.extend({
             return false;
         }
         var self = this;
-        var responseHandler = function (responseText) {
-	    if (responseText.startsWith("Erreur")) {
-		self.validation.remainingStockError = responseText;
+	var changeWeekStock;
+        var responseHandler = function (response) {
+	    if (response.Error !== false) {
+		var appendText = "<br />Les stocks ont peut-être été mis à jours pendant l'édition. Veuillez rafraichir la page.<br />";
+		if (changeWeekStock) {
+		    self.validation.weekStockError = response.Message + appendText;
+		} else {
+		    self.validation.remainingStockError = response.Message + appendText;
+		}
 		self.render();
 	    } else {
 		location.reload();
@@ -146,6 +153,7 @@ var StockMgtViewModal = Backbone.View.extend({
 	};
         var promise;
 	if (this.currentProductStock.get("AdherentStolon").Stolon.Mode == 0 || this.currentProductStock.get("Product").get("StockManagement") == 1) {
+	    changeWeekStock = false;
 	    var diffStock = this.currentProductStock.get("RemainingStock") - this.initRemainingStock;
             promise = $.ajax({
                 url: "/ProductsManagement/ChangeCurrentStock",
@@ -156,6 +164,7 @@ var StockMgtViewModal = Backbone.View.extend({
                 }
             });
         } else {
+	    changeWeekStock = true;
 	    var diffStock = this.currentProductStock.get("WeekStock") - this.initWeekStock;
             promise = $.ajax({
                 url: "/ProductsManagement/ChangeStock",

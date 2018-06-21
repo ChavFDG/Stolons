@@ -222,7 +222,7 @@
                 </div>
                 <div class="modal-body">
                     <div>
-                        <span><b>Gestion des stocks pour le produit : <%= productStock.get("Product").Name %></b></span>
+                        <span><b>Changer le stock pour le produit : <i><%= productStock.get("Product").get("Name") %></i></b></span>
                     </div>
                     <br />
                     <div><label>Vente : </label> <%= productStock.getSellTypeString() %></div>
@@ -233,7 +233,6 @@
                             <label for="WeekStock" class="col-md-4 control-label">Stock proposé: </label>
                             <div class="col-md-4">
                                 <input id="WeekStock" name="WeekStock" class="form-control" min="0" type="number" step="<%= productStock.get("Product").QuantityStep / 1000 || 1 %>" value="<%= productStock.getWeekQuantityStock() %>" />
-                                <span id="WeekStockError" class="text-danger"><%= validation.weekStockError %></span>
                             </div>
                             <div class="col-md-4">
                                 <label class="control-label"><%= productStock.getStockUnitString() %></label>
@@ -246,7 +245,6 @@
                             <label for="RemainingStock" class="col-md-4 control-label">Il reste en stock : </label>
                             <div class="col-md-4">
                                 <input id="RemainingStock" name="RemainingStock" class="form-control" min="0" type="number" step="<%= productStock.get("Product").get("QuantityStep") / 1000 || 1 %>" value="<%= productStock.getRemainingQuantityStock() %>" />
-                                <span id="RemainingStockError" class="text-danger"><%= validation.remainingStockError %></span>
                             </div>
                             <div class="col-md-4">
                                 <label class="control-label"><%= productStock.getStockUnitString() %></label>
@@ -260,8 +258,11 @@
                         </div>
                     </div>
                     <% } %>
+                    <span id="WeekStockError" class="text-danger"><%= validation.weekStockError %></span>
+                    <span id="RemainingStockError" class="text-danger"><%= validation.remainingStockError %></span>
                     <div class="row">
                         <a id="saveStocks" class="btn btn-small btn-default" <% if (!_.isEmpty(validation.weekStockError) || !_.isEmpty(validation.remainingStockError)) { %> disabled="disabled" <% } %> >Enregistrer les modifications</a>
+                         <a id="cancel" class="btn btn-small btn-default">Annuler</a>
                         <div class="col-md-4">
                         </div>
                     </div>

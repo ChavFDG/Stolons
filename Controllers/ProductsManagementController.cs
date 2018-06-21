@@ -16,6 +16,7 @@ using Newtonsoft.Json;
 using Stolons.ViewModels.ProductsManagement;
 using Microsoft.AspNetCore.Authorization;
 using Stolons.Models.Users;
+using Stolons.ViewModels.Common;
 
 namespace Stolons.Controllers
 {
@@ -358,26 +359,29 @@ namespace Stolons.Controllers
             if (!AuthorizedProducer())
                 return Unauthorized();
             var productStock = _context.ProductsStocks.First(x => x.Id == id);
+            if (productStock.WeekStock + stockDiff < 0)
+            {
+                return Json(new JsonStatus(true, "Erreur: impossible de baisser le stock (stock de la semaine: " + productStock.WeekStock + ")"));
+            }
             productStock.WeekStock = productStock.WeekStock + stockDiff;
             productStock.RemainingStock = productStock.WeekStock;
             _context.SaveChanges();
-            return Ok();
+            return Json(new JsonStatus());
         }
 
         [HttpPost, ActionName("ChangeCurrentStock")]
-        public string ChangeCurrentStock(Guid id, decimal stockDiff)
+        public IActionResult ChangeCurrentStock(Guid id, decimal stockDiff)
         {
             if (!AuthorizedProducer())
-                return "401";
+                return Unauthorized();
             var productStock = _context.ProductsStocks.First(x => x.Id == id);
-            //TODO verify that remaining stock >= 0
             if (productStock.RemainingStock + stockDiff < 0)
             {
-                return "Erreur: impossible de baisser le stock (stock restant: " + productStock.RemainingStock + ")";
+                return Json(new JsonStatus(true, "Erreur: impossible de baisser le stock (stock restant: " + productStock.RemainingStock + ")"));
             }
             productStock.RemainingStock = productStock.RemainingStock + stockDiff;
             _context.SaveChanges();
-            return "ok";
+            return Json(new JsonStatus(false, ""));
         }
 
         [HttpGet, ActionName("ManageFamilies")]
