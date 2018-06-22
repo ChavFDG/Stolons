@@ -155,9 +155,11 @@ namespace Stolons.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction("Index");
+            return RedirectToAction("DetailsStolon", new {id = vm.Stolon.Id});
+//                return RedirectToAction("Index");
             }
-            return View(vm.Stolon);
+            return RedirectToAction("Stolon", "StolonController");
+//            return View(vm.Stolon);
         }
 
         public async Task<IActionResult> DeleteStolon(Guid id)
