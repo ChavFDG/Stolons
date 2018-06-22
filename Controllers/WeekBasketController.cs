@@ -71,7 +71,7 @@ namespace Stolons.Controllers
             }
             //Adherent
             var adhrentStolons =_context.AdherentStolons.Include(x => x.Adherent).Include(x => x.Stolon).Where(x => x.StolonId == stolon.Id).ToList();
-            adhrentStolons.RemoveRange(0, adhrentStolons.Count - 20);
+            adhrentStolons.RemoveRange(0, adhrentStolons.Count> 20? adhrentStolons.Count - 20 : 0);
             foreach (var adherentStolon in adhrentStolons)
             {
                 //Création du temps week basket
@@ -90,7 +90,7 @@ namespace Stolons.Controllers
                 var productQuantity = NumberHelper.GenerateRandom(random.Next(0, productStocks.Count/10),0, productStocks.Count-1);
                 productQuantity.ForEach(x => AddToBasket(tempWeekBasket.Id.ToString(), idProductStocks[x].Id.ToString()));
                 //
-                ValidateBasket(tempWeekBasket.Id.ToString(),tempWeekBasket.AdherentStolon);
+                ValidateBasket(tempWeekBasket.Id.ToString(),tempWeekBasket.AdherentStolon.Id.ToString());
             }
 
             return Redirect(nameof(Index));
@@ -325,10 +325,11 @@ namespace Stolons.Controllers
         }
 
         [HttpPost, ActionName("ValidateBasket")]
-        public IActionResult ValidateBasket(string basketId, AdherentStolon adherentStolon = null)
+        public IActionResult ValidateBasket(string basketId, string adherentStolonId = null)
         {
-            if(adherentStolon== null)
-                adherentStolon = GetActiveAdherentStolon();
+            var adherentStolon = GetActiveAdherentStolon();
+            if (!string.IsNullOrEmpty(adherentStolonId ))
+                adherentStolon = _context.AdherentStolons.Include(x => x.Stolon).Include(x => x.Adherent).First(x => x.Id.ToString() == adherentStolonId);
             Stolon stolon = GetCurrentStolon();
             if (stolon.GetMode() == Stolon.Modes.DeliveryAndStockUpdate)
                 return Redirect("Index");
