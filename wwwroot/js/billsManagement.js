@@ -28,6 +28,16 @@ $(function () {
 	consumerBillModalView.open(ev);
 	return false;
     });
+
+
+    window.openCorrectionModal = function(billId) {
+	producerBillModel = new ProducerBillModel(billId);
+	producerBillModel.on("sync", function () {
+	    CorrectionView = new BillsManagement.CorrectionView(producerBillModel);
+	    CorrectionView.open();
+	}, this);
+    };
+
 });
 
 BillsManagement.CorrectionView = Backbone.View.extend({
@@ -197,11 +207,3 @@ BillsManagement.CorrectionView = Backbone.View.extend({
         return false;
     }
 });
-
-var openCorrectionModal = function(billId) {
-    producerBillModel = new ProducerBillModel(billId);
-    producerBillModel.on("sync", function () {
-	CorrectionView = new BillsManagement.CorrectionView(producerBillModel);
-	CorrectionView.open();
-    }, this);
-};
