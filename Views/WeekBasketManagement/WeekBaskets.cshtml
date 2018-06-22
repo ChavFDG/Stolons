@@ -133,7 +133,7 @@ else
                                                          @class = "btn btn-small btn-default"
                                                      }
                                      )
-                        <a href="#" class="btn btn-small btn-default" onclick="BillsManagement.CorrectionView.openCorrectionModal('@item.BillId'); return false;">Réctifier la livraison</a>
+                        <a href="#" class="btn btn-small btn-default" onclick="openCorrectionModal('@item.BillId'); return false;">Réctifier la livraison</a>
                     </td>
                     <td>
                         @{
@@ -268,7 +268,7 @@ else
                                 <col>
                                 </col>
                                 <% _.forEach(producerBill.getProductStocks(), function(productStock) { %>
-                                <col id="product-col-<%= productStock.get(" Id") %>">
+                                <col id="product-col-<%= productStock.get("Id") %>">
                                 </col>
                                 <% }); %>
                             </colgroup>
@@ -280,7 +280,7 @@ else
                                     </th>
                                     <% _.forEach(producerBill.getProductStocks(), function(productStock) { %>
                                     <td class="correction-product-description productMgtImage">
-                                        <img src="<%= productStock.get(" Product").getPictureUrl("light") %>">
+                                        <img src="<%= productStock.get("Product").getPictureUrl("light") %>">
                                         <span><%= productStock.get("Product").get("Name") %></span>
                                     </td>
                                     <% }); %>
