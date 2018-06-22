@@ -204,39 +204,34 @@ namespace Stolons.Controllers
                                 .Include(x => x.AdherentStolon)
                                 .Include(x => x.AdherentStolon.Adherent)
                                 .Include(x => x.AdherentStolon.Stolon)
-                                .Where(x => x.State == BillState.Pending && x.AdherentStolon.StolonId == stolon.Id)
                                 .OrderBy(x => x.AdherentStolon.Adherent.Id)
                                 .ToList();
             var producersBills = _context.ProducerBills
                                 .Include(x => x.AdherentStolon)
                                 .Include(x => x.AdherentStolon.Adherent)
                                 .Include(x => x.AdherentStolon.Stolon)
-                                .Where(x => x.State != BillState.Paid && x.AdherentStolon.StolonId == stolon.Id)
                                 .OrderBy(x => x.AdherentStolon.Adherent.Id)
                                 .ToList();
 
             var weekStolonBill = _context.StolonsBills
                             .Include(x => x.Stolon)
                             .Where(x => x.StolonId == stolon.Id)
-                            .ToList()
-                            .FirstOrDefault(x => x.BillNumber.EndsWith(DateTime.Now.Year + "_" + DateTime.Now.GetIso8601WeekOfYear()));
+                            .ToList();
 
             DateTime start = DateTime.Now;
             StringBuilder report = new StringBuilder();
             report.Append("Rapport de génération des commandes : ");
-            report.AppendLine("- stolon : " + stolon.Label);
-            report.AppendLine("- année : " + DateTime.Now.Year);
-            report.AppendLine("- semaine : " + DateTime.Now.GetIso8601WeekOfYear());
             report.AppendLine();
             Dictionary<ConsumerBill, bool> consumers = new Dictionary<ConsumerBill, bool>();
             consumersBills.ForEach(x => consumers.Add(x, BillGenerator.GenerateBillPDF(x)));
             Dictionary<ProducerBill, bool> producers = new Dictionary<ProducerBill, bool>();
             producersBills.ForEach(x => producers.Add(x, BillGenerator.GenerateOrderPDF(x)));
-            bool stolonBill = BillGenerator.GeneratePDF(weekStolonBill.HtmlBillContent, weekStolonBill.GetStolonBillFilePath());
+            Dictionary<StolonsBill, bool> weeks = new Dictionary<StolonsBill, bool>();
+            weekStolonBill.ForEach(x => weeks.Add(x, BillGenerator.GeneratePDF(x.HtmlBillContent,x.GetStolonBillFilePath())));
             report.AppendLine("RESUME : ");
             report.AppendLine("Commandes consomateurs générées : " + consumers.Count(x => x.Value == true) + "/" + consumers.Count);
             report.AppendLine("Commandes producteurs générées : " + producers.Count(x => x.Value == true) + "/" + producers.Count);
-            report.AppendLine("Commandes stolons générées : " + stolonBill);
+            report.AppendLine("Commandes stolons générées : " + weeks.Count(x => x.Value == true) + "/" + weeks.Count);
             report.AppendLine("DETAILS : ");
             report.AppendLine("-- Consomateurs ok : ");
             consumers.Where(x => x.Value).ToList().ForEach(consumer => report.AppendLine(consumer.Key.AdherentStolon.LocalId + " " + consumer.Key.AdherentStolon.Adherent.Name.ToUpper() + " " + consumer.Key.AdherentStolon.Adherent.Surname));
@@ -246,6 +241,10 @@ namespace Stolons.Controllers
             producers.Where(x => x.Value).ToList().ForEach(producer => report.AppendLine(producer.Key.AdherentStolon.LocalId + " " + producer.Key.AdherentStolon.Adherent.Name.ToUpper() + " " + producer.Key.AdherentStolon.Adherent.Surname));
             report.AppendLine("-- Producteurs nok : ");
             producers.Where(x => x.Value == false).ToList().ForEach(producer => report.AppendLine(producer.Key.AdherentStolon.LocalId + " " + producer.Key.AdherentStolon.Adherent.Name.ToUpper() + " " + producer.Key.AdherentStolon.Adherent.Surname));
+            report.AppendLine("-- Semaines ok : ");
+            weeks.Where(x => x.Value).ToList().ForEach(week => report.AppendLine(week.Key.BillNumber ));
+            report.AppendLine("-- Semaines nok : ");
+            weeks.Where(x => x.Value == false).ToList().ForEach(week => report.AppendLine(week.Key.BillNumber ));
             report.AppendLine();
             report?.AppendLine(" --Temps d'execution de la génération : " + (DateTime.Now - start));
             return report.ToString();

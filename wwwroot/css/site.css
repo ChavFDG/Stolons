@@ -1498,16 +1498,21 @@ label.required:after {
 /* END Home not logged view */
 
 
+/* BEGGIN History view */
 
 tr.collapsableHeader {
     cursor: pointer;
 }
 
-.collapsableHeader .sign:after {
-    content: "+";
-    display: inline-block;
+.fullScreenModal {
+    width:auto;
+    height:auto;
+    margin:50px;
 }
 
-.collapsableHeader.expand .sign:after {
-    content: "-";
+.billModalContent{
+    margin:10px;
 }
+
+
+/* END Home not logged view */

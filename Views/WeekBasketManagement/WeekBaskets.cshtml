@@ -16,11 +16,6 @@
     </p>
 
 
-    @if (Model.ActiveAdherentStolon.Authorized(Role.Admin))
-    {
-        <p> </p>
-        <a asp-action="RegenerateOrders" class="btn btn-small btn-default">(Test) Regénérer les commandes en pdf</a>
-    }
 }
 else
 {
