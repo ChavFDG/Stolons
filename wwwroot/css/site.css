@@ -1514,5 +1514,8 @@ tr.collapsableHeader {
     margin:10px;
 }
 
+.hoverHighlight:hover {
+    background-color: #F6F47C;
+}
 
 /* END Home not logged view */

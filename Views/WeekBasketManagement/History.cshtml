@@ -58,135 +58,134 @@
             </tr>
             @foreach (var stolonBill in Model.HistoryBills.Where(x => x.Key.EditionDate.Year == year).OrderByDescending(x => x.Key.EditionDate))
             {
-                <tr class="collapsableHeader" data-toggle="modal" data-target="#@stolonBill.Key.BillNumber">
-                    <td>@stolonBill.Key.EditionDate.GetIso8601WeekOfYear()  </td>
-                    <td>@stolonBill.Key.EditionDate  </td>
-                    <td>@stolonBill.Key.BillNumber</td>
-                    <td>@stolonBill.Key.Consumers </td>
-                    <td>@stolonBill.Key.Producers </td>
-                    <td>@stolonBill.Key.Amount.ToString("0.00") €</td>
-                    <td>@stolonBill.Key.FeeAmount.ToString("0.00") € (@stolonBill.Key.ProducersFee %)</td>
+                <tr class="collapsableHeader hoverHighlight">
+			<td data-toggle="modal" data-target="#@stolonBill.Key.BillNumber">@stolonBill.Key.EditionDate.GetIso8601WeekOfYear() </td>
+			<td data-toggle="modal" data-target="#@stolonBill.Key.BillNumber">@stolonBill.Key.EditionDate  </td>
+			<td data-toggle="modal" data-target="#@stolonBill.Key.BillNumber">@stolonBill.Key.BillNumber</td>
+			<td data-toggle="modal" data-target="#@stolonBill.Key.BillNumber">@stolonBill.Key.Consumers </td>
+			<td data-toggle="modal" data-target="#@stolonBill.Key.BillNumber">@stolonBill.Key.Producers </td>
+			<td data-toggle="modal" data-target="#@stolonBill.Key.BillNumber">@stolonBill.Key.Amount.ToString("0.00") €</td>
+			<td data-toggle="modal" data-target="#@stolonBill.Key.BillNumber">@stolonBill.Key.FeeAmount.ToString("0.00") € (@stolonBill.Key.ProducersFee %)</td>
                     <td>
                         <a class="btn btn-small btn-default" title="Voir" asp-action="ShowStolonsBill" asp-route-id="@stolonBill.Key.BillNumber"><span class="glyphicon glyphicon glyphicon-eye-open"> </span></a>
                         <a class="btn btn-small btn-default" title="Télécharger" target="_blank" href="/@stolonBill.Key.UrlPath"><span class="glyphicon glyphicon glyphicon-download-alt"> </span></a>
-
-                        <div class="modal fade" id="@stolonBill.Key.BillNumber" tabindex="-1" role="dialog">
-                            <div class="fullScreenModal" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                        <h4 class="modal-title">@stolonBill.Key.BillNumber du @stolonBill.Key.EditionDate</h4>
-                                    </div>
-                                    <div class="billModalContent">
-                                        <h3>Producteurs</h3>
-                                        <table class="table">
-                                            <tr>
-                                                <th>
-                                                    Numéro
-                                                </th>
-                                                <th>
-                                                    Raison social
-                                                </th>
-                                                <th>
-                                                    Téléphone
-                                                </th>
-                                                <th>
-                                                    CA TTC
-                                                </th>
-                                                <th>
-                                                    Comission total
-                                                </th>
-                                                <th>
-                                                    Facture
-                                                </th>
-                                            </tr>
-                                            @foreach (var item in stolonBill.Value.ProducerBills.OrderBy(x => x.AdherentStolon.LocalId))
-                                            {
-                                                <tr>
-                                                    <td>
-                                                        @Html.DisplayFor(modelItem => item.AdherentStolon.LocalId)
-                                                    </td>
-                                                    <td>
-                                                        @Html.DisplayFor(modelItem => item.AdherentStolon.Adherent.CompanyName)
-                                                    </td>
-                                                    <td>
-                                                        @Html.DisplayFor(modelItem => item.AdherentStolon.Adherent.PhoneNumber)
-                                                    </td>
-                                                    <td>
-                                                        @(item.BillAmount.ToString("0.00") + "€ TTC")
-                                                    </td>
-                                                    <td>
-                                                        @(item.FeeAmount.ToString("0.00") + "€ TTC")
-                                                    </td>
-                                                    <td>
-                                                        @{
-                                                            @item.BillNumber
-                                                            <a class="btn btn-small btn-default" title="Voir" target="_blank" href="/billsHistory/ShowBill/@item.BillNumber"><span class="glyphicon glyphicon glyphicon-eye-open"> </span></a>
-                                                            <a class="btn btn-small btn-default" title="Télécharger" target="_blank" href="/@Configurations.GetBillUrl(item)"><span class="glyphicon glyphicon glyphicon-download-alt"> </span></a>
-                                                        }
-                                                    </td>
-                                                </tr>
-                                            }
-                                        </table>
-                                        <h3>Consomateurs</h3>
-                                        <table class="table">
-                                            <tr>
-                                                <th>
-                                                    Numéro
-                                                </th>
-                                                <th>
-                                                    Nom
-                                                </th>
-                                                <th>
-                                                    Prénom
-                                                </th>
-                                                <th>
-                                                    Motant de la commande
-                                                </th>
-                                                <th>
-                                                    Facture
-                                                </th>
-                                            </tr>
-                                            @foreach (var item in stolonBill.Value.ConsumerBills.OrderBy(x => x.AdherentStolon.LocalId))
-                                            {
-                                                <tr>
-                                                    <td>
-                                                        @Html.DisplayFor(modelItem => item.AdherentStolon.LocalId)
-                                                    </td>
-                                                    <td>
-                                                        @Html.DisplayFor(modelItem => item.AdherentStolon.Adherent.Name)
-                                                    </td>
-                                                    <td>
-                                                        @Html.DisplayFor(modelItem => item.AdherentStolon.Adherent.Surname)
-                                                    </td>
-                                                    <td>
-                                                        @(item.OrderAmount.ToString("0.00") + "€")
-                                                    <td>
-                                                        @{
-                                                            @item.BillNumber
-                                                            <a class="btn btn-small btn-default" title="Voir" target="_blank" href="/billsHistory/ShowBill/@item.BillNumber"><span class="glyphicon glyphicon glyphicon-eye-open"> </span></a>
-                                                            <a class="btn btn-small btn-default" title="Télécharger" target="_blank" href="/@Configurations.GetBillUrl(item)"><span class="glyphicon glyphicon glyphicon-download-alt"> </span></a>
-                                                        }
-                                                    </td>
-                                                </tr>
-                                            }
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </td>
                 </tr>
             }
         </table>
     </div>
-
 }
 
-@*<script>
-        $('.collapsableHeader').click(function () {
-            $(this).toggleClass('expand').nextUntil('tr.collapsableHeader').slideToggle(100);
-        });
-    </script>*@
+@foreach (var year in years)
+{
 
+    @foreach (var stolonBill in Model.HistoryBills.Where(x => x.Key.EditionDate.Year == year).OrderByDescending(x => x.Key.EditionDate))
+    {
+	<div class="modal" id="@stolonBill.Key.BillNumber" tabindex="-1" role="dialog">
+          <div class="fullScreenModal modal-dialog" role="document">
+             <div class="modal-content">
+               <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@stolonBill.Key.BillNumber du @stolonBill.Key.EditionDate</h4>
+                </div>
+                <div class="billModalContent">
+                    <h3>Producteurs</h3>
+                    <table class="table">
+                        <tr>
+                            <th>
+                                Numéro
+                            </th>
+                            <th>
+                                Raison sociale
+                            </th>
+                            <th>
+                                Téléphone
+                            </th>
+                            <th>
+                                CA TTC
+                            </th>
+                            <th>
+                                Comission total
+                            </th>
+                            <th>
+                                Facture
+                            </th>
+                        </tr>
+                        @foreach (var item in stolonBill.Value.ProducerBills.OrderBy(x => x.AdherentStolon.LocalId))
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.AdherentStolon.LocalId)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.AdherentStolon.Adherent.CompanyName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.AdherentStolon.Adherent.PhoneNumber)
+                                </td>
+                                <td>
+                                    @(item.BillAmount.ToString("0.00") + "€ TTC")
+                                </td>
+                                <td>
+                                    @(item.FeeAmount.ToString("0.00") + "€ TTC")
+                                </td>
+                                <td>
+                                    @{
+                                        @item.BillNumber
+                                        <a class="btn btn-small btn-default" title="Voir" target="_blank" href="/billsHistory/ShowBill/@item.BillNumber"><span class="glyphicon glyphicon glyphicon-eye-open"> </span></a>
+                                        <a class="btn btn-small btn-default" title="Télécharger" target="_blank" href="/@Configurations.GetBillUrl(item)"><span class="glyphicon glyphicon glyphicon-download-alt"> </span></a>
+                                        }
+                                </td>
+                            </tr>
+                            }
+                    </table>
+                    <h3>Consomateurs</h3>
+                    <table class="table">
+                        <tr>
+                            <th>
+                                Numéro
+                            </th>
+                            <th>
+                                Nom
+                            </th>
+                            <th>
+                                Prénom
+                            </th>
+                            <th>
+                                Motant de la commande
+                            </th>
+                            <th>
+                                Facture
+                            </th>
+                        </tr>
+                        @foreach (var item in stolonBill.Value.ConsumerBills.OrderBy(x => x.AdherentStolon.LocalId))
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.AdherentStolon.LocalId)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.AdherentStolon.Adherent.Name)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.AdherentStolon.Adherent.Surname)
+                                </td>
+                                <td>
+                                    @(item.OrderAmount.ToString("0.00") + "€")
+                                    <td>
+                                        @{
+                                            @item.BillNumber
+                                            <a class="btn btn-small btn-default" title="Voir" target="_blank" href="/billsHistory/ShowBill/@item.BillNumber"><span class="glyphicon glyphicon glyphicon-eye-open"> </span></a>
+                                            <a class="btn btn-small btn-default" title="Télécharger" target="_blank" href="/@Configurations.GetBillUrl(item)"><span class="glyphicon glyphicon glyphicon-download-alt"> </span></a>
+                                            }
+                                    </td>
+                            </tr>
+                            }
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    }
+    }
