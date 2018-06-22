@@ -26,7 +26,7 @@ namespace Stolons.ViewModels.WeekBasket
         {
             TempWeekBasket = tempWeekBasket;
             ValidatedWeekBasket = validatedWeekBasket;
-	        AdherentStolon = adherentStolon;
+	        base.ActiveAdherentStolon = AdherentStolon = adherentStolon;
             ProductsStocks = context.ProductsStocks.Include(x => x.Product).Include(x => x.AdherentStolon).Where(x => x.AdherentStolon.Id == AdherentStolon.Stolon.Id).Where(x => x.Product.IsAvailable).Where(x => x.State == Product.ProductState.Enabled).ToList();
             ProductTypes = context.ProductTypes.Include(x => x.ProductFamilly).ToList();
         }

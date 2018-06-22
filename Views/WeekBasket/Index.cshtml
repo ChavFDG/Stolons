@@ -1,5 +1,7 @@
 ﻿@using Stolons.Helpers;
 @using Stolons.ViewModels.WeekBasket;
+@using Microsoft.AspNetCore.Hosting;
+
 @model WeekBasketViewModel
 
 @{
@@ -16,6 +18,11 @@
 }
 else
 {
+
+    @if (Model.ActiveAdherentStolon.Authorized(Role.Admin) && Configurations.Environment.IsProduction() != true)
+    {
+        <a class="btn btn-small btn-default" asp-controller="WeekBasket" asp-action="GenerateRandomOrders">/!\ Générer des commandes aléatoires /!\</a>
+}
     <div class="row">
         <div id="filters">
         </div>

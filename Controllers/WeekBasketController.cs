@@ -15,6 +15,7 @@ using Stolons.Models;
 using Stolons.ViewModels.WeekBasket;
 using System;
 using Stolons.Models.Users;
+using Stolons.Helpers;
 
 namespace Stolons.Controllers
 {
@@ -52,6 +53,47 @@ namespace Stolons.Controllers
                 _context.SaveChanges();
             }
             return View(new WeekBasketViewModel(adherentStolon, tempWeekBasket, validatedWeekBasket, _context));
+        }
+
+        // GET: WeekBasket/Index/id
+        public IActionResult GenerateRandomOrders()
+        {
+            Random random = new Random();
+            //
+            var stolon = GetCurrentStolon();
+            //Stock
+            var productStocks = _context.ProductsStocks.Include(x => x.AdherentStolon).Where(x => x.State == Product.ProductState.Enabled && x.AdherentStolon.StolonId == stolon.Id).AsNoTracking().ToList();
+            var idProductStocks = new Dictionary<int, ProductStockStolon>();
+            int cpt = -1;                
+            foreach(var productStock in productStocks)
+            {
+                idProductStocks.Add(cpt++, productStock);
+            }
+            //Adherent
+            var adhrentStolons =_context.AdherentStolons.Include(x => x.Adherent).Include(x => x.Stolon).Where(x => x.StolonId == stolon.Id).ToList();
+            adhrentStolons.RemoveRange(0, adhrentStolons.Count - 20);
+            foreach (var adherentStolon in adhrentStolons)
+            {
+                //Création du temps week basket
+                TempWeekBasket tempWeekBasket = _context.TempsWeekBaskets.Include(x => x.AdherentStolon).Include(x => x.AdherentStolon.Adherent).Include(x => x.BillEntries).FirstOrDefault(x => x.AdherentStolon.Id == adherentStolon.Id);
+                if (tempWeekBasket == null)
+                {
+                    tempWeekBasket = new TempWeekBasket
+                    {
+                        AdherentStolon = adherentStolon,
+                        BillEntries = new List<BillEntry>()
+                    };
+                    _context.Add(tempWeekBasket);
+                    _context.SaveChanges();
+                }
+                //Génération aléatoire de commande
+                var productQuantity = NumberHelper.GenerateRandom(random.Next(0, productStocks.Count/10),0, productStocks.Count-1);
+                productQuantity.ForEach(x => AddToBasket(tempWeekBasket.Id.ToString(), idProductStocks[x].Id.ToString()));
+                //
+                ValidateBasket(tempWeekBasket.Id.ToString(),tempWeekBasket.AdherentStolon);
+            }
+
+            return Redirect(nameof(Index));
         }
 
         [AllowAnonymous]
@@ -283,9 +325,10 @@ namespace Stolons.Controllers
         }
 
         [HttpPost, ActionName("ValidateBasket")]
-        public IActionResult ValidateBasket(string basketId)
+        public IActionResult ValidateBasket(string basketId, AdherentStolon adherentStolon = null)
         {
-            var adherentStolon = GetActiveAdherentStolon();
+            if(adherentStolon== null)
+                adherentStolon = GetActiveAdherentStolon();
             Stolon stolon = GetCurrentStolon();
             if (stolon.GetMode() == Stolon.Modes.DeliveryAndStockUpdate)
                 return Redirect("Index");
@@ -413,6 +456,14 @@ namespace Stolons.Controllers
                 else
                 {
                     subject = "Validation partielle de votre panier de la semaine";
+
+                    foreach (BillEntry billEntry in rejectedEntries)
+                    {
+                        if (billEntry.ProductStock == null)
+                        {
+                            billEntry.ProductStock = _context.ProductsStocks.Include(x => x.AdherentStolon).Include(x => x.Product).Include(x => x.AdherentStolon.Adherent).AsNoTracking().First(x => x.Id == billEntry.ProductStockId);
+                        }
+                    }
                 }
                 ValidationSummaryViewModel validationSummaryViewModel = new ValidationSummaryViewModel(adherentStolon, validatedWeekBasket, rejectedEntries) { Total = GetBasketPrice(validatedWeekBasket) };
                 Services.AuthMessageSender.SendEmail(adherentStolon.Stolon.Label, validatedWeekBasket.AdherentStolon.Adherent.Email, validatedWeekBasket.AdherentStolon.Adherent.Name, subject, base.RenderPartialViewToString("Templates/ValidatedBasketTemplate", validationSummaryViewModel));
