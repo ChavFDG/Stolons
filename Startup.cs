@@ -134,6 +134,11 @@ namespace Stolons
             var dbContext = services.GetRequiredService<ApplicationDbContext>();
             var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
 
+            
+
+
+
+
             List<Stolon> stolons = CreateStolons(dbContext);
             CreateAdminAccount(dbContext, userManager, stolons.First());
             CreateProductCategories(dbContext);

@@ -68,9 +68,39 @@ namespace Stolons.Controllers
                                 .AsNoTracking()
                                 .ToList();
 
-            VmWeekBasketHistory vm = new VmWeekBasketHistory(adherentStolon,stolonsBills,consumersBills, producerBills);
+            VmWeekBasketHistory vm = new VmWeekBasketHistory(adherentStolon, stolonsBills, consumersBills, producerBills);
             vm.Stolon = GetCurrentStolon();
             return View(vm);
+        }
+
+        public IActionResult LinkBillEntry()
+        {
+            var stolonsBills = _context.StolonsBills
+                                .Include(x => x.Stolon)
+                                .Include(x => x.BillEntries)
+                                .ToList();
+
+            var billEntries = _context.BillEntrys
+                                .Include(x => x.ConsumerBill)
+                                .Include(x => x.ProducerBill)
+                                .ToList();
+
+            foreach (var stolonBill in stolonsBills.Where(x => x.BillEntries?.Any() != true))
+            {
+                stolonBill.BillEntries = new List<BillEntry>();
+
+                foreach (var billEntry in billEntries.Where(x => x.ProducerBill != null).Where(x => x.ProducerBill.EditionDate.Year == stolonBill.EditionDate.Year && x.ProducerBill.EditionDate.GetIso8601WeekOfYear() == stolonBill.EditionDate.GetIso8601WeekOfYear()))
+                {
+                    stolonBill.BillEntries.Add(billEntry);
+                }
+                stolonBill.Amount = 0;
+                stolonBill.BillEntries.ForEach(x => stolonBill.Amount += x.Price);
+            }
+            _context.SaveChanges();
+
+
+
+            return Redirect(nameof(History));
         }
 
 
@@ -137,7 +167,7 @@ namespace Stolons.Controllers
 
             bill.State = (BillState)state;
             _context.Update(bill);
-            
+
             if (bill.State == BillState.Paid)
             {
                 //Transaction
@@ -244,7 +274,7 @@ namespace Stolons.Controllers
             BillGenerator.GenerateBillPDF(bill);
             foreach (var billId in modifiedBills)
             {
-                var billToModify = _context.ConsumerBills.Include(x=>x.AdherentStolon.Adherent).First(x => x.BillId == billId);
+                var billToModify = _context.ConsumerBills.Include(x => x.AdherentStolon.Adherent).First(x => x.BillId == billId);
                 billToModify.ModificationReason += billCorrection.Reason;
                 billToModify.HasBeenModified = true;
                 //Envoie mail user

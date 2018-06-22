@@ -4,6 +4,10 @@
 @using Stolons.Tools
 
 <h2>Historique des commandes</h2>
+
+<a class="btn btn-small btn-default" asp-controller="WeekBasketManagement" asp-action="LinkBillEntry">Re créer le lien entre stolon bill et bill entry</a>
+
+
 @{
     var years = Model.HistoryBills.Keys.Select(s => s.EditionDate.Year).Distinct().ToList();
     years.Sort();
@@ -52,8 +56,8 @@
                     <td>@stolonBill.Key.BillNumber</td>
                     <td>@stolonBill.Key.Consumers </td>
                     <td>@stolonBill.Key.Producers </td>
-                    <td>@stolonBill.Key.Amount €</td>
-                    <td>@stolonBill.Key.FeeAmount € (@stolonBill.Key.ProducersFee + %)</td>
+                    <td>@stolonBill.Key.Amount.ToString("0.00") €</td>
+                    <td>@stolonBill.Key.FeeAmount.ToString("0.00") € (@stolonBill.Key.ProducersFee %)</td>
                     <td>
                         <a class="btn btn-small btn-default" title="Voir" asp-action="ShowStolonsBill" asp-route-id="@stolonBill.Key.BillNumber"><span class="glyphicon glyphicon glyphicon-eye-open"> </span></a>
                         <a class="btn btn-small btn-default" title="Télécharger" target="_blank" href="/@stolonBill.Key.UrlPath"><span class="glyphicon glyphicon glyphicon-download-alt"> </span></a>
