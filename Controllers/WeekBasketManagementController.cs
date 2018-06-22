@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Text;
 using Stolons.Services;
+using MoreLinq;
 
 namespace Stolons.Controllers
 {
@@ -82,19 +83,21 @@ namespace Stolons.Controllers
 
             var billEntries = _context.BillEntrys
                                 .Include(x => x.ConsumerBill)
-                                .Include(x => x.ProducerBill)
+                                .Include(x => x.ProducerBill).ThenInclude(x=>x.AdherentStolon)
                                 .ToList();
-
             foreach (var stolonBill in stolonsBills.Where(x => x.BillEntries?.Any() != true))
             {
                 stolonBill.BillEntries = new List<BillEntry>();
 
-                foreach (var billEntry in billEntries.Where(x => x.ProducerBill != null).Where(x => x.ProducerBill.EditionDate.Year == stolonBill.EditionDate.Year && x.ProducerBill.EditionDate.GetIso8601WeekOfYear() == stolonBill.EditionDate.GetIso8601WeekOfYear()))
+                foreach (var billEntry in billEntries.Where(x => x.ProducerBill != null).Where(x => x.ProducerBill.EditionDate.Year == stolonBill.EditionDate.Year && x.ProducerBill.EditionDate.GetIso8601WeekOfYear() == stolonBill.EditionDate.GetIso8601WeekOfYear() && stolonBill.StolonId == x.ProducerBill.AdherentStolon.StolonId))
                 {
                     stolonBill.BillEntries.Add(billEntry);
                 }
+                stolonBill.Consumers = stolonBill.BillEntries.DistinctBy(x => x.ConsumerBillId).Count();
+                stolonBill.Producers = stolonBill.BillEntries.DistinctBy(x => x.ProducerBillId).Count();
                 stolonBill.Amount = 0;
                 stolonBill.BillEntries.ForEach(x => stolonBill.Amount += x.Price);
+                _context.SaveChanges();
             }
             _context.SaveChanges();
 
