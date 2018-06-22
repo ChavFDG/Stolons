@@ -10,7 +10,7 @@
 @if (Model.Stolon.GetMode() == Stolon.Modes.DeliveryAndStockUpdate && Model.WeekStolonsBill != null)
 {
     <p>
-        @Model.ConsumerBills.Count paniers cette semaines
+        @Model.ConsumerBills.Count paniers cette semaine
         <a class="btn btn-small btn-default" title="Voir" asp-action="ShowStolonsBill" asp-route-id="@Model.WeekStolonsBill.BillNumber"><span class="glyphicon glyphicon glyphicon-eye-open"> </span></a>
         <a class="btn btn-small btn-default" title="Télécharger" target="_blank" href="/@Model.WeekStolonsBill.UrlPath"><span class="glyphicon glyphicon glyphicon-download-alt"> </span></a>
     </p>
@@ -23,7 +23,7 @@ else
 }
 
 <div class="boxContainer">
-    <h4>Facture à régler aux producteurs </h4>
+    <h4>Factures à régler aux producteurs </h4>
     @if (Model.ProducerBills.Any(x => x.State == BillState.Delivered))
     {
         <table class="table">
