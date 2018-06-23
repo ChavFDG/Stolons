@@ -1351,13 +1351,13 @@ h1 {
 
 .th-crossed-left {
     position: absolute;
-    bottom: 12px;
+    bottom: 5px;
 }
 
 .th-crossed-right {
     position: absolute;
-    top: 12px;
-    right: 10px
+    top: 5px;
+    right: 5px;
 }
 
 #correction-table {

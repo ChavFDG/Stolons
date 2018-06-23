@@ -169,12 +169,13 @@ BillsManagement.CorrectionView = Backbone.View.extend({
         if (_.isEmpty(data.NewQuantities)) {
             location.reload();
         } else {
-            var promise = $.ajax({
+	    //Disabling button while waiting for the request to finish
+	    $("#validateCorrection").attr("disabled", "disabled");
+            $.ajax({
                 url: "/WeekBasketManagement/UpdateBillCorrection",
                 type: 'POST',
                 data: data
-            });
-            promise.then(function (success) {
+            }).then(function (success) {
                 console.log(success);
                 if (!success) {
                     that.saveErrors = "Erreur lors de la sauvegarde."
@@ -190,6 +191,13 @@ BillsManagement.CorrectionView = Backbone.View.extend({
 });
 
 $(function() {
+    var consumerBillModalView = new BillsManagement.ConsumerBillModalView();
+
+    $('a.open-consumer-modal').click(function (ev) {
+        consumerBillModalView.open(ev);
+        return false;
+    });
+
     BillsManagement.openCorrectionModal = function(billId) {
 	producerBillModel = new ProducerBillModel(billId);
 	producerBillModel.on("sync", function () {
