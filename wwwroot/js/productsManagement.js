@@ -73,7 +73,8 @@ var StockMgtViewModal = Backbone.View.extend({
     },
 
     open: function (productStockId) {
-        this.currentProductStock = ProductsModel.get(productStockId);
+	// Working copy
+        this.currentProductStock = ProductsModel.get(productStockId).clone();
         this.renderModal();
         if (this.currentProductStock.get("AdherentStolon").Stolon.Mode == 0 || this.currentProductStock.get("Product").get("StockManagement") == 1) {
             this.validateRemainingStock();
@@ -127,6 +128,10 @@ var StockMgtViewModal = Backbone.View.extend({
                 return;
             }
         }
+	if (this.currentProductStock.get("Product").get("StockManagement") === 0) {
+	    var diffQty = remainingStock - this.currentProductStock.get("RemainingStock");
+	    this.currentProductStock.set({"WeekStock": this.currentProductStock.get("WeekStock") + diffQty });
+	}
 	this.currentProductStock.set({ "RemainingStock": remainingStock });
         this.validation.remainingStockError = "";
         this.render();

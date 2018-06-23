@@ -17,6 +17,7 @@ using Stolons.ViewModels.ProductsManagement;
 using Microsoft.AspNetCore.Authorization;
 using Stolons.Models.Users;
 using Stolons.ViewModels.Common;
+using static Stolons.Models.Product;
 
 namespace Stolons.Controllers
 {
@@ -374,12 +375,16 @@ namespace Stolons.Controllers
         {
             if (!AuthorizedProducer())
                 return Unauthorized();
-            var productStock = _context.ProductsStocks.First(x => x.Id == id);
+            var productStock = _context.ProductsStocks.Include(x => x.Product).First(x => x.Id == id);
             if (productStock.RemainingStock + stockDiff < 0)
             {
                 return Json(new JsonStatus(true, "Erreur: impossible de baisser le stock (stock restant: " + productStock.RemainingStock + ")"));
             }
             productStock.RemainingStock = productStock.RemainingStock + stockDiff;
+	    if (productStock.Product.StockManagement == StockType.Week && productStock.WeekStock + stockDiff >= 0)
+	    {
+	        productStock.WeekStock = productStock.WeekStock + stockDiff;
+	    }
             _context.SaveChanges();
             return Json(new JsonStatus(false, ""));
         }

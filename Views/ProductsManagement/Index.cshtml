@@ -224,40 +224,35 @@
                     <div>
                         <span><b>Changer le stock pour le produit : <i><%= productStock.get("Product").get("Name") %></i></b></span>
                     </div>
-                    <br />
-                    <div><label>Vente : </label> <%= productStock.getSellTypeString() %></div>
-                    <br />
+                     <div class="form-horizontal stockManagementWrapper">
+                        <div class="form-group">
+                            <div><label>Vente : </label> <%= productStock.getSellTypeString() %></div>
+                            <div><label>Gestion du stock : </label> <%= productStock.getStockManagementString() %></div>
                     <% if (productStock.get("AdherentStolon").Stolon.Mode == 1 && productStock.get("Product").get("StockManagement") != 1) { %> <!-- Livraisons/stocks et gestion Hebdomadaire -->
-                    <div class="form-horizontal">
-                        <div class="form-group">
-                            <label for="WeekStock" class="col-md-4 control-label">Stock proposé: </label>
-                            <div class="col-md-4">
-                                <input id="WeekStock" name="WeekStock" class="form-control" min="0" type="number" step="<%= productStock.get("Product").QuantityStep / 1000 || 1 %>" value="<%= productStock.getWeekQuantityStock() %>" />
-                            </div>
-                            <div class="col-md-4">
-                                <label class="control-label"><%= productStock.getStockUnitString() %></label>
-                            </div>
-                        </div>
-                    </div>
+ 
+                            <label for="WeekStock" class="control-label">Stock proposé pour la semaine prochaine:</label>
+                            <input id="WeekStock" name="WeekStock" min="0" type="number" step="<%= productStock.get("Product").QuantityStep / 1000 || 1 %>" value="<%= productStock.getWeekQuantityStock() %>" />
+                            <span><%= productStock.getStockUnitString() %></span>
                     <% } else { %> <!-- Commandes -->
-                    <div class="form-horizontal">
-                        <div class="form-group">
-                            <label for="RemainingStock" class="col-md-4 control-label">Il reste en stock : </label>
-                            <div class="col-md-4">
-                                <input id="RemainingStock" name="RemainingStock" class="form-control" min="0" type="number" step="<%= productStock.get("Product").get("QuantityStep") / 1000 || 1 %>" value="<%= productStock.getRemainingQuantityStock() %>" />
-                            </div>
-                            <div class="col-md-4">
-                                <label class="control-label"><%= productStock.getStockUnitString() %></label>
-                            </div>
-                        </div>
+			<!-- Stock a la semaine -->
+		        <% if (productStock.get("Product").get("StockManagement") == 0) { %>
+                            <label class="control-label">Stock proposé cette semaine :  </label>
+                                <span><%= productStock.getWeekQuantityStock() %> (<%= productStock.getWeekQuantityOrdered() %> commandés par les utilisateurs)</span>
+                                <span><%= productStock.getStockUnitString() %></span>
+			<% } %>
+                        <div>
+                            <label for="RemainingStock" class="control-label">Il reste en stock : </label>
+                            <input id="RemainingStock" name="RemainingStock" min="0" type="number" step="<%= productStock.get("Product").get("QuantityStep") / 1000 || 1 %>" value="<%= productStock.getRemainingQuantityStock() %>" />
+                                <span><%= productStock.getStockUnitString() %></span>
                         <div>
                             <% if (productStock.get("OrderedQuantityString") > 0) { %>
                             <span><%= productStock.get("OrderedQuantityString") %> ont déjà été commandé(e)s. </span>
                             <span>Attention: modifications possibles jusqu'à la cloture des commandes.</span>
                             <% } %>
                         </div>
-                    </div>
                     <% } %>
+		    </div>
+		    </div>
                     <span id="WeekStockError" class="text-danger"><%= validation.weekStockError %></span>
                     <span id="RemainingStockError" class="text-danger"><%= validation.remainingStockError %></span>
                     <div class="row">
