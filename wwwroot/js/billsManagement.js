@@ -22,13 +22,12 @@ BillsManagement.ConsumerBillModalView = Backbone.View.extend({
 });
 
 $(function () {
-    var consumerBillModalView = new BillsManagement.ConsumerBillModalView();
+    // var consumerBillModalView = new BillsManagement.ConsumerBillModalView();
 
-    $('a.open-consumer-modal').click(function (ev) {
-	consumerBillModalView.open(ev);
-	return false;
-    });
-
+    // $('a.open-consumer-modal').click(function (ev) {
+    // 	consumerBillModalView.open(ev);
+    // 	return false;
+    // });
 
     window.openCorrectionModal = function(billId) {
 	producerBillModel = new ProducerBillModel(billId);
@@ -37,7 +36,6 @@ $(function () {
 	    CorrectionView.open();
 	}, this);
     };
-
 });
 
 BillsManagement.CorrectionView = Backbone.View.extend({
