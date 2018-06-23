@@ -513,6 +513,26 @@ img.warning {
     border-top: 1px solid #aaa;
 }
 
+.product__zoom {
+    display: none;
+    position: absolute;
+    right: calc(50% - 20px);
+    top: calc(50% - 20px);
+    width: 40px;
+    height: 40px;
+    padding-top: 3px;
+    font-size: 24px;
+    background-color: #eee;
+    border-radius: 20px;
+    text-align: center;
+    cursor: pointer;
+    color: #333;
+}
+
+.product:hover .product__zoom {
+    display: block;
+}
+
 .product__producer__type {
     position: absolute;
     top: 0;
