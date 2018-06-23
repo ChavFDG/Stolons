@@ -10,17 +10,17 @@ BillsManagement.ConsumerBillModalView = Backbone.View.extend({
     template: _.template($("#consumerBillModalTemplate").html()),
 
     open: function (event) {
-	var billId = $(event.currentTarget).attr('billId');
-	var canUseToken = $(event.currentTarget).attr('canUseToken');
-	this.render(billId, canUseToken);
+        var billId = $(event.currentTarget).attr('billId');
+        var canUseToken = $(event.currentTarget).attr('canUseToken');
+        this.render(billId, canUseToken);
     },
 
     render: function (billId, canUseToken) {
-	this.$el.html(this.template({ billId: billId, canUseToken: canUseToken }));
-	this.$el.modal('show');
+        this.$el.html(this.template({ billId: billId, canUseToken: canUseToken }));
+        this.$el.modal('show');
     }
 });
-$(function() {
+$(function () {
     BillsManagement.CorrectionView = Backbone.View.extend({
 
         el: "#correctionModal",
@@ -147,58 +147,56 @@ $(function() {
             this.validate();
         },
 
-    //Send modified billEntries quantities to serveur
-    save: function (event) {
-        var that = this;
-	if ($(event.currentTarget).attr("disabled")) {
-	    return false;
-	}
-        var data = {
-	    "NewQuantities": [],
-	    "ProducerBillId": that.model.get("BillId")
-	};
-        this.reason = $("#correction-reason").val();
-        if (_.isEmpty(this.reason)) {
-            $("#correction-reason").toggleClass("error", true);
+        //Send modified billEntries quantities to serveur
+        save: function (event) {
+            var that = this;
+            if ($(event.currentTarget).attr("disabled")) {
+                return false;
+            }
+            var data = {
+                "NewQuantities": [],
+                "ProducerBillId": that.model.get("BillId")
+            };
+            this.reason = $("#correction-reason").val();
+            if (_.isEmpty(this.reason)) {
+                $("#correction-reason").toggleClass("error", true);
+                return false;
+            }
+            _.each(this.billEntries, function (billEntry, billEntryId) {
+                data.NewQuantities.push({ "BillId": billEntryId, "Quantity": billEntry.Quantity });
+            });
+            data["Reason"] = this.reason;
+            if (_.isEmpty(data.NewQuantities)) {
+                location.reload();
+            } else {
+                //Disabling button while waiting for the request to finish
+                $("#validateCorrection").attr("disabled", "disabled");
+                $.ajax({
+                    url: "/WeekBasketManagement/UpdateBillCorrection",
+                    type: 'POST',
+                    data: data
+                }).then(function (success) {
+                    console.log(success);
+                    if (!success) {
+                        that.saveErrors = "Erreur lors de la sauvegarde."
+                        that.render();
+                    } else {
+                        location.reload();
+                    }
+                });
+            }
+            event.preventDefault();
             return false;
         }
-        _.each(this.billEntries, function (billEntry, billEntryId) {
-            data.NewQuantities.push({ "BillId": billEntryId, "Quantity": billEntry.Quantity });
-        });
-        data["Reason"] = this.reason;
-        if (_.isEmpty(data.NewQuantities)) {
-            location.reload();
-        } else {
-	    //Disabling button while waiting for the request to finish
-	    $("#validateCorrection").attr("disabled", "disabled");
-            $.ajax({
-                url: "/WeekBasketManagement/UpdateBillCorrection",
-                type: 'POST',
-                data: data
-            }).then(function (success) {
-                console.log(success);
-                if (!success) {
-                    that.saveErrors = "Erreur lors de la sauvegarde."
-		    that.render();
-                } else {
-                    location.reload();
-                }
-            });
-        }
-        event.preventDefault();
-        return false;
-    }
+    });
 });
 
-$(function() {
-    BillsManagement.openCorrectionModal = function(billId) {
-	    producerBillModel = new ProducerBillModel(billId);
-	    producerBillModel.on("sync", function () {
-	        CorrectionView = new BillsManagement.CorrectionView(producerBillModel);
-	        CorrectionView.open();
-	    }, this);
+$(function () {
+    BillsManagement.openCorrectionModal = function (billId) {
+        producerBillModel = new ProducerBillModel(billId);
+        producerBillModel.on("sync", function () {
+            CorrectionView = new BillsManagement.CorrectionView(producerBillModel);
+            CorrectionView.open();
+        }, this);
     }
 });
-//$(function() {
-
-//});
