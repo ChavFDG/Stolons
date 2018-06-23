@@ -21,24 +21,13 @@ BillsManagement.ConsumerBillModalView = Backbone.View.extend({
     }
 });
 
-$(function () {
-    var consumerBillModalView = new BillsManagement.ConsumerBillModalView();
-
-    $('a.open-consumer-modal').click(function (ev) {
-	consumerBillModalView.open(ev);
-	return false;
-    });
-
-
-    window.openCorrectionModal = function(billId) {
-	producerBillModel = new ProducerBillModel(billId);
-	producerBillModel.on("sync", function () {
-	    CorrectionView = new BillsManagement.CorrectionView(producerBillModel);
-	    CorrectionView.open();
-	}, this);
-    };
-
-});
+window.openCorrectionModal = function(billId) {
+    producerBillModel = new ProducerBillModel(billId);
+    producerBillModel.on("sync", function () {
+	CorrectionView = new BillsManagement.CorrectionView(producerBillModel);
+	CorrectionView.open();
+    }, this);
+};
 
 BillsManagement.CorrectionView = Backbone.View.extend({
 

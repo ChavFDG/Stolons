@@ -1335,12 +1335,13 @@ h1 {
 
 #correction-table {
     margin: auto;
+    padding: 10px;
 }
 
-    #correction-table td, #correction-table th {
-        padding: 5px;
-        border: 1px solid black;
-    }
+#correction-table td, #correction-table th {
+    padding: 5px;
+    border: 1px solid black;
+}
 
 .correction-col-error {
     background-color: #f57070;
@@ -1351,10 +1352,13 @@ h1 {
 }
 
 #correction-modal-dialog {
-    width: auto;
-    padding-left: 10%;
-    padding-right: 10%;
     margin: 30px;
+}
+
+#correction-modal-dialog .modal-body {
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
 }
 
 #correction-modal-dialog table {
@@ -1362,7 +1366,6 @@ h1 {
 }
 
 .correction-product-description {
-    max-width: 150px;
     min-width: 60px;
 }
 
@@ -1521,6 +1524,10 @@ tr.collapsableHeader {
 
 .hoverHighlight:hover {
     background-color: #F6F47C;
+}
+
+.stockManagementWrapper {
+    padding: 10px;
 }
 
 /* END Home not logged view */

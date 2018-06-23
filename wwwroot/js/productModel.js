@@ -74,6 +74,20 @@ ProductStockModel = Backbone.Model.extend({
         var productUnit = this.get("Product").get("ProductUnit");
     },
 
+    
+    getStockManagementString: function() {
+	switch (this.get("Product").get("StockManagement")) {
+	case 0:
+	    return "A la semaine";
+	case 1:
+	    return "Stock fixe";
+	case 2:
+	    return "Illimité";
+	default:
+	    return "";
+	}
+    },
+
     //retourne la string correctement formattee pour le poids donne en grammes
     prettyPrintQuantity: function (weight) {
         if (weight >= 1000) {
@@ -92,6 +106,19 @@ ProductStockModel = Backbone.Model.extend({
             return this.get("RemainingStock");
         } else {
             return (this.get("RemainingStock") * this.get("Product").get("QuantityStep")) / 1000;
+        }
+    },
+
+    //Quantity already ordered by consumers this week
+    getWeekQuantityOrdered: function() {
+        if (this.get("Product").get("StockManagement") == 2) {
+            return 0; //NA
+        }
+	var diff = this.get("WeekStock") - this.get("RemainingStock");
+        if (this.get("Product").get("Type") == 1) {
+            return diff;
+        } else {
+            return (diff * this.get("Product").get("QuantityStep")) / 1000;
         }
     },
 
