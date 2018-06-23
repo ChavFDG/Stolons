@@ -289,7 +289,10 @@ namespace Stolons.Controllers
             }
             _context.SaveChanges();
             //Stolon bill
-            var stolonBillToModify = _context.StolonsBills.Include(x=>x.BillEntries).ThenInclude(x=>x.ProducerBill).First(x=>x.BillEntries.Any(y=>y.Id == bill.BillEntries.First().Id));
+            var stolonBillToModify = _context.StolonsBills.Include(x=>x.BillEntries).ThenInclude(x=>x.ProducerBill).ThenInclude(x=>x.AdherentStolon).ThenInclude(x=>x.Adherent)
+                                                          .Include(x=>x.BillEntries).ThenInclude(x=>x.ConsumerBill).ThenInclude(x=>x.AdherentStolon).ThenInclude(x => x.Adherent)
+                                                          .Include(x=>x.BillEntries).ThenInclude(x=>x.ProductStock).ThenInclude(x=>x.Product)
+                                                          .First(x=>x.BillEntries.Any(y=>y.Id == bill.BillEntries.First().Id));
             stolonBillToModify.UpdateBillInfo();
             stolonBillToModify.HasBeenModified = true;
             stolonBillToModify.ModificationReason = billCorrection.Reason;
