@@ -13,6 +13,15 @@
         @Model.ConsumerBills.Count paniers cette semaine
         <a class="btn btn-small btn-default" title="Voir" asp-action="ShowStolonsBill" asp-route-id="@Model.WeekStolonsBill.BillNumber"><span class="glyphicon glyphicon glyphicon-eye-open"> </span></a>
         <a class="btn btn-small btn-default" title="Télécharger" target="_blank" href="/@Model.WeekStolonsBill.UrlPath"><span class="glyphicon glyphicon glyphicon-download-alt"> </span></a>
+        @if (Model.WeekStolonsBill.HasBeenModified)
+        {
+            <div class="warning-container isa_warning">
+                <i class="glyphicon glyphicon-warning-sign"></i>
+                <div class="warning-informations right">
+                    @Html.Raw(Model.WeekStolonsBill.ModificationReason.Replace("\n\r", "<br/>"))
+                </div>
+            </div>
+        }
     </p>
 
 
@@ -60,21 +69,30 @@ else
                         @if (Model.ActiveAdherentStolon.Authorized(Role.Admin) || Model.ActiveAdherentStolon.Adherent.IsWebAdmin)
                         {
                             @Html.ActionLink(
-                                                         "Valider paiement de la facture",
-                                                         "UpdateProducerBill",
-                                                         new { billId = item.BillId, state = ((int)item.State) + 1 },
-                                                         new
-                                                         {
-                                                             onclick = "return confirm('Confirmation du paiement de " + +item.BillAmount + " à " + item.AdherentStolon.Adherent.CompanyName + "');",
-                                                             @class = "btn btn-small btn-default"
-                                                         }
-                                         )}
+                                                                             "Valider paiement de la facture",
+                                                                             "UpdateProducerBill",
+                                                                             new { billId = item.BillId, state = ((int)item.State) + 1 },
+                                                                             new
+                                                                             {
+                                                                                 onclick = "return confirm('Confirmation du paiement de " + +item.BillAmount + " à " + item.AdherentStolon.Adherent.CompanyName + "');",
+                                                                                 @class = "btn btn-small btn-default"
+                                                                             }
+                                                             )}
                     </td>
                     <td>
                         @{
                             @(item.BillAmount.ToString("0.00") + "€" + " (" + item.FeeAmount.ToString("0.00") + "€) - " + item.BillNumber)
                             <a class="btn btn-small btn-default" title="Voir" target="_blank" href="/billsHistory/ShowBill/@item.BillNumber"><span class="glyphicon glyphicon glyphicon-eye-open"> </span></a>
                             <a class="btn btn-small btn-default" title="Télécharger" target="_blank" href="/@Configurations.GetBillUrl(item)"><span class="glyphicon glyphicon glyphicon-download-alt"> </span></a>
+                            @if (item.HasBeenModified)
+                            {
+                                <div class="warning-container isa_warning">
+                                    <i class="glyphicon glyphicon-warning-sign"></i>
+                                    <div class="warning-informations right">
+                                        @Html.Raw(item.ModificationReason.Replace("\n\r", "<br/>"))
+                                    </div>
+                                </div>
+                            }
                         }
                     </td>
                 </tr>
@@ -124,15 +142,15 @@ else
                     </td>
                     <td>
                         @Html.ActionLink(
-                                                     "Valider la livraison",
-                                                     "UpdateProducerBill",
-                                                     new { billId = item.BillId, state = ((int)item.State) + 1 },
-                                                     new
-                                                     {
-                                                         onclick = "return confirm('Confirmation de la livraison de " + item.AdherentStolon.Adherent.CompanyName + "');",
-                                                         @class = "btn btn-small btn-default"
-                                                     }
-                                     )
+                                                                         "Valider la livraison",
+                                                                         "UpdateProducerBill",
+                                                                         new { billId = item.BillId, state = ((int)item.State) + 1 },
+                                                                         new
+                                                                         {
+                                                                             onclick = "return confirm('Confirmation de la livraison de " + item.AdherentStolon.Adherent.CompanyName + "');",
+                                                                             @class = "btn btn-small btn-default"
+                                                                         }
+                                                         )
                         <a href="#" class="btn btn-small btn-default" onclick="openCorrectionModal('@item.BillId'); return false;">Réctifier la livraison</a>
                     </td>
                     <td>
@@ -140,6 +158,15 @@ else
                             @(item.OrderAmount.ToString("0.00") + "€ - " + item.OrderNumber)
                             <a class="btn btn-small btn-default" title="Voir" target="_blank" href="/Orders/ShowOrder/@item.OrderNumber"><span class="glyphicon glyphicon glyphicon-eye-open"> </span></a>
                             <a class="btn btn-small btn-default" title="Télécharger" target="_blank" href="/@Configurations.GetOrderUrl(item)"><span class="glyphicon glyphicon glyphicon-download-alt"> </span></a>
+                            @if (item.HasBeenModified)
+                            {
+                                <div class="warning-container isa_warning">
+                                    <i class="glyphicon glyphicon-warning-sign"></i>
+                                    <div class="warning-informations right">
+                                        @Html.Raw(item.ModificationReason.Replace("\n\r", "<br/>"))
+                                    </div>
+                                </div>
+                            }
                         }
                     </td>
                 </tr>
@@ -183,7 +210,7 @@ else
                     Etat
                 </th>
                 <th>
-                    Facture
+                    Commande
                 </th>
             </tr>
             @foreach (var item in Model.ConsumerBills.OrderBy(x => x.AdherentStolon.LocalId))
@@ -212,6 +239,15 @@ else
                             @(item.OrderAmount.ToString("0.00") + "€ - " + item.BillNumber)
                             <a class="btn btn-small btn-default" title="Voir" target="_blank" href="/billsHistory/ShowBill/@item.BillNumber"><span class="glyphicon glyphicon glyphicon-eye-open"> </span></a>
                             <a class="btn btn-small btn-default" title="Télécharger" target="_blank" href="/@Configurations.GetBillUrl(item)"><span class="glyphicon glyphicon glyphicon-download-alt"> </span></a>
+                            @if (item.HasBeenModified)
+                            {
+                                <div class="warning-container isa_warning">
+                                    <i class="glyphicon glyphicon-warning-sign"></i>
+                                    <div class="warning-informations right">
+                                        @Html.Raw(item.ModificationReason.Replace("\n\r", "<br/>"))
+                                    </div>
+                                </div>
+                            }
                         }
                     </td>
                 </tr>
@@ -268,7 +304,7 @@ else
                                 <col>
                                 </col>
                                 <% _.forEach(producerBill.getProductStocks(), function(productStock) { %>
-                                <col id="product-col-<%= productStock.get("Id") %>">
+                                <col id="product-col-<%= productStock.get(" Id") %>">
                                 </col>
                                 <% }); %>
                             </colgroup>
@@ -280,7 +316,7 @@ else
                                     </th>
                                     <% _.forEach(producerBill.getProductStocks(), function(productStock) { %>
                                     <td class="correction-product-description productMgtImage">
-                                        <img src="<%= productStock.get("Product").getPictureUrl("light") %>">
+                                        <img src="<%= productStock.get(" Product").getPictureUrl("light") %>">
                                         <span><%= productStock.get("Product").get("Name") %></span>
                                     </td>
                                     <% }); %>

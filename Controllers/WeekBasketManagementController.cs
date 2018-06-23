@@ -93,10 +93,7 @@ namespace Stolons.Controllers
                 {
                     stolonBill.BillEntries.Add(billEntry);
                 }
-                stolonBill.Consumers = stolonBill.BillEntries.DistinctBy(x => x.ConsumerBillId).Count();
-                stolonBill.Producers = stolonBill.BillEntries.DistinctBy(x => x.ProducerBillId).Count();
-                stolonBill.Amount = 0;
-                stolonBill.BillEntries.ForEach(x => stolonBill.Amount += x.Price);
+                stolonBill.UpdateBillInfo();
                 _context.SaveChanges();
             }
             _context.SaveChanges();
@@ -258,7 +255,7 @@ namespace Stolons.Controllers
         {
             billCorrection.Reason = "Modification le : " + DateTime.Now.ToString() + "\n\rRaison : " + billCorrection.Reason + "\n\r\n\r";
             ProducerBill bill = _context.ProducerBills.Include(x => x.BillEntries).Include(x => x.AdherentStolon).First(x => x.BillId == billCorrection.ProducerBillId);
-            bill.ModificationReason = billCorrection.Reason;
+            bill.ModificationReason += billCorrection.Reason;
             bill.HasBeenModified = true;
             List<Guid?> modifiedBills = new List<Guid?>();
             foreach (var billQuantity in billCorrection.NewQuantities)
@@ -270,23 +267,33 @@ namespace Stolons.Controllers
                     modifiedBills.Add(billEntry.ConsumerBillId);
             }
             _context.SaveChanges();
+            //Producer bill
             bill = _context.ProducerBills.Include(x => x.BillEntries).Include(x => x.AdherentStolon).Include(x => x.AdherentStolon.Stolon).Include(x => x.AdherentStolon.Adherent).First(x => x.BillId == billCorrection.ProducerBillId);
             bill.BillEntries.ForEach(x => x.ProductStock = _context.ProductsStocks.Include(y => y.Product).First(stock => stock.Id == x.ProductStockId));
             bill.HtmlBillContent = BillGenerator.GenerateHtmlBillContent(bill, _context);
             BillGenerator.GenerateBillPDF(bill);
+            //Consumers bills
             foreach (var billId in modifiedBills)
             {
                 var billToModify = _context.ConsumerBills.Include(x => x.AdherentStolon.Adherent).First(x => x.BillId == billId);
                 billToModify.ModificationReason += billCorrection.Reason;
                 billToModify.HasBeenModified = true;
+                billToModify.HtmlBillContent = BillGenerator.GenerateHtmlBillContent(billToModify, _context);
                 //Envoie mail user
                 BillGenerator.GenerateBillPDF(billToModify);
                 AuthMessageSender.SendEmail(billToModify.AdherentStolon.Stolon.Label,
                             billToModify.AdherentStolon.Adherent.Email,
                             billToModify.AdherentStolon.Adherent.CompanyName,
                             "Votre bon de commande de la semaine chez " + billToModify.AdherentStolon.Stolon.Label + "a été modifié (Bon de commande " + bill.BillNumber + ")",
-                            "Oops, petit problème, malheureusement tout vos produits ne pourront pas être disponible. Votre commande a été modifié. En voici la raison : " + billCorrection.Reason + "\n\n" + bill.HtmlBillContent);
+                            "Oops, petit problème, malheureusement tout vos produits ne pourront pas être disponible.\n\rVotre commande a été modifié.\n\rEn voici la raison : \n\r" + billCorrection.Reason + "\n\r\n\r" + billToModify.HtmlBillContent);
             }
+            _context.SaveChanges();
+            //Stolon bill
+            var stolonBillToModify = _context.StolonsBills.Include(x=>x.BillEntries).ThenInclude(x=>x.ProducerBill).First(x=>x.BillEntries.Any(y=>y.Id == bill.BillEntries.First().Id));
+            stolonBillToModify.UpdateBillInfo();
+            stolonBillToModify.HasBeenModified = true;
+            stolonBillToModify.ModificationReason = billCorrection.Reason;
+            stolonBillToModify.HtmlBillContent = BillGenerator.GenerateHtmlContent(stolonBillToModify);
             _context.SaveChanges();
             return true;
         }

@@ -117,7 +117,7 @@
                             <!--DELIVERY CASE-->
                             if (Model.ConsumerBill == null)
                             {
-                                <span>Pas de panier cette semaine</span>
+                                <span>Prochaine commande : @(Stolons.Helpers.EnumHelper.ToFrench(Model.ActiveAdherentStolon.Stolon.OrderDayStartDate) + " à " + String.Format("{0:00}", Model.ActiveAdherentStolon.Stolon.OrderHourStartDate) + "h" + String.Format("{0:00}", Model.ActiveAdherentStolon.Stolon.OrderMinuteStartDate))</span>
                             }
                             else
                             {

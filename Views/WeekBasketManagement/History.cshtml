@@ -26,26 +26,26 @@
 
         <h2>@year</h2>
         @{
-        decimal averageWeekConsumers = 0;
-        decimal averageWeekProducer = 0;
-        decimal averageWeekAmount = 0;
-        decimal averageWeekFee = 0;
-        decimal yearWeekAmount = 0;
-        decimal yearWeekFee = 0;
-        var yearBills = Model.HistoryBills.Where(x => x.Key.EditionDate.Year == year);
-        foreach (var bill in yearBills)
-        {
-            averageWeekConsumers += bill.Key.Consumers;
-            averageWeekProducer += bill.Key.Producers;
-            averageWeekAmount += bill.Key.Amount;
-            averageWeekFee += bill.Key.FeeAmount;
-            yearWeekAmount += bill.Key.Amount;
-            yearWeekFee += bill.Key.FeeAmount;
-        }
-        averageWeekConsumers = averageWeekConsumers / yearBills.Count();
-        averageWeekProducer = averageWeekProducer / yearBills.Count();
-        averageWeekAmount = averageWeekAmount / yearBills.Count();
-        averageWeekFee = averageWeekFee / yearBills.Count();
+            decimal averageWeekConsumers = 0;
+            decimal averageWeekProducer = 0;
+            decimal averageWeekAmount = 0;
+            decimal averageWeekFee = 0;
+            decimal yearWeekAmount = 0;
+            decimal yearWeekFee = 0;
+            var yearBills = Model.HistoryBills.Where(x => x.Key.EditionDate.Year == year);
+            foreach (var bill in yearBills)
+            {
+                averageWeekConsumers += bill.Key.Consumers;
+                averageWeekProducer += bill.Key.Producers;
+                averageWeekAmount += bill.Key.Amount;
+                averageWeekFee += bill.Key.FeeAmount;
+                yearWeekAmount += bill.Key.Amount;
+                yearWeekFee += bill.Key.FeeAmount;
+            }
+            averageWeekConsumers = averageWeekConsumers / yearBills.Count();
+            averageWeekProducer = averageWeekProducer / yearBills.Count();
+            averageWeekAmount = averageWeekAmount / yearBills.Count();
+            averageWeekFee = averageWeekFee / yearBills.Count();
         }
         <p>Nombre de consomateur moyen par semaine : @averageWeekConsumers.ToString("0")</p>
         <p>Nombre de producteur solicité moyen par semaine : @averageWeekProducer.ToString("0")</p>
@@ -85,21 +85,31 @@
                 </th>
             </tr>
             @foreach (var stolonBill in Model.HistoryBills.Where(x => x.Key.EditionDate.Year == year).OrderByDescending(x => x.Key.EditionDate))
-        {
-            <tr class="collapsableHeader hoverHighlight">
-                <td data-toggle="modal" data-target="#@stolonBill.Key.BillNumber">@stolonBill.Key.EditionDate.GetIso8601WeekOfYear() </td>
-                <td data-toggle="modal" data-target="#@stolonBill.Key.BillNumber">@stolonBill.Key.EditionDate  </td>
-                <td data-toggle="modal" data-target="#@stolonBill.Key.BillNumber">@stolonBill.Key.BillNumber</td>
-                <td data-toggle="modal" data-target="#@stolonBill.Key.BillNumber">@stolonBill.Key.Consumers </td>
-                <td data-toggle="modal" data-target="#@stolonBill.Key.BillNumber">@stolonBill.Key.Producers </td>
-                <td data-toggle="modal" data-target="#@stolonBill.Key.BillNumber">@stolonBill.Key.Amount.ToString("0.00") €</td>
-                <td data-toggle="modal" data-target="#@stolonBill.Key.BillNumber">@stolonBill.Key.FeeAmount.ToString("0.00") € (@stolonBill.Key.ProducersFee %)</td>
-                <td>
-                    <a class="btn btn-small btn-default" title="Voir" asp-action="ShowStolonsBill" asp-route-id="@stolonBill.Key.BillNumber"><span class="glyphicon glyphicon glyphicon-eye-open"> </span></a>
-                    <a class="btn btn-small btn-default" title="Télécharger" target="_blank" href="/@stolonBill.Key.UrlPath"><span class="glyphicon glyphicon glyphicon-download-alt"> </span></a>
-                </td>
-            </tr>
-    }
+            {
+                <tr class="collapsableHeader hoverHighlight">
+                    <td data-toggle="modal" data-target="#@stolonBill.Key.BillNumber">@stolonBill.Key.EditionDate.GetIso8601WeekOfYear() </td>
+                    <td data-toggle="modal" data-target="#@stolonBill.Key.BillNumber">@stolonBill.Key.EditionDate  </td>
+                    <td data-toggle="modal" data-target="#@stolonBill.Key.BillNumber">@stolonBill.Key.BillNumber</td>
+                    <td data-toggle="modal" data-target="#@stolonBill.Key.BillNumber">@stolonBill.Key.Consumers </td>
+                    <td data-toggle="modal" data-target="#@stolonBill.Key.BillNumber">@stolonBill.Key.Producers </td>
+                    <td data-toggle="modal" data-target="#@stolonBill.Key.BillNumber">@stolonBill.Key.Amount.ToString("0.00") €</td>
+                    <td data-toggle="modal" data-target="#@stolonBill.Key.BillNumber">@stolonBill.Key.FeeAmount.ToString("0.00") € (@stolonBill.Key.ProducersFee %)</td>
+                    <td>
+                        <a class="btn btn-small btn-default" title="Voir" asp-action="ShowStolonsBill" asp-route-id="@stolonBill.Key.BillNumber"><span class="glyphicon glyphicon glyphicon-eye-open"> </span></a>
+                        <a class="btn btn-small btn-default" title="Télécharger" target="_blank" href="/@stolonBill.Key.UrlPath"><span class="glyphicon glyphicon glyphicon-download-alt"> </span></a>
+
+                        @if (stolonBill.Key.HasBeenModified)
+                        {
+                            <div class="warning-container isa_warning">
+                                <i class="glyphicon glyphicon-warning-sign"></i>
+                                <div class="warning-informations right">
+                                    @Html.Raw(stolonBill.Key.ModificationReason.Replace("\n\r", "<br/>"))
+                                </div>
+                            </div>
+                        }
+                    </td>
+                </tr>
+            }
         </table>
     </div>
 }
@@ -162,6 +172,15 @@
                                             @item.BillNumber
                                             <a class="btn btn-small btn-default" title="Voir" target="_blank" href="/billsHistory/ShowBill/@item.BillNumber"><span class="glyphicon glyphicon glyphicon-eye-open"> </span></a>
                                             <a class="btn btn-small btn-default" title="Télécharger" target="_blank" href="/@Configurations.GetBillUrl(item)"><span class="glyphicon glyphicon glyphicon-download-alt"> </span></a>
+                                            @if (item.HasBeenModified)
+                                            {
+                                                <div class="warning-container isa_warning">
+                                                    <i class="glyphicon glyphicon-warning-sign"></i>
+                                                    <div class="warning-informations right">
+                                                        @Html.Raw(item.ModificationReason.Replace("\n\r", "<br/>"))
+                                                    </div>
+                                                </div>
+                                            }
                                         }
                                     </td>
                                 </tr>
@@ -205,6 +224,15 @@
                                             @item.BillNumber
                                             <a class="btn btn-small btn-default" title="Voir" target="_blank" href="/billsHistory/ShowBill/@item.BillNumber"><span class="glyphicon glyphicon glyphicon-eye-open"> </span></a>
                                             <a class="btn btn-small btn-default" title="Télécharger" target="_blank" href="/@Configurations.GetBillUrl(item)"><span class="glyphicon glyphicon glyphicon-download-alt"> </span></a>
+                                            @if (item.HasBeenModified)
+                                            {
+                                                <div class="warning-container isa_warning">
+                                                    <i class="glyphicon glyphicon-warning-sign"></i>
+                                                    <div class="warning-informations right">
+                                                        @Html.Raw(item.ModificationReason.Replace("\n\r", "<br/>"))
+                                                    </div>
+                                                </div>
+                                            }
                                         }
                                     </td>
                                 </tr>

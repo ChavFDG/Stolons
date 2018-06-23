@@ -1,4 +1,5 @@
-﻿using Stolons.Models.Users;
+﻿using MoreLinq;
+using Stolons.Models.Users;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -192,23 +193,22 @@ namespace Stolons.Models
 
         [Display(Name = "Nombre de producteur ayant à livrer")]
         public int Producers { get; set; }
-        
+                
+        public decimal FeeAmount { get; set; }
 
-        [NotMapped]
-        public decimal FeeAmount
-        {
-            get
-            {
-                return Amount / 100 * ProducersFee;
-            }
-        }
+        [Display(Name = "A été modifier")]
+        public bool HasBeenModified { get; set; }
+
+        [Display(Name = "Raison de la modification")]
+        public string ModificationReason { get; set; }
+
 
         [NotMapped]
         public decimal ProducersAmount
         {
             get
             {
-                return Amount - (Amount / 100 * ProducersFee);
+                return Amount - FeeAmount;
             }
         }
 
@@ -233,6 +233,19 @@ namespace Stolons.Models
         public string GetFileName()
         {
             return this.BillNumber + ".pdf";
+        }
+
+        /// <summary>
+        /// Update bill's informations by updating data :Amount, ProducersFee, Consumers and Producers
+        /// </summary>
+        public void UpdateBillInfo()
+        {
+            Consumers = BillEntries.DistinctBy(x => x.ConsumerBillId).Count();
+            Producers = BillEntries.DistinctBy(x => x.ProducerBillId).Count();
+            Amount = 0;
+            BillEntries.ForEach(x => Amount += x.Price);
+            FeeAmount = 0;
+            BillEntries.DistinctBy(billEntry => billEntry.ProducerBill).Select(x => x.ProducerBill).ForEach(producerBill => FeeAmount += producerBill.FeeAmount);
         }
     }
 }
