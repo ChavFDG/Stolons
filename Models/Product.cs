@@ -371,5 +371,40 @@ namespace Stolons.Models
                 }
             }
         }
+
+        public string GetQuantityHtmlShortString(int quantity)
+        {
+            if (Type == SellType.Piece)
+            {
+                return "<span title='" + quantity + " pièce" + (quantity > 1 ? "s" : "") + "'>x" + quantity + "</span>";
+            }
+            else
+            {
+                decimal qty = (quantity * QuantityStep);
+                string strUnit;
+                if (ProductUnit == Product.Unit.Kg)
+                {
+                    strUnit = " g";
+                    if (qty >= 1000)
+                    {
+                        qty /= 1000;
+                        strUnit = " Kg";
+                    }
+                    return qty + strUnit;
+                }
+                else
+                {
+                    strUnit = " mL";
+                    if (qty >= 1000)
+                    {
+                        qty /= 1000;
+                        strUnit = " L";
+                    }
+                    return qty + strUnit;
+                }
+            }
+        }
     }
+
+
 }

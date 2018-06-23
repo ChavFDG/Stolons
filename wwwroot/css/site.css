@@ -513,6 +513,26 @@ img.warning {
     border-top: 1px solid #aaa;
 }
 
+.product__zoom {
+    display: none;
+    position: absolute;
+    right: calc(50% - 20px);
+    top: calc(50% - 20px);
+    width: 40px;
+    height: 40px;
+    padding-top: 3px;
+    font-size: 24px;
+    background-color: #eee;
+    border-radius: 20px;
+    text-align: center;
+    cursor: pointer;
+    color: #333;
+}
+
+.product:hover .product__zoom {
+    display: block;
+}
+
 .product__producer__type {
     position: absolute;
     top: 0;
@@ -891,16 +911,20 @@ img.warning {
     position: static; /* will be fixed on scroll offset Y > 300 (300 is the header height) */
 }
 
-    #basket__wrapper.fixed {
-        position: fixed;
-        top: 20px;
-        max-height: 100%;
-        overflow-y: auto;
-        overflow-x: hidden;
-    }
+#basket__wrapper.fixed {
+    position: fixed;
+    top: 20px;
+    max-height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+#tmpBasket {
+}
 
 #tmpBasket .table {
     max-width: 260px;
+    background-color: #f8f8f8;
 }
 
 @media (max-width: 990px) { /* bootstrap sm-max*/
@@ -916,8 +940,9 @@ img.warning {
 
 .basketTable {
     border-collapse: collapse;
-    border: 1px solid #ddd;
-    margin-bottom: 5px !important;
+    border: 3px solid #ddd;
+    border-top-left-radius: 10px;
+    margin-bottom: 0px !important;
 }
 
     .basketTable > th {
@@ -930,8 +955,30 @@ img.warning {
     text-align: center;
 }
 
+
+#validatedBasket .validatedBasketCollapse {
+    cursor: pointer;
+}
+
+
 .basketValidation {
+    max-width: 260px;
+    padding: 15px 0 20px 0;
     text-align: center;
+    border: 3px solid #ddd;
+    border-top-width: 0px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    background-color: #f8f8f8;
+}
+
+.basketValidation__msg {
+    margin-bottom: 15px;
+}
+
+.basketValidation__btnsubmit {
+    background: #008000;
+    color: #fff;
 }
 
 .deleteEntry {
@@ -1324,13 +1371,13 @@ h1 {
 
 .th-crossed-left {
     position: absolute;
-    bottom: 12px;
+    bottom: 5px;
 }
 
 .th-crossed-right {
     position: absolute;
-    top: 12px;
-    right: 10px
+    top: 5px;
+    right: 5px;
 }
 
 #correction-table {

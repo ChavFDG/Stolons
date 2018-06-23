@@ -147,48 +147,50 @@ $(function() {
             this.validate();
         },
 
-        //Send modified billEntries quantities to serveur
-        save: function (event) {
-            var that = this;
-            if ($(event.currentTarget).attr("disabled")) {
-                return false;
-            }
-            var data = {
-                "NewQuantities": [],
-                "ProducerBillId": that.model.get("BillId")
-            };
-            this.reason = $("#correction-reason").val();
-            if (_.isEmpty(this.reason)) {
-                $("#correction-reason").toggleClass("error", true);
-                return false;
-            }
-            _.each(this.billEntries, function (billEntry, billEntryId) {
-                data.NewQuantities.push({ "BillId": billEntryId, "Quantity": billEntry.Quantity });
-            });
-            data["Reason"] = this.reason;
-            if (_.isEmpty(data.NewQuantities)) {
-                location.reload();
-            } else {
-                var promise = $.ajax({
-                    url: "/WeekBasketManagement/UpdateBillCorrection",
-                    type: 'POST',
-                    data: data
-                });
-                promise.then(function (success) {
-                    console.log(success);
-                    if (!success) {
-                        that.saveErrors = "Erreur lors de la sauvegarde."
-                        that.render();
-                    } else {
-                        location.reload();
-                    }
-                });
-            }
-            event.preventDefault();
+    //Send modified billEntries quantities to serveur
+    save: function (event) {
+        var that = this;
+	if ($(event.currentTarget).attr("disabled")) {
+	    return false;
+	}
+        var data = {
+	    "NewQuantities": [],
+	    "ProducerBillId": that.model.get("BillId")
+	};
+        this.reason = $("#correction-reason").val();
+        if (_.isEmpty(this.reason)) {
+            $("#correction-reason").toggleClass("error", true);
             return false;
         }
-    });
+        _.each(this.billEntries, function (billEntry, billEntryId) {
+            data.NewQuantities.push({ "BillId": billEntryId, "Quantity": billEntry.Quantity });
+        });
+        data["Reason"] = this.reason;
+        if (_.isEmpty(data.NewQuantities)) {
+            location.reload();
+        } else {
+	    //Disabling button while waiting for the request to finish
+	    $("#validateCorrection").attr("disabled", "disabled");
+            $.ajax({
+                url: "/WeekBasketManagement/UpdateBillCorrection",
+                type: 'POST',
+                data: data
+            }).then(function (success) {
+                console.log(success);
+                if (!success) {
+                    that.saveErrors = "Erreur lors de la sauvegarde."
+		    that.render();
+                } else {
+                    location.reload();
+                }
+            });
+        }
+        event.preventDefault();
+        return false;
+    }
+});
 
+$(function() {
     BillsManagement.openCorrectionModal = function(billId) {
 	    producerBillModel = new ProducerBillModel(billId);
 	    producerBillModel.on("sync", function () {

@@ -13,11 +13,14 @@
                 <%= producerSellerTypeText %>
             </div>
             <div class="product-top">
-                <div class="pr_img" data-toggle="tooltip" title="Voir détails produit">
-                    <a href="#" onclick="ProductModalView.open('<%= productStock.Id %>');return false;">
+                <a href="#" onclick="ProductModalView.open('<%= productStock.Id %>');return false;">
+                    <div class="pr_img" data-toggle="tooltip" title="Voir détails produit">
                         <img src="<%= productModel.getPictureUrl('light') %>" />
-                    </a>
-                </div>
+                        <div class="product__zoom">
+                            <i class="glyphicon glyphicon-zoom-in"></i>
+                        </div>
+                    </div>
+                </a>
                 <div class="pr_labels">
                     <div class="label">
                         <% _.forEach(product.LabelsSerialized.split(';'), function(label) {
