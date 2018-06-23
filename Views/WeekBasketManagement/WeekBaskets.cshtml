@@ -4,8 +4,6 @@
 @using Stolons.Tools
 
 
-
-
 <h2>Les paniers de la semaine</h2>
 @if (Model.Stolon.GetMode() == Stolon.Modes.DeliveryAndStockUpdate && Model.WeekStolonsBill != null)
 {
@@ -142,16 +140,16 @@ else
                     </td>
                     <td>
                         @Html.ActionLink(
-                                                                         "Valider la livraison",
-                                                                         "UpdateProducerBill",
-                                                                         new { billId = item.BillId, state = ((int)item.State) + 1 },
-                                                                         new
-                                                                         {
-                                                                             onclick = "return confirm('Confirmation de la livraison de " + item.AdherentStolon.Adherent.CompanyName + "');",
-                                                                             @class = "btn btn-small btn-default"
-                                                                         }
-                                                         )
-                        <a href="#" class="btn btn-small btn-default" onclick="openCorrectionModal('@item.BillId'); return false;">Réctifier la livraison</a>
+                                                     "Valider la livraison",
+                                                     "UpdateProducerBill",
+                                                     new { billId = item.BillId, state = ((int)item.State) + 1 },
+                                                     new
+                                                     {
+                                                         onclick = "return confirm('Confirmation de la livraison de " + item.AdherentStolon.Adherent.CompanyName + "');",
+                                                         @class = "btn btn-small btn-default"
+                                                     }
+                                     )
+                        <a href="#" class="btn btn-small btn-default" onclick="BillsManagement.openCorrectionModal('@item.BillId'); return false;">Réctifier la livraison</a>
                     </td>
                     <td>
                         @{
