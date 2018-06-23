@@ -24,29 +24,37 @@
 {
     <div class="boxContainer">
 
-        <h3>@year</h3>
-        @{ 
-            decimal averageWeekConsumers = 0;
-            decimal averageWeekProducer = 0;
-            decimal averageWeekAmount = 0;
-            decimal averageWeekFee = 0;
-            var yearBills = Model.HistoryBills.Where(x => x.Key.EditionDate.Year == year);
-            foreach (var bill in yearBills)
-            {
-                averageWeekConsumers += bill.Key.Consumers;
-                averageWeekProducer += bill.Key.Producers;
-                averageWeekAmount += bill.Key.Amount;
-                averageWeekFee += bill.Key.FeeAmount;
-            }
-            averageWeekConsumers = averageWeekConsumers / yearBills.Count();
-            averageWeekProducer = averageWeekProducer / yearBills.Count();
-            averageWeekAmount = averageWeekAmount / yearBills.Count();
-            averageWeekFee = averageWeekFee / yearBills.Count();
+        <h2>@year</h2>
+        @{
+        decimal averageWeekConsumers = 0;
+        decimal averageWeekProducer = 0;
+        decimal averageWeekAmount = 0;
+        decimal averageWeekFee = 0;
+        decimal yearWeekAmount = 0;
+        decimal yearWeekFee = 0;
+        var yearBills = Model.HistoryBills.Where(x => x.Key.EditionDate.Year == year);
+        foreach (var bill in yearBills)
+        {
+            averageWeekConsumers += bill.Key.Consumers;
+            averageWeekProducer += bill.Key.Producers;
+            averageWeekAmount += bill.Key.Amount;
+            averageWeekFee += bill.Key.FeeAmount;
+            yearWeekAmount += bill.Key.Amount;
+            yearWeekFee += bill.Key.FeeAmount;
+        }
+        averageWeekConsumers = averageWeekConsumers / yearBills.Count();
+        averageWeekProducer = averageWeekProducer / yearBills.Count();
+        averageWeekAmount = averageWeekAmount / yearBills.Count();
+        averageWeekFee = averageWeekFee / yearBills.Count();
         }
         <p>Nombre de consomateur moyen par semaine : @averageWeekConsumers.ToString("0")</p>
         <p>Nombre de producteur solicité moyen par semaine : @averageWeekProducer.ToString("0")</p>
         <p>Chiffre d'affaire moyen par semaine : @averageWeekAmount.ToString("0.00") €</p>
         <p>Commission perçue moyenne par semaine : @averageWeekFee.ToString("0.00") €</p>
+        <br />
+        <p>Chiffre d'affaire total annuel : @yearWeekAmount.ToString("0.00") €</p>
+        <p>Commission perçue totale annuelle : @yearWeekFee.ToString("0.00") €</p>
+        <br />
 
         <table class="table">
             <tr>
@@ -69,7 +77,7 @@
                     CA TTC
                 </th>
                 <th>
-                    Comission total
+                    Comission totale
                 </th>
                 <th>
                 </th>
@@ -125,7 +133,7 @@
                                     CA TTC
                                 </th>
                                 <th>
-                                    Comission total
+                                    Comission totale
                                 </th>
                                 <th>
                                     Facture
