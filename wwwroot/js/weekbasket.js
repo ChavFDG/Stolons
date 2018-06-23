@@ -422,6 +422,7 @@ ProductActionView = Backbone.View.extend(
             WeekBasket.TmpWeekBasketModel.addProductToBasket(this.productId).then(_.bind(function () {
                 this.$(".productQuantityChanger").removeClass("hidden");
                 this.$(".productQuantityLoading").addClass("hidden");
+                $("#basket__wrapper").animate({ scrollTop: $("#basket__wrapper").height() }, 200)
             }, this));
             return false;
         },

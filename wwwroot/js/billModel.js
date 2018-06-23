@@ -122,32 +122,32 @@ ProducerBillModel = Backbone.Model.extend({
 	return this.getQuantityString(product, billEntry.Quantity);
     },
 
-    getQuantityString: function(product, quantity) {
-	if (product.Type == 1) {
-	    if (quantity > 1) {
-		return  quantity + " pièces";
+    getQuantityString: function (product, quantity) {
+	    if (product.Type == 1) {
+	        if (quantity > 1) {
+		    return  quantity + " pièces";
+	        } else {
+		    return  quantity + " pièce";
+	        }
 	    } else {
-		return  quantity + " pièce";
-	    }
-	} else {
-	    var qty = quantity * product.QuantityStep;
+	        var qty = quantity * product.QuantityStep;
 
-	    if (product.ProductUnit == 0) {
-		var strUnit = " g";
-		if (qty >= 1000) {
-		    qty /= 1000;
-		    strUnit = " Kg";
-		}
-		return qty + strUnit;
-	    } else if (product.ProductUnit == 1) {
-		var strUnit = " mL";
-		if (qty >= 1000) {
-		    qty /= 1000;
-		    strUnit = " L";
-		}
-		return qty + strUnit;
+	        if (product.ProductUnit == 0) {
+		    var strUnit = " g";
+		    if (qty >= 1000) {
+		        qty /= 1000;
+		        strUnit = " Kg";
+		    }
+		    return qty + strUnit;
+	        } else if (product.ProductUnit == 1) {
+		    var strUnit = " mL";
+		    if (qty >= 1000) {
+		        qty /= 1000;
+		        strUnit = " L";
+		    }
+		    return qty + strUnit;
+	        }
 	    }
-	}
     },
 
     // getProductStockQuantityString: function(billEntryId) {

@@ -196,7 +196,7 @@ else
                     </th>
                     <th>
                         <span data-toggle="tooltip" title="Quantité">
-                            Quantité
+                            Qté
                         </span>
                     </th>
                     <th>
@@ -214,10 +214,10 @@ else
                         </a>
                     </td>
                     <td>
-                        <span> <%= entry.QuantityString %> </span>
+                        <span> <%= entry.QuantityHtmlShortString %> </span>
                     </td>
                     <td>
-                        <span> <%= entry.Price %> </span>
+                        <span> <%= entry.Price %>€ </span>
                     </td>
                 </tr>
                 <% });
@@ -259,7 +259,7 @@ else
                 </th>
                 <th>
                     <span data-toggle="tooltip" title="Quantité">
-                        Quantité
+                        Qté
                     </span>
                 </th>
                 <th>
@@ -271,7 +271,7 @@ else
                 </th>
             </tr>
 
-            <% _.forEach(tmpBasket.BillEntries, function(entry) { %>
+            <% _.forEach(tmpBasket.BillEntries.reverse(), function(entry) { %>
 
             <tr class="billEntry">
                 <td>
@@ -280,10 +280,10 @@ else
                     </a>
                 </td>
                 <td>
-                    <span> <%= entry.QuantityString %></span>
+                    <span><%= entry.QuantityHtmlShortString %></span>
                 </td>
                 <td>
-                    <span> <%= entry.Price %> </span>
+                    <span> <%= entry.Price %>€ </span>
                 </td>
                 <td data-toggle="tooltip" title="Cliquer pour supprimer le produit du panier">
                     <a href="#" class="deleteEntry" onclick="WeekBasket.TmpWeekBasketModel.removeBillEntry('<%= entry.ProductId %>');return false;">
@@ -293,9 +293,10 @@ else
                 </td>
             </tr>
             <% }); %>
+
             <% if (tmpBasket.BillEntries.length === 0) { %>
             <tr>
-                <td colspan="5">
+                <td colspan="4">
                     <b>Aucun produit dans le panier</b>
                 </td>
             </tr>
@@ -317,15 +318,15 @@ else
 
         <div class="basketValidation">
             <% if (!tmpBasket.Validated && !(tmpBasketModel.isEmpty() && !validatedBasketModel.exists())) { %>
-            <div class="isa_warning">
-                <span class="glyphicon glyphicon-warning-sign"></span>
-                <span class="warning-text">Ce panier doit être validé</span>
-            </div>
+                <div class="basketValidation__msg isa_warning">
+                    <span class="glyphicon glyphicon-warning-sign"></span>
+                    <span class="warning-text">Ce panier doit être validé</span>
+                </div>
             <% } else if (validatedBasketModel.exists()) { %>
-            <span class="isa_success">
-                <span class="glyphicon glyphicon-check"></span>
-                <span>Ces produits ont déjà été validés</span>
-            </span>
+                <span class="basketValidation__msg isa_success">
+                    <span class="glyphicon glyphicon-check"></span>
+                    <span>Ces produits ont déjà été validés</span>
+                </span>
             <% } %>
 
             <form id="validateBasketForm" action="WeekBasket/ValidateBasket" method="post">
@@ -333,14 +334,18 @@ else
                     <input name="basketId" value="<%= tmpBasket.Id %>" class="form-control" />
                 </div>
                 <% if (!tmpBasket.Validated) { %>
-                <% if (tmpBasketModel.isEmpty()) { %>
-                <% if (validatedBasketModel.exists()) { %>
-                <input type="submit" value="Annuler mon panier" class="btn btn-small btn-default" />
-                <%  } %>
-                <!-- Si il n'y a rien a valider/annuler, on affichir rien -->
-                <% } else { %>
-                <input type="submit" value="Valider mon panier" class="btn btn-small btn-default" />
-                <% } %>
+                    <% if (tmpBasketModel.isEmpty()) { %>
+                        <% if (validatedBasketModel.exists()) { %>
+                            <input type="submit" value="Annuler mon panier" class="btn btn-small btn-default" />
+                        <% } %>
+                        <!-- Si il n'y a rien a valider/annuler, on affichir rien -->
+                    <% } else { %>
+                        <!-- <input type="submit" value="Valider mon panier" class="btn btn-small btn-default" /> -->
+                        <button type="submit" class="basketValidation__btnsubmit btn btn-default">
+                            <i class="glyphicon glyphicon-shopping-cart"></i>
+                            Valider mon panier
+                        </button>
+                    <% } %>
                 <% } %>
             </form>
         </div>

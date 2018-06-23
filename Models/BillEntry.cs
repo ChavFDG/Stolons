@@ -70,6 +70,15 @@ namespace Stolons.Models
             }
         }
 
+        [NotMapped]
+        public string QuantityHtmlShortString
+        {
+            get
+            {
+                return ProductStock.Product.GetQuantityHtmlShortString(Quantity);
+            }
+        }
+
         public decimal WeightPrice { get; set; }
 
         [NotMapped]
