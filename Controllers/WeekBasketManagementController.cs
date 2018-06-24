@@ -197,7 +197,8 @@ namespace Stolons.Controllers
             return RedirectToAction("WeekBaskets");
         }
 
-        public string RegenerateOrders()
+        //Debug and last resort utility method
+	public string RegenerateOrders()
         {
             var stolon = GetCurrentStolon();
             var consumersBills = _context.ConsumerBills
@@ -254,24 +255,24 @@ namespace Stolons.Controllers
         public bool UpdateBillCorrection(VmBillCorrection billCorrection)
         {
             billCorrection.Reason = "Modification le : " + DateTime.Now.ToString() + "\n\rRaison : " + billCorrection.Reason + "\n\r\n\r";
-            ProducerBill bill = _context.ProducerBills.Include(x => x.BillEntries).Include(x => x.AdherentStolon).First(x => x.BillId == billCorrection.ProducerBillId);
-            bill.ModificationReason += billCorrection.Reason;
-            bill.HasBeenModified = true;
+            ProducerBill producerBill = _context.ProducerBills.Include(x => x.BillEntries).Include(x => x.AdherentStolon).First(x => x.BillId == billCorrection.ProducerBillId);
             List<Guid?> modifiedBills = new List<Guid?>();
             foreach (var billQuantity in billCorrection.NewQuantities)
             {
-                var billEntry = bill.BillEntries.First(x => x.Id == billQuantity.BillId);
-                billEntry.Quantity = billQuantity.Quantity;
-                billEntry.HasBeenModified = true;
+                var billEntry = producerBill.BillEntries.First(x => x.Id == billQuantity.BillId);
                 if (!modifiedBills.Any(x => x == billEntry.ConsumerBillId))
                     modifiedBills.Add(billEntry.ConsumerBillId);
+		this.UpdateBillEntryStock(billEntry, billQuantity.Quantity);
             }
             _context.SaveChanges();
-            //Producer bill
-            bill = _context.ProducerBills.Include(x => x.BillEntries).Include(x => x.AdherentStolon).Include(x => x.AdherentStolon.Stolon).Include(x => x.AdherentStolon.Adherent).First(x => x.BillId == billCorrection.ProducerBillId);
-            bill.BillEntries.ForEach(x => x.ProductStock = _context.ProductsStocks.Include(y => y.Product).First(stock => stock.Id == x.ProductStockId));
-            bill.HtmlBillContent = BillGenerator.GenerateHtmlBillContent(bill, _context);
-            BillGenerator.GenerateBillPDF(bill);
+
+	    //Producer bill
+            producerBill = _context.ProducerBills.Include(x => x.BillEntries).Include(x => x.AdherentStolon).Include(x => x.AdherentStolon.Stolon).Include(x => x.AdherentStolon.Adherent).First(x => x.BillId == billCorrection.ProducerBillId);
+            producerBill.BillEntries.ForEach(x => x.ProductStock = _context.ProductsStocks.Include(y => y.Product).First(stock => stock.Id == x.ProductStockId));
+            producerBill.ModificationReason += billCorrection.Reason;
+            producerBill.HasBeenModified = true;
+            producerBill.HtmlBillContent = BillGenerator.GenerateHtmlBillContent(producerBill, _context);
+            BillGenerator.GenerateBillPDF(producerBill);
             //Consumers bills
             foreach (var billId in modifiedBills)
             {
@@ -284,22 +285,37 @@ namespace Stolons.Controllers
                 AuthMessageSender.SendEmail(billToModify.AdherentStolon.Stolon.Label,
                             billToModify.AdherentStolon.Adherent.Email,
                             billToModify.AdherentStolon.Adherent.CompanyName,
-                            "Votre bon de commande de la semaine chez " + billToModify.AdherentStolon.Stolon.Label + "a été modifié (Bon de commande " + bill.BillNumber + ")",
-                            "Oops, petit problème, malheureusement tout vos produits ne pourront pas être disponible.\n\rVotre commande a été modifié.\n\rEn voici la raison : \n\r" + billCorrection.Reason + "\n\r\n\r" + billToModify.HtmlBillContent);
+                            "Votre bon de commande de la semaine chez " + billToModify.AdherentStolon.Stolon.Label + "a été modifié (Bon de commande " + producerBill.BillNumber + ")",
+                            "Oops, il y a eu un petit problème avec votre commande. Malheureusement tous les produits commandés ne sont pas disponible.\n\rVotre commande a été modifiée.\n\rEn voici la raison : \n\r" + billCorrection.Reason + "\n\rToutes nos excuses pour ce désagrément.\n\r" + billToModify.HtmlBillContent);
             }
             _context.SaveChanges();
             //Stolon bill
             var stolonBillToModify = _context.StolonsBills.Include(x=>x.BillEntries).ThenInclude(x=>x.ProducerBill).ThenInclude(x=>x.AdherentStolon).ThenInclude(x=>x.Adherent)
                                                           .Include(x=>x.BillEntries).ThenInclude(x=>x.ConsumerBill).ThenInclude(x=>x.AdherentStolon).ThenInclude(x => x.Adherent)
                                                           .Include(x=>x.BillEntries).ThenInclude(x=>x.ProductStock).ThenInclude(x=>x.Product)
-                                                          .First(x=>x.BillEntries.Any(y=>y.Id == bill.BillEntries.First().Id));
+                                                          .First(x=>x.BillEntries.Any(y=>y.Id == producerBill.BillEntries.First().Id));
             stolonBillToModify.UpdateBillInfo();
             stolonBillToModify.HasBeenModified = true;
             stolonBillToModify.ModificationReason = billCorrection.Reason;
             stolonBillToModify.HtmlBillContent = BillGenerator.GenerateHtmlContent(stolonBillToModify);
+	    BillGenerator.GeneratePDF(stolonBillToModify.HtmlBillContent, stolonBillToModify.GetStolonBillFilePath());
             _context.SaveChanges();
             return true;
         }
+
+	//Updates the stock of a productStock after the billEntry has been modified
+	private void UpdateBillEntryStock(BillEntry billEntry, int newQuantity)
+	{
+	    var productStock = _context.ProductsStocks.Include(x => x.Product).First(x => x.Id == billEntry.ProductStockId);
+	    var diffQty = billEntry.Quantity - newQuantity;
+
+	    if (productStock.Product.StockManagement == Product.StockType.Fixed)
+	    {
+	        productStock.RemainingStock = productStock.RemainingStock + diffQty;
+	    }
+            billEntry.Quantity = newQuantity;
+            billEntry.HasBeenModified = true;
+	}
 
         // GET: ShowBill
         public IActionResult ShowStolonsBill(string id)
