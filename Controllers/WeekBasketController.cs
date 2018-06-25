@@ -62,9 +62,9 @@ namespace Stolons.Controllers
             //
             var stolon = GetCurrentStolon();
             //Stock
-            var productStocks = _context.ProductsStocks.Include(x => x.AdherentStolon).Where(x => x.State == Product.ProductState.Enabled && x.AdherentStolon.StolonId == stolon.Id).AsNoTracking().ToList();
+            var productStocks = _context.ProductsStocks.Include(x => x.Product).Include(x => x.AdherentStolon).Where(x => x.State == Product.ProductState.Enabled && x.AdherentStolon.StolonId == stolon.Id).ToList();
             var idProductStocks = new Dictionary<int, ProductStockStolon>();
-            int cpt = -1;                
+            int cpt = 0;
             foreach(var productStock in productStocks)
             {
                 idProductStocks.Add(cpt++, productStock);
