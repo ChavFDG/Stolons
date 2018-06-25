@@ -264,12 +264,13 @@ else
 
 <script id="consumerBillModalTemplate" type="text/template">
     <div class="modals">
-        <div class="modal-dialog fullScreenModal">
+        <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                 </div>
                 <div class="modal-body">
+                    <p>Veuillez choisir le moyen de payement :</p>
                     <% if (canUseToken == 1) { %>
                     <a href="/WeekBasketManagement/UpdateConsumerBill?paymentMode=0&billId=<%= billId %>" class="credit btn btn-small btn-default">Stols</a>
                     <% } else {%>

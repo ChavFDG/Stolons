@@ -192,6 +192,12 @@ $(function () {
 });
 
 $(function () {
+    var consumerBillModalView = new BillsManagement.ConsumerBillModalView();
+
+    $('a.open-consumer-modal').click(function (ev) {
+        consumerBillModalView.open(ev);
+        return false;
+    });
     BillsManagement.openCorrectionModal = function (billId) {
         producerBillModel = new ProducerBillModel(billId);
         producerBillModel.on("sync", function () {

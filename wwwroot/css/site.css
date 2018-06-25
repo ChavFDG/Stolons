@@ -124,33 +124,7 @@ div#adherent-details-wrapper {
     margin: 10px;
 }
 
-.warning-container {
-    display: inline-block;
-    margin-right: 10px;
-    margin-top: 5px;
-    position: relative;
-}
 
-img.warning {
-    max-width: 25px;
-}
-
-.warning-informations {
-    position: absolute;
-    top: 25px;
-    width: auto;
-    transform: translateX(-50%);
-    display: none;
-    border: 1px solid rgba(0,0,0,.15);
-    padding: 5px;
-    background: #fff;
-    z-index: 1;
-    white-space: nowrap;
-}
-
-    .warning-informations.right {
-        transform: none;
-    }
 
 #logo img {
     margin: auto;
@@ -911,21 +885,21 @@ img.warning {
     position: static; /* will be fixed on scroll offset Y > 300 (300 is the header height) */
 }
 
-#basket__wrapper.fixed {
-    position: fixed;
-    top: 20px;
-    max-height: 100%;
-    overflow-y: auto;
-    overflow-x: hidden;
-}
+    #basket__wrapper.fixed {
+        position: fixed;
+        top: 20px;
+        max-height: 100%;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
 
 #tmpBasket {
 }
 
-#tmpBasket .table {
-    max-width: 260px;
-    background-color: #f8f8f8;
-}
+    #tmpBasket .table {
+        max-width: 260px;
+        background-color: #f8f8f8;
+    }
 
 @media (max-width: 990px) { /* bootstrap sm-max*/
     #tmpBasket {
@@ -1385,10 +1359,10 @@ h1 {
     padding: 10px;
 }
 
-#correction-table td, #correction-table th {
-    padding: 5px;
-    border: 1px solid black;
-}
+    #correction-table td, #correction-table th {
+        padding: 5px;
+        border: 1px solid black;
+    }
 
 .correction-col-error {
     background-color: #f57070;
@@ -1402,15 +1376,15 @@ h1 {
     margin: 30px;
 }
 
-#correction-modal-dialog .modal-body {
-    overflow-x: scroll;
-    overflow-y: hidden;
-    white-space: nowrap;
-}
+    #correction-modal-dialog .modal-body {
+        overflow-x: scroll;
+        overflow-y: hidden;
+        white-space: nowrap;
+    }
 
-#correction-modal-dialog table {
-    margin: 15px;
-}
+    #correction-modal-dialog table {
+        margin: 15px;
+    }
 
 .correction-product-description {
     min-width: 60px;
@@ -1560,13 +1534,13 @@ tr.collapsableHeader {
 }
 
 .fullScreenModal {
-    width:auto;
-    height:auto;
-    margin:50px;
+    width: auto;
+    height: auto;
+    margin: 50px;
 }
 
-.billModalContent{
-    margin:10px;
+.billModalContent {
+    margin: 10px;
 }
 
 .hoverHighlight:hover {
@@ -1578,3 +1552,49 @@ tr.collapsableHeader {
 }
 
 /* END Home not logged view */
+
+/*Warning tooltip*/
+
+.warning-glyphicon-container {
+    height: 23px;
+    width: 23px;
+    background-color: orange;
+    border-radius: 20px;
+    text-align: center;
+    color: #333;
+    display: inline-block;
+}
+
+    .warning-glyphicon-container i {
+        vertical-align: text-top;
+    }
+
+
+.warning-container {
+    display: inline-block;
+    margin-right: 10px;
+    margin-top: 5px;
+    position: relative;
+}
+
+img.warning {
+    max-width: 25px;
+}
+
+.warning-informations {
+    position: absolute;
+    top: 25px;
+    width: auto;
+    transform: translateX(-50%);
+    display: none;
+    border: 1px solid rgba(0,0,0,.15);
+    padding: 5px;
+    background: #fff;
+    z-index: 1;
+    white-space: nowrap;
+}
+
+    .warning-informations.right {
+        transform: none;
+    }
+/*END Warning tooltip*/
