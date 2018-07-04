@@ -1014,6 +1014,11 @@ img.warning {
     /* text-align: center; */
 }
 
+.disabled {
+    opacity: 0.6;
+    background-color: #333;
+}
+
 .noLiStyle {
     list-style-type: none;
     margin-bottom: 0;
@@ -1575,6 +1580,13 @@ tr.collapsableHeader {
 
 .stockManagementWrapper {
     padding: 10px;
+}
+
+.loading-products {
+    /* font-size: 25px; */
+    color: #fff;
+    position: relative;
+    right: 40%;
 }
 
 /* END Home not logged view */

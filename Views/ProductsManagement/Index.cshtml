@@ -174,7 +174,8 @@
 		<td bgcolor="@(color)">
                     @if (productStock.Product.StockManagement != Product.StockType.Unlimited)
                     {
-                        <input class="btn btn-default" type="submit" style="color: '@(color)';" value="@stockManagementLabel" onclick="StockMgtViewModal.open('@productStock.Id')" />
+                        <input class="btn btn-default disabled" disabled="true" type="submit" style="color: '@(color)';" value="@stockManagementLabel" onclick="StockMgtViewModal.open(this, '@productStock.Id')" />
+			<span class="glyphicon glyphicon-refresh glyphicon-refresh-animate loading-products"></span>
                     }
                     else
                     {
