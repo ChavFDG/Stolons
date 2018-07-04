@@ -68,7 +68,10 @@ var StockMgtViewModal = Backbone.View.extend({
         this.validation = {};
     },
 
-    open: function (productStockId) {
+    open: function (btn, productStockId) {
+	if ($(btn).is(":disabled")) {
+	    return false;
+	}
 	// Working copy
         this.currentProductStock = ProductsModel.get(productStockId).clone();
         this.renderModal();
@@ -214,7 +217,10 @@ $(function() {
 
     //Setup preview tooltips once models are avaible
     window.ProductsModel.on('sync', function() {
-	setupProductPreviewTooltip();
+	//Animation Chargement des produits
+	$(".disabled").removeAttr("disabled").removeClass("disabled");
+	$('.glyphicon-refresh').toggleClass("hidden");
 	window.StockMgtViewModal = new StockMgtViewModal({ model: window.ProductsModel });
+	setupProductPreviewTooltip();
     });
 });
