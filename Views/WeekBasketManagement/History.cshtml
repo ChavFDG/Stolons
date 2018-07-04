@@ -100,17 +100,13 @@
 
                         @if (stolonBill.Key.HasBeenModified)
                         {
-                            <div class="warning-glyphicon-container" data-toggle="tooltip" title="test d'un texte">
-                                <i class="glyphicon glyphicon-warning-sign"></i>
-                            </div>
-                        }
-
-                        @*<div class="warning-container isa_warning">
+                            <div class="warning-container isa_warning">
                                 <i class="glyphicon glyphicon-warning-sign"></i>
                                 <div class="warning-informations right">
                                     @Html.Raw(stolonBill.Key.ModificationReason.Replace("\n\r", "<br/>"))
                                 </div>
-                            </div>*@
+                            </div>
+                        }
                     </td>
                 </tr>
             }
