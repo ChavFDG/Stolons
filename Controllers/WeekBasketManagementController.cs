@@ -85,8 +85,6 @@ namespace Stolons.Controllers
                                 .Include(x => x.ConsumerBill)
                                 .Include(x => x.ProducerBill).ThenInclude(x=>x.AdherentStolon)
                                 .ToList();
-
-            stolonsBills.ForEach(x => x.BillEntries = null);
             foreach (var stolonBill in stolonsBills.Where(x => x.BillEntries?.Any() != true))
             {
                 stolonBill.BillEntries = new List<BillEntry>();

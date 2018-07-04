@@ -50,10 +50,6 @@ var ProductsStockCollection = Backbone.Collection.extend(
     }
 );
 
-window.ProductsModel = new ProductsStockCollection();
-//Setup preview tooltips once models are avaible
-ProductsModel.on('sync', setupProductPreviewTooltip);
-
 var StockMgtViewModal = Backbone.View.extend({
 
     el: "#stockMgt",
@@ -138,7 +134,7 @@ var StockMgtViewModal = Backbone.View.extend({
     },
 
     saveStocks: function () {
-        if ($("#saveStocks").attr("disabled") == "disabled") {
+       if ($("#saveStocks").attr("disabled") == "disabled") {
             return false;
         }
         var self = this;
@@ -211,4 +207,14 @@ var StockMgtViewModal = Backbone.View.extend({
     }
 });
 
-window.StockMgtViewModal = new StockMgtViewModal({ model: window.ProductsModel });
+//Init
+$(function() {
+
+    window.ProductsModel = new ProductsStockCollection();
+
+    //Setup preview tooltips once models are avaible
+    window.ProductsModel.on('sync', function() {
+	setupProductPreviewTooltip();
+	window.StockMgtViewModal = new StockMgtViewModal({ model: window.ProductsModel });
+    });
+});

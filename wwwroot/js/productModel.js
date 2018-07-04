@@ -9,6 +9,7 @@ ProductModel = Backbone.Model.extend({
     getPictureUrl: function (type) {
         var pictures = this.get("Pictures");
         if (_.isEmpty(pictures) || _.isEmpty(pictures[0])) {
+	    //Default image
             return "/images/panier.jpg";
         }
         if (type == 'light') {
