@@ -20,6 +20,17 @@ BillsManagement.ConsumerBillModalView = Backbone.View.extend({
         this.$el.modal('show');
     }
 });
+
+$(function () {
+    var consumerBillModalView = new BillsManagement.ConsumerBillModalView();
+
+    $('a.open-consumer-modal').click(function (ev) {
+        consumerBillModalView.open(ev);
+        return false;
+    });
+});
+
+
 $(function () {
     BillsManagement.CorrectionView = Backbone.View.extend({
 
