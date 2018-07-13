@@ -6,11 +6,11 @@
 
 @functions
 {
-        string DayToFrench(DayOfWeek dayOfWeekValue)
-        {
-            var culture = new System.Globalization.CultureInfo("fr-FR");
-            return culture.DateTimeFormat.GetDayName(dayOfWeekValue);
-        }
+string DayToFrench(DayOfWeek dayOfWeekValue)
+{
+    var culture = new System.Globalization.CultureInfo("fr-FR");
+    return culture.DateTimeFormat.GetDayName(dayOfWeekValue);
+}
 }
 
 <script type='text/javascript'>
@@ -58,9 +58,9 @@ $(function() {
                     oc.width = width;
                     oc.height = oc.width * img.height / img.width;
                     octx.drawImage(img, 0, 0, oc.width, oc.height);
-                    
+
                     document.getElementById('image1Preview').src = oc.toDataURL();
-                    
+
                     $('input[name=uploadLogo]').val(oc.toDataURL());
                 };
                 img.src = event.target.result;
@@ -239,11 +239,20 @@ $(function() {
                 <span asp-validation-for="Stolon.ProducersFee" class="text-danger"></span>
             </div>
         </div>
+        <h3>Cotisation</h3>
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <div class="checkbox">
                     <input asp-for="Stolon.UseSubscipstion" />
                     <label asp-for="Stolon.UseSubscipstion"></label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <div class="checkbox">
+                    <input asp-for="Stolon.UseHalftSubscipstion" />
+                    <label asp-for="Stolon.UseHalftSubscipstion"></label>
                 </div>
             </div>
         </div>
@@ -275,7 +284,6 @@ $(function() {
                 <span asp-validation-for="Stolon.SubscriptionStartMonth" class="text-danger"></span>
             </div>
         </div>
-
     </div>
 
 

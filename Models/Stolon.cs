@@ -59,13 +59,14 @@ namespace Stolons.Models
 
         [Display(Name = "Texte de : \"Rejoignez nous !\"")]
         public string JoinUsText { get; set; } = @"Texte d'explication sur comment rejoindre la structure";
+
+        [Display(Name = "Avoir des sympathisants")]
+        public bool UseSympathizer { get; set; } = true;
+
         //Cotisation
 
         [Display(Name = "Avoir un système de cotisation")]
         public bool UseSubscipstion { get; set; } = true;
-
-        [Display(Name = "Avoir des sympathisants")]
-        public bool UseSympathizer { get; set; } = true;
 
         [Display(Name = "Cotisation sympathisant (€)")]
         public decimal SympathizerSubscription { get; set; } = 2;
@@ -75,6 +76,8 @@ namespace Stolons.Models
         public decimal ProducerSubscription { get; set; } = 20;
         [Display(Name = "Mois de départ des cotisations")]
         public Month SubscriptionStartMonth { get; set; } = Month.September;
+        [Display(Name = "Réduire la cotisation de moitié à mis année")]
+        public bool UseHalftSubscipstion { get; set; } = false;
 
 
         //Site page text

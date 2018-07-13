@@ -155,7 +155,7 @@
                     @Html.DisplayFor(model => model.Stolon.UseSubscipstion)
                 </dd>
                 @if (Model.Stolon.UseSubscipstion)
-            {
+                {
                     <dt>
                         @Html.DisplayNameFor(model => model.Stolon.SympathizerSubscription)
                     </dt>
@@ -179,6 +179,12 @@
                     </dt>
                     <dd>
                         @Html.DisplayFor(model => model.Stolon.SubscriptionStartMonth)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Stolon.UseHalftSubscipstion)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Stolon.UseHalftSubscipstion)
                     </dd>
                 }
             </dl>
