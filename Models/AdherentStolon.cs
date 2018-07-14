@@ -77,6 +77,9 @@ namespace Stolons.Models
         [Display(Name = "Stols")]
         public decimal Token { get; set; } = 0;
 
+        [Display(Name = "Est supprimer")]
+        public bool Deleted { get; set; } = false;
+
 
         #region Consumer
 

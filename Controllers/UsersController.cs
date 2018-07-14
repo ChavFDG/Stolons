@@ -40,7 +40,7 @@ namespace Stolons.Controllers
                 return Unauthorized();
 
             Stolon stolon = id == null ? GetCurrentStolon() : _context.Stolons.First(x => x.Id == id);
-            AdherentsViewModel adherentsViewModel = new AdherentsViewModel(GetActiveAdherentStolon(), stolon, _context.Sympathizers.Where(x => x.StolonId == stolon.Id).ToList(), _context.AdherentStolons.Include(x => x.Stolon).Include(x => x.Adherent).Where(x => x.StolonId == stolon.Id).ToList());
+            AdherentsViewModel adherentsViewModel = new AdherentsViewModel(GetActiveAdherentStolon(), stolon, _context.Sympathizers.Where(x => x.StolonId == stolon.Id).ToList(), _context.AdherentStolons.Include(x => x.Stolon).Include(x => x.Adherent).Where(x => x.StolonId == stolon.Id && !x.Deleted).ToList());
             return View(adherentsViewModel);
         }
 
@@ -63,7 +63,7 @@ namespace Stolons.Controllers
             {
                 emails = _context.Adherents.Select(x => x.Email).ToList();
             }
-            _context.AdherentStolons.Include(x => x.Adherent).Where(x => x.StolonId == stolon.Id).ToList().ForEach(x => emails.Remove(x.Adherent.Email));
+            _context.AdherentStolons.Include(x => x.Adherent).Where(x => x.StolonId == stolon.Id && !x.Deleted).ToList().ForEach(x => emails.Remove(x.Adherent.Email));
             return PartialView(new SelectAdherentViewModel(GetActiveAdherentStolon(), stolon, emails, edition == AdherentEdition.Producer));
         }
 
@@ -97,13 +97,25 @@ namespace Stolons.Controllers
 
             if (ModelState.IsValid)
             {
-                AdherentStolon adherentStolon = new AdherentStolon(_context.Adherents.First(x => x.Email == selectAdherentViewModel.SelectedEmail.Trim()), _context.Stolons.First(x => x.Id == selectAdherentViewModel.Stolon.Id));
-                adherentStolon.RegistrationDate = DateTime.Now;
-                if (_context.AdherentStolons.Where(x => x.StolonId == selectAdherentViewModel.Stolon.Id).Any())
-                    adherentStolon.LocalId = _context.AdherentStolons.Where(x => x.StolonId == selectAdherentViewModel.Stolon.Id).Max(x => x.LocalId) + 1;
+                var adherent = _context.Adherents.First(x => x.Email == selectAdherentViewModel.SelectedEmail.Trim());
+                var stolon = _context.Stolons.First(x => x.Id == selectAdherentViewModel.Stolon.Id);
+                var oldAdherentStolon = _context.AdherentStolons.FirstOrDefault(x => x.AdherentId == adherent.Id && x.StolonId == stolon.Id);
+                AdherentStolon adherentStolon = null;
+                if (oldAdherentStolon == null)
+                {
+                    adherentStolon = new AdherentStolon(adherent, stolon);
+                    adherentStolon.RegistrationDate = DateTime.Now;
+                    if (_context.AdherentStolons.Where(x => x.StolonId == selectAdherentViewModel.Stolon.Id).Any())
+                        adherentStolon.LocalId = _context.AdherentStolons.Where(x => x.StolonId == selectAdherentViewModel.Stolon.Id).Max(x => x.LocalId) + 1;
+                    else
+                        adherentStolon.LocalId = 1;
+                    _context.AdherentStolons.Add(adherentStolon);
+                }
                 else
-                    adherentStolon.LocalId = 1;
-                _context.AdherentStolons.Add(adherentStolon);
+                {
+                    adherentStolon = oldAdherentStolon;
+                    adherentStolon.Deleted = false;
+                }
                 _context.SaveChanges();
                 if (selectAdherentViewModel.AddHasProducer)
                 {
@@ -214,33 +226,24 @@ namespace Stolons.Controllers
                 return Unauthorized();
 
             AdherentStolon adherentStolon = _context.AdherentStolons.Include(x=>x.Adherent).First(x => x.Id == id);
-
-            //We have to keep producers for bills history
-            if (adherentStolon.IsProducer && _context.ProducerBills.Any(x => x.AdherentStolon.Id == adherentStolon.Id))
-            {
-                adherentStolon.StolonId = null;
-                adherentStolon.Stolon.UserStolons.Remove(adherentStolon);
-            }
-            else
-            {
-                //Delete the adherent from this stolons
-                _context.AdherentStolons.Remove(adherentStolon);
-            }
-            //Save
+            adherentStolon.Deleted = true;
             _context.SaveChanges();
-            //If there adherent is not in any stolon remove it from connexion
-            if (!_context.AdherentStolons.Any(x=>x.AdherentId == adherentStolon.AdherentId))
+            if (!_context.AdherentStolons.Any(x => x.AdherentId == adherentStolon.AdherentId && x.Deleted == false))
             {
+                //On supprime son mail de connexion
                 _userManager.DeleteAsync(_userManager.Users.First(x => x.Email == adherentStolon.Adherent.Email));
-                _context.Adherents.Remove(_context.Adherents.First(x=>x.Id == adherentStolon.AdherentId));
-                _context.SaveChanges();
+                //L'adhérent n'est dans aucun stolon, on le "supprime définitivement" ( on l'anonymise)
+                adherentStolon.Adherent.Name = "(Supprimer)";
+                adherentStolon.Adherent.Surname = "(Supprimer)";
+                adherentStolon.Adherent.PostCode = "";
+                adherentStolon.Adherent.Address = "";
+                adherentStolon.Adherent.City = "";
+                adherentStolon.Adherent.Email = "";
+                adherentStolon.Adherent.AvatarFileName = "";
+                adherentStolon.Adherent.PhoneNumber = "";
+
             }
-            else
-            {
-                //Give the adherant a new active stolon
-                _context.AdherentStolons.First(x => x.AdherentId == adherentStolon.AdherentId).SetHasActiveStolon(_context);
-                _context.SaveChanges();
-            }
+            _context.SaveChanges();
             return RedirectToAction("Index");
         }
 
