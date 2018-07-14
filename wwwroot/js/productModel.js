@@ -26,6 +26,8 @@ ProductStockModel = Backbone.Model.extend({
 
     defaults: {},
 
+    urlRoot: "/api/productStock",
+
     unitsEnum: ["Kg", "L"],
 
     /*
@@ -222,7 +224,6 @@ ProducerProductStockCollection = Backbone.Collection.extend(
         }
     }
 );
-
 
 window.ProductsCollection = ProductsModel;
 window.ProductStockModel = ProductStockModel;
