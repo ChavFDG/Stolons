@@ -81,8 +81,6 @@
                 </th>
                 <th>
                 </th>
-                <th>
-                </th>
             </tr>
             @foreach (var stolonBill in Model.HistoryBills.Where(x => x.Key.EditionDate.Year == year).OrderByDescending(x => x.Key.EditionDate))
             {
@@ -93,7 +91,6 @@
                     <td data-toggle="modal" data-target="#@stolonBill.Key.BillNumber">@stolonBill.Key.Consumers </td>
                     <td data-toggle="modal" data-target="#@stolonBill.Key.BillNumber">@stolonBill.Key.Producers </td>
                     <td data-toggle="modal" data-target="#@stolonBill.Key.BillNumber">@stolonBill.Key.Amount.ToString("0.00") €</td>
-                    <td data-toggle="modal" data-target="#@stolonBill.Key.BillNumber">@stolonBill.Key.FeeAmount.ToString("0.00") € (@stolonBill.Key.ProducersFee %)</td>
                     <td>
                         <a class="btn btn-small btn-default" title="Voir" asp-action="ShowStolonsBill" asp-route-id="@stolonBill.Key.BillNumber"><span class="glyphicon glyphicon glyphicon-eye-open"> </span></a>
                         <a class="btn btn-small btn-default" title="Télécharger" target="_blank" href="/@stolonBill.Key.UrlPath"><span class="glyphicon glyphicon glyphicon-download-alt"> </span></a>
@@ -165,7 +162,7 @@
                                         @(item.BillAmount.ToString("0.00") + "€ TTC")
                                     </td>
                                     <td>
-                                        @(item.FeeAmount.ToString("0.00") + "€ TTC")
+                                        @(item.FeeAmount.ToString("0.00") + "€ TTC (" + item.ProducerFee +"%)")
                                     </td>
                                     <td>
                                         @{

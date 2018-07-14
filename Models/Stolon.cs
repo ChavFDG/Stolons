@@ -51,8 +51,8 @@ namespace Stolons.Models
 
         [Display(Name = "Avoir une commission sur les producteurs")]
         public bool UseProducersFee { get; set; } = true;
-        [Display(Name = "Montant de la commission sur les producteurs (en %)")]
-        public int ProducersFee { get; set; } = 5;
+        [Display(Name = "Montant de la commission par défault sur les producteurs (en %)")]
+        public int DefaultProducersFee { get; set; } = 5;
 
         [Display(Name = "Texte de : \"Qui sommes nous ?\"")]
         public string AboutText { get; set; } = @"Texte de présentation de ma structure";

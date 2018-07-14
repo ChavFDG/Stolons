@@ -497,8 +497,9 @@ namespace Stolons.Controllers
         /// <param name="id">Adherent Stolon Id</param>
         public IActionResult SetAsProducer(Guid? id)
         {
-            AdherentStolon adherentStolon = _context.AdherentStolons.Include(x => x.Adherent).ThenInclude(x => x.Products).First(x => x.Id == id);
+            AdherentStolon adherentStolon = _context.AdherentStolons.Include(x=>x.Stolon).Include(x => x.Adherent).ThenInclude(x => x.Products).First(x => x.Id == id);
             adherentStolon.IsProducer = true;
+            adherentStolon.ProducerFee = adherentStolon.Stolon.DefaultProducersFee;
             foreach (var product in adherentStolon.Adherent.Products)
             {
                 _context.ProductsStocks.Add(new ProductStockStolon(product.Id, adherentStolon.Id));

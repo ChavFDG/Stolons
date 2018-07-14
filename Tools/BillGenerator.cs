@@ -352,7 +352,6 @@ namespace Stolons.Tools
             {
                 Stolon = stolon,
                 Amount = 0,
-                ProducersFee = stolon.ProducersFee,
                 Consumers = consumersBills.Count
             };
 
@@ -521,7 +520,7 @@ namespace Stolons.Tools
                 totalAmount += billEntry.Price;
             }
             bill.OrderAmount = totalAmount;
-            bill.ProducersFee = bill.AdherentStolon.Stolon.ProducersFee;
+            bill.ProducerFee = bill.AdherentStolon.ProducerFee;
 
             //GENERATION FACTURE
             StringBuilder billBuilder = new StringBuilder();
@@ -617,14 +616,14 @@ namespace Stolons.Tools
             billBuilder.AppendLine("<td></td>");
             billBuilder.AppendLine("<td></td>");
             billBuilder.AppendLine("<td></td>");
-            billBuilder.AppendLine("<td>Comission (" + bill.ProducersFee + "%)</td>");
-            billBuilder.AppendLine("<td>" + (bill.ProducersFee / 100 * totalWithoutTax).ToString("0.00") + " €</td>");
+            billBuilder.AppendLine("<td>Comission (" + bill.ProducerFee + "%)</td>");
+            billBuilder.AppendLine("<td>" + (bill.ProducerFee / 100 * totalWithoutTax).ToString("0.00") + " €</td>");
             billBuilder.AppendLine("<tr>");
             billBuilder.AppendLine("<td></td>");
             billBuilder.AppendLine("<td></td>");
             billBuilder.AppendLine("<td></td>");
             billBuilder.AppendLine("<td>Net à payer</td>");
-            billBuilder.AppendLine("<td>" + (bill.BillAmount + (bill.ProducersFee / 100 * totalWithoutTax)).ToString("0.00") + " €</td>");
+            billBuilder.AppendLine("<td>" + (bill.BillAmount + (bill.ProducerFee / 100 * totalWithoutTax)).ToString("0.00") + " €</td>");
             billBuilder.AppendLine("</tr>");
             billBuilder.AppendLine("</table>");
 

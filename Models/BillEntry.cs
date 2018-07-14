@@ -186,14 +186,14 @@ namespace Stolons.Models
         [Required]
         public SellType Type { get; set; }
 
-        public int ProducersFee { get; set; }
+        public int ProducerFee { get; set; }
 
         [NotMapped]
         public decimal PriceWithoutFee
         {
             get
             {
-                return Price - (Price / 100 * ProducersFee);
+                return Price - (Price / 100 * ProducerFee);
             }
         }
 
@@ -205,7 +205,7 @@ namespace Stolons.Models
         {
             get
             {
-                return UnitPrice - (UnitPrice / 100 * ProducersFee);
+                return UnitPrice - (UnitPrice / 100 * ProducerFee);
             }
         }
         [NotMapped]

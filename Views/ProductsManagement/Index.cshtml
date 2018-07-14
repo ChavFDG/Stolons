@@ -10,7 +10,7 @@
 </p>
 <table class="table productsMgtTable">
     <tr>
-	<th></th>
+        <th></th>
         <th>
             Image
         </th>
@@ -28,7 +28,7 @@
         {
             <th>
                 <div>
-                    @(adherentStolon.Stolon.Label)
+                    @(adherentStolon.Stolon.Label + "(" + adherentStolon.ProducerFee + "%)")
                 </div>
                 <div>
                     @("(" + EnumHelper<Stolon.Modes>.GetDisplayValue(adherentStolon.Stolon.GetMode()) + ")")
@@ -62,9 +62,9 @@
     @foreach (var item in Model.Products.Where(x => !x.IsArchive))
     {
         <tr>
-	    <td>
-		<a data-productId="@item.Id" class="productPreview btn btn-small btn-default" title="">Aperçu vitrine</a>
-	    </td>
+            <td>
+                <a data-productId="@item.Id" class="productPreview btn btn-small btn-default" title="">Aperçu vitrine</a>
+            </td>
             <td class="productMgtImage">
                 <div>
                     @{
@@ -118,18 +118,18 @@
             <td>
                 @Html.DisplayFor(model => item.UnitPrice) @("€")
                 @{
-                        @if (item.Type == Product.SellType.Weigh)
-                        {
-                            @(" par ")
-                            @Html.DisplayFor(model => item.QuantityStepString)
-                        }
-                        @if (!item.HideWeightPrice && item.WeightPrice != 0)
-                        {
-                            <br />
-                            @Html.DisplayFor(model => item.WeightPrice)@("€/")
-                            @Html.DisplayFor(model => item.ProductUnit)
-                        }
+                    @if (item.Type == Product.SellType.Weigh)
+                    {
+                        @(" par ")
+                        @Html.DisplayFor(model => item.QuantityStepString)
                     }
+                    @if (!item.HideWeightPrice && item.WeightPrice != 0)
+                    {
+                        <br />
+                        @Html.DisplayFor(model => item.WeightPrice)@("€/")
+                        @Html.DisplayFor(model => item.ProductUnit)
+                    }
+                }
             </td>
             <td>
                 Vente : @(EnumHelper<Product.SellType>.GetDisplayValue(@item.Type))
@@ -140,21 +140,17 @@
             @foreach (var productStock in item.ProductStocks.OrderBy(x => x.AdherentStolonId))
             {
                 string color = "";
-		string text = "";
                 switch (productStock.State)
                 {
                     case Product.ProductState.Disabled:
-		    text = "Produit indisponible";
-                    color = "#cb2431";
-                    break;
+                        color = "#cb2431";
+                        break;
                     case Product.ProductState.Enabled:
-                    color = "#2cbe4e";
-		    text = "Produit disponible";
-                    break;
+                        color = "#2cbe4e";
+                        break;
                     case Product.ProductState.Stock:
-                    color = "#ff8000";
-		    text = "Mise à jour des stocks";
-                    break;
+                        color = "#ff8000";
+                        break;
                 }
                 string stockManagementLabel = "";
                 @if (productStock.AdherentStolon.Stolon.GetMode() == Stolon.Modes.Order || item.StockManagement == Product.StockType.Fixed)
@@ -171,11 +167,11 @@
                                            + productStock.Product.GetQuantityString(productStock.WeekStock);
                 }
 
-		<td bgcolor="@(color)">
+                <td bgcolor="@(color)">
                     @if (productStock.Product.StockManagement != Product.StockType.Unlimited)
                     {
-                        <input class="btn btn-default disabled" disabled="true" type="submit" style="color: '@(color)';" value="@stockManagementLabel" onclick="StockMgtViewModal.open(this, '@productStock.Id')" />
-			<span class="glyphicon glyphicon-refresh glyphicon-refresh-animate loading-products"></span>
+                        <input class="btn btn-default disabled" disabled type="submit" style="color: '@(color)';" value="@stockManagementLabel" onclick="StockMgtViewModal.open(this, '@productStock.Id')" />
+                        <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate loading-products"></span>
                     }
                     else
                     {
@@ -208,7 +204,7 @@
                 </td>
             }
         </tr>
-                    }
+    }
 </table>
 
 <div id="stockMgt" class="modals">
@@ -225,47 +221,47 @@
                     <div>
                         <span><b>Changer le stock pour le produit : <i><%= productStock.get("Product").get("Name") %></i></b></span>
                     </div>
-                     <div class="form-horizontal stockManagementWrapper">
+                    <div class="form-horizontal stockManagementWrapper">
                         <div class="form-group">
                             <div><label>Vente : </label> <%= productStock.getSellTypeString() %></div>
                             <div><label>Gestion du stock : </label> <%= productStock.getStockManagementString() %></div>
-                    <% if (productStock.get("AdherentStolon").Stolon.Mode == 1 && productStock.get("Product").get("StockManagement") != 1) { %> <!-- Livraisons/stocks et gestion Hebdomadaire -->
- 
+                            <% if (productStock.get("AdherentStolon").Stolon.Mode == 1 && productStock.get("Product").get("StockManagement") != 1) { %> <!-- Livraisons/stocks et gestion Hebdomadaire -->
+
                             <label for="WeekStock" class="control-label">Stock proposé pour la semaine prochaine:</label>
-                            <input id="WeekStock" name="WeekStock" min="0" type="number" step="<%= productStock.get("Product").QuantityStep / 1000 || 1 %>" value="<%= productStock.getWeekQuantityStock() %>" />
+                            <input id="WeekStock" name="WeekStock" min="0" type="number" step="<%= productStock.get(" Product").QuantityStep / 1000 || 1 %>" value="<%= productStock.getWeekQuantityStock() %>" />
                             <span><%= productStock.getStockUnitString() %></span>
-                    <% } else { %> <!-- Commandes -->
-			<!-- Stock a la semaine -->
-		        <% if (productStock.get("Product").get("StockManagement") == 0) { %>
+                            <% } else { %> <!-- Commandes -->
+                            <!-- Stock a la semaine -->
+                            <% if (productStock.get("Product").get("StockManagement") == 0) { %>
                             <label class="control-label">Stock proposé cette semaine :  </label>
-                                <span><%= productStock.getWeekQuantityStock() %> (<%= productStock.getWeekQuantityOrdered() %> commandés par les utilisateurs)</span>
-                                <span><%= productStock.getStockUnitString() %></span>
-			<% } %>
-                        <div>
-                            <label for="RemainingStock" class="control-label">Il reste en stock : </label>
-                            <input id="RemainingStock" name="RemainingStock" min="0" type="number" step="<%= productStock.get("Product").get("QuantityStep") / 1000 || 1 %>" value="<%= productStock.getRemainingQuantityStock() %>" />
-                                <span><%= productStock.getStockUnitString() %></span>
-                        <div>
-                            <% if (productStock.get("OrderedQuantityString") > 0) { %>
-                            <span><%= productStock.get("OrderedQuantityString") %> ont déjà été commandé(e)s. </span>
-                            <span>Attention: modifications possibles jusqu'à la cloture des commandes.</span>
+                            <span><%= productStock.getWeekQuantityStock() %> (<%= productStock.getWeekQuantityOrdered() %> commandés par les utilisateurs)</span>
+                            <span><%= productStock.getStockUnitString() %></span>
                             <% } %>
+                            <div>
+                                <label for="RemainingStock" class="control-label">Il reste en stock : </label>
+                                <input id="RemainingStock" name="RemainingStock" min="0" type="number" step="<%= productStock.get(" Product").get("QuantityStep") / 1000 || 1 %>" value="<%= productStock.getRemainingQuantityStock() %>" />
+                                <span><%= productStock.getStockUnitString() %></span>
+                                <div>
+                                    <% if (productStock.get("OrderedQuantityString") > 0) { %>
+                                    <span><%= productStock.get("OrderedQuantityString") %> ont déjà été commandé(e)s. </span>
+                                    <span>Attention: modifications possibles jusqu'à la cloture des commandes.</span>
+                                    <% } %>
+                                </div>
+                                <% } %>
+                            </div>
                         </div>
-                    <% } %>
-		    </div>
-		    </div>
-                    <span id="WeekStockError" class="text-danger"><%= validation.weekStockError %></span>
-                    <span id="RemainingStockError" class="text-danger"><%= validation.remainingStockError %></span>
-                    <div class="row">
-                        <a id="saveStocks" class="btn btn-small btn-default" <% if (!_.isEmpty(validation.weekStockError) || !_.isEmpty(validation.remainingStockError)) { %> disabled="disabled" <% } %> >Enregistrer les modifications</a>
-                         <a id="cancel" class="btn btn-small btn-default">Annuler</a>
-                        <div class="col-md-4">
+                        <span id="WeekStockError" class="text-danger"><%= validation.weekStockError %></span>
+                        <span id="RemainingStockError" class="text-danger"><%= validation.remainingStockError %></span>
+                        <div class="row">
+                            <a id="saveStocks" class="btn btn-small btn-default" <% if (!_.isEmpty(validation.weekStockError) || !_.isEmpty(validation.remainingStockError)) { %> disabled="disabled" <% } %> >Enregistrer les modifications</a>
+                            <a id="cancel" class="btn btn-small btn-default">Annuler</a>
+                            <div class="col-md-4">
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 </script>
 
 
@@ -348,12 +344,12 @@
                     @Html.DisplayFor(model => item.UnitPrice) @("€")
                     @{
                         @if (item.QuantityStep != 0)
-                    {
+                        {
                             @(" par ")
                             @Html.DisplayFor(model => item.QuantityStepString)
                         }
                         @if (!item.HideWeightPrice && item.WeightPrice != 0)
-                    {
+                        {
                             <br />
                             @Html.DisplayFor(model => item.WeightPrice)@("€/")
                             @Html.DisplayFor(model => item.ProductUnit)
@@ -366,20 +362,20 @@
                     Stock : @(EnumHelper<Product.StockType>.GetDisplayValue(@item.StockManagement))
                 </td>
             </tr>
-                        }
+        }
     </table>
 
-                        }
-                        else
-                        {
-                            <p>
-                                Aucun produit archivé.
-                            </p>
+}
+else
+{
+    <p>
+        Aucun produit archivé.
+    </p>
 
-                        }
+}
 
 <!-- Include the public product template -->
 @{ await Html.RenderPartialAsync("Templates/PublicProductTemplate"); }
-			    
+
 <script src="/js/productModel.js"></script>
 <script src="/js/productsManagement.js"></script>

@@ -110,14 +110,14 @@ namespace Stolons.Models
         public decimal OrderAmount { get; set; }
 
         [Display(Name = "Commission")]
-        public int ProducersFee { get; set; }
+        public int ProducerFee { get; set; }
 
         [NotMapped]
         public decimal FeeAmount
         {
             get
             {
-                return OrderAmount / 100 * ProducersFee;
+                return OrderAmount / 100 * ProducerFee;
             }
         }
 
@@ -127,7 +127,7 @@ namespace Stolons.Models
         {
             get
             {
-                return Math.Round(OrderAmount - (OrderAmount / 100m * ProducersFee), 2);
+                return Math.Round(OrderAmount - (OrderAmount / 100m * ProducerFee), 2);
             }
         }
         [Display(Name = "Montant de la TVA")]
@@ -184,16 +184,14 @@ namespace Stolons.Models
 
         [Display(Name = "Montant")]
         public decimal Amount { get; set; }
-
-        [Display(Name = "Commission")]
-        public int ProducersFee { get; set; }
         
         [Display(Name = "Nombre d'adhérent ayant commandé")]
         public int Consumers { get; set; }
 
         [Display(Name = "Nombre de producteur ayant à livrer")]
         public int Producers { get; set; }
-                
+
+        [Display(Name = "Commission perçue")]
         public decimal FeeAmount { get; set; }
 
         [Display(Name = "A été modifier")]
@@ -236,7 +234,7 @@ namespace Stolons.Models
         }
 
         /// <summary>
-        /// Update bill's informations by updating data :Amount, ProducersFee, Consumers and Producers
+        /// Update bill's informations by updating data :Amount, ProducerFee, Consumers and Producers
         /// </summary>
         public void UpdateBillInfo()
         {
