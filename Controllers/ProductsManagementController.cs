@@ -88,6 +88,37 @@ namespace Stolons.Controllers
             return Json(vmProductsStock);
         }
 
+        [HttpGet("api/productStock/{productStockId}")]
+        public IActionResult JsonProductStock(Guid productStockId)
+        {
+            if (!AuthorizedProducer())
+                return Unauthorized();
+            if (productStockId == null)
+                return NotFound();
+
+            Adherent producer = GetCurrentAdherentSync() as Adherent;
+            var productStock = _context.ProductsStocks
+		.Include(x => x.AdherentStolon)
+		.ThenInclude(x => x.Stolon)
+		.Include(x => x.Product)
+		.ThenInclude(x => x.Producer)
+		.Include(x => x.Product)
+		.ThenInclude(m => m.Familly)
+		.ThenInclude(m => m.Type)
+		.AsNoTracking()
+		.First(x => x.Id == productStockId);
+
+	    if (productStock == null)
+		return NotFound();
+
+            // int orderedQty = 0;
+            // foreach (var validatedWeekBasket in _context.ValidatedWeekBaskets.Include(x => x.AdherentStolon).ThenInclude(x => x.Adherent).Include(x => x.BillEntries).AsNoTracking().ToList())
+            // {
+            //     validatedWeekBasket.BillEntries.Where(x => x.ProductStockId == productStock.Id).ToList().ForEach(x => orderedQty += x.Quantity);
+            // }
+            return Json(productStock);
+        }
+
         // GET: ProductsManagement/Details/5
         public IActionResult Details(Guid? id)
         {
