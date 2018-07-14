@@ -6,7 +6,6 @@ namespace Stolons.Models
 {
     public interface IProduct
     {
-        int AverageQuantity { get; set; }
         string Description { get; set; }
         DateTime DLC { get; set; }
         Product.StorageType Storage { get; set; }

@@ -176,8 +176,8 @@ namespace Stolons.Tools
                 }
                 //Generate bill for producer
                 ProducerBill bill = CreateBill<ProducerBill>(producer, billEntries);
-                bill.HtmlBillContent = GenerateHtmlBillContent(bill, dbContext);
                 bill.HtmlOrderContent = GenerateHtmlOrderContent(bill, dbContext);
+                bill.HtmlBillContent = GenerateHtmlBillContent(bill, dbContext);
                 producerBills.Add(bill);
                 if (billEntries.Any())
                 {
@@ -464,6 +464,7 @@ namespace Stolons.Tools
             orderBuilder.AppendLine("<tr>");
             orderBuilder.AppendLine("<th>Produit</th>");
             orderBuilder.AppendLine("<th>Quantité</th>");
+            orderBuilder.AppendLine("<th></th>");
             orderBuilder.AppendLine("</tr>");
 
             foreach (var productBillEntries in bill.BillEntries.GroupBy(x => x.ProductStock.Product, x => x).OrderBy(x => x.Key.Name))
@@ -473,6 +474,10 @@ namespace Stolons.Tools
                 orderBuilder.AppendLine("<tr>");
                 orderBuilder.AppendLine("<td>" + productBillEntries.Key.Name + "</td>");
                 orderBuilder.AppendLine("<td>" + productBillEntries.Key.GetQuantityString(quantity) + "</td>");
+                if (productBillEntries.Key.Type == SellType.VariableWeigh)
+                    orderBuilder.AppendLine("<td><span tooltip=\"Poids variable\" class=\"glyphicon glyphicon-retweet\"></td>");
+                else
+                    orderBuilder.AppendLine("<td></td>");
                 orderBuilder.AppendLine("</tr>");
             }
             orderBuilder.AppendLine("</table>");
@@ -488,6 +493,7 @@ namespace Stolons.Tools
             orderBuilder.AppendLine("<th>Client</th>");
             orderBuilder.AppendLine("<th>Produit</th>");
             orderBuilder.AppendLine("<th>Quantité</th>");
+            orderBuilder.AppendLine("<th></th>");
             orderBuilder.AppendLine("</tr>");
             foreach (var group in billEntriesByConsumer.OrderBy(x => x.Key.LocalId))
             {
@@ -500,6 +506,10 @@ namespace Stolons.Tools
                     orderBuilder.AppendLine("<td></td>");
                     orderBuilder.AppendLine("<td>" + entries.Name + "</td>");
                     orderBuilder.AppendLine("<td>" + entries.QuantityString + "</td>");
+                    if (entries.ProductStock.Product.Type == SellType.VariableWeigh)
+                        orderBuilder.AppendLine("<td><span tooltip=\"Poids variable\" class=\"glyphicon glyphicon-retweet\"></td>");
+                    else
+                        orderBuilder.AppendLine("<td></td>");
                     orderBuilder.AppendLine("</tr>");
                 }
             }
@@ -660,16 +670,21 @@ namespace Stolons.Tools
             builder.AppendLine("<th>Prix unitaire</th>");
             builder.AppendLine("<th>Quantité</th>");
             builder.AppendLine("<th>Prix total</th>");
+            builder.AppendLine("<th</th>");
             builder.AppendLine("</tr>");
             foreach (var tmpBillEntry in bill.BillEntries)
             {
                 var billEntry = dbContext.BillEntrys.Include(x => x.ProductStock).ThenInclude(x => x.Product).First(x => x.Id == tmpBillEntry.Id);
-                decimal total = Convert.ToDecimal(billEntry.UnitPrice * billEntry.Quantity);
+                decimal total = billEntry.ProductStock.Product.Type == SellType.VariableWeigh? Convert.ToDecimal(billEntry.ProductStock.Product.AveragePrice * billEntry.Quantity) : Convert.ToDecimal(billEntry.UnitPrice * billEntry.Quantity);
                 builder.AppendLine("<tr>");
                 builder.AppendLine("<td>" + billEntry.Name + "</td>");
                 builder.AppendLine("<td>" + billEntry.UnitPrice.ToString("0.00") + " €" + "</td>");
                 builder.AppendLine("<td>" + billEntry.QuantityString + "</td>");
                 builder.AppendLine("<td>" + total.ToString("0.00") + " €" + "</td>");
+                if (billEntry.ProductStock.Product.Type == SellType.VariableWeigh)
+                    builder.AppendLine("<td><span tooltip=\"Poids variable\" class=\"glyphicon glyphicon-retweet\"></td>");
+                else
+                    builder.AppendLine("<td></td>");
                 builder.AppendLine("</tr>");
                 bill.OrderAmount += total;
             }

@@ -187,11 +187,11 @@ namespace Stolons.Models
         public SellType Type { get; set; }
 
         public int ProducerFee { get; set; }
-        
+
         [Display(Name = "Prix unitaire")]
         [Required]
         public decimal UnitPrice { get; set; }
-        
+
         [NotMapped]
         public decimal UnitPriceWithoutTax
         {
@@ -199,7 +199,7 @@ namespace Stolons.Models
             {
                 if (Tax == 0)
                     return UnitPrice;
-                return UnitPrice- UnitPrice * Tax / 100;
+                return UnitPrice - UnitPrice * Tax / 100;
             }
         }
         [NotMapped]
@@ -254,8 +254,58 @@ namespace Stolons.Models
         }
 
 
-        [Display(Name = "Quantité moyenne")]
-        public int AverageQuantity { get; set; }
+        #region AverageWeigh
+        [Display(Name = "Poids minimum")]
+        [Required]
+        public decimal MinimumWeight { get; set; }
+
+        [Display(Name = "Poids maximum")]
+        [Required]
+        public decimal MaximumWeight { get; set; }
+
+        [Display(Name = "Poids moyen")]
+        [NotMapped]
+        public decimal AverageWeigh
+        {
+            get
+            {
+                return (MaximumWeight - MinimumWeight) / 2 + MinimumWeight;
+            }
+        }
+
+        [Display(Name = "Prix moyen")]
+        [NotMapped]
+        public decimal AveragePrice
+        {
+            get
+            {
+                return AverageWeigh * WeightPrice;
+            }
+        }
+
+        [Display(Name = "Prix minimum")]
+        [NotMapped]
+        public decimal MinimumPrice
+        {
+            get
+            {
+                return MinimumWeight * WeightPrice;
+            }
+        }
+
+        [Display(Name = "Prix maximum")]
+        [NotMapped]
+        public decimal MaximumPrice
+        {
+            get
+            {
+                return MaximumWeight * WeightPrice;
+            }
+        }
+        #endregion AverageWeigh
+
+
+
         [Display(Name = "Unité de mesure")]
         public Unit ProductUnit { get; set; }
 
@@ -304,7 +354,7 @@ namespace Stolons.Models
         {
             if (_Pictures.Any())
             {
-                return Path.Combine("uploads", "images", "products", _Pictures[0]+".png");
+                return Path.Combine("uploads", "images", "products", _Pictures[0] + ".png");
             }
             else
             {
@@ -408,7 +458,9 @@ namespace Stolons.Models
                 HasBeenModified = this.HasBeenModified,
                 Type = this.Type,
                 DLC = this.DLC,
-                Storage = this.Storage
+                Storage = this.Storage,
+                MinimumWeight = this.MinimumWeight,
+                MaximumWeight = this.MaximumWeight
             };
             return clonedBillEntry;
         }
@@ -428,6 +480,8 @@ namespace Stolons.Models
             billEntry.Type = productStock.Product.Type;
             billEntry.DLC = productStock.Product.DLC;
             billEntry.Storage = productStock.Product.Storage;
+            billEntry.MinimumWeight = productStock.Product.MinimumWeight;
+            billEntry.MaximumWeight = productStock.Product.MaximumWeight;
             return billEntry;
         }
     }
