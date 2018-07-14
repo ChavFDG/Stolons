@@ -121,6 +121,56 @@ namespace Stolons.Models
         [Required]
         public decimal WeightPrice { get; set; }
 
+        #region AverageWeigh
+        [Display(Name = "Poids minimum")]
+        [Required]
+        public decimal MinimumWeight { get; set; }
+
+        [Display(Name = "Poids maximum")]
+        [Required]
+        public decimal MaximumWeight { get; set; }
+
+        [Display(Name = "Poids moyen")]
+        [NotMapped]
+        public decimal AverageWeigh
+        {
+            get
+            {
+                return (MaximumWeight - MinimumWeight) / 2 + MinimumWeight;
+            }
+        }
+
+        [Display(Name = "Prix moyen")]
+        [NotMapped]
+        public decimal AveragePrice
+        {
+            get
+            {
+                return AverageWeigh * WeightPrice;
+            }
+        }
+
+        [Display(Name = "Prix minimum")]
+        [NotMapped]
+        public decimal MinimumPrice
+        {
+            get
+            {
+                return MinimumWeight * WeightPrice;
+            }
+        }
+
+        [Display(Name = "Prix maximum")]
+        [NotMapped]
+        public decimal MaximumPrice
+        {
+            get
+            {
+                return MaximumWeight * WeightPrice;
+            }
+        }
+        #endregion AverageWeigh
+
         [Display(Name = "Prix unitaire")]
         [Required]
         public decimal UnitPrice { get; set; } = 0;
@@ -261,7 +311,9 @@ namespace Stolons.Models
             [Display(Name = "A la pièce")]
             Piece = 1,
             [Display(Name = "Emballé")]
-            Wrapped = 2
+            Wrapped = 2,
+            [Display(Name = "Poids variable")]
+            VariableWeigh = 2
         }
 
         public enum Unit

@@ -410,6 +410,7 @@ namespace Stolons.Tools
                     builder.AppendLine("<th>Producteur</th>");
                     builder.AppendLine("<th>Produit</th>");
                     builder.AppendLine("<th>Quantité</th>");
+                    builder.AppendLine("<th></th>");
                     builder.AppendLine("</tr>");
 
                     foreach (var producerBillsEntry in billEntryByProducer.OrderBy(x => x.Key.AdherentStolon.Adherent.CompanyName))
@@ -423,6 +424,10 @@ namespace Stolons.Tools
                             builder.AppendLine("<td></td>");
                             builder.AppendLine("<td>" + billEntry.ProductStock.Product.Name + "</td>");
                             builder.AppendLine("<td>" + billEntry.QuantityString + "</td>");
+                            if (billEntry.ProductStock.Product.Type == SellType.VariableWeigh)
+                                builder.AppendLine("<td><span tooltip=\"Poids variable\" class=\"glyphicon glyphicon-retweet\"></td>");
+                            else
+                                builder.AppendLine("<td></td>");
                             builder.AppendLine("</tr>");
 
                         }
