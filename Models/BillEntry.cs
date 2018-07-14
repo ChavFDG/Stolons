@@ -187,45 +187,29 @@ namespace Stolons.Models
         public SellType Type { get; set; }
 
         public int ProducerFee { get; set; }
-
-        [NotMapped]
-        public decimal PriceWithoutFee
-        {
-            get
-            {
-                return Price - (Price / 100 * ProducerFee);
-            }
-        }
-
+        
         [Display(Name = "Prix unitaire")]
         [Required]
         public decimal UnitPrice { get; set; }
+        
         [NotMapped]
-        public decimal UnitPriceWithoutFee
-        {
-            get
-            {
-                return UnitPrice - (UnitPrice / 100 * ProducerFee);
-            }
-        }
-        [NotMapped]
-        public decimal UnitPriceWithoutFeeAndTax
+        public decimal UnitPriceWithoutTax
         {
             get
             {
                 if (Tax == 0)
-                    return UnitPriceWithoutFee;
-                return Math.Round(UnitPriceWithoutFee / (1 + Tax / 100), 2);
+                    return UnitPrice;
+                return UnitPrice- UnitPrice * Tax / 100;
             }
         }
         [NotMapped]
-        public decimal PriceWithoutFeeAndTax
+        public decimal PriceWithoutTax
         {
             get
             {
                 if (Tax == 0)
-                    return PriceWithoutFee;
-                return Math.Round(PriceWithoutFee / (1 + Tax / 100), 2);
+                    return Price;
+                return Price - Price * Tax / 100;
             }
         }
 

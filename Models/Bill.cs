@@ -106,7 +106,7 @@ namespace Stolons.Models
         [Display(Name = "Etat")]
         public BillState State { get; set; }
 
-        [Display(Name = "Montant de la commande")]
+        [Display(Name = "Montant de la facture (TTC)")]
         public decimal OrderAmount { get; set; }
 
         [Display(Name = "Commission")]
@@ -117,17 +117,17 @@ namespace Stolons.Models
         {
             get
             {
-                return OrderAmount / 100 * ProducerFee;
+                return (OrderAmount - TaxAmount) / 100 * ProducerFee;
             }
         }
 
-        [Display(Name = "Montant de la facture (TTC)")]
+        [Display(Name = "Montant de la facture à payer / Net à payer")]
         [NotMapped]
         public decimal BillAmount
         {
             get
             {
-                return Math.Round(OrderAmount - (OrderAmount / 100m * ProducerFee), 2);
+                return OrderAmount- FeeAmount;
             }
         }
         [Display(Name = "Montant de la TVA")]

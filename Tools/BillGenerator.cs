@@ -562,12 +562,12 @@ namespace Stolons.Tools
             {
                 int quantity = 0;
                 productBillEntries.ForEach(x => quantity += x.Quantity);
-                decimal productTotalWithoutTax = Convert.ToDecimal(productBillEntries.First().UnitPriceWithoutFeeAndTax * quantity);
+                decimal productTotalWithoutTax = Convert.ToDecimal(productBillEntries.First().UnitPriceWithoutTax * quantity);
                 billBuilder.AppendLine("<tr>");
                 billBuilder.AppendLine("<td>" + productBillEntries.Key.Name + "</td>");
                 billBuilder.AppendLine("<td>" + productBillEntries.Key.GetQuantityString(quantity) + "</td>");
                 billBuilder.AppendLine("<td>" + (productBillEntries.Key.TaxEnum == Product.TAX.None ? "NA" : productBillEntries.Key.Tax.ToString("0.00") + " %</td>"));
-                billBuilder.AppendLine("<td>" + (productBillEntries.Key.Type == SellType.Piece ? productBillEntries.First().UnitPriceWithoutFeeAndTax : productBillEntries.First().PriceWithoutFeeAndTax).ToString("0.00") + " €" + "</td>");
+                billBuilder.AppendLine("<td>" + (productBillEntries.Key.Type == SellType.Piece ? productBillEntries.First().UnitPriceWithoutTax : productBillEntries.First().PriceWithoutTax).ToString("0.00") + " €" + "</td>");
                 billBuilder.AppendLine("<td>" + productTotalWithoutTax.ToString("0.00") + " €" + "</td>");
                 billBuilder.AppendLine("</tr>");
                 //Si tax, on ajoute au total du taux de la tva
@@ -595,8 +595,8 @@ namespace Stolons.Tools
                 billBuilder.AppendLine("<td></td>");
                 billBuilder.AppendLine("<td></td>");
                 billBuilder.AppendLine("<td></td>");
-                billBuilder.AppendLine("<td>TVA " + tax.Key.ToString("0.00") + "%</td>");
-                billBuilder.AppendLine("<td>" + taxAmount.ToString("0.00") + " €</td>");
+                billBuilder.AppendLine("<td font-style=italic>TVA " + tax.Key.ToString("0.00") + "%</td>");
+                billBuilder.AppendLine("<td font-style=italic>" + taxAmount.ToString("0.00") + " €</td>");
                 billBuilder.AppendLine("</tr>");
                 bill.TaxAmount += taxAmount;
             }
@@ -604,26 +604,26 @@ namespace Stolons.Tools
             billBuilder.AppendLine("<td></td>");
             billBuilder.AppendLine("<td></td>");
             billBuilder.AppendLine("<td></td>");
-            billBuilder.AppendLine("<td>Total TVA " + bill.TaxAmount.ToString("0.00") + " €</td>");
+            billBuilder.AppendLine("<td>Total TVA</td>");
             billBuilder.AppendLine("<td>" + bill.TaxAmount.ToString("0.00") + " €</td>");
             billBuilder.AppendLine("<tr>");
             billBuilder.AppendLine("<td></td>");
             billBuilder.AppendLine("<td></td>");
             billBuilder.AppendLine("<td></td>");
             billBuilder.AppendLine("<td>Total TTC</td>");
-            billBuilder.AppendLine("<td>" + bill.BillAmount.ToString("0.00") + " €</td>");
+            billBuilder.AppendLine("<td>" + bill.OrderAmount.ToString("0.00") + " €</td>");
             billBuilder.AppendLine("<tr>");
             billBuilder.AppendLine("<td></td>");
             billBuilder.AppendLine("<td></td>");
             billBuilder.AppendLine("<td></td>");
-            billBuilder.AppendLine("<td>Comission (" + bill.ProducerFee + "%)</td>");
-            billBuilder.AppendLine("<td>" + (bill.ProducerFee / 100 * totalWithoutTax).ToString("0.00") + " €</td>");
+            billBuilder.AppendLine("<td font-style=italic>Commission (" + bill.ProducerFee + "%)</td>");
+            billBuilder.AppendLine("<td font-style=italic>" + bill.FeeAmount.ToString("0.00") + " €</td>");
             billBuilder.AppendLine("<tr>");
             billBuilder.AppendLine("<td></td>");
             billBuilder.AppendLine("<td></td>");
             billBuilder.AppendLine("<td></td>");
-            billBuilder.AppendLine("<td>Net à payer</td>");
-            billBuilder.AppendLine("<td>" + (bill.BillAmount + (bill.ProducerFee / 100 * totalWithoutTax)).ToString("0.00") + " €</td>");
+            billBuilder.AppendLine("<td font-style=bold>Net à payer</td>");
+            billBuilder.AppendLine("<td font-style=bold>" + bill.BillAmount.ToString("0.00") + " €</td>");
             billBuilder.AppendLine("</tr>");
             billBuilder.AppendLine("</table>");
 
