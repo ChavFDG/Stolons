@@ -1,0 +1,24 @@
+﻿@model Stolons.ViewModels.Adherents.ProducerFeeViewModel
+
+<form asp-action="EditProducerFee" name="EditProducerFee" asp-controller="Users" enctype="multipart/form-data">
+    <div class="modal-body">
+        <input asp-for="AdherentStolon.Id" hidden="hidden" />
+        <p>Saisir le montant de la commission (en %):</p>
+        <div class="form-group">
+            <div class="col-md-12">
+                <input asp-for="ProducerFee" class="form-control" min="0" max="100" />
+                <span asp-validation-for="ProducerFee" class="text-danger" />
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <input type="submit" id="submit" value="Sauvegarder" class="btn btn-small btn-default" />
+    </div>
+</form>
+
+
+@section Scripts {
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+}

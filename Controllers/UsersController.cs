@@ -67,6 +67,26 @@ namespace Stolons.Controllers
             return PartialView(new SelectAdherentViewModel(GetActiveAdherentStolon(), stolon, emails, edition == AdherentEdition.Producer));
         }
 
+        public virtual PartialViewResult _PartialEditProducerFee(Guid? adherentStolonId)
+        {
+            return PartialView(new ProducerFeeViewModel(GetActiveAdherentStolon(), _context.AdherentStolons.Include(x=>x.Adherent).First(x => x.Id == adherentStolonId)));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public virtual IActionResult EditProducerFee(ProducerFeeViewModel producerFeeViewModel)
+        {
+
+            if (!Authorized(Role.Admin))
+                return Unauthorized();
+
+            var producer = _context.AdherentStolons.First(x => x.Id == producerFeeViewModel.AdherentStolon.Id);
+            producer.ProducerFee = producerFeeViewModel.ProducerFee;
+            _context.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]

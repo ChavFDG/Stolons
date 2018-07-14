@@ -119,6 +119,29 @@
                  $('#bodyAndFooterModal').modal('show');
              },
          });
+    }
+
+    function showEditFee(clickedElement) {
+         $("#bodyAndFooterModal .modal-title").html($(clickedElement).attr("data-title"));
+         var dataid = $(clickedElement).attr("data-id");
+        showEditFeeAjax(dataid);
+	 return false;
+     }
+
+    function showEditFeeAjax(dataId) {
+         var link = '@Html.Raw(Url.Action("_PartialEditProducerFee", "Users", new { adherentStolonId = "-1"}))'
+        link = link.replace("-1", dataId);
+
+         $.ajax({
+             type: "GET",
+             url: link,
+             error: function(data)
+             {},
+             success: function (data) {
+                 $("#bodyAndFooterModal .modal-bodyAndFooter").html(data);
+                 $('#bodyAndFooterModal').modal('show');
+             },
+         });
      }
 
 

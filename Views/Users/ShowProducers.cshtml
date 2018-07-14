@@ -110,8 +110,8 @@
                                     <span class="caret"></span>
                                 </a>
                                 <ul class="dropdown-menu">
-                                    <li><a href="#" data-target="" onclick="showEditProducerFee(this);" data-id="@item.Id" actualFee="@item.ProducerFee" data-title="@("Modification de la cotisation de " + item.Adherent.CompanyName)">Changer le montant de la commission</a></li>
-                                </ul>
+                                    <li><a href="#" onclick="showEditFee(this);" data-id="@item.Id" data-fee="@item.ProducerFee" data-title="@("Modification de la cotisation de " + item.Adherent.CompanyName)">Changer le montant de la commission</a></li>
+                               </ul>
                             </div>
                         </td>
                     }
