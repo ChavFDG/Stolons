@@ -30,6 +30,7 @@ namespace Stolons.Models
         Product.SellType Type { get; set; }
         decimal UnitPrice { get; set; }
         string GetFirstImageFullPath();
-        string GetQuantityString(decimal quantity);
+        decimal MinimumWeight { get; set; }
+        decimal MaximumWeight { get; set; }
     }
 }

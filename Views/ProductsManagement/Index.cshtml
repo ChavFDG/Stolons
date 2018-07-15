@@ -7,203 +7,208 @@
 
 <p>
     <a asp-action="Manage" class="btn btn-small btn-default">Ajouter un produit</a>
+    @if (Model.VariableWeighViewModel.VariableWeighProductsViewModel.Any())
+    {
+        <a asp-action="?" class="btn btn-small btn-default">Saisir les poids variable</a>
+    }
 </p>
+
 <div id="productsManagement">
     <table class="table productsMgtTable">
-	<tr>
+        <tr>
             <th></th>
             <th>
-		Image
+                Image
             </th>
             <th>
-		@Html.DisplayNameFor(model => model.Producer.Products.First().Name)
+                @Html.DisplayNameFor(model => model.Producer.Products.First().Name)
             </th>
             <th>
-		Prix
+                Prix
             </th>
             <th>
-		@Html.DisplayNameFor(model => model.Producer.Products.First().Type)
+                @Html.DisplayNameFor(model => model.Producer.Products.First().Type)
             </th>
 
             @foreach (var adherentStolon in Model.Producer.AdherentStolons.Where(x => x.IsProducer).OrderBy(x => x.Id))
             {
-		<th>
-                <div>
-            @(adherentStolon.Stolon.Label + "(" + adherentStolon.ProducerFee + "%)")
-</div>
-            <div>
-            @("(" + EnumHelper<Stolon.Modes>.GetDisplayValue(adherentStolon.Stolon.GetMode()) + ")")
-</div>
-            @if (adherentStolon.Stolon.GetMode() == Stolon.Modes.DeliveryAndStockUpdate)
-                {
-                <div class="dropdown">
-            <a class="dropdown-toggle btn btn-small btn-default" data-toggle="dropdown" href="#">
-            Actions
-            <span class="caret"></span>
-    </a>
-            <ul class="dropdown-menu">
-            <li>
-            <a asp-action="DisableAllProductForStolon" asp-route-adherentStolonId="@adherentStolon.Id">Désactiver tout les produits</a>
-                            </li>
-                            @if (Model.Products.Any(x => x.ProductStocks.Any(prodStock => prodStock.State == Product.ProductState.Stock)))
-                            {
+                <th>
+                    <div>
+                        @(adherentStolon.Stolon.Label + "(" + adherentStolon.ProducerFee + "%)")
+                    </div>
+                    <div>
+                        @("(" + EnumHelper<Stolon.Modes>.GetDisplayValue(adherentStolon.Stolon.GetMode()) + ")")
+                    </div>
+                    @if (adherentStolon.Stolon.GetMode() == Stolon.Modes.DeliveryAndStockUpdate)
+                    {
+                        <div class="dropdown">
+                            <a class="dropdown-toggle btn btn-small btn-default" data-toggle="dropdown" href="#">
+                                Actions
+                                <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
                                 <li>
-                                    <a asp-action="EnableAllStockProductForStolon" asp-route-adherentStolonId="@adherentStolon.Id">Rendre disponible tout les produits en attente de stock</a>
+                                    <a asp-action="DisableAllProductForStolon" asp-route-adherentStolonId="@adherentStolon.Id">Désactiver tout les produits</a>
                                 </li>
-				}
-                        </ul>
-</div>
-}
-            </th>
+                                @if (Model.Products.Any(x => x.ProductStocks.Any(prodStock => prodStock.State == Product.ProductState.Stock)))
+                                {
+                                    <li>
+                                        <a asp-action="EnableAllStockProductForStolon" asp-route-adherentStolonId="@adherentStolon.Id">Rendre disponible tout les produits en attente de stock</a>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    }
+                </th>
             }
             <th>
             </th>
-	</tr>
+        </tr>
 
-	@foreach (var item in Model.Products.Where(x => !x.IsArchive))
-	{
-        <tr>
-            <td>
-                <a data-product-stock-id="@item.ProductStocks.First().Id" class="setupProductPreview productPreview btn btn-small btn-default" title="">Aperçu vitrine</a>
-            </td>
-            <td class="productMgtImage">
-                <div>
-                    @{
-                    if (item.Pictures.Any())
+        @foreach (var item in Model.Products.Where(x => !x.IsArchive))
+        {
+            <tr>
+                <td>
+                    <a data-product-stock-id="@item.ProductStocks.First().Id" class="setupProductPreview productPreview btn btn-small btn-default" title="">Aperçu vitrine</a>
+                </td>
+                <td class="productMgtImage">
+                    <div>
+                        @{
+                            if (item.Pictures.Any())
+                            {
+                                <img src="@(Configurations.ProductsStockagePathLight + "\\" +item.Pictures[0])" />
+                            }
+                            else
+                            {
+                                <img alt="Pas d'image" />
+                            }
+                        }
+                    </div>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+
+                    @if (!item.ProductStocks.Any(x => (x.State == Product.ProductState.Enabled && x.AdherentStolon.Stolon.GetMode() == Stolon.Modes.Order)))
                     {
-                        <img src="@(Configurations.ProductsStockagePathLight + "\\" +item.Pictures[0])" />
+                        <div class="dropdown">
+                            <a class="dropdown-toggle btn btn-small btn-default" data-toggle="dropdown" href="#">
+                                Modifier
+                                <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a asp-action="Manage" asp-route-id="@item.Id"> Modifier</a>
+                                </li>
+                                <li>
+                                    @Html.ActionLink("Archiver",
+                             "Archive",
+                             "ProductsManagement",
+                             new { id = @item.Id },
+                             new { onclick = "return confirm('Êtes vous sur de vouloir archiver le produit " + item.Name + " ?');" })
+                                </li>
+                                @if (!item.ProductStocks.Any(x => x.BillEntries.Count != 0))
+                                {
+                                    <li>
+                                        @Html.ActionLink("Supprimer",
+                                 "Delete",
+                                 "ProductsManagement",
+                                 new { id = @item.Id },
+                                 new { onclick = "return confirm('Êtes vous sur de vouloir supprimer définitivement le produit " + item.Name + " ?');" })
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.UnitPrice) @("€")
+                    @{
+                        @if (item.Type == Product.SellType.Weigh)
+                        {
+                            @(" par ")
+                            @Html.DisplayFor(model => item.QuantityStepString)
+                        }
+                        @if (!item.HideWeightPrice && item.WeightPrice != 0)
+                        {
+                            <br />
+                            @Html.DisplayFor(model => item.WeightPrice)@("€/")
+                            @Html.DisplayFor(model => item.ProductUnit)
+                        }
+                    }
+                </td>
+                <td>
+                    Vente : @(EnumHelper<Product.SellType>.GetDisplayValue(@item.Type))
+                    <br />
+                    Stock : @(EnumHelper<Product.StockType>.GetDisplayValue(@item.StockManagement))
+                </td>
+
+                @foreach (var productStock in item.ProductStocks.OrderBy(x => x.AdherentStolonId))
+                {
+                    string color = "";
+                    switch (productStock.State)
+                    {
+                        case Product.ProductState.Disabled:
+                            color = "#cb2431";
+                            break;
+                        case Product.ProductState.Enabled:
+                            color = "#2cbe4e";
+                            break;
+                        case Product.ProductState.Stock:
+                            color = "#ff8000";
+                            break;
+                    }
+                    string stockManagementLabel = "";
+                    @if (productStock.AdherentStolon.Stolon.GetMode() == Stolon.Modes.Order || item.StockManagement == Product.StockType.Fixed)
+                    {
+                        stockManagementLabel = Html.DisplayNameFor(model => productStock.RemainingStock)
+                        + " : "
+                        + productStock.Product.GetQuantityString(productStock.RemainingStock);
+
                     }
                     else
                     {
-                        <img alt="Pas d'image" />
+                        stockManagementLabel = Html.DisplayNameFor(model => productStock.WeekStock)
+                        + " : "
+                        + productStock.Product.GetQuantityString(productStock.WeekStock);
                     }
-                    }
-                </div>
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
 
-                @if (!item.ProductStocks.Any(x => (x.State == Product.ProductState.Enabled && x.AdherentStolon.Stolon.GetMode() == Stolon.Modes.Order)))
-                {
-                    <div class="dropdown">
-                        <a class="dropdown-toggle btn btn-small btn-default" data-toggle="dropdown" href="#">
-                            Modifier
-                            <span class="caret"></span>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a asp-action="Manage" asp-route-id="@item.Id"> Modifier</a>
-                            </li>
-                            <li>
-                                @Html.ActionLink("Archiver",
-						 "Archive",
-						 "ProductsManagement",
-						 new { id = @item.Id },
-						 new { onclick = "return confirm('Êtes vous sur de vouloir archiver le produit " + item.Name + " ?');" })
-                            </li>
-                            @if (!item.ProductStocks.Any(x => x.BillEntries.Count != 0))
-                            {
-                                <li>
-                                    @Html.ActionLink("Supprimer",
-						     "Delete",
-						     "ProductsManagement",
-						     new { id = @item.Id },
-						     new { onclick = "return confirm('Êtes vous sur de vouloir supprimer définitivement le produit " + item.Name + " ?');" })
-                                </li>
-				}
-                        </ul>
-                    </div>
-                    }
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.UnitPrice) @("€")
-                @{
-                    @if (item.Type == Product.SellType.Weigh)
-                    {
-                        @(" par ")
-                        @Html.DisplayFor(model => item.QuantityStepString)
-			}
-			@if (!item.HideWeightPrice && item.WeightPrice != 0)
-			{
+                    <td bgcolor="@(color)">
+                        @if (productStock.Product.StockManagement != Product.StockType.Unlimited)
+                        {
+                            <input class="btn btn-default openStockMgtModal" type="submit" style="color: '@(color)';" value="@stockManagementLabel" data-product-stock-id="@productStock.Id" />
+                        }
+                        else
+                        {
+                            <input class="btn small default" type="submit" value="Illimité" disabled />
+                        }
                         <br />
-                        @Html.DisplayFor(model => item.WeightPrice)@("€/")
-                        @Html.DisplayFor(model => item.ProductUnit)
-			}
-			}
-            </td>
-            <td>
-                Vente : @(EnumHelper<Product.SellType>.GetDisplayValue(@item.Type))
-                <br />
-                Stock : @(EnumHelper<Product.StockType>.GetDisplayValue(@item.StockManagement))
-            </td>
-
-            @foreach (var productStock in item.ProductStocks.OrderBy(x => x.AdherentStolonId))
-            {
-                string color = "";
-                switch (productStock.State)
-                {
-                    case Product.ProductState.Disabled:
-                    color = "#cb2431";
-                    break;
-                    case Product.ProductState.Enabled:
-                    color = "#2cbe4e";
-                    break;
-                    case Product.ProductState.Stock:
-                    color = "#ff8000";
-                    break;
+                        <div class="dropdown">
+                            <a class="dropdown-toggle btn btn-small btn-default" data-toggle="dropdown" href="#">
+                                @(EnumHelper<Product.ProductState>.GetDisplayValue(productStock.State))
+                                <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                @if (productStock.AdherentStolon.Stolon.GetMode() == Stolon.Modes.DeliveryAndStockUpdate)
+                                {
+                                    if (productStock.State == Product.ProductState.Enabled)
+                                    {
+                                        <li>
+                                            <a asp-action="Disable" asp-route-id="@productStock.Id">Rendre indisponible</a>
+                                        </li>
+                                    }
+                                }
+                                @if (productStock.State != Product.ProductState.Enabled)
+                                {
+                                    <li>
+                                        <a asp-action="Enable" asp-route-id="@productStock.Id">Rendre disponible</a>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </td>
                 }
-                string stockManagementLabel = "";
-                @if (productStock.AdherentStolon.Stolon.GetMode() == Stolon.Modes.Order || item.StockManagement == Product.StockType.Fixed)
-                {
-                    stockManagementLabel = Html.DisplayNameFor(model => productStock.RemainingStock)
-                    + " : "
-                    + productStock.Product.GetQuantityString(productStock.RemainingStock);
-
-                }
-                else
-                {
-                    stockManagementLabel = Html.DisplayNameFor(model => productStock.WeekStock)
-                    + " : "
-                    + productStock.Product.GetQuantityString(productStock.WeekStock);
-                }
-
-                <td bgcolor="@(color)">
-                @if (productStock.Product.StockManagement != Product.StockType.Unlimited)
-                {
-                    <input class="btn btn-default openStockMgtModal" type="submit" style="color: '@(color)';" value="@stockManagementLabel" data-product-stock-id="@productStock.Id" />
-                }
-                else
-                {
-                    <input class="btn small default" type="submit" value="Illimité" disabled />
-                }
-                <br />
-                <div class="dropdown">
-                <a class="dropdown-toggle btn btn-small btn-default" data-toggle="dropdown" href="#">
-                @(EnumHelper<Product.ProductState>.GetDisplayValue(productStock.State))
-                <span class="caret"></span>
-                </a>
-                <ul class="dropdown-menu">
-                @if (productStock.AdherentStolon.Stolon.GetMode() == Stolon.Modes.DeliveryAndStockUpdate)
-                {
-                    if (productStock.State == Product.ProductState.Enabled)
-                    {
-                        <li>
-                        <a asp-action="Disable" asp-route-id="@productStock.Id">Rendre indisponible</a>
-                        </li>
-                    }
-                }
-                @if (productStock.State != Product.ProductState.Enabled)
-                {
-                    <li>
-                    <a asp-action="Enable" asp-route-id="@productStock.Id">Rendre disponible</a>
-                    </li>
-                }
-                </ul>
-                </div>
-                </td>
-            }
-        </tr>
-	}
+            </tr>
+        }
     </table>
 
 </div>
@@ -229,7 +234,7 @@
                             <% if (productStock.get("AdherentStolon").Stolon.Mode == 1 && productStock.get("Product").get("StockManagement") != 1) { %> <!-- Livraisons/stocks et gestion Hebdomadaire -->
 
                             <label for="WeekStock" class="control-label">Stock proposé pour la semaine prochaine:</label>
-                            <input id="WeekStock" name="WeekStock" min="0" type="number" step="<%= productStock.get("Product").QuantityStep / 1000 || 1 %>" value="<%= productStock.getWeekQuantityStock() %>" />
+                            <input id="WeekStock" name="WeekStock" min="0" type="number" step="<%= productStock.get(" Product").QuantityStep / 1000 || 1 %>" value="<%= productStock.getWeekQuantityStock() %>" />
                             <span><%= productStock.getStockUnitString() %></span>
                             <% } else { %> <!-- Commandes -->
                             <!-- Stock a la semaine -->
@@ -240,7 +245,7 @@
                             <% } %>
                             <div>
                                 <label for="RemainingStock" class="control-label">Il reste en stock : </label>
-                                <input id="RemainingStock" name="RemainingStock" min="0" type="number" step="<%= productStock.get("Product").get("QuantityStep") / 1000 || 1 %>" value="<%= productStock.getRemainingQuantityStock() %>" />
+                                <input id="RemainingStock" name="RemainingStock" min="0" type="number" step="<%= productStock.get(" Product").get("QuantityStep") / 1000 || 1 %>" value="<%= productStock.getRemainingQuantityStock() %>" />
                                 <span><%= productStock.getStockUnitString() %></span>
                                 <div>
                                     <% if (productStock.get("OrderedQuantityString") > 0) { %>
@@ -294,14 +299,14 @@
                 <td class="productMgtImage">
                     <div>
                         @{
-                        if (item.Pictures.Any())
-                        {
-                            <img src="@(Configurations.ProductsStockagePathLight + "\\" +item.Pictures[0])" />
-                        }
-                        else
-                        {
-                            <img alt="Pas d'image" />
-                        }
+                            if (item.Pictures.Any())
+                            {
+                                <img src="@(Configurations.ProductsStockagePathLight + "\\" +item.Pictures[0])" />
+                            }
+                            else
+                            {
+                                <img alt="Pas d'image" />
+                            }
                         }
                     </div>
                 </td>
@@ -322,24 +327,24 @@
                                 </li>
                                 <li>
                                     @Html.ActionLink("Dé-archiver",
-						     "UnArchive",
-						     "ProductsManagement",
-						     new { id = @item.Id },
-						     new { onclick = "return confirm('Êtes vous sur de vouloir dé-archiver le produit " + item.Name + " ?');" })
+                             "UnArchive",
+                             "ProductsManagement",
+                             new { id = @item.Id },
+                             new { onclick = "return confirm('Êtes vous sur de vouloir dé-archiver le produit " + item.Name + " ?');" })
                                 </li>
                                 @if (!item.ProductStocks.Any(x => x.BillEntries.Count != 0))
                                 {
                                     <li>
                                         @Html.ActionLink("Supprimer",
-							 "Delete",
-							 "ProductsManagement",
-							 new { id = @item.Id },
-							 new { onclick = "return confirm('Êtes vous sur de vouloir supprimer définitivement le produit " + item.Name + " ?');" })
+                             "Delete",
+                             "ProductsManagement",
+                             new { id = @item.Id },
+                             new { onclick = "return confirm('Êtes vous sur de vouloir supprimer définitivement le produit " + item.Name + " ?');" })
                                     </li>
-                                    }
+                                }
                             </ul>
                         </div>
-			}
+                    }
                 </td>
                 <td>
                     @Html.DisplayFor(model => item.UnitPrice) @("€")
@@ -348,14 +353,14 @@
                         {
                             @(" par ")
                             @Html.DisplayFor(model => item.QuantityStepString)
-                            }
-                            @if (!item.HideWeightPrice && item.WeightPrice != 0)
-                            {
-				<br />
-				@Html.DisplayFor(model => item.WeightPrice)@("€/")
+                        }
+                        @if (!item.HideWeightPrice && item.WeightPrice != 0)
+                        {
+                            <br />
+                            @Html.DisplayFor(model => item.WeightPrice)@("€/")
                             @Html.DisplayFor(model => item.ProductUnit)
-                            }
-			    }
+                        }
+                    }
                 </td>
                 <td>
                     Vente : @(EnumHelper<Product.SellType>.GetDisplayValue(@item.Type))
@@ -363,20 +368,20 @@
                     Stock : @(EnumHelper<Product.StockType>.GetDisplayValue(@item.StockManagement))
                 </td>
             </tr>
-            }
+        }
     </table>
 
-    }
-    else
-    {
+}
+else
+{
     <p>
         Aucun produit archivé.
     </p>
 
-    }
+}
 
-    <!-- Include the public product template -->
-    @{ await Html.RenderPartialAsync("Templates/PublicProductTemplate"); }
+<!-- Include the public product template -->
+@{ await Html.RenderPartialAsync("Templates/PublicProductTemplate"); }
 
-    <script src="/js/productModel.js"></script>
-    <script src="/js/productsManagement.js"></script>
+<script src="/js/productModel.js"></script>
+<script src="/js/productsManagement.js"></script>

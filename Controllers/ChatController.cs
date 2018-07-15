@@ -67,5 +67,15 @@ namespace Stolons.Controllers
             return Json(chatMessagesViewModel);
         }
 
+        [HttpPost, ActionName("RemoveMessage")]
+        public IActionResult RemoveMessage(Guid id)
+        {
+            var messsageToRemove = _context.ChatMessages.FirstOrDefault(x => x.Id == id);
+            if (messsageToRemove == null || !Authorized(Role.Admin))
+                return Json(false);
+            _context.Remove(messsageToRemove);
+            _context.SaveChanges();
+            return Json(true);
+        }
     }
 }

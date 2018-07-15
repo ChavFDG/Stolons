@@ -4,82 +4,117 @@
 
 <div>
     <div id="chat" class="row chat">
-        @foreach (var message in Model.Messages)
-        {   
-            <div class="row comment" data-date="@(message.DateOfPublication + "." + message.DateOfPublication.Millisecond)">
-                <div class="col-lg-2 col-xs-3"><img src="@message.PublishBy.Adherent.AvatarFilePath"/></div>
-                <div class="col-lg-10 col-xs-9">
-                    @message.Content
-                </div>
-                <div class="col-lg-12 text-right date">@message.StringPublishBy</div>
-            </div>
-        }
+        <div class="comment hidden"></div>
     </div>
     <div class="row chat-add-comment">
         <textarea id="add-comment" name="comment" placeholder="Votre message"></textarea>
         <a href="#" id="add-comment" class="btn btn-small btn-default pull-right">Ajouter un commentaire</a>
         <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate hidden" id="loading"></span>
     </div>
+
+    <script id="chatMessageTemplate" type="text/template">
+        <div class="row comment" data-id='<%= message.Id%>' data-date='<%= message.DateOfPublication%> <%= message.DateOfPublication.Millisecond%>'>
+            <div class="col-lg-2 col-xs-3">
+                <img src='<%= message.PublishBy.Adherent.AvatarFilePath%>' />
+                <% if (activeAdherentStolon.Role === 3 || activeAdherentStolon.Id == message.PublishBy.Id) { %>
+                <a href="#" class="removeMessage" onclick="removeMessage()"><span class="glyphicon glyphicon-remove-circle"></span></a>
+                <a href="#" class="editMessage"><span class="glyphicon glyphicon-edit"></span></a>
+                <% } %>
+            </div>
+            <div class="col-lg-10 col-xs-9">
+                <%= message.Content%>
+            </div>
+            <div class="col-lg-12 text-right date"><%= message.StringPublishBy%></div>
+        </div>
+    </script>
+
+
     <script type="text/javascript">
-        function getHtml(message, data) {
-            return '<div class="row comment" data-date="' + message.DateOfPublication + '"><div class="col-lg-2 col-xs-3"><img src="' + data.ActiveAdherentStolon.Adherent.AvatarFilePath + '"/></div><div class="col-lg-10 col-xs-9">' + message.Content + '</div><div class="col-lg-12 text-right date">' + message.StringPublishBy + '</div></div>';
-    }
-     function getNewMessages() {
-        var link = '@Html.Raw(Url.Action("GetNewMessages", "Chat"))';
-        var lastMessageDate = $('div.comment').last().attr('data-date');
+        function getNewMessages(lastMessageDate) {
+            var link = '@Html.Raw(Url.Action("GetNewMessages", "Chat"))';
+            if (lastMessageDate === null) {
+                lastMessageDate = $('div.comment').last().attr('data-date');
+            }
 
-        $.ajax({
-            type: "POST",
-            data: { date: lastMessageDate },
-            url: link,
-            dataType: 'json',
-            success: function (data) {
-                $.each(data.Messages, function (i, message) {
-                    $(getHtml(message, data)).insertAfter('div.comment:last');
-                });
-            },
-        });
-    }
-    $(document).ready(function () {
-         $("div.chat").animate({ scrollTop: 50000000 }, 1000);
-        $('a#add-comment').on('click', function () {
-            var $this = $(this);
+            $.ajax({
+                type: "POST",
+                data: { date: lastMessageDate },
+                url: link,
+                dataType: 'json',
+                success: function (data) {
+                    $.each(data.Messages, function (i, message) {
+                        addMessage(message, data.ActiveAdherentStolon);
+                    });
+                },
+            });
+        }
+        $(document).ready(function () {
+            getNewMessages("1900-01-01")
+            $("div.chat").animate({ scrollTop: 50000000 }, 1000);
 
-            var comment = $('textarea[name=comment]').val();
-            $('textarea[name=comment]').removeClass('error');
-
-            if (comment !== '') {
-                $(this).addClass('hidden');
-                $('span#loading').removeClass('hidden');
-
-                var link = '@Html.Raw(Url.Action("AddMessage", "Chat"))';
-                var lastMessageDate = $('div.comment').last().attr('data-date');
-                $('textarea[name=comment]').val('');
+            window.removeMessage = function () {
+                var link = '@Html.Raw(Url.Action("RemoveMessage", "Chat"))';
+                var messageToRemove = $(event.currentTarget).closest(".comment");
+                console.log($(messageToRemove));
+                var id = $(messageToRemove).attr("data-id");
+                console.log(id);
                 $.ajax({
                     type: "POST",
                     url: link,
-                    data: { message: comment, date: lastMessageDate },
+                    data: { id: id},
                     dataType: 'json',
                     success: function (data) {
-                        $this.removeClass('hidden');
-                        $('span#loading').addClass('hidden');
-                        $.each(data.Messages, function (i, message) {
-                            $(getHtml(message, data)).insertAfter('div.comment:last');
-                        });
-
-                        $("div.chat").animate({ scrollTop: 50000000 }, 1000);
+                        if (data === true)
+                            $(messageToRemove).remove();
                     },
                 });
-            } else {
-                $('textarea[name=comment]').addClass('error');
-            }
-            return false;
-        });
+            };
 
-        window.setInterval(function () {
-            getNewMessages();
-        }, 30000);
-    });
+            $('a#editMessage').on('click', function () {
+
+            });
+
+
+            $('a#add-comment').on('click', function () {
+                var $this = $(this);
+
+                var comment = $('textarea[name=comment]').val();
+                $('textarea[name=comment]').removeClass('error');
+
+                if (comment !== '') {
+                    $(this).addClass('hidden');
+                    $('span#loading').removeClass('hidden');
+
+                    var link = '@Html.Raw(Url.Action("AddMessage", "Chat"))';
+                    var lastMessageDate = $('div.comment').last().attr('data-date');
+                    $('textarea[name=comment]').val('');
+                    $.ajax({
+                        type: "POST",
+                        url: link,
+                        data: { message: comment, date: lastMessageDate },
+                        dataType: 'json',
+                        success: function (data) {
+                            $this.removeClass('hidden');
+                            $('span#loading').addClass('hidden');
+                            $.each(data.Messages, function (i, message) {
+                                addMessage(message, data.ActiveAdherentStolon);
+                            });
+
+                            $("div.chat").animate({ scrollTop: 50000000 }, 1000);
+                        },
+                    });
+                } else {
+                    $('textarea[name=comment]').addClass('error');
+                }
+                return false;
+            });
+
+            window.setInterval(function () {
+                getNewMessages();
+            }, 30000);
+        });
     </script>
 
 </div>
+
+<script src="~/js/chatScript.js"></script>

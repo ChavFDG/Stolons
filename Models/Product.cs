@@ -313,7 +313,7 @@ namespace Stolons.Models
             [Display(Name = "Emballé")]
             Wrapped = 2,
             [Display(Name = "Poids variable")]
-            VariableWeigh = 2
+            VariableWeigh = 3
         }
 
         public enum Unit
@@ -384,9 +384,9 @@ namespace Stolons.Models
             Freezer = 2
         }
 
-        public string GetQuantityString(decimal quantity)
+        public string GetQuantityString(decimal quantity, SellType? forcedType = null)
         {
-            if (Type == SellType.Piece || Type == SellType.VariableWeigh)
+            if (forcedType==null ? Type == SellType.Piece : forcedType == SellType.Piece)
             {
                 if (quantity == 1)
                 {

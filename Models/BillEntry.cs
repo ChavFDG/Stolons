@@ -66,7 +66,10 @@ namespace Stolons.Models
         {
             get
             {
-                return ProductStock.Product.GetQuantityString(Quantity);
+                string quantityString = ProductStock.Product.GetQuantityString(Quantity);
+                if (IsNotAssignedVariableWeigh)
+                    quantityString += " (poids moyen)";
+                return quantityString;
             }
         }
 
@@ -76,6 +79,15 @@ namespace Stolons.Models
             get
             {
                 return ProductStock.Product.GetQuantityHtmlShortString(Quantity);
+            }
+        }
+
+        [NotMapped]
+        public bool IsNotAssignedVariableWeigh
+        {
+            get
+            {
+                return Type == SellType.VariableWeigh && !WeightAssigned;
             }
         }
 
@@ -262,6 +274,9 @@ namespace Stolons.Models
         [Display(Name = "Poids maximum")]
         [Required]
         public decimal MaximumWeight { get; set; }
+
+        [Display(Name = "Poids attribué")]
+        public bool WeightAssigned { get; set; } = false;
 
         [Display(Name = "Poids moyen")]
         [NotMapped]

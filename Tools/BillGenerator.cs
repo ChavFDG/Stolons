@@ -410,7 +410,6 @@ namespace Stolons.Tools
                     builder.AppendLine("<th>Producteur</th>");
                     builder.AppendLine("<th>Produit</th>");
                     builder.AppendLine("<th>Quantité</th>");
-                    builder.AppendLine("<th></th>");
                     builder.AppendLine("</tr>");
 
                     foreach (var producerBillsEntry in billEntryByProducer.OrderBy(x => x.Key.AdherentStolon.Adherent.CompanyName))
@@ -424,10 +423,6 @@ namespace Stolons.Tools
                             builder.AppendLine("<td></td>");
                             builder.AppendLine("<td>" + billEntry.ProductStock.Product.Name + "</td>");
                             builder.AppendLine("<td>" + billEntry.QuantityString + "</td>");
-                            if (billEntry.ProductStock.Product.Type == SellType.VariableWeigh)
-                                builder.AppendLine("<td><span tooltip=\"Poids variable\" class=\"glyphicon glyphicon-retweet\"></td>");
-                            else
-                                builder.AppendLine("<td></td>");
                             builder.AppendLine("</tr>");
 
                         }
@@ -464,7 +459,6 @@ namespace Stolons.Tools
             orderBuilder.AppendLine("<tr>");
             orderBuilder.AppendLine("<th>Produit</th>");
             orderBuilder.AppendLine("<th>Quantité</th>");
-            orderBuilder.AppendLine("<th></th>");
             orderBuilder.AppendLine("</tr>");
 
             foreach (var productBillEntries in bill.BillEntries.GroupBy(x => x.ProductStock.Product, x => x).OrderBy(x => x.Key.Name))
@@ -473,11 +467,7 @@ namespace Stolons.Tools
                 productBillEntries.ForEach(x => quantity += x.Quantity);
                 orderBuilder.AppendLine("<tr>");
                 orderBuilder.AppendLine("<td>" + productBillEntries.Key.Name + "</td>");
-                orderBuilder.AppendLine("<td>" + productBillEntries.Key.GetQuantityString(quantity) + "</td>");
-                if (productBillEntries.Key.Type == SellType.VariableWeigh)
-                    orderBuilder.AppendLine("<td><span tooltip=\"Poids variable\" class=\"glyphicon glyphicon-retweet\"></td>");
-                else
-                    orderBuilder.AppendLine("<td></td>");
+                orderBuilder.AppendLine("<td>" + productBillEntries.Key.GetQuantityString(quantity, SellType.Piece) + "</td>");
                 orderBuilder.AppendLine("</tr>");
             }
             orderBuilder.AppendLine("</table>");
@@ -505,11 +495,7 @@ namespace Stolons.Tools
                     orderBuilder.AppendLine("<tr>");
                     orderBuilder.AppendLine("<td></td>");
                     orderBuilder.AppendLine("<td>" + entries.Name + "</td>");
-                    orderBuilder.AppendLine("<td>" + entries.QuantityString + "</td>");
-                    if (entries.ProductStock.Product.Type == SellType.VariableWeigh)
-                        orderBuilder.AppendLine("<td><span tooltip=\"Poids variable\" class=\"glyphicon glyphicon-retweet\"></td>");
-                    else
-                        orderBuilder.AppendLine("<td></td>");
+                    orderBuilder.AppendLine("<td>" + entries.ProductStock.Product.GetQuantityString(entries.Quantity,SellType.Piece)+ "</td>");
                     orderBuilder.AppendLine("</tr>");
                 }
             }
@@ -670,7 +656,6 @@ namespace Stolons.Tools
             builder.AppendLine("<th>Prix unitaire</th>");
             builder.AppendLine("<th>Quantité</th>");
             builder.AppendLine("<th>Prix total</th>");
-            builder.AppendLine("<th</th>");
             builder.AppendLine("</tr>");
             foreach (var tmpBillEntry in bill.BillEntries)
             {
@@ -680,11 +665,7 @@ namespace Stolons.Tools
                 builder.AppendLine("<td>" + billEntry.Name + "</td>");
                 builder.AppendLine("<td>" + billEntry.UnitPrice.ToString("0.00") + " €" + "</td>");
                 builder.AppendLine("<td>" + billEntry.QuantityString + "</td>");
-                builder.AppendLine("<td>" + total.ToString("0.00") + " €" + "</td>");
-                if (billEntry.ProductStock.Product.Type == SellType.VariableWeigh)
-                    builder.AppendLine("<td><span tooltip=\"Poids variable\" class=\"glyphicon glyphicon-retweet\"></td>");
-                else
-                    builder.AppendLine("<td></td>");
+                builder.AppendLine("<td>" + total.ToString("0.00") + " €" + (billEntry.IsNotAssignedVariableWeigh?" (poids variable)":"") + "</td>");
                 builder.AppendLine("</tr>");
                 bill.OrderAmount += total;
             }
