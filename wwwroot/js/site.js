@@ -12,6 +12,7 @@ $(document).ready(function () {
             $(this).children('.warning-informations').hide()
         })
 
+    bootbox.setLocale("fr")
 
     $('[data-toggle="tooltip"]').tooltip({ container: 'body', html: true })
 });
