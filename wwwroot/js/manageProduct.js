@@ -7,7 +7,6 @@ ProductTypesModel = Backbone.Collection.extend({
     }
 });
 
-//Juste pour la gestion de quelques evenements sur la vue globale
 ManageProductView = Backbone.View.extend(
     {
 
@@ -15,71 +14,27 @@ ManageProductView = Backbone.View.extend(
 
         events: {
             "change #SellType": "sellTypeChanged",
-            "input #Product_QuantityStep": "updatePriceField",
-            //"input #price": "updatePriceField",
-	    "change #price": "updatePriceField",
-            "change #HideWeightPrice": "hideWeightPrice",
 	    "submit #productForm": "onSubmit"
         },
 
         initialize: function () {
             this.sellTypeChanged();
-
-	    //Trigger form validation at page load
-	    // $("[name='product-form']").valid({
-	    // 	ignore: ":hidden, .skip",
-	    // 	debug: true
-	    // });
         },
 
         sellTypeChanged: function () {
             var sellType = $("#SellType").val();
 
-            if (sellType == 1) {
-                //Vente à la pièce, on desactive tout ce qui concerne le poids
-                $("#productWeightUnit").toggleClass("hidden", true);
-                $("#productQtyStep").toggleClass("hidden", true);
-                $("#productAvgWeight").toggleClass("hidden", true);
-                $("#pieceHideWeightPrice").toggleClass("hidden", false);
-
-		//Hide automatically weightPrice on load if price == 0
-		if (parseInt($("#price").val()) == 0) {
-		    $("#HideWeightPrice").prop('checked', true);
-		    this.hideWeightPrice();
-		}
-            } else {
-		$("#weight-price-container").toggleClass("hidden", false);
-                $("#productWeightUnit").toggleClass("hidden", false);
-                $("#productQtyStep").toggleClass("hidden", false);
-                $("#productAvgWeight").toggleClass("hidden", false);
-                $("#pieceHideWeightPrice").toggleClass("hidden", true);
-            }
-            this.updatePriceField();
-            this.updateVolumePriceField();
-        },
-
-        updatePriceField: function () {
-            $("#price").val($("#price").val().replace('.', ','));
-	    if (!this.validateWeightPrice()) {
-		return false;
+	    if (this.subView) {
+		this.subView.unbind();
+		this.subView.undelegateEvents();
 	    }
-            var sellType = $("#SellType").val();
-	    var price = $("#price").val();
-
-            if (sellType == 1) {
-                $("#unitPrice").removeAttr("readonly");
-            } else {
-                $("#unitPrice").attr("readonly", true);
-                var qtyStep = $("#Product_QuantityStep").val();
-                if (price && qtyStep) {
-                    var tempPrice = price.replace(',', '.');
-                    var unitPrice = (tempPrice * qtyStep / 1000);
-                    if (unitPrice != 'NaN') {
-                        var tempUnitPrice = unitPrice.toString().replace('.', ',');
-                        $("#unitPrice").val(tempUnitPrice);
-                    }
-                }
-            }
+            if (sellType == 0 || sellType == 2) {
+		this.subView = new SellTypeWeightView({parent: this});
+            } else if (sellType == 1) {
+		this.subView = new SellTypePieceView({parent: this});
+            } else if (sellType == 3) {
+		this.subView = new SellTypeVariableWeightView({parent: this});
+	    }
         },
 
 	validateWeightPrice: function() {
@@ -102,37 +57,182 @@ ManageProductView = Backbone.View.extend(
 	    }
 	    return true;
 	},
-	
-        updateVolumePriceField: function () {
-            var selected = $("#HideWeightPrice").is(':checked');
-            var sellType = $("#SellType").val();
-            var price = $("#price").val();
-        },
-
-        hideWeightPrice: function () {
-            var selected = $("#HideWeightPrice").is(':checked');
-
-            if (selected) {
-		$("#price").val(0);
-		$("#weight-price-container").toggleClass("hidden", true);
-		$("#price-error-container").toggleClass("hidden", true);
-            } else if ($("#SellType").val() == 1) {
-		$("#weight-price-container").toggleClass("hidden", false);
-	    }
-	    this.validateWeightPrice();
-        },
 
 	onSubmit: function(event) {
-	    if (!this.validateWeightPrice($("#price").val())) {
-		event.preventDefault();
-		return false;
-	    } else {
-		console.log("price ok");
-	    }
-	    return true;
+	    return this.subView.validate();
 	}
     }
 );
+
+SellTypeWeightView = Backbone.View.extend({
+
+    el: "#productForm",
+
+    events: {
+	"input #Product_QuantityStep": "updatePriceField",
+	"change #price": "updatePriceField"
+    },
+
+    initialize: function(opts) {
+	this.parent = opts.parent;
+	$("#unitPrice").attr("readonly", true);
+	$("#unitPriceContainer").toggleClass("hidden", false);
+	$("#weight-price-container").toggleClass("hidden", false);
+	$("#quantityStep").attr("readonly", false);
+        $("#productWeightUnit").toggleClass("hidden", false);
+        $("#productQtyStep").toggleClass("hidden", false);
+        $("#productAvgWeight").toggleClass("hidden", false);
+        $("#hideWeightPriceContainer").toggleClass("hidden", true);
+	$("#minProductWeightContainer").toggleClass("hidden", true);
+	$("#maxProductWeightContainer").toggleClass("hidden", true);
+	$("#minPrice").toggleClass("hidden", true);
+	$("#maxPrice").toggleClass("hidden", true);
+	$("#meanPriceContainer").toggleClass("hidden", true);
+	this.updatePriceField();
+    },
+
+    updatePriceField: function () {
+        $("#price").val($("#price").val().replace('.', ','));
+
+	if (!this.parent.validateWeightPrice()) {
+	    return false;
+	}
+        var sellType = $("#SellType").val();
+	var price = $("#price").val();
+
+        if (sellType == 1) {
+            $("#unitPrice").removeAttr("readonly");
+        } else {
+            $("#unitPrice").attr("readonly", true);
+            var qtyStep = $("#Product_QuantityStep").val();
+            if (price && qtyStep) {
+                var tempPrice = price.replace(',', '.');
+                var unitPrice = (tempPrice * qtyStep / 1000);
+                if (unitPrice != 'NaN') {
+                    var tempUnitPrice = unitPrice.toString().replace('.', ',');
+                    $("#unitPrice").val(tempUnitPrice);
+                }
+            }
+        }
+    },
+
+    validate: function() {
+	return this.parent.validateWeightPrice();
+    }
+});
+
+SellTypePieceView = Backbone.View.extend({
+
+    el: "#productForm",
+
+    events: {
+	"change #HideWeightPrice": "hideWeightPrice"
+    },
+
+    initialize: function(opts) {
+	this.parent = opts.parent;
+	console.log("Sell type: piece");
+	//Vente à la pièce, on desactive tout ce qui concerne le poids
+	$("#unitPrice").attr("readonly", false);
+	$("#unitPriceContainer").toggleClass("hidden", false);
+	$("#quantityStep").attr("readonly", true);
+        $("#productWeightUnit").toggleClass("hidden", true);
+        $("#productQtyStep").toggleClass("hidden", true);
+        $("#productAvgWeight").toggleClass("hidden", true);
+        $("#hideWeightPriceContainer").toggleClass("hidden", false);
+	$("#minProductWeightContainer").toggleClass("hidden", true);
+	$("#maxProductWeightContainer").toggleClass("hidden", true);
+	$("#minPrice").toggleClass("hidden", true);
+	$("#maxPrice").toggleClass("hidden", true);
+	$("#meanPriceContainer").toggleClass("hidden", true);
+
+	//Hide automatically weightPrice on load if price == 0
+	if (parseInt($("#price").val()) == 0) {
+	    $("#HideWeightPrice").prop('checked', true);
+	    this.hideWeightPrice();
+	}
+    },
+
+    hideWeightPrice: function () {
+        var selected = $("#HideWeightPrice").is(':checked');
+
+        if (selected) {
+	    $("#price").val(0);
+	    $("#price-error-container").toggleClass("hidden", true);
+	    $("#weight-price-container").toggleClass("hidden", true);
+        } else {
+	    console.log("show weight price");
+	    $("#weight-price-container").toggleClass("hidden", false);
+	}
+	this.parent.validateWeightPrice();
+    },
+
+    validate: function() {
+	return this.parent.validateWeightPrice();
+    }
+});
+
+SellTypeVariableWeightView = Backbone.View.extend({
+
+    el: "#productForm",
+
+    events: {
+	"input #minWeight": "updateVariablePrices",
+	"input #maxWeight": "updateVariablePrices",
+	"input #price": "updateVariablePrices",
+    },
+
+    initialize: function(opts) {
+	this.parent = opts.parent;
+	$("#unitPriceContainer").toggleClass("hidden", true);
+	$("#weight-price-container").toggleClass("hidden", false);
+	$("#unitPrice").attr("readonly", true);
+	$("#quantityStep").attr("readonly", true);
+	$("#minProductWeightContainer").toggleClass("hidden", false);
+	$("#maxProductWeightContainer").toggleClass("hidden", false);
+	$("#hideWeightPriceContainer").toggleClass("hidden", true);
+	$("#minPrice").toggleClass("hidden", false);
+	$("#maxPrice").toggleClass("hidden", false);
+	$("#productQtyStep").toggleClass("hidden", true);
+	$("#meanPriceContainer").toggleClass("hidden", false);
+	this.updateVariablePrices();
+    },
+
+    updateVariablePrices: function() {
+	var weightPrice = parseFloat($("#price").val().replace(",", "."));
+	var minWeight = parseFloat($("#minWeight").val().replace(",", "."));
+	var maxWeight = parseFloat($("#maxWeight").val().replace(",", "."));
+	var meanWeight = ((maxWeight + minWeight) / 2);
+	var meanPrice = meanWeight * weightPrice;
+
+	if (this.validate()) {
+	    $("#quantityStep").val(meanWeight * 1000);
+	    $("#unitPrice").val(meanPrice); //Just to be sure
+	    $("#meanPrice").val(meanPrice);
+	    $("#minimumPrice").val(minWeight * weightPrice);
+	    $("#maximumPrice").val(maxWeight * weightPrice);
+	}
+    },
+
+    validate: function() {
+	var weightPrice = parseFloat($("#price").val().replace(",", "."));
+	var minWeight = parseFloat($("#minWeight").val().replace(",", "."));
+	var maxWeight = parseFloat($("#maxWeight").val().replace(",", "."));
+
+	var valid = true;
+	if (valid && (minWeight < 0.01 || _.isNaN(minWeight))) {
+	    valid = false;
+	}
+	if (valid && (maxWeight < 0.01 || _.isNaN(maxWeight))) {
+	    valid = false;
+	}
+	if (valid && maxWeight < minWeight) {
+	    valid = false;
+	}
+	$("#minmax-weight-error-container").toggleClass("hidden", valid);
+	return valid && this.parent.validateWeightPrice();
+    }
+});
 
 ProductTypesView = Backbone.View.extend({
 

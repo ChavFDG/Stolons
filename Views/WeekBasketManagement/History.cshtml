@@ -92,16 +92,22 @@
                     <td data-toggle="modal" data-target="#@stolonBill.Key.BillNumber">@stolonBill.Key.Producers </td>
                     <td data-toggle="modal" data-target="#@stolonBill.Key.BillNumber">@stolonBill.Key.Amount.ToString("0.00") €</td>
                     <td>
-                        <a class="btn btn-small btn-default" title="Voir" asp-action="ShowStolonsBill" asp-route-id="@stolonBill.Key.BillNumber"><span class="glyphicon glyphicon-eye-open"> </span></a>
-                        <a class="btn btn-small btn-default" title="Télécharger" target="_blank" href="/@stolonBill.Key.UrlPath"><span class="glyphicon glyphicon-download-alt"> </span></a>
+                        <a class="btn btn-small btn-default" title="Voir" asp-action="ShowStolonsBill" asp-route-id="@stolonBill.Key.BillNumber">
+                            <span class="glyphicon glyphicon-eye-open"> </span>
+                        </a>
+                        <a class="btn btn-small btn-default" title="Télécharger" target="_blank" href="/@stolonBill.Key.UrlPath">
+                            <span class="glyphicon glyphicon-download-alt"> </span>
+                        </a>
 
                         @if (stolonBill.Key.HasBeenModified)
                         {
-                            <div class="warning-container isa_warning">
+                            <div
+                                class="warning-container isa_warning"
+                                title="@Html.Raw(stolonBill.Key.ModificationReason.Replace("\n\r", "<br />"))"
+                                data-toggle="tooltip"
+                                data-placement="bottom"
+                            >
                                 <i class="glyphicon glyphicon-warning-sign"></i>
-                                <div class="warning-informations right">
-                                    @Html.Raw(stolonBill.Key.ModificationReason.Replace("\n\r", "<br/>"))
-                                </div>
                             </div>
                         }
                     </td>
