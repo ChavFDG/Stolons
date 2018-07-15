@@ -207,10 +207,13 @@ SellTypeVariableWeightView = Backbone.View.extend({
 
 	if (this.validate()) {
 	    $("#quantityStep").val(meanWeight * 1000);
-	    $("#unitPrice").val(meanPrice); //Just to be sure
-	    $("#meanPrice").val(meanPrice);
-	    $("#minimumPrice").val(minWeight * weightPrice);
-	    $("#maximumPrice").val(maxWeight * weightPrice);
+	    $("#unitPrice").val(meanPrice.toFixed(2).toString().replace(".", ",")); //Just to be sure
+	    $("#meanPrice").val(meanPrice.toFixed(2).toString().replace(".", ","));
+	    $("#minimumPrice").val((minWeight * weightPrice).toFixed(2));
+	    $("#maximumPrice").val((maxWeight * weightPrice).toFixed(2));
+	    $("#price").val($("#price").val().replace('.', ','));
+	    $("#minWeight").val($("#minWeight").val().replace('.', ','));
+	    $("#maxWeight").val($("#maxWeight").val().replace('.', ','));
 	}
     },
 
