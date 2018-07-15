@@ -313,7 +313,7 @@ namespace Stolons.Models
             [Display(Name = "Emballé")]
             Wrapped = 2,
             [Display(Name = "Poids variable")]
-            VariableWeigh = 2
+            VariableWeigh = 3
         }
 
         public enum Unit

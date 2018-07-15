@@ -127,13 +127,13 @@
         <div id="productQtyStep" class="form-group">
             <label asp-for="Product.QuantityStep" class="col-md-2 control-label required"></label>
             <div class="col-md-10">
-                <input asp-for="Product.QuantityStep" class="form-control" min="1" data-min="Le palier de poids doit être supérieur à 0" data-val-min="Le palier de poids doit être supérieur à 0" data-val-required="Le palier de poids doit être un nombre valide" data-val-number="Le palier de poids doit être un nombre valide" />
+                <input id="quantityStep" asp-for="Product.QuantityStep" class="form-control" min="1" data-min="Le palier de poids doit être supérieur à 0" data-val-min="Le palier de poids doit être supérieur à 0" data-val-required="Le palier de poids doit être un nombre valide" data-val-number="Le palier de poids doit être un nombre valide" />
                 <span asp-validation-for="Product.QuantityStep" class="text-danger" />
             </div>
         </div>
         <fieldset>
             <legend>Prix</legend>
-            <div id="pieceHideWeightPrice" class="form-group hidden">
+            <div id="hideWeightPriceContainer" class="form-group hidden">
                 <label for="HideWeightPrice" asp-for="Product.HideWeightPrice" class="col-md-2 control-label"></label>
                 <div class="col-md-10">
                     <input id="HideWeightPrice" asp-for="Product.HideWeightPrice" name="HideWeightPrice" type="checkbox" class="form-control" />
@@ -151,41 +151,57 @@
                     </span>
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group" id="unitPriceContainer">
                 <label asp-for="Product.UnitPrice" class="col-md-2 control-label required"></label>
                 <div class="col-md-10">
                     <input id="unitPrice" asp-for="Product.UnitPrice" class="form-control" min="0.01" data-val-required="Le prix unitaire est requis" />
                     <span asp-validation-for="Product.UnitPrice" class="text-danger" />
                 </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Product.MinimumWeight" class="col-md-2 control-label required"></label>
+            <div class="form-group" id="minProductWeightContainer">
+                <label asp-for="Product.MinimumWeight" class="col-md-2 control-label required skip"></label>
                 <div class="col-md-10">
-                    <input  asp-for="Product.MinimumWeight" class="form-control" min="0.01" data-val-required="Le poids minimum est requis" />
+                    <input id="minWeight" asp-for="Product.MinimumWeight" class="form-control skip" min="0.01" data-val-required="Le poids minimum est requis" />
                     <span asp-validation-for="Product.MinimumWeight" class="text-danger" />
                 </div>
             </div>
-            <div class="form-group">
+	    <div id="minmax-weight-error-container" class="form-group hidden">
+		<div class="col-md-2">
+		    
+		</div>
+		<div class="col-md-10">
+		    <span class="text-danger field-validation-error">
+			<span id="minmax-weight-error">
+			    Le poids minimum doit être inférieur au poids maximum
+			</span>
+		    </span>
+		</div>
+	    </div>
+            <div class="form-group" id="maxProductWeightContainer">
                 <label asp-for="Product.MaximumWeight" class="col-md-2 control-label required"></label>
                 <div class="col-md-10">
-                    <input  asp-for="Product.MaximumWeight" class="form-control" min="0.01" data-val-required="Le prix unitaire est requis" />
+                    <input id="maxWeight" asp-for="Product.MaximumWeight" class="form-control" min="0.01" data-val-required="Le prix unitaire est requis" />
                     <span asp-validation-for="Product.MaximumWeight" class="text-danger" />
                 </div>
             </div>
-            <div class="form-group">
+	    <div class="form-group" id="meanPriceContainer">
+                <label class="col-md-2 control-label">Prix moyen</label>
+                <div class="col-md-10">
+                    <input id="meanPrice" readonly />
+                </div>
+            </div>
+            <div class="form-group" id="minPrice">
                 <label asp-for="Product.MinimumPrice" class="col-md-2 control-label"></label>
                 <div class="col-md-10">
-                    <span id="minimumPrice" />
+                    <input id="minimumPrice" readonly />
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group" id="maxPrice">
                 <label asp-for="Product.MaximumPrice" class="col-md-2 control-label"></label>
                 <div class="col-md-10">
-                    <input id="maximumPrice"/>
+                    <input id="maximumPrice" readonly />
                 </div>
             </div>
-
-
         </fieldset>
         <div class="form-group">
             <label asp-for="Product.TaxEnum" class="col-md-2 control-label"></label>
