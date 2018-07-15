@@ -13,11 +13,11 @@
         <a class="btn btn-small btn-default" title="Télécharger" target="_blank" href="/@Model.WeekStolonsBill.UrlPath"><span class="glyphicon glyphicon glyphicon-download-alt"> </span></a>
         @if (Model.WeekStolonsBill.HasBeenModified)
         {
-            <div class="warning-container isa_warning">
+            <div class="bannerRightInformations"
+                 title="@Html.Raw(Model.WeekStolonsBill.ModificationReason.Replace("\n\r", "<br/>"))"
+                 data-toggle="tooltip"
+                 data-placement="bottom">
                 <i class="glyphicon glyphicon-warning-sign"></i>
-                <div class="warning-informations right">
-                    @Html.Raw(Model.WeekStolonsBill.ModificationReason.Replace("\n\r", "<br/>"))
-                </div>
             </div>
         }
     </p>
@@ -84,11 +84,11 @@ else
                             <a class="btn btn-small btn-default" title="Télécharger" target="_blank" href="/@Configurations.GetBillUrl(item)"><span class="glyphicon glyphicon glyphicon-download-alt"> </span></a>
                             @if (item.HasBeenModified)
                             {
-                                <div class="warning-container isa_warning">
+                                <div class="bannerRightInformations"
+                                     title="@Html.Raw(item.ModificationReason.Replace("\n\r", "<br/>"))"
+                                     data-toggle="tooltip"
+                                     data-placement="bottom">
                                     <i class="glyphicon glyphicon-warning-sign"></i>
-                                    <div class="warning-informations right">
-                                        @Html.Raw(item.ModificationReason.Replace("\n\r", "<br/>"))
-                                    </div>
                                 </div>
                             }
                         }
@@ -158,12 +158,14 @@ else
                             <a class="btn btn-small btn-default" title="Télécharger" target="_blank" href="/@Configurations.GetOrderUrl(item)"><span class="glyphicon glyphicon glyphicon-download-alt"> </span></a>
                             @if (item.HasBeenModified)
                             {
-                                <div class="warning-container isa_warning">
+
+                                <div class="bannerRightInformations"
+                                     title="@Html.Raw(item.ModificationReason.Replace("\n\r", "<br/>"))"
+                                     data-toggle="tooltip"
+                                     data-placement="bottom">
                                     <i class="glyphicon glyphicon-warning-sign"></i>
-                                    <div class="warning-informations right">
-                                        @Html.Raw(item.ModificationReason.Replace("\n\r", "<br/>"))
-                                    </div>
                                 </div>
+
                             }
                         }
                     </td>
@@ -239,11 +241,11 @@ else
                             <a class="btn btn-small btn-default" title="Télécharger" target="_blank" href="/@Configurations.GetBillUrl(item)"><span class="glyphicon glyphicon glyphicon-download-alt"> </span></a>
                             @if (item.HasBeenModified)
                             {
-                                <div class="warning-container isa_warning">
+                                <div class="bannerRightInformations"
+                                     title="@Html.Raw(item.ModificationReason.Replace("\n\r", "<br/>"))"
+                                     data-toggle="tooltip"
+                                     data-placement="bottom">
                                     <i class="glyphicon glyphicon-warning-sign"></i>
-                                    <div class="warning-informations right">
-                                        @Html.Raw(item.ModificationReason.Replace("\n\r", "<br/>"))
-                                    </div>
                                 </div>
                             }
                         }
@@ -302,7 +304,7 @@ else
                                 <col>
                                 </col>
                                 <% _.forEach(producerBill.getProductStocks(), function(productStock) { %>
-                                <col id="product-col-<%= productStock.get("Id") %>">
+                                <col id="product-col-<%= productStock.get(" Id") %>">
                                 </col>
                                 <% }); %>
                             </colgroup>
@@ -314,7 +316,7 @@ else
                                     </th>
                                     <% _.forEach(producerBill.getProductStocks(), function(productStock) { %>
                                     <td class="correction-product-description productMgtImage">
-                                        <img src="<%= productStock.get("Product").getPictureUrl("light") %>">
+                                        <img src="<%= productStock.get(" Product").getPictureUrl("light") %>">
                                         <span><%= productStock.get("Product").get("Name") %></span>
                                     </td>
                                     <% }); %>
