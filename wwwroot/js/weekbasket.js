@@ -27,6 +27,15 @@ ProductTypesModel = Backbone.Collection.extend({
     comparator: "Name"
 });
 
+BillEntryModel = Backbone.Model.extend({
+
+    idAttribute: "Id",
+
+    getQuantityString: function() {
+	
+    }
+});
+
 TmpWeekBasketModel = Backbone.Model.extend(
     {
         url: "/api/TmpWeekBasket",
