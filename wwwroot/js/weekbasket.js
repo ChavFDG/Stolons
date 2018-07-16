@@ -1,4 +1,3 @@
-
 window.WeekBasket = {};
 
 WeekBasket = window.WeekBasket;

@@ -130,6 +130,16 @@ namespace Stolons.Models
                 return OrderAmount- FeeAmount;
             }
         }
+
+        [NotMapped]
+        public string AmountAndFeeSummary
+        {
+            get
+            {
+                return BillAmount.ToString("0.00") + "€" + " (" + FeeAmount.ToString("0.00") + "€)";
+            }
+        }
+
         [Display(Name = "Montant de la TVA")]
         public decimal TaxAmount { get; set; }
         public string HtmlBillContent { get; set; }

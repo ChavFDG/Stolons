@@ -2,9 +2,11 @@
 @using Stolons.Helpers
 @using Stolons.Models
 @using Stolons.Tools
+@using Stolons.Models.Transactions
 
 
-<h2>Les paniers de la semaine</h2>
+<h1>Gestion des paniers de la semaine</h1>
+
 @if (Model.Stolon.GetMode() == Stolon.Modes.DeliveryAndStockUpdate && Model.WeekStolonsBill != null)
 {
     <p>
@@ -21,65 +23,80 @@
             </div>
         }
     </p>
-
-
 }
 else
 {
     <p>Pas de panier cette semaine :'(</p>
 }
 
-<div class="boxContainer">
-    <h4>Factures à régler aux producteurs </h4>
-    @if (Model.ProducerBills.Any(x => x.State == BillState.Delivered))
-    {
+
+
+<ul class="nav nav-tabs">
+    <li class="active"><a data-toggle="tab" href="#consumersPickUp" name="consumersPickUp">Adhérants ayant une commande</a></li>
+    <li><a data-toggle="tab" href="#producersDelivery" name="producersDelivery">Producteurs ayant à livrer</a></li>
+    <li><a data-toggle="tab" href="#producersToPay" name="producersToPay">Producteurs en attente de payement</a></li>
+</ul>
+
+<div class="tab-content">
+    <div id="consumersPickUp" class="tab-pane active">
         <table class="table">
             <tr>
                 <th>
                     Numéro
                 </th>
                 <th>
-                    Raison social
+                    Nom
+                </th>
+                <th>
+                    Prénom
                 </th>
                 <th>
                     Téléphone
                 </th>
                 <th>
-                    Etat
+                    Stols
+                </th>
+                <th>
+                    Action
                 </th>
                 <th>
                     Facture
                 </th>
             </tr>
-            @foreach (var item in Model.ProducerBills.Where(x => x.State == BillState.Delivered).OrderBy(x => x.AdherentStolon.LocalId))
+            @foreach (var item in Model.ConsumerBills.OrderBy(x => x.AdherentStolon.LocalId))
             {
-                <tr>
+                <tr id="@item.BillId">
                     <td>
                         @Html.DisplayFor(modelItem => item.AdherentStolon.LocalId)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.AdherentStolon.Adherent.CompanyName)
+                        @Html.DisplayFor(modelItem => item.AdherentStolon.Adherent.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.AdherentStolon.Adherent.Surname)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.AdherentStolon.Adherent.PhoneNumber)
                     </td>
                     <td>
-                        @if (Model.ActiveAdherentStolon.Authorized(Role.Admin) || Model.ActiveAdherentStolon.Adherent.IsWebAdmin)
-                        {
-                            @Html.ActionLink(
-                                                                                            "Valider paiement de la facture",
-                                                                                            "UpdateProducerBill",
-                                                                                            new { billId = item.BillId, state = ((int)item.State) + 1 },
-                                                                                            new
-                                                                                            {
-                                                                                                onclick = "return confirm('Confirmation du paiement de " + +item.BillAmount + " à " + item.AdherentStolon.Adherent.CompanyName + "');",
-                                                                                                @class = "btn btn-small btn-default"
-                                                                                            }
-                                                                            )}
+                        @Html.DisplayFor(modelItem => item.AdherentStolon.Token)Ṩ
+                    </td>
+                    <td>
+                        <div class="dropdown">
+                            <a class="dropdown-toggle btn btn-small btn-default" data-toggle="dropdown" href="#">
+                                Récupération et payement en ...
+                                <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li> <a href="#" onclick="payConsumerBill('@item.BillId','@((int)Transaction.PaymentMode.Check)')">Chèque</a></li>
+                                <li> <a href="#" onclick="payConsumerBill('@item.BillId','@((int)Transaction.PaymentMode.Cash)')">Liquide</a></li>
+                                <li><a href="#" @(item.AdherentStolon.Token >= item.OrderAmount ? "" : "disable") onclick="payConsumerBill('@item.BillId','@((int)Transaction.PaymentMode.Token)')">Stol (Ṩ)</a></li>
+                            </ul>
+                        </div>
                     </td>
                     <td>
                         @{
-                            @(item.BillAmount.ToString("0.00") + "€" + " (" + item.FeeAmount.ToString("0.00") + "€) - " + item.BillNumber)
+                            @(item.OrderAmount.ToString("0.00") + "€ - " + item.BillNumber)
                             <a class="btn btn-small btn-default" title="Voir" target="_blank" href="/billsHistory/ShowBill/@item.BillNumber"><span class="glyphicon glyphicon glyphicon-eye-open"> </span></a>
                             <a class="btn btn-small btn-default" title="Télécharger" target="_blank" href="/@Configurations.GetBillUrl(item)"><span class="glyphicon glyphicon glyphicon-download-alt"> </span></a>
                             @if (item.HasBeenModified)
@@ -96,18 +113,10 @@ else
                 </tr>
             }
         </table>
-    }
-    else
-    {
-        <p>Aucune facture à régler</p>
-    }
 
-</div>
+    </div>
 
-<div class="boxContainer">
-    <h4>Producteur(s) ayant une commande à livrer cette semaine </h4>
-    @if (Model.ProducerBills.Any(x => x.State == BillState.Pending))
-    {
+    <div id="producersDelivery" class="tab-pane">
         <table class="table">
             <tr>
                 <th>
@@ -120,7 +129,7 @@ else
                     Téléphone
                 </th>
                 <th>
-                    Etat
+                    Action
                 </th>
                 <th>
                     Bon de commande
@@ -128,7 +137,7 @@ else
             </tr>
             @foreach (var item in Model.ProducerBills.Where(x => x.State == BillState.Pending).OrderBy(x => x.AdherentStolon.LocalId))
             {
-                <tr>
+                <tr id="@item.BillId">
                     <td>
                         @Html.DisplayFor(modelItem => item.AdherentStolon.LocalId)
                     </td>
@@ -139,16 +148,7 @@ else
                         @Html.DisplayFor(modelItem => item.AdherentStolon.Adherent.PhoneNumber)
                     </td>
                     <td>
-                        @Html.ActionLink(
-                                  "Valider la livraison",
-                                  "UpdateProducerBill",
-                                  new { billId = item.BillId, state = ((int)item.State) + 1 },
-                                  new
-                                  {
-                                      onclick = "return confirm('Confirmation de la livraison de " + item.AdherentStolon.Adherent.CompanyName + "');",
-                                      @class = "btn btn-small btn-default"
-                                  }
-                                  )
+                        <a href="#" class="btn btn-small btn-default" onclick="validateProdDelivery('@item.BillId','@(((int)item.State) + 1)')">Valider la livraison</a>
                         <a href="#" class="btn btn-small btn-default" onclick="BillsManagement.openCorrectionModal('@item.BillId'); return false;">Réctifier la livraison</a>
                     </td>
                     <td>
@@ -172,118 +172,62 @@ else
                 </tr>
             }
         </table>
-    }
-    else
-    {
-        <p>Plus de commande à livrer ou payer par / aux producteurs</p>
-    }
-</div>
-
-<div class="boxContainer">
-    <h4>
-        Adhérent(s) ayant commandé un panier cette semaine :
-        @Model.ConsumerBills.Count
-        /
-        @Model.WeekStolonsBill?.Consumers
-    </h4>
-    @if (Model.ConsumerBills.Any())
-    {
-
-        <table class="table">
+    </div>
+    <div id="producersToPay" class="tab-pane">
+        <table id="producersToPayTable" class="table">
             <tr>
                 <th>
                     Numéro
                 </th>
                 <th>
-                    Nom
-                </th>
-                <th>
-                    Prénom
+                    Raison social
                 </th>
                 <th>
                     Téléphone
                 </th>
                 <th>
-                    Stols
+                    Action
                 </th>
                 <th>
-                    Etat
-                </th>
-                <th>
-                    Commande
+                    Facture
                 </th>
             </tr>
-            @foreach (var item in Model.ConsumerBills.OrderBy(x => x.AdherentStolon.LocalId))
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.AdherentStolon.LocalId)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.AdherentStolon.Adherent.Name)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.AdherentStolon.Adherent.Surname)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.AdherentStolon.Adherent.PhoneNumber)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.AdherentStolon.Token)Ṩ
-                    </td>
-                    <td>
-                        <a href="#" class="btn btn-small btn-default open-consumer-modal" billId="@item.BillId" canUseToken="@(Convert.ToInt32(item.AdherentStolon.Token >= item.OrderAmount))">Valider la récupération et le paiement</a>
-                    </td>
-                    <td>
-                        @{
-                            @(item.OrderAmount.ToString("0.00") + "€ - " + item.BillNumber)
-                            <a class="btn btn-small btn-default" title="Voir" target="_blank" href="/billsHistory/ShowBill/@item.BillNumber"><span class="glyphicon glyphicon glyphicon-eye-open"> </span></a>
-                            <a class="btn btn-small btn-default" title="Télécharger" target="_blank" href="/@Configurations.GetBillUrl(item)"><span class="glyphicon glyphicon glyphicon-download-alt"> </span></a>
-                            @if (item.HasBeenModified)
-                            {
-                                <div class="bannerRightInformations"
-                                     title="@Html.Raw(item.ModificationReason.Replace("\n\r", "<br/>"))"
-                                     data-toggle="tooltip"
-                                     data-placement="bottom">
-                                    <i class="glyphicon glyphicon-warning-sign"></i>
-                                </div>
-                            }
-                        }
-                    </td>
-                </tr>
-            }
         </table>
-    }
-    else
-    {
-        <p>Plus de panier cette semaine</p>
-    }
+        <script id="producerBillToPayTemplate" type="text/template">
+            <tr id="<%= bill.BillId%>">
+                <td>
+                    <%= bill.AdherentStolon.LocalId%>
+                </td>
+                <td>
+                    <%= bill.AdherentStolon.Adherent.CompanyName%>
+                </td>
+                <td>
+                    <%= bill.AdherentStolon.Adherent.PhoneNumber%>
+                </td>
+                <td>
+                    <% if (activeAdherentStolon.Role >= 2 || activeAdherentStolon.Adherent.IsWebAdmin ) { %>
+                    <a href="#" class="btn btn-small btn-default" onclick="validateProdPayement('<%= bill.BillId%>','2')">Valider le paiement de la facture</a>
+                    <% } %>
+                </td>
+                <td>
+                    <%= bill.AmountAndFeeSummary %> -  <%= bill.BillNumber %>
+                    <a class="btn btn-small btn-default" title="Voir" target="_blank" href="/billsHistory/ShowBill/<%= bill.BillNumber %>"><span class="glyphicon glyphicon glyphicon-eye-open"> </span></a>
+                    <a class="btn btn-small btn-default" title="Télécharger" target="_blank" href="/bills/<%= bill.BillNumber %>.pdf"><span class="glyphicon glyphicon glyphicon-download-alt"> </span></a>
+                    <% if (bill.HasBeenModified) { %>
+                    <div class="bannerRightInformations"
+                         title="<%= bill.ModificationReason %>"
+                         data-toggle="tooltip"
+                         data-placement="bottom">
+                        <i class="glyphicon glyphicon-warning-sign"></i>
+                    </div>
+                    <% } %>
+                </td>
+            </tr>
+        </script>
+    </div>
 </div>
 
-<div id="consumerBillModal" class="modal fade"></div>
-
 <div id="correctionModal" class="modal fade"></div>
-
-<script id="consumerBillModalTemplate" type="text/template">
-    <div class="modals">
-        <div class="modal-dialog fullScreenModal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                </div>
-                <div class="modal-body">
-                    <% if (canUseToken == 1) { %>
-                    <a href="/WeekBasketManagement/UpdateConsumerBill?paymentMode=0&billId=<%= billId %>" class="credit btn btn-small btn-default">Stols</a>
-                    <% } else {%>
-                    <a href="#" class="credit btn btn-small btn-default disabled">Stols</a>
-                    <% }%>
-                    <a href="/WeekBasketManagement/UpdateConsumerBill?paymentMode=1&billId=<%= billId %>" class="credit btn btn-small btn-default">Chèque</a>
-                    <a href="/WeekBasketManagement/UpdateConsumerBill?paymentMode=2&billId=<%= billId %>" class="credit btn btn-small btn-default">Espèces</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</script>
 
 <script id="correctionModalTemplate" type="text/template">
     <div class="modals">
@@ -405,3 +349,4 @@ else
 <script src="/js/billModel.js"></script>
 <script src="/js/productModel.js"></script>
 <script src="/js/billsManagement.js"></script>
+<script src="/js/weekBasketManagementScript.js"></script>

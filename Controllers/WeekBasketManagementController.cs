@@ -133,8 +133,28 @@ namespace Stolons.Controllers
         }
 
         // GET: UpdateConsumerBill
-        public IActionResult UpdateConsumerBill(Guid billId, PaymentMode paymentMode)
+        [HttpPost, ActionName("GetBillsToPay")]
+        public IActionResult GetBillsToPay()
         {
+            Stolon stolon = GetCurrentStolon();
+            var producerBillsToPay = _context.ProducerBills
+                                   .Include(x => x.AdherentStolon)
+                                   .Include(x => x.AdherentStolon.Adherent)
+                                   .Include(x => x.AdherentStolon.Stolon)
+                                   .Where(x => x.State == BillState.Delivered && x.AdherentStolon.StolonId == stolon.Id)
+                                   .OrderBy(x => x.AdherentStolon.Adherent.Id)
+                                   .AsNoTracking()
+                                   .ToList();
+
+            return Json(new VmProducersBills(GetActiveAdherentStolon(),producerBillsToPay));
+        }
+
+
+        // GET: UpdateConsumerBill
+        [HttpPost, ActionName("UpdateConsumerBill")]
+        public IActionResult UpdateConsumerBill(Guid billId, int mode)
+        {
+            PaymentMode paymentMode = (PaymentMode)mode;
             ConsumerBill bill = _context.ConsumerBills.Include(x => x.AdherentStolon).Include(x => x.AdherentStolon.Adherent).First(x => x.BillId == billId);
             bill.State = BillState.Paid;
             _context.Update(bill);
@@ -153,11 +173,11 @@ namespace Stolons.Controllers
             _context.Add(transaction);
             //Save
             _context.SaveChanges();
-            return RedirectToAction("WeekBaskets");
+            return Json(true);
         }
 
         // GET: UpdateProducerBill
-        //validate bill payement
+        [HttpPost, ActionName("UpdateProducerBill")]
         public IActionResult UpdateProducerBill(Guid billId, int state)
         {
             ProducerBill bill = _context.ProducerBills
@@ -194,7 +214,7 @@ namespace Stolons.Controllers
                 //Generate bill in pdf
                 BillGenerator.GenerateBillPDF(bill);
             }
-            return RedirectToAction("WeekBaskets");
+            return Json(new VmProducerBill(GetActiveAdherentStolon(), bill));
         }
 
         //Debug and last resort utility method
