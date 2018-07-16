@@ -384,9 +384,9 @@ namespace Stolons.Models
             Freezer = 2
         }
 
-        public string GetQuantityString(decimal quantity, SellType? forcedType = null)
+        public string GetQuantityString(decimal quantity)
         {
-            if (forcedType==null ? Type == SellType.Piece : forcedType == SellType.Piece)
+            if (Type == SellType.Piece || Type == SellType.VariableWeigh)
             {
                 if (quantity == 1)
                 {
@@ -426,7 +426,7 @@ namespace Stolons.Models
 
         public string GetQuantityHtmlShortString(int quantity)
         {
-            if (Type == SellType.Piece)
+            if (Type == SellType.Piece && Type== SellType.VariableWeigh)
             {
                 return "<span title='" + quantity + " pièce" + (quantity > 1 ? "s" : "") + "'>x" + quantity + "</span>";
             }

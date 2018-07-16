@@ -467,7 +467,7 @@ namespace Stolons.Tools
                 productBillEntries.ForEach(x => quantity += x.Quantity);
                 orderBuilder.AppendLine("<tr>");
                 orderBuilder.AppendLine("<td>" + productBillEntries.Key.Name + "</td>");
-                orderBuilder.AppendLine("<td>" + productBillEntries.Key.GetQuantityString(quantity, SellType.Piece) + "</td>");
+                orderBuilder.AppendLine("<td>" + productBillEntries.Key.GetQuantityString(quantity) + "</td>");
                 orderBuilder.AppendLine("</tr>");
             }
             orderBuilder.AppendLine("</table>");
@@ -495,7 +495,7 @@ namespace Stolons.Tools
                     orderBuilder.AppendLine("<tr>");
                     orderBuilder.AppendLine("<td></td>");
                     orderBuilder.AppendLine("<td>" + entries.Name + "</td>");
-                    orderBuilder.AppendLine("<td>" + entries.ProductStock.Product.GetQuantityString(entries.Quantity,SellType.Piece)+ "</td>");
+                    orderBuilder.AppendLine("<td>" + entries.ProductStock.Product.GetQuantityString(entries.Quantity)+ "</td>");
                     orderBuilder.AppendLine("</tr>");
                 }
             }

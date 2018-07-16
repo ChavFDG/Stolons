@@ -66,10 +66,7 @@ namespace Stolons.Models
         {
             get
             {
-                string quantityString = ProductStock.Product.GetQuantityString(Quantity);
-                if (IsNotAssignedVariableWeigh)
-                    quantityString += " (poids moyen)";
-                return quantityString;
+                return GetQuantityString(Quantity);
             }
         }
 
@@ -413,10 +410,10 @@ namespace Stolons.Models
 
 
 
-
+        //Utilisé dans le web aussi
         public string GetQuantityString(decimal quantity)
         {
-            if (Type == SellType.Piece)
+            if (Type == SellType.Piece || (Type == SellType.VariableWeigh && WeightAssigned))
             {
                 if (quantity == 1)
                 {
