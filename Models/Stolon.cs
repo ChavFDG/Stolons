@@ -198,6 +198,15 @@ namespace Stolons.Models
             December = 12
         }
 
+        public static Month AddMonth(Month month , int quantity)
+        {
+            int actualMonth = (int)month;
+            actualMonth += quantity;
+            if (actualMonth > 12)
+                actualMonth = actualMonth - 12;
+            return (Month)Enum.ToObject(typeof(Month), actualMonth);
+        }
+
         public string GetStringPickUpTime()
         {
             string toReturn = BasketPickUpStartDay.ToFrench() + " de " + String.Format("{0:00}", BasketPickUpStartHour) + "h" + String.Format("{0:00}", BasketPickUpStartMinute);

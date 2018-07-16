@@ -65,6 +65,15 @@
             <tr>
                 <td>
                     @Html.DisplayFor(modelItem => item.LocalId)
+                    @if (item.Adherent.IsWebAdmin)
+                    {
+
+                        <div class="bannerRightInformations"
+                             title=" Ce membre est administrateur web"
+                             data-toggle="tooltip">
+                            <span class="glyphicon glyphicon-education"></span>
+                        </div>
+                    }
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Adherent.SellerType)
