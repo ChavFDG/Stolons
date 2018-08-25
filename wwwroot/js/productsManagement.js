@@ -273,7 +273,6 @@ var StockMgtViewModal = Backbone.View.extend({
     render: function () {
         this.$el.html(this.template(
             {
-                //productModel: new ProductModel(this.currentProductStock.get("Product")),
                 productStock: this.currentProductStock,
                 validation: this.validation
             }
@@ -289,20 +288,99 @@ var StockMgtViewModal = Backbone.View.extend({
 
 var VariableWeightsProductsManagementView = Backbone.View.extend({
 
-    el: "#buttons-container",
+    el: "#variableWeightProducts",
+
+    template: _.template($("#variableWeightProductsTemplate").html()),
 
     events: {
-	"click #enterVariableWeights": "openVariableWeightsModal"
+	"click #saveVW": "saveOrderVariableWeighs",
+	"change input.variable-weigh": "onVWChange"
     },
 
-    openVariableWeightsModal: function() {
-	var variableWeightProductsVM = new VariableWeightProductsVM();
-	variableWeightProductsVM.fetch();
-    }
+    initialize: function() {
+	if (!this.variableWeightOrdersVM) {
+	    this.variableWeightOrdersVM = new VariableWeightProductsVM();
+	    this.fetchDeferred = this.variableWeightOrdersVM.fetch();
+	}
+    },
+
+    render: function () {
+        this.$el.html(this.template(
+            {
+		vwVM: this.variableWeightOrdersVM
+            }
+        ));
+    },
+
+    renderModal: function () {
+	var that = this;
+
+	this.fetchDeferred.done(function() {
+            that.render();
+            that.$el.modal({ keyboard: true, show: true });
+            that.$el.on('hide.bs.modal', _.bind(that.onClose, that));
+	});
+    },
+
+    onClose: function () {
+        this.$el.off('hide.bs.modal');
+        this.$el.empty();
+    },
+
+    onVWChange: function(ev) {
+	var inputElem = $(ev.currentTarget);
+	console.log("saving VW: " + $(ev.currentTarget).val());
+	var orderNumber = inputElem.data("order-number");
+	var productId = inputElem.data("product-id");
+	var billEntryId = inputElem.data("bill-entry-id");
+	var consumerIdx = inputElem.data("consumer-idx");
+
+	var orderVM;
+	_.forEach(this.variableWeightOrdersVM.get("VariableWeighOrdersViewModel"), function(vwOrderVM) {
+	    if (vwOrderVM.OrderNumber == orderNumber) {
+		_.forEach(vwOrderVM.VariableWeighProductsViewModel, function(vwProductVM) {
+		    if (vwProductVM.ProductId == productId) {
+			_.forEach(vwProductVM.ConsumersAssignedWeighs, function(assignedW, idx) {
+			    if (assignedW.BillEntryId == billEntryId && idx == consumerIdx) {
+				//TODO validate value first
+				assignedW.AssignedWeigh = inputElem.val();
+				console.log("FOUND!!! assigning value" + assignedW.AssignedWeigh);
+			    }
+			});
+		    }
+		});
+	    }
+	});	
+	return true;
+    },
+
+    saveOrderVariableWeighs: function(ev) {
+	var buttonElem = $(ev.currentTarget);
+	var orderNumber = buttonElem.data("order-number");
+
+	var vwOrder;
+	_.forEach(this.variableWeightOrdersVM.get("VariableWeighOrdersViewModel"), function(vwOrderVM) {
+	    if (vwOrderVM.OrderNumber == orderNumber) {
+		vwOrder = vwOrderVM;
+	    }
+	});
+	var promise = $.ajax({
+            url: "/api/variableWeightProducts",
+            type: 'POST',
+            data: {
+                "variableWeighOrderViewModel": vwOrder
+            }
+	});
+	promise.then(function() {
+	    console.log("POST DONE");
+	});
+    },
+
 });
 
 //Init
 $(function() {
     new ProductsManagementView();
-    new VariableWeightsProductsManagementView();
+    var vwView = new VariableWeightsProductsManagementView();
+    $("#enterVariableWeights").click(_.bind(vwView.renderModal, vwView));
 });

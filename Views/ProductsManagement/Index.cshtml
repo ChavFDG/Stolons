@@ -9,7 +9,7 @@
     <a asp-action="Manage" class="btn btn-small btn-default">Ajouter un produit</a>
     @if (Model.HasVariableWeighToAssigned)
     {
-    <a id="enterVariableWeights" class="btn btn-small btn-default">Saisir les poids variable</a>
+	<a id="enterVariableWeights" class="btn btn-small btn-default">Saisir les poids variable</a>
     }
 </p>
 
@@ -216,6 +216,9 @@
 <div id="stockMgt" class="modals">
 </div>
 
+<div id="variableWeightProducts" class="modals">
+</div>
+
 <script id="stockMgtTemplate" type="text/template">
     <div class="modals modal in">
         <div class="modal-dialog">
@@ -275,6 +278,50 @@
 </script>
 
 
+<script id="variableWeightProductsTemplate" type="text/template">
+    <div class="modals modal in">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+		    <span>Entrez les poids réels de vos produits à poids variables</span>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+                </div>
+                <div class="modal-body">
+		    <div class="row">
+			<div class="col-lg-12">
+			    <% _.forEach(vwVM.get("VariableWeighOrdersViewModel"), function(vwOrderVM) { %>
+			    <div class="row">
+				<div class="col-lg-12">
+				    <span><b>Commande <%= vwOrderVM.OrderNumber %> pour <%= vwOrderVM.StolonLabel %></b></span>
+				    <% _.forEach(vwOrderVM.VariableWeighProductsViewModel, function(vwProductVM) { %>
+				    <br />
+			            <span><%= vwProductVM.ProductName %> -- de <%= vwProductVM.MinimumWeight %> <%= vwProductVM.ProductUnit %> à <%= vwProductVM.MaximumWeight %> <%= vwProductVM.ProductUnit %> (x<%= vwOrderVM.VariableWeighProductsViewModel.length %> quantité) </span>
+				    <table style="border: 1px solid;">
+					<thead>
+					    <th>Consommateur</th>
+					    <th>Poids réel</th>
+					</thead>
+					<tbody>
+					    <% _.forEach(vwProductVM.ConsumersAssignedWeighs, function(consumerAssignedW, idx) { %>
+					    <tr style="border: 1px solid;">
+						<td style="border: 1px solid;"><span><%= consumerAssignedW.ConsumerLocalId %></span></td>
+						<td style="border: 1px solid;"><input type="number" data-order-number="<%= vwOrderVM.OrderNumber %>" data-product-id="<%= vwProductVM.ProductId %>" data-bill-entry-id="<%= consumerAssignedW.BillEntryId %>" data-consumer-idx="<%= idx %>" class="variable-weigh" placeholder="poids réel" /></td>
+					    </tr>
+					    <% }); %>
+					</tbody>
+				    </table>
+				<% }); %>
+				</div>
+			    </div>
+			    <button id="saveVW" type="button" data-order-number="<%= vwOrderVM.OrderNumber %>" class="btn btn-small btn-default center">Valider</button>
+			    <% }); %>
+			</div>
+		    </div>
+		</div>
+	    </div>
+	</div>
+    </div>
+</script>
 
 <h2>Mes produits archivés</h2>
 @if (Model.Products.Where(x => x.IsArchive).Any())
