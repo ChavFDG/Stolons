@@ -126,6 +126,7 @@ var StockMgtViewModal = Backbone.View.extend({
 	}
 	$("#WeekStock").val(newStock);
 	$("#WeekStock").trigger("change");
+	return false;
     },
 
     weekStockStepDown: function() {
@@ -137,6 +138,7 @@ var StockMgtViewModal = Backbone.View.extend({
 	}
 	$("#WeekStock").val(newStock);
 	$("#WeekStock").trigger("change");
+	return false;
     },
 
     remainingStockStepUp: function() {
@@ -148,6 +150,7 @@ var StockMgtViewModal = Backbone.View.extend({
 	}
 	$("#RemainingStock").val(newStock);
 	$("#RemainingStock").trigger("change");
+	return false;
     },
 
     remainingStockStepDown: function() {
@@ -159,6 +162,7 @@ var StockMgtViewModal = Backbone.View.extend({
 	}
 	$("#RemainingStock").val(newStock);
 	$("#RemainingStock").trigger("change");
+	return false;
     },
 
     validateWeekStock: function () {
