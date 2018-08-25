@@ -82,7 +82,11 @@ var StockMgtViewModal = Backbone.View.extend({
         "change #RemainingStock": "validateRemainingStock",
         "click #saveStocks": "saveStocks",
         "click #cancelEditStocks": "closeModal",
-	"click #cancel": "closeModal"
+	"click #cancel": "closeModal",
+	"click #weekStockStepUp": "weekStockStepUp",
+	"click #weekStockStepDown": "weekStockStepDown",
+	"click #remainingStockStepUp": "remainingStockStepUp",
+	"click #remainingStockStepDown": "remainingStockStepDown",
     },
 
     template: _.template($("#stockMgtTemplate").html()),
@@ -112,10 +116,55 @@ var StockMgtViewModal = Backbone.View.extend({
         return n % 1 === 0;
     },
 
+    weekStockStepUp: function() {
+	var newStock;
+	console.log("weekStockStepUp " + parseFloat(this.currentProductStock.get("WeekStock")) + " | " + this.currentProductStock.get("Product").get("QuantityStep"));
+	if (this.currentProductStock.get("Product").get("Type") == 1 || this.currentProductStock.get("Product").get("Type") == 3) {
+	    newStock = parseInt(this.currentProductStock.get("WeekStock")) + 1;
+	} else {
+	    newStock = parseFloat(this.currentProductStock.get("WeekStock") + 1) * (this.currentProductStock.get("Product").get("QuantityStep") / 1000);
+	}
+	$("#WeekStock").val(newStock);
+	$("#WeekStock").trigger("change");
+    },
+
+    weekStockStepDown: function() {
+	var newStock;
+	if (this.currentProductStock.get("Product").get("Type") == 1 || this.currentProductStock.get("Product").get("Type") == 3) {
+	    newStock = parseInt(this.currentProductStock.get("WeekStock")) - 1;
+	} else {
+	    newStock = parseFloat(this.currentProductStock.get("WeekStock") - 1) * (this.currentProductStock.get("Product").get("QuantityStep") / 1000);
+	}
+	$("#WeekStock").val(newStock);
+	$("#WeekStock").trigger("change");
+    },
+
+    remainingStockStepUp: function() {
+	var newStock;
+	if (this.currentProductStock.get("Product").get("Type") == 1 || this.currentProductStock.get("Product").get("Type") == 3) {
+	    newStock = parseInt(this.currentProductStock.get("RemainingStock")) + 1;
+	} else {
+	    newStock = parseFloat(this.currentProductStock.get("RemainingStock") + 1) * (this.currentProductStock.get("Product").get("QuantityStep") / 1000);
+	}
+	$("#RemainingStock").val(newStock);
+	$("#RemainingStock").trigger("change");
+    },
+
+    remainingStockStepDown: function() {
+	var newStock;
+	if (this.currentProductStock.get("Product").get("Type") == 1 || this.currentProductStock.get("Product").get("Type") == 3) {
+	    newStock = parseInt(this.currentProductStock.get("RemainingStock")) - 1;
+	} else {
+	    newStock = parseFloat(this.currentProductStock.get("RemainingStock") - 1) * (this.currentProductStock.get("Product").get("QuantityStep") / 1000);
+	}
+	$("#RemainingStock").val(newStock);
+	$("#RemainingStock").trigger("change");
+    },
+
     validateWeekStock: function () {
         var weekStock = Math.abs(parseFloat($("#WeekStock").val()));
 
-        if (this.currentProductStock.get("Product").get("Type") != 1) {
+        if (this.currentProductStock.get("Product").get("Type") != 1 && this.currentProductStock.get("Product").get("Type") != 3) {
             if ((Math.abs(weekStock * 1000) % this.currentProductStock.get("Product").get("QuantityStep")) != 0) {
                 this.validation.weekStockError = "Le stock doit être divisible par le palier de vente (" + this.currentProductStock.get("Product").get("QuantityStepString") + ").";
                 this.render();
@@ -137,9 +186,9 @@ var StockMgtViewModal = Backbone.View.extend({
     validateRemainingStock: function () {
         var remainingStock = Math.abs(parseFloat($("#RemainingStock").val()));
 
-        if (this.currentProductStock.get("Product").get("Type") != 1) {
+        if (this.currentProductStock.get("Product").get("Type") != 1 && this.currentProductStock.get("Product").get("Type") != 3) {
             if (Math.abs(remainingStock * 1000) % this.currentProductStock.get("Product").get("QuantityStep") != 0) {
-                this.validation.remainingStockError = "Le stock doit être divisible par le palier de vente.";
+                this.validation.remainingStockError = "Le stock doit être divisible par le palier de vente (" + this.currentProductStock.get("Product").get("QuantityStepString") + ").";
                 this.render();
                 return;
             }

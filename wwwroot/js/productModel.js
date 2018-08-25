@@ -46,7 +46,7 @@ ProductStockModel = Backbone.Model.extend({
     },
 
     getStockUnitString: function () {
-        if (this.get("Product").get("Type") == 1)  {
+        if (this.get("Product").get("Type") == 1 || this.get("Product").get("Type") == 3)  {
             return "Pièces";
         }
         var productUnit = this.get("Product").get("ProductUnit");

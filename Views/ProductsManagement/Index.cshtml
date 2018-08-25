@@ -234,18 +234,22 @@
                             <% if (productStock.get("AdherentStolon").Stolon.Mode == 1 && productStock.get("Product").get("StockManagement") != 1) { %> <!-- Livraisons/stocks et gestion Hebdomadaire -->
 
                             <label for="WeekStock" class="control-label">Stock proposé pour la semaine prochaine:</label>
-                            <input id="WeekStock" name="WeekStock" min="0" type="number" step="<%= productStock.get(" Product").QuantityStep / 1000 || 1 %>" value="<%= productStock.getWeekQuantityStock() %>" />
+			    <i id="weekStockStepDown" class="glyphicon glyphicon-minus-sign" style="cursor: pointer;"></i>
+                            <input id="WeekStock" name="WeekStock" min="0" type="number" value="<%= productStock.getWeekQuantityStock() %>" />
+			    <i id="weekStockStepUp" class="glyphicon glyphicon-plus-sign" style="cursor: pointer;"></i>
                             <span><%= productStock.getStockUnitString() %></span>
                             <% } else { %> <!-- Commandes -->
                             <!-- Stock a la semaine -->
                             <% if (productStock.get("Product").get("StockManagement") == 0) { %>
-                            <label class="control-label">Stock proposé cette semaine :  </label>
+                            <label class="control-label">Stock proposé cette semaine : </label>
                             <span><%= productStock.getWeekQuantityStock() %> (<%= productStock.getWeekQuantityOrdered() %> commandés par les utilisateurs)</span>
                             <span><%= productStock.getStockUnitString() %></span>
                             <% } %>
                             <div>
                                 <label for="RemainingStock" class="control-label">Il reste en stock : </label>
-                                <input id="RemainingStock" name="RemainingStock" min="0" type="number" step="<%= productStock.get(" Product").get("QuantityStep") / 1000 || 1 %>" value="<%= productStock.getRemainingQuantityStock() %>" />
+ 			        <i id="remainingStockStepDown" class="glyphicon glyphicon-minus-sign" style="cursor: pointer;"></i>
+                                <input id="RemainingStock" name="RemainingStock" min="0" type="number" <% if (productStock.get("Product").get("Type") == 0 || productStock.get("Product").get("Type") == 2) { %> step="<%= productStock.get("Product").QuantityStep / 1000 || 1 %>" <% } %> value="<%= productStock.getRemainingQuantityStock() %>" />
+				<i id="remainingStockStepUp" class="glyphicon glyphicon-plus-sign" style="cursor: pointer;"></i>
                                 <span><%= productStock.getStockUnitString() %></span>
                                 <div>
                                     <% if (productStock.get("OrderedQuantityString") > 0) { %>
