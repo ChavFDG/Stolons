@@ -232,7 +232,7 @@ namespace Stolons.Controllers
             ProductStockStolon productStock = _context.ProductsStocks.Include(x => x.Product).FirstOrDefault(x => x.Id.ToString() == productStockId);
 
             decimal stepStock = productStock.RemainingStock;
-            if (productStock.Product.Type != Product.SellType.Piece)
+            if (productStock.Product.Type != Product.SellType.Piece && productStock.Product.Type != Product.SellType.VariableWeigh)
             {
                 stepStock = (productStock.RemainingStock * 1000.0M) / productStock.Product.QuantityStep;
             }
@@ -383,7 +383,7 @@ namespace Stolons.Controllers
                     {
                         int qtyDiff = newEntry.Quantity - prevEntry.Quantity;
                         decimal stepStock = productStock.RemainingStock;
-                        if (productStock.Product.Type != Product.SellType.Piece)
+                        if (productStock.Product.Type != Product.SellType.Piece && productStock.Product.Type != Product.SellType.VariableWeigh)
                         {
                             //Actual remaining stock in terms of quantity step Kg/L for weight type products
                             stepStock = (productStock.RemainingStock / productStock.Product.QuantityStep) * 1000.0M;
@@ -415,7 +415,7 @@ namespace Stolons.Controllers
                         ProductStockStolon productStock = _context.ProductsStocks.Include(x => x.Product).Include(x => x.AdherentStolon).Single(x => x.Id == newEntry.ProductStockId);
 
                         decimal stepStock = productStock.RemainingStock;
-                        if (productStock.Product.Type != Product.SellType.Piece)
+                        if (productStock.Product.Type != Product.SellType.Piece && productStock.Product.Type != Product.SellType.VariableWeigh)
                         {
                             stepStock = (productStock.RemainingStock / productStock.Product.QuantityStep) * 1000.0M;
                         }
