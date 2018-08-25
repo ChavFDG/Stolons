@@ -57,27 +57,8 @@ namespace Stolons.Controllers
             }
             products.ForEach(prod => prod.ProductStocks.ForEach(stock => stock.Product = prod));
             ProductsViewModel vm = new ProductsViewModel(GetActiveAdherentStolon(), products, producer);
-
-            var variableWeighBillsEntries = _context.BillEntrys.Include(x => x.ProducerBill).ThenInclude(x => x.AdherentStolon).Include(x => x.StolonsBill).Where(x => x.IsNotAssignedVariableWeigh && x.ProducerBill.AdherentStolon.AdherentId == producer.Id).ToList();
-            foreach (var billEntry in variableWeighBillsEntries)
-            {
-                var varWeighVm = vm.VariableWeighViewModel.VariableWeighProductsViewModel.FirstOrDefault(x => x.ProductId == billEntry.ProductId);
-                if (varWeighVm == null)
-                {
-                    varWeighVm = new VariableWeighProductViewModel()
-                    {
-                        ProductId = billEntry.ProductId,
-                        ProductName = billEntry.Name,
-                        MinimumWeight = billEntry.MinimumWeight,
-                        MaximumWeight = billEntry.MaximumWeight,
-                        ProductUnit = billEntry.ProductUnit
-                    };
-                    vm.VariableWeighViewModel.VariableWeighProductsViewModel.Add(varWeighVm);
-                }
-                varWeighVm.ConsumersAssignedWeighs.Add(new ConsumerAssignedWeigh(billEntry));
-
-            }
-
+            vm.HasVariableWeighToAssigned = _context.BillEntrys.Any(x => x.IsNotAssignedVariableWeigh && x.ProducerBill.AdherentStolon.AdherentId == producer.Id);
+            
             return View(vm);
         }
 

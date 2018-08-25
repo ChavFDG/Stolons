@@ -7,7 +7,7 @@
 
 <p>
     <a asp-action="Manage" class="btn btn-small btn-default">Ajouter un produit</a>
-    @if (Model.VariableWeighViewModel.VariableWeighProductsViewModel.Any())
+    @if (Model.HasVariableWeighToAssigned)
     {
         <a asp-action="?" class="btn btn-small btn-default">Saisir les poids variable</a>
     }
