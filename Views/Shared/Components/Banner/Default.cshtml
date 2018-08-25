@@ -119,7 +119,7 @@
                             }
                             else
                             {
-                                <a asp-controller="Orders" asp-action="ShowBill" asp-route-id="@Model.ConsumerBill.BillNumber.ToString()">
+                                <a asp-controller="Orders" asp-action="ShowOrder" asp-route-id="@Model.ConsumerBill.BillNumber.ToString()">
                                     <img src="/images/panier.jpg" class="basket-banner-logo" />
                                     <span>Voir mon panier (@Model.ConsumerBill.OrderAmount.ToString("0.00")€)</span>
                                 </a>
