@@ -70,7 +70,7 @@ namespace Stolons.Controllers
             var activeAdherentStolon = GetActiveAdherentStolon();
             var variableWeightProductsVM = new VariableWeighViewModel(activeAdherentStolon);
             var producer = activeAdherentStolon.Adherent;
-            var variableWeighBillsEntries = _context.BillEntrys.Include(x => x.ProducerBill).ThenInclude(x => x.AdherentStolon).Include(x => x.StolonsBill).Where(x => x.IsNotAssignedVariableWeigh && x.ProducerBill.AdherentStolon.AdherentId == producer.Id).ToList();
+            var variableWeighBillsEntries = _context.BillEntrys.Include(x=>x.ProductStock).ThenInclude(x=>x.Product).Include(x => x.ProducerBill).ThenInclude(x => x.AdherentStolon).Include(x => x.StolonsBill).Where(x => x.IsNotAssignedVariableWeigh && x.ProducerBill.AdherentStolon.AdherentId == producer.Id).ToList();
             foreach (var billEntry in variableWeighBillsEntries)
             {
                 var varWeighVm = variableWeightProductsVM.VariableWeighProductsViewModel.FirstOrDefault(x => x.ProductId == billEntry.ProductId);
@@ -91,6 +91,9 @@ namespace Stolons.Controllers
             }
             return Json(variableWeightProductsVM);
         }
+
+
+
 
         [HttpGet, ActionName("ProducerProducts"), Route("api/producerProducts")]
         public IActionResult JsonProducerProducts()
