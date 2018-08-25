@@ -287,7 +287,22 @@ var StockMgtViewModal = Backbone.View.extend({
     }
 });
 
+var VariableWeightsProductsManagementView = Backbone.View.extend({
+
+    el: "#buttons-container",
+
+    events: {
+	"click #enterVariableWeights": "openVariableWeightsModal"
+    },
+
+    openVariableWeightsModal: function() {
+	var variableWeightProductsVM = new VariableWeightProductsVM();
+	variableWeightProductsVM.fetch();
+    }
+});
+
 //Init
 $(function() {
     new ProductsManagementView();
+    new VariableWeightsProductsManagementView();
 });
