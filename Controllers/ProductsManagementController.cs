@@ -92,6 +92,12 @@ namespace Stolons.Controllers
             return Json(variableWeightProductsVM);
         }
 
+        [HttpPost("api/variableWeightProducts")]
+        public IActionResult PostVariableWeightProducts()
+	{
+	    
+	}
+
         [HttpGet, ActionName("ProducerProducts"), Route("api/producerProducts")]
         public IActionResult JsonProducerProducts()
         {
