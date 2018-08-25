@@ -5,12 +5,9 @@
 
 <h2>Gestion de mes produits et de mes stocks</h2>
 
-<p>
+<p id="buttons-container">
     <a asp-action="Manage" class="btn btn-small btn-default">Ajouter un produit</a>
-    @if (Model.VariableWeighViewModel.VariableWeighProductsViewModel.Any())
-    {
-        <a asp-action="?" class="btn btn-small btn-default">Saisir les poids variable</a>
-    }
+    <a id="enterVariableWeights" class="btn btn-small btn-default">Saisir les poids variable</a>
 </p>
 
 <div id="productsManagement">
@@ -388,4 +385,5 @@ else
 @{ await Html.RenderPartialAsync("Templates/PublicProductTemplate"); }
 
 <script src="/js/productModel.js"></script>
+<script src="/js/variableWeightProductsVM.js"></script>
 <script src="/js/productsManagement.js"></script>
