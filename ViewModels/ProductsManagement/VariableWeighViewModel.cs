@@ -9,13 +9,29 @@ namespace Stolons.ViewModels.ProductsManagement
 {
     public class VariableWeighViewModel : BaseViewModel
     {
-        public List<VariableWeighProductViewModel> VariableWeighProductsViewModel { get; set; } = new List<VariableWeighProductViewModel>();
+        public List<VariableWeighOrderViewModel> VariableWeighOrdersViewModel { get; set; } = new List<VariableWeighOrderViewModel>();
 
         public VariableWeighViewModel(AdherentStolon activeAdherentStolon)
         {
             ActiveAdherentStolon = activeAdherentStolon;
         }
     }
+
+    public class VariableWeighOrderViewModel
+    {
+        public Guid ProducerBillId { get; set; }
+        public string OrderNumber { get; set; }
+        public string StolonLabel { get; set; }
+        public List<VariableWeighProductViewModel> VariableWeighProductsViewModel { get; set; } = new List<VariableWeighProductViewModel>();
+
+        public VariableWeighOrderViewModel(ProducerBill producerBill)
+        {
+            ProducerBillId = producerBill.BillId;
+            OrderNumber = producerBill.OrderNumber;
+            StolonLabel =producerBill.AdherentStolon.Stolon.Label;
+        }
+    }
+
 
     public class VariableWeighProductViewModel
     {
