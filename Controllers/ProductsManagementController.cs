@@ -81,15 +81,35 @@ namespace Stolons.Controllers
             return View(vm);
         }
 
-	[HttpGet("api/variableWeightProducts")]
+        [HttpGet("api/variableWeightProducts")]
         public IActionResult JsonVariableWeightProducts()
-	{
+        {
             if (!AuthorizedProducer())
                 return Unauthorized();
-	    var variableWeightProductsVM = new VariableWeighViewModel(??);
+            var activeAdherentStolon = GetActiveAdherentStolon();
+            var variableWeightProductsVM = new VariableWeighViewModel(activeAdherentStolon);
+            var producer = activeAdherentStolon.Adherent;
+            var variableWeighBillsEntries = _context.BillEntrys.Include(x => x.ProducerBill).ThenInclude(x => x.AdherentStolon).Include(x => x.StolonsBill).Where(x => x.IsNotAssignedVariableWeigh && x.ProducerBill.AdherentStolon.AdherentId == producer.Id).ToList();
+            foreach (var billEntry in variableWeighBillsEntries)
+            {
+                var varWeighVm = variableWeightProductsVM.VariableWeighProductsViewModel.FirstOrDefault(x => x.ProductId == billEntry.ProductId);
+                if (varWeighVm == null)
+                {
+                    varWeighVm = new VariableWeighProductViewModel()
+                    {
+                        ProductId = billEntry.ProductId,
+                        ProductName = billEntry.Name,
+                        MinimumWeight = billEntry.MinimumWeight,
+                        MaximumWeight = billEntry.MaximumWeight,
+                        ProductUnit = billEntry.ProductUnit
+                    };
+                    variableWeightProductsVM.VariableWeighProductsViewModel.Add(varWeighVm);
+                }
+                varWeighVm.ConsumersAssignedWeighs.Add(new ConsumerAssignedWeigh(billEntry));
 
-	    return Json(variableWeightProductsVM);
-	}
+            }
+            return Json(variableWeightProductsVM);
+        }
 
         [HttpGet, ActionName("ProducerProducts"), Route("api/producerProducts")]
         public IActionResult JsonProducerProducts()
