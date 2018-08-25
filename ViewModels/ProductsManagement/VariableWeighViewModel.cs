@@ -11,6 +11,10 @@ namespace Stolons.ViewModels.ProductsManagement
     {
         public List<VariableWeighOrderViewModel> VariableWeighOrdersViewModel { get; set; } = new List<VariableWeighOrderViewModel>();
 
+        public VariableWeighViewModel()
+        {
+
+        }
         public VariableWeighViewModel(AdherentStolon activeAdherentStolon)
         {
             ActiveAdherentStolon = activeAdherentStolon;
@@ -24,6 +28,10 @@ namespace Stolons.ViewModels.ProductsManagement
         public string StolonLabel { get; set; }
         public List<VariableWeighProductViewModel> VariableWeighProductsViewModel { get; set; } = new List<VariableWeighProductViewModel>();
 
+        public VariableWeighOrderViewModel()
+        {
+
+        }
         public VariableWeighOrderViewModel(ProducerBill producerBill)
         {
             ProducerBillId = producerBill.BillId;
@@ -51,6 +59,10 @@ namespace Stolons.ViewModels.ProductsManagement
 
     public class ConsumerAssignedWeigh
     {
+        public ConsumerAssignedWeigh()
+        {
+
+        }
         public ConsumerAssignedWeigh(BillEntry billEntry)
         {
             BillEntryId = billEntry.Id;

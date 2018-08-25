@@ -188,17 +188,17 @@ namespace Stolons.Tools
 
             //Stolons
 
-            StolonsBill stolonsBill = GenerateBill(stolon, consumerBills, dbContext);
+            StolonsBill stolonBill = GenerateBill(stolon, consumerBills, dbContext);
             var allBillEntries = new List<BillEntry>();
             consumerBills.ForEach(bill => bill.BillEntries.ForEach(billEntry => allBillEntries.Add(billEntry)));
-            stolonsBill.BillEntries = new List<BillEntry>(allBillEntries);
-            stolonsBill.UpdateBillInfo();
-            if (dbContext.StolonsBills.Any(x => x.BillNumber == stolonsBill.BillNumber))
+            stolonBill.BillEntries = new List<BillEntry>(allBillEntries);
+            stolonBill.UpdateBillInfo();
+            if (dbContext.StolonsBills.Any(x => x.BillNumber == stolonBill.BillNumber))
             {
-                dbContext.Remove(dbContext.StolonsBills.FirstOrDefault(x => x.BillNumber == stolonsBill.BillNumber));
+                dbContext.Remove(dbContext.StolonsBills.FirstOrDefault(x => x.BillNumber == stolonBill.BillNumber));
                 dbContext.SaveChanges();
             }
-            dbContext.Add(stolonsBill);
+            dbContext.Add(stolonBill);
             dbContext.SaveChanges();
             //Move stolon's products to stock 
             foreach (ProductStockStolon productStock in dbContext.ProductsStocks.Include(x => x.AdherentStolon).Include(x => x.Product).Where(x => x.AdherentStolon.StolonId == stolon.Id).ToList())
@@ -215,7 +215,7 @@ namespace Stolons.Tools
             //For stolons
             try
             {
-                GeneratePDF(stolonsBill.HtmlBillContent, stolonsBill.GetStolonBillFilePath());
+                GeneratePDF(stolonBill.HtmlBillContent, stolonBill.GetStolonBillFilePath());
             }
             catch (Exception exept)
             {
@@ -374,7 +374,7 @@ namespace Stolons.Tools
             return GenerateHtmlContent(bill, consumersBills);
         }
 
-        private static string GenerateHtmlContent(StolonsBill bill, List<ConsumerBill> consumersBills)
+        public static string GenerateHtmlContent(StolonsBill bill, List<ConsumerBill> consumersBills)
         {
             StringBuilder builder = new StringBuilder();
             if (!consumersBills.Any())
@@ -448,7 +448,7 @@ namespace Stolons.Tools
 
         //PRODUCER BILL
 
-        private static string GenerateHtmlOrderContent(ProducerBill bill, ApplicationDbContext dbContext)
+        public static string GenerateHtmlOrderContent(ProducerBill bill, ApplicationDbContext dbContext)
         {
             //GENERATION COMMANDE
             StringBuilder orderBuilder = new StringBuilder();
@@ -503,7 +503,7 @@ namespace Stolons.Tools
                     orderBuilder.AppendLine("<tr>");
                     orderBuilder.AppendLine("<td></td>");
                     orderBuilder.AppendLine("<td>" + entries.Name + "</td>");
-                    orderBuilder.AppendLine("<td>" + entries.ProductStock.Product.GetQuantityString(entries.Quantity)+ "</td>");
+                    orderBuilder.AppendLine("<td>" + entries.GetQuantityString(entries.Quantity)+ "</td>");
                     orderBuilder.AppendLine("</tr>");
                 }
             }

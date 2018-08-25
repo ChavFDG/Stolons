@@ -413,7 +413,7 @@ namespace Stolons.Models
         //Utilisé dans le web aussi
         public string GetQuantityString(decimal quantity)
         {
-            if (Type == SellType.Piece || Type == SellType.VariableWeigh)
+            if (Type == SellType.Piece || (Type == SellType.VariableWeigh && IsNotAssignedVariableWeigh))
             {
                 if (quantity == 1)
                 {

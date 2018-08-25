@@ -21,6 +21,7 @@ using static Stolons.Models.Product;
 using MoreLinq;
 using System.Text;
 using Stolons.Tools;
+using Stolons.Services;
 
 namespace Stolons.Controllers
 {
@@ -72,9 +73,9 @@ namespace Stolons.Controllers
             var activeAdherentStolon = GetActiveAdherentStolon();
             var variableWeightProductsVM = new VariableWeighViewModel(activeAdherentStolon);
             var producer = activeAdherentStolon.Adherent;
-            var variableWeighOrders = _context.BillEntrys.Include(x=>x.ConsumerBill).ThenInclude(x=>x.AdherentStolon).Include(x => x.ProductStock).ThenInclude(x => x.Product).Include(x => x.ProducerBill).ThenInclude(x => x.AdherentStolon).ThenInclude(x=>x.Stolon).Include(x => x.StolonsBill).Where(x => x.IsNotAssignedVariableWeigh && x.ProducerBill.AdherentStolon.AdherentId == producer.Id).ToList().GroupBy(x=>x.ProducerBill);
+            var variableWeighOrders = _context.BillEntrys.Include(x => x.ConsumerBill).ThenInclude(x => x.AdherentStolon).Include(x => x.ProductStock).ThenInclude(x => x.Product).Include(x => x.ProducerBill).ThenInclude(x => x.AdherentStolon).ThenInclude(x => x.Stolon).Include(x => x.StolonsBill).Where(x => x.IsNotAssignedVariableWeigh && x.ProducerBill.AdherentStolon.AdherentId == producer.Id).ToList().GroupBy(x => x.ProducerBill);
 
-            foreach(var prodOrderBillsEntries in variableWeighOrders)
+            foreach (var prodOrderBillsEntries in variableWeighOrders)
             {
                 var variableWeighOrderViewModel = new VariableWeighOrderViewModel(prodOrderBillsEntries.Key);
                 foreach (var billEntry in prodOrderBillsEntries)
@@ -96,66 +97,97 @@ namespace Stolons.Controllers
                         varWeighVm.ConsumersAssignedWeighs.Add(new ConsumerAssignedWeigh(billEntry));
                 }
                 variableWeightProductsVM.VariableWeighOrdersViewModel.Add(variableWeighOrderViewModel);
-
             }
             return Json(variableWeightProductsVM);
         }
 
         [HttpPost("api/variableWeightProducts")]
-        public IActionResult PostVariableWeightProducts(VariableWeighViewModel variableWeighViewModel)
+        public IActionResult PostVariableWeightProducts(VariableWeighOrderViewModel variableWeighOrderViewModel)
         {
             StringBuilder htmlSummary = new StringBuilder();
-
-            foreach (var varWeighOrders in variableWeighViewModel.VariableWeighOrdersViewModel)
+            List<Guid?> consumerBillsId = new List<Guid?>();
+            htmlSummary.AppendLine("<h1>Commande : " + _context.ProducerBills.First(x => x.BillId == variableWeighOrderViewModel.ProducerBillId).BillNumber + "</h2>");
+            foreach (var variableWeighProductViewModels in variableWeighOrderViewModel.VariableWeighProductsViewModel)
             {
-                
-                htmlSummary.AppendLine("<h1>Commande : " + _context.ProducerBills.First(x => x.BillId == varWeighOrders.ProducerBillId).BillNumber + "</h2>");
-                foreach (var variableWeighProductViewModels in varWeighOrders.VariableWeighProductsViewModel)
+                htmlSummary.AppendLine("<h2>" + variableWeighProductViewModels.ProductName + "</h2>");
+                htmlSummary.AppendLine("<table>");
+                htmlSummary.AppendLine("<tr>");
+                htmlSummary.AppendLine("<th>Consomateurs</th>");
+                htmlSummary.AppendLine("<th>Poids attribué</th>");
+                htmlSummary.AppendLine("</tr>");
+                foreach (var items in variableWeighProductViewModels.ConsumersAssignedWeighs.GroupBy(x => x.BillEntryId))
                 {
-                    htmlSummary.AppendLine("<h2>" + variableWeighProductViewModels.ProductName + "</h2>");
-                    htmlSummary.AppendLine("<table>");
-                    htmlSummary.AppendLine("<tr>");
-                    htmlSummary.AppendLine("<th>Consomateurs</th>");
-                    htmlSummary.AppendLine("<th>Poids attribué</th>");
-                    htmlSummary.AppendLine("/<tr>");
-                    foreach (var items in variableWeighProductViewModels.ConsumersAssignedWeighs.GroupBy(x => x.BillEntryId))
+                    htmlSummary.AppendLine("<tr><td rowspan=\"" + items.Count() + "\">" + items.First().ConsumerLocalId + "</td></tr>");
+                    int cpt = 0;
+                    foreach (var data in items)
                     {
-                        htmlSummary.AppendLine("<tr><td rowspan=\"" + items.Count() + "\">" + items.First().ConsumerLocalId + "</td>/<tr>");
-                        int cpt = 0;
-                        foreach (var data in items)
+                        var billEntry = _context.BillEntrys.First(x => x.Id == data.BillEntryId);
+                        if (!consumerBillsId.Contains(billEntry.ConsumerBillId))
+                            consumerBillsId.Add(billEntry.ConsumerBillId);
+                        //Il y plus d'une quantité alors on duplique la bill entry
+                        if (cpt >= 1)
                         {
-                            var billEntry = _context.BillEntrys.First(x => x.Id == data.BillEntryId);
-                            //Il y plus d'une quantité alors on duplique la bill entry
-                            if (cpt >= 1)
-                            {
-                                var clonedBillEntry = billEntry.Clone();
-                                clonedBillEntry.QuantityStep = data.AssignedWeigh;
-                                _context.Add(clonedBillEntry);
-                            }
-                            else
-                            {
-                                billEntry.QuantityStep = data.AssignedWeigh;
-                                billEntry.Quantity = 1;
-                                billEntry.WeightAssigned = true;
-                            }
-                            cpt++;
-                            htmlSummary.AppendLine("<tr><td>" + billEntry.QuantityStep / 1000 + " " + variableWeighProductViewModels.ProductUnit.ToString() + "</td>/<tr>");
+                            var clonedBillEntry = billEntry.Clone();
+                            clonedBillEntry.QuantityStep = data.AssignedWeigh;
+                            _context.Add(clonedBillEntry);
+                            _context.SaveChanges();
                         }
+                        else
+                        {
+                            billEntry.QuantityStep = data.AssignedWeigh;
+                            billEntry.Quantity = 1;
+                            billEntry.WeightAssigned = true;
+                        }
+                        cpt++;
+                        htmlSummary.AppendLine("<tr><td>" + billEntry.QuantityStep / 1000 + " " + variableWeighProductViewModels.ProductUnit.ToString() + "</td></tr>");
                     }
-                    htmlSummary.AppendLine("</table>");
                 }
-
+                htmlSummary.AppendLine("</table>");
             }
 
 
             string str = htmlSummary.ToString();
             _context.SaveChanges();
 
-            //Re génération des bon de commande producteurs et consomateurs et global
-            //_context.ProducerBills.First(x=>x.BillId == )
-            //BillGenerator.GenerateHtmlOrderContent
-            //Envoie d'un mail au producteur avec le résumé
+            //Regeneration of orders
+            // - producer
+            var producerBill = _context.ProducerBills.Include(x=>x.BillEntries).ThenInclude(x=>x.ProductStock).ThenInclude(x=>x.Product).Include(x=>x.AdherentStolon).ThenInclude(x=>x.Adherent).Include(x => x.BillEntries).ThenInclude(x=>x.ConsumerBill).First(x => x.BillId == variableWeighOrderViewModel.ProducerBillId);
+            producerBill.HtmlOrderContent = BillGenerator.GenerateHtmlOrderContent(producerBill, _context);
+            BillGenerator.GenerateOrderPDF(producerBill);
+            _context.SaveChanges();
 
+            // - consumers
+            foreach (var id in consumerBillsId)
+            {
+                var consumerBill = _context.ConsumerBills.Include(x=>x.BillEntries).ThenInclude(x => x.ProductStock).ThenInclude(x => x.Product).First(x => x.BillId == id);
+                BillGenerator.GenerateHtmlBillContent(consumerBill, _context);
+                BillGenerator.GenerateBillPDF(consumerBill);
+            }
+            _context.SaveChanges();
+
+            // - global
+            var stolonBill = _context.StolonsBills.Include(x=>x.BillEntries).ThenInclude(x => x.ProductStock).ThenInclude(x => x.Product).First(x => x.BillEntries.Any(y => y.Id == producerBill.BillEntries.First().Id));
+            stolonBill.HtmlBillContent = BillGenerator.GenerateHtmlContent(stolonBill);
+            
+            BillGenerator.GeneratePDF(stolonBill.HtmlBillContent, stolonBill.GetStolonBillFilePath());
+            _context.SaveChanges();
+            //Send mail to producer with sumary
+            try
+            {
+                string message = "Validation des poids variables saisis pour la commande :" + producerBill.BillNumber;
+                message += Environment.NewLine;
+                message += htmlSummary.ToString();
+                AuthMessageSender.SendEmail(producerBill.AdherentStolon.Stolon.Label,
+                                producerBill.AdherentStolon.Adherent.Email,
+                                producerBill.AdherentStolon.Adherent.CompanyName,
+                                "Validation des poids variables saisis (Bon de commande " + producerBill.BillNumber + ")",
+                                message,
+                                null);
+            }
+            catch (Exception exept)
+            {
+
+            }
             return Ok();
         }
 
