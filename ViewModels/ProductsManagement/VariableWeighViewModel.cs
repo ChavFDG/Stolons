@@ -35,14 +35,15 @@ namespace Stolons.ViewModels.ProductsManagement
 
     public class ConsumerAssignedWeigh
     {
-
         public ConsumerAssignedWeigh(BillEntry billEntry)
         {
             BillEntryId = billEntry.Id;
+            ConsumerLocalId = billEntry.ConsumerBill.AdherentStolon.LocalId;
         }
 
         public Guid BillEntryId { get; set; }
         public int ConsumerLocalId { get; set; }
-        public decimal AssignedWeigh { get; set; }
+        //En gramme
+        public int AssignedWeigh { get; set; }
     }
 }

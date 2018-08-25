@@ -19,6 +19,7 @@ using Stolons.Models.Users;
 using Stolons.ViewModels.Common;
 using static Stolons.Models.Product;
 using MoreLinq;
+using System.Text;
 
 namespace Stolons.Controllers
 {
@@ -58,7 +59,7 @@ namespace Stolons.Controllers
             products.ForEach(prod => prod.ProductStocks.ForEach(stock => stock.Product = prod));
             ProductsViewModel vm = new ProductsViewModel(GetActiveAdherentStolon(), products, producer);
             vm.HasVariableWeighToAssigned = _context.BillEntrys.Any(x => x.IsNotAssignedVariableWeigh && x.ProducerBill.AdherentStolon.AdherentId == producer.Id);
-            
+
             return View(vm);
         }
 
@@ -70,7 +71,7 @@ namespace Stolons.Controllers
             var activeAdherentStolon = GetActiveAdherentStolon();
             var variableWeightProductsVM = new VariableWeighViewModel(activeAdherentStolon);
             var producer = activeAdherentStolon.Adherent;
-            var variableWeighBillsEntries = _context.BillEntrys.Include(x=>x.ProductStock).ThenInclude(x=>x.Product).Include(x => x.ProducerBill).ThenInclude(x => x.AdherentStolon).Include(x => x.StolonsBill).Where(x => x.IsNotAssignedVariableWeigh && x.ProducerBill.AdherentStolon.AdherentId == producer.Id).ToList();
+            var variableWeighBillsEntries = _context.BillEntrys.Include(x=>x.ConsumerBill).ThenInclude(x=>x.AdherentStolon).Include(x => x.ProductStock).ThenInclude(x => x.Product).Include(x => x.ProducerBill).ThenInclude(x => x.AdherentStolon).Include(x => x.StolonsBill).Where(x => x.IsNotAssignedVariableWeigh && x.ProducerBill.AdherentStolon.AdherentId == producer.Id).ToList();
             foreach (var billEntry in variableWeighBillsEntries)
             {
                 var varWeighVm = variableWeightProductsVM.VariableWeighProductsViewModel.FirstOrDefault(x => x.ProductId == billEntry.ProductId);
@@ -86,17 +87,58 @@ namespace Stolons.Controllers
                     };
                     variableWeightProductsVM.VariableWeighProductsViewModel.Add(varWeighVm);
                 }
-                varWeighVm.ConsumersAssignedWeighs.Add(new ConsumerAssignedWeigh(billEntry));
+                for(int cpt = 0; cpt<billEntry.Quantity; cpt++)
+                    varWeighVm.ConsumersAssignedWeighs.Add(new ConsumerAssignedWeigh(billEntry));
 
             }
             return Json(variableWeightProductsVM);
         }
 
         [HttpPost("api/variableWeightProducts")]
-        public IActionResult PostVariableWeightProducts()
-	{
-	    
-	}
+        public IActionResult PostVariableWeightProducts(VariableWeighViewModel variableWeighViewModel)
+        {
+            StringBuilder htmlSummary = new StringBuilder();
+            
+            foreach(var variableWeighProductViewModels in variableWeighViewModel.VariableWeighProductsViewModel)
+            {
+                htmlSummary.AppendLine("<h2>"+ variableWeighProductViewModels.ProductName+ "</h2>");
+                htmlSummary.AppendLine("<table>");
+                htmlSummary.AppendLine("<tr>");
+                htmlSummary.AppendLine("<th>Consomateurs</th>");
+                htmlSummary.AppendLine("<th>Poids attribué</th>");
+                htmlSummary.AppendLine("/<tr>");
+                foreach (var items in variableWeighProductViewModels.ConsumersAssignedWeighs.GroupBy(x => x.BillEntryId))
+                {
+                    htmlSummary.AppendLine("<tr><td rowspan=\""+ items.Count() +"\">"+items.First().ConsumerLocalId+"</td>/<tr>");
+                    int cpt = 0;
+                    foreach (var data in items)
+                    {
+                        var billEntry = _context.BillEntrys.First(x => x.Id == data.BillEntryId);
+                        //Il y plus d'une quantité alors on duplique la bill entry
+                        if (cpt >= 1)
+                        {
+                            var clonedBillEntry = billEntry.Clone();
+                            clonedBillEntry.QuantityStep = data.AssignedWeigh;
+                            _context.Add(clonedBillEntry);
+                        }
+                        else
+                        {
+                            billEntry.QuantityStep = data.AssignedWeigh;
+                            billEntry.Quantity = 1;
+                            billEntry.WeightAssigned = true;
+                        }
+                        cpt++;
+                        htmlSummary.AppendLine("<tr><td>" + billEntry.QuantityStep / 1000 +" " + variableWeighProductViewModels.ProductUnit.ToString() + "</td>/<tr>");
+                    }
+                }
+                htmlSummary.AppendLine("</table>");
+            }
+
+            string str = htmlSummary.ToString();
+            _context.SaveChanges();
+
+            return Ok();
+        }
 
         [HttpGet, ActionName("ProducerProducts"), Route("api/producerProducts")]
         public IActionResult JsonProducerProducts()
@@ -107,15 +149,15 @@ namespace Stolons.Controllers
             Adherent producer = GetCurrentAdherentSync() as Adherent;
             List<ProductStockViewModel> vmProductsStock = new List<ProductStockViewModel>();
             var productsStock = _context.ProductsStocks
-        .Include(x => x.AdherentStolon)
-        .ThenInclude(x => x.Stolon)
-        .Include(x => x.Product)
-        .ThenInclude(x => x.Producer)
-        .Include(x => x.Product)
-        .ThenInclude(m => m.Familly)
-        .ThenInclude(m => m.Type)
-        .AsNoTracking()
-        .Where(x => x.AdherentStolon.AdherentId == producer.Id).ToList();
+                                    .Include(x => x.AdherentStolon)
+                                    .ThenInclude(x => x.Stolon)
+                                    .Include(x => x.Product)
+                                    .ThenInclude(x => x.Producer)
+                                    .Include(x => x.Product)
+                                    .ThenInclude(m => m.Familly)
+                                    .ThenInclude(m => m.Type)
+                                    .AsNoTracking()
+                                    .Where(x => x.AdherentStolon.AdherentId == producer.Id).ToList();
             foreach (var productStock in productsStock)
             {
                 int orderedQty = 0;
