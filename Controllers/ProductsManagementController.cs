@@ -25,13 +25,14 @@ namespace Stolons.Controllers
     public class ProductsManagementController : BaseController
     {
         public ProductsManagementController(ApplicationDbContext context, IHostingEnvironment environment,
-					    UserManager<ApplicationUser> userManager,
-					    SignInManager<ApplicationUser> signInManager,
-					    IServiceProvider serviceProvider) : base(serviceProvider, userManager, context, environment, signInManager)
+                        UserManager<ApplicationUser> userManager,
+                        SignInManager<ApplicationUser> signInManager,
+                        IServiceProvider serviceProvider) : base(serviceProvider, userManager, context, environment, signInManager)
         {
 
         }
 
+        [Authorize()]
         // GET: ProductsManagement
         public async Task<IActionResult> Index()
         {
@@ -57,11 +58,11 @@ namespace Stolons.Controllers
             products.ForEach(prod => prod.ProductStocks.ForEach(stock => stock.Product = prod));
             ProductsViewModel vm = new ProductsViewModel(GetActiveAdherentStolon(), products, producer);
 
-            var variableWeighBillsEntries = _context.BillEntrys.Include(x => x.ProducerBill).ThenInclude(x => x.AdherentStolon).Include(x => x.StolonsBill).Where(x => x.IsNotAssignedVariableWeigh && x.ProducerBill.AdherentStolon.AdherentId == producer.Id).ToList() ;
-            foreach(var billEntry in variableWeighBillsEntries)
+            var variableWeighBillsEntries = _context.BillEntrys.Include(x => x.ProducerBill).ThenInclude(x => x.AdherentStolon).Include(x => x.StolonsBill).Where(x => x.IsNotAssignedVariableWeigh && x.ProducerBill.AdherentStolon.AdherentId == producer.Id).ToList();
+            foreach (var billEntry in variableWeighBillsEntries)
             {
                 var varWeighVm = vm.VariableWeighViewModel.VariableWeighProductsViewModel.FirstOrDefault(x => x.ProductId == billEntry.ProductId);
-                if (varWeighVm==null)
+                if (varWeighVm == null)
                 {
                     varWeighVm = new VariableWeighProductViewModel()
                     {
@@ -76,7 +77,7 @@ namespace Stolons.Controllers
                 varWeighVm.ConsumersAssignedWeighs.Add(new ConsumerAssignedWeigh(billEntry));
 
             }
-            
+
             return View(vm);
         }
 
@@ -89,15 +90,15 @@ namespace Stolons.Controllers
             Adherent producer = GetCurrentAdherentSync() as Adherent;
             List<ProductStockViewModel> vmProductsStock = new List<ProductStockViewModel>();
             var productsStock = _context.ProductsStocks
-		.Include(x => x.AdherentStolon)
-		.ThenInclude(x => x.Stolon)
-		.Include(x => x.Product)
-		.ThenInclude(x => x.Producer)
-		.Include(x => x.Product)
-		.ThenInclude(m => m.Familly)
-		.ThenInclude(m => m.Type)
-		.AsNoTracking()
-		.Where(x => x.AdherentStolon.AdherentId == producer.Id).ToList();
+        .Include(x => x.AdherentStolon)
+        .ThenInclude(x => x.Stolon)
+        .Include(x => x.Product)
+        .ThenInclude(x => x.Producer)
+        .Include(x => x.Product)
+        .ThenInclude(m => m.Familly)
+        .ThenInclude(m => m.Type)
+        .AsNoTracking()
+        .Where(x => x.AdherentStolon.AdherentId == producer.Id).ToList();
             foreach (var productStock in productsStock)
             {
                 int orderedQty = 0;
@@ -120,18 +121,18 @@ namespace Stolons.Controllers
 
             Adherent producer = GetCurrentAdherentSync() as Adherent;
             var productStock = _context.ProductsStocks
-		.Include(x => x.AdherentStolon)
-		.ThenInclude(x => x.Stolon)
-		.Include(x => x.Product)
-		.ThenInclude(x => x.Producer)
-		.Include(x => x.Product)
-		.ThenInclude(m => m.Familly)
-		.ThenInclude(m => m.Type)
-		.AsNoTracking()
-		.First(x => x.Id == productStockId);
+        .Include(x => x.AdherentStolon)
+        .ThenInclude(x => x.Stolon)
+        .Include(x => x.Product)
+        .ThenInclude(x => x.Producer)
+        .Include(x => x.Product)
+        .ThenInclude(m => m.Familly)
+        .ThenInclude(m => m.Type)
+        .AsNoTracking()
+        .First(x => x.Id == productStockId);
 
-	    if (productStock == null)
-		return NotFound();
+            if (productStock == null)
+                return NotFound();
 
             // int orderedQty = 0;
             // foreach (var validatedWeekBasket in _context.ValidatedWeekBaskets.Include(x => x.AdherentStolon).ThenInclude(x => x.Adherent).Include(x => x.BillEntries).AsNoTracking().ToList())
@@ -298,7 +299,6 @@ namespace Stolons.Controllers
             return RedirectToAction("Index");
         }
 
-
         public IActionResult EnableForAllStolon(Guid? productId)
         {
             if (!AuthorizedProducer())
@@ -365,6 +365,7 @@ namespace Stolons.Controllers
             return RedirectToAction("Index");
 
         }
+
         public IActionResult Disable(Guid? id)
         {
             if (!AuthorizedProducer())
@@ -377,7 +378,6 @@ namespace Stolons.Controllers
             _context.SaveChanges();
             return RedirectToAction("Index");
         }
-
 
         public IActionResult EnableAllStockProductForSpecified(Guid? adherentStolonId)
         {
@@ -434,14 +434,15 @@ namespace Stolons.Controllers
                 return Json(new JsonStatus(true, "Erreur: impossible de baisser le stock (stock restant: " + productStock.RemainingStock + ")"));
             }
             productStock.RemainingStock = productStock.RemainingStock + stockDiff;
-	    if (productStock.Product.StockManagement == StockType.Week && productStock.WeekStock + stockDiff >= 0)
-	    {
-	        productStock.WeekStock = productStock.WeekStock + stockDiff;
-	    }
+            if (productStock.Product.StockManagement == StockType.Week && productStock.WeekStock + stockDiff >= 0)
+            {
+                productStock.WeekStock = productStock.WeekStock + stockDiff;
+            }
             _context.SaveChanges();
             return Json(new JsonStatus(false, ""));
         }
 
+        [Authorize()]
         [HttpGet, ActionName("ManageFamilies")]
         public IActionResult ManageFamilies()
         {

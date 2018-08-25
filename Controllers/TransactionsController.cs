@@ -26,6 +26,7 @@ namespace Stolons.Controllers
         }
 
         // GET: Transactions
+        [Authorize()]
         public IActionResult Index()
         {
             if (!Authorized(Role.Volunteer))

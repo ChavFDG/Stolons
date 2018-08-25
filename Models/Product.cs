@@ -426,7 +426,7 @@ namespace Stolons.Models
 
         public string GetQuantityHtmlShortString(int quantity)
         {
-            if (Type == SellType.Piece && Type== SellType.VariableWeigh)
+            if (Type == SellType.Piece || Type== SellType.VariableWeigh)
             {
                 return "<span title='" + quantity + " pièce" + (quantity > 1 ? "s" : "") + "'>x" + quantity + "</span>";
             }

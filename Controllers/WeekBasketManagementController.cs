@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Text;
 using Stolons.Services;
 using MoreLinq;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Stolons.Controllers
 {
@@ -33,6 +34,7 @@ namespace Stolons.Controllers
         }
 
         // GET: 
+        [Authorize()]
         public IActionResult Index()
         {
             return View();

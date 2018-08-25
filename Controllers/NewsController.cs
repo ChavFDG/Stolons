@@ -34,6 +34,7 @@ namespace Stolons.Controllers
 
 
         // GET: News
+        [Authorize()]
         public IActionResult Index()
         {
             var activeAdherentStolon = GetActiveAdherentStolon();

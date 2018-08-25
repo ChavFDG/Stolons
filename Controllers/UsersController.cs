@@ -34,6 +34,7 @@ namespace Stolons.Controllers
         }
 
 
+        [Authorize()]
         public IActionResult Index(Guid? id = null)
         {
             if (!Authorized(Role.Volunteer))

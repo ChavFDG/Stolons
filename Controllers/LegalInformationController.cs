@@ -31,7 +31,8 @@ namespace Stolons.Controllers
 
         }
 
-        
+
+        [AllowAnonymous]
         public IActionResult Index()
         {
             return View();

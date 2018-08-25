@@ -31,6 +31,7 @@ namespace Stolons.Controllers
         }
 
         // GET: WeekBasket/Index/id
+        [Authorize()]
         public IActionResult Index()
         {
             AdherentStolon adherentStolon = GetActiveAdherentStolon();

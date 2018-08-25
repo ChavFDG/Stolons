@@ -29,16 +29,17 @@ namespace Stolons.Controllers
         {
 
         }
-        
+
+        [Authorize()]
         // GET: Stolon
         public IActionResult Index()
         {
-            if(!AuthorizedWebAdmin())
+            if (!AuthorizedWebAdmin())
                 return Unauthorized();
 
             return View(_context.ApplicationConfig.First());
         }
-        
+
         // GET: Stolon/Edit/5
         public IActionResult Edit()
         {
@@ -48,15 +49,10 @@ namespace Stolons.Controllers
             return View(_context.ApplicationConfig.First());
         }
 
-	[HttpGet, ActionName("CurrentMode"), Route("api/currentMode")]
-	public IActionResult JsonCurrentMode() {
-	    return Json(GetCurrentStolon().GetMode());
-	}
-
-        [ActionName("TestChromiumPath")]
-        public bool TestChromiumPath()
+        [HttpGet, ActionName("CurrentMode"), Route("api/currentMode")]
+        public IActionResult JsonCurrentMode()
         {
-            return System.IO.File.Exists(Application.ChromiumFullPath);
+            return Json(GetCurrentStolon().GetMode());
         }
 
         [ActionName("TestPDF")]
@@ -99,6 +95,6 @@ namespace Stolons.Controllers
             }
             return View(applicationConfig);
         }
-       
+
     }
 }

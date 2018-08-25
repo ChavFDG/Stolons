@@ -32,7 +32,7 @@ namespace Stolons.Controllers
         {   
         }
 
-        // GET: News
+        [Authorize()]
         public IActionResult Index(MailMessage mailMessage)
         {
             if (!Authorized(Role.Volunteer))

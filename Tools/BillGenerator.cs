@@ -261,7 +261,15 @@ namespace Stolons.Tools
                     {
                         string message = bill.HtmlOrderContent;
                         if (hasFile)
+                        {
                             message += "<h3>En pièce jointe votre bon de commande de la semaine chez " + bill.AdherentStolon.Stolon.Label + " (Bon de commande " + bill.BillNumber + ")</h3>";
+                            if (bill.BillEntries.Any(x => x.IsNotAssignedVariableWeigh))
+                            {
+                                string productWeightLink = "http://" + Configurations.SiteUrl + @"\ProductsManagement";
+                                message += "<a href=\"" + productWeightLink + "\">/!\\ Vous avez des produits en attente de saisie de poids /!\\</a>";
+                            }
+                            
+                        }
                         AuthMessageSender.SendEmail(bill.AdherentStolon.Stolon.Label,
                                         bill.AdherentStolon.Adherent.Email,
                                         bill.AdherentStolon.Adherent.CompanyName,
@@ -422,7 +430,7 @@ namespace Stolons.Tools
                             builder.AppendLine("<tr>");
                             builder.AppendLine("<td></td>");
                             builder.AppendLine("<td>" + billEntry.ProductStock.Product.Name + "</td>");
-                            builder.AppendLine("<td>" + billEntry.QuantityString + "</td>");
+                            builder.AppendLine("<td>" + billEntry.QuantityString + (billEntry.IsNotAssignedVariableWeigh ? " (poids variable)" : "") + "</td>");
                             builder.AppendLine("</tr>");
 
                         }
