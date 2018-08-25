@@ -81,6 +81,16 @@ namespace Stolons.Controllers
             return View(vm);
         }
 
+	[HttpGet("api/variableWeightProducts")]
+        public IActionResult JsonVariableWeightProducts()
+	{
+            if (!AuthorizedProducer())
+                return Unauthorized();
+	    var variableWeightProductsVM = new VariableWeighViewModel(??);
+
+	    return Json(variableWeightProductsVM);
+	}
+
         [HttpGet, ActionName("ProducerProducts"), Route("api/producerProducts")]
         public IActionResult JsonProducerProducts()
         {
