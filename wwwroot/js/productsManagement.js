@@ -1,54 +1,77 @@
 
-var setupProductPreviewTooltip = function() {
-    $(".productPreview").each(function() {
-	var publicProductTemplate = _.template($("#publicProductTemplate").html());
-	var productId = $(this).attr("data-productId");
-	var productStockModel = window.ProductsModel.findWhere({ProductId: productId});
+var ProductsManagementView = Backbone.View.extend({
 
-	$(this).tooltip(
-	    {
-		track: true,
-		classes: {
-		    "ui-tooltip": "productPreviewTooltip",
-		    "ui-tooltip-content": "productPreviewTooltipContent"
-		},
-		hide: false,
-		show: false,
-		content: publicProductTemplate(
-		    {
-			product: productStockModel.get("Product").toJSON(),
-			productModel: productStockModel.get("Product"),
-			productStock:  productStockModel.toJSON(),
-			productStockModel:  productStockModel
-		    })
+    el: "#productsManagement",
+
+    events: {
+	"click .openStockMgtModal": "openStockMgtModal",
+	"mouseenter .setupProductPreview": "productPreview"
+    },
+
+    initialize: function() {
+	this.tooltipSetup = {};
+	this.productStocksModels = {};
+	this.stockMgtModal = new StockMgtViewModal();
+	this.publicProductTemplate = _.template($("#publicProductTemplate").html());
+    },
+
+    getProductStockModel: function(productStockId) {
+	var that = this;
+	var def = $.Deferred();
+
+	if (!this.productStocksModels[productStockId]) {
+	    this.productStocksModels[productStockId] = new ProductStockModel({Id: productStockId});
+	    this.productStocksModels[productStockId].fetch().done(function() {
+		def.resolve(that.productStocksModels[productStockId]);
 	    });
-    });
-};
+	} else {
+	    def.resolve(this.productStocksModels[productStockId]);
+	}
+	return def.promise();
+    },
 
-var ProductsStockCollection = Backbone.Collection.extend(
-    {
-        defaults: [],
+    openStockMgtModal: function(event) {
+	var that = this;
+	var productStockId = $(event.currentTarget).data("product-stock-id");
 
-        model: ProductStockModel,
+	this.getProductStockModel(productStockId).done(function(productStock) {
+	    that.stockMgtModal.open(productStock);
+	});
+	event.preventDefault();
+	return false;
+    },
 
-        url: "/api/producerProducts",
+    productPreview: function(ev) {
+	var that = this;
+	var productStockId = $(ev.currentTarget).data("product-stock-id");
 
-        initialize: function () {
-            this.fetch();
-        },
-
-        parse: function (data) {
-            var productsStock = [];
-
-            _.forEach(data, function (productStockVm) {
-                var productStock = productStockVm.ProductStock;
-                productsStock["OrderedQuantityString"] = productStockVm.OrderedQuantityString;
-                productsStock.push(productStock);
-            });
-            return productsStock;
-        }
+	this.getProductStockModel(productStockId).done(function(productStockModel) {
+	    $(ev.currentTarget).tooltip(
+		{
+		    track: true,
+		    classes: {
+			"ui-tooltip": "productPreviewTooltip",
+			"ui-tooltip-content": "productPreviewTooltipContent"
+		    },
+		    show: true,
+		    content: that.publicProductTemplate(
+			{
+			    product: productStockModel.get("Product").toJSON(),
+			    productModel: productStockModel.get("Product"),
+			    productStock: productStockModel.toJSON(),
+			    productStockModel: productStockModel
+			})
+		}
+	    );
+	    that.tooltipSetup[productStockId] = true;
+	    $(ev.currentTarget).removeClass("setupProductPreview");
+	    //Force a new hover event after tooltip setup to show it immediately
+	    $(ev.currentTarget).trigger("mouseenter");
+	});
+	ev.preventDefault();
+	return false;
     }
-);
+});
 
 var StockMgtViewModal = Backbone.View.extend({
 
@@ -68,12 +91,13 @@ var StockMgtViewModal = Backbone.View.extend({
         this.validation = {};
     },
 
-    open: function (btn, productStockId) {
-	if ($(btn).is(":disabled")) {
-	    return false;
-	}
+    open: function (productStockModel) {
+	// if ($(btn).is(":disabled")) {
+	//     return false;
+	// }
 	// Working copy
-        this.currentProductStock = ProductsModel.get(productStockId).clone();
+        //this.currentProductStock = ProductsModel.get(productStockId).clone();
+	this.currentProductStock = productStockModel.clone();//ProductsModel.get(productStockId).clone();
         this.renderModal();
         if (this.currentProductStock.get("AdherentStolon").Stolon.Mode == 0 || this.currentProductStock.get("Product").get("StockManagement") == 1) {
             this.validateRemainingStock();
@@ -137,9 +161,9 @@ var StockMgtViewModal = Backbone.View.extend({
     },
 
     saveStocks: function () {
-       if ($("#saveStocks").attr("disabled") == "disabled") {
+	if ($("#saveStocks").attr("disabled") == "disabled") {
             return false;
-        }
+	}
         var self = this;
 	var changeWeekStock;
         var responseHandler = function (response) {
@@ -212,15 +236,5 @@ var StockMgtViewModal = Backbone.View.extend({
 
 //Init
 $(function() {
-
-    window.ProductsModel = new ProductsStockCollection();
-
-    //Setup preview tooltips once models are avaible
-    window.ProductsModel.on('sync', function() {
-	//Animation Chargement des produits
-	$(".disabled").removeAttr("disabled").removeClass("disabled");
-	$('.glyphicon-refresh').toggleClass("hidden");
-	window.StockMgtViewModal = new StockMgtViewModal({ model: window.ProductsModel });
-	setupProductPreviewTooltip();
-    });
+    new ProductsManagementView();
 });

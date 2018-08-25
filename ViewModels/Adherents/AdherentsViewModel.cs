@@ -4,6 +4,7 @@ using Stolons.ViewModels.Sympathizers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Stolons.ViewModels.Adherents
@@ -24,7 +25,7 @@ namespace Stolons.ViewModels.Adherents
 
         public AdherentsStolonViewModel AdherentsStolonViewModel { get; set; }
         public Stolon Stolon { get; set; }
-
+        
         public SympathizersViewModel SympathizersViewModel { get; set; }
 
         private List<IAdherent> _iAdherents ;

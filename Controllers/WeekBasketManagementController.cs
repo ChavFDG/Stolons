@@ -83,7 +83,7 @@ namespace Stolons.Controllers
 
             var billEntries = _context.BillEntrys
                                 .Include(x => x.ConsumerBill)
-                                .Include(x => x.ProducerBill).ThenInclude(x=>x.AdherentStolon)
+                                .Include(x => x.ProducerBill).ThenInclude(x => x.AdherentStolon)
                                 .ToList();
             foreach (var stolonBill in stolonsBills.Where(x => x.BillEntries?.Any() != true))
             {
@@ -133,8 +133,28 @@ namespace Stolons.Controllers
         }
 
         // GET: UpdateConsumerBill
-        public IActionResult UpdateConsumerBill(Guid billId, PaymentMode paymentMode)
+        [HttpPost, ActionName("GetBillsToPay")]
+        public IActionResult GetBillsToPay()
         {
+            Stolon stolon = GetCurrentStolon();
+            var producerBillsToPay = _context.ProducerBills
+                                   .Include(x => x.AdherentStolon)
+                                   .Include(x => x.AdherentStolon.Adherent)
+                                   .Include(x => x.AdherentStolon.Stolon)
+                                   .Where(x => x.State == BillState.Delivered && x.AdherentStolon.StolonId == stolon.Id)
+                                   .OrderBy(x => x.AdherentStolon.Adherent.Id)
+                                   .AsNoTracking()
+                                   .ToList();
+
+            return Json(new VmProducersBills(GetActiveAdherentStolon(),producerBillsToPay));
+        }
+
+
+        // GET: UpdateConsumerBill
+        [HttpPost, ActionName("UpdateConsumerBill")]
+        public IActionResult UpdateConsumerBill(Guid billId, int mode)
+        {
+            PaymentMode paymentMode = (PaymentMode)mode;
             ConsumerBill bill = _context.ConsumerBills.Include(x => x.AdherentStolon).Include(x => x.AdherentStolon.Adherent).First(x => x.BillId == billId);
             bill.State = BillState.Paid;
             _context.Update(bill);
@@ -153,11 +173,11 @@ namespace Stolons.Controllers
             _context.Add(transaction);
             //Save
             _context.SaveChanges();
-            return RedirectToAction("WeekBaskets");
+            return Json(true);
         }
 
         // GET: UpdateProducerBill
-        //validate bill payement
+        [HttpPost, ActionName("UpdateProducerBill")]
         public IActionResult UpdateProducerBill(Guid billId, int state)
         {
             ProducerBill bill = _context.ProducerBills
@@ -194,11 +214,11 @@ namespace Stolons.Controllers
                 //Generate bill in pdf
                 BillGenerator.GenerateBillPDF(bill);
             }
-            return RedirectToAction("WeekBaskets");
+            return Json(new VmProducerBill(GetActiveAdherentStolon(), bill));
         }
 
         //Debug and last resort utility method
-	public string RegenerateOrders()
+        public string RegenerateOrders()
         {
             var stolon = GetCurrentStolon();
             var consumersBills = _context.ConsumerBills
@@ -228,7 +248,7 @@ namespace Stolons.Controllers
             Dictionary<ProducerBill, bool> producers = new Dictionary<ProducerBill, bool>();
             producersBills.ForEach(x => producers.Add(x, BillGenerator.GenerateOrderPDF(x)));
             Dictionary<StolonsBill, bool> weeks = new Dictionary<StolonsBill, bool>();
-            weekStolonBill.ForEach(x => weeks.Add(x, BillGenerator.GeneratePDF(x.HtmlBillContent,x.GetStolonBillFilePath())));
+            weekStolonBill.ForEach(x => weeks.Add(x, BillGenerator.GeneratePDF(x.HtmlBillContent, x.GetStolonBillFilePath())));
             report.AppendLine("RESUME : ");
             report.AppendLine("Commandes consomateurs générées : " + consumers.Count(x => x.Value == true) + "/" + consumers.Count);
             report.AppendLine("Commandes producteurs générées : " + producers.Count(x => x.Value == true) + "/" + producers.Count);
@@ -243,9 +263,9 @@ namespace Stolons.Controllers
             report.AppendLine("-- Producteurs nok : ");
             producers.Where(x => x.Value == false).ToList().ForEach(producer => report.AppendLine(producer.Key.AdherentStolon.LocalId + " " + producer.Key.AdherentStolon.Adherent.Name.ToUpper() + " " + producer.Key.AdherentStolon.Adherent.Surname));
             report.AppendLine("-- Semaines ok : ");
-            weeks.Where(x => x.Value).ToList().ForEach(week => report.AppendLine(week.Key.BillNumber ));
+            weeks.Where(x => x.Value).ToList().ForEach(week => report.AppendLine(week.Key.BillNumber));
             report.AppendLine("-- Semaines nok : ");
-            weeks.Where(x => x.Value == false).ToList().ForEach(week => report.AppendLine(week.Key.BillNumber ));
+            weeks.Where(x => x.Value == false).ToList().ForEach(week => report.AppendLine(week.Key.BillNumber));
             report.AppendLine();
             report?.AppendLine(" --Temps d'execution de la génération : " + (DateTime.Now - start));
             return report.ToString();
@@ -262,11 +282,11 @@ namespace Stolons.Controllers
                 var billEntry = producerBill.BillEntries.First(x => x.Id == billQuantity.BillId);
                 if (!modifiedBills.Any(x => x == billEntry.ConsumerBillId))
                     modifiedBills.Add(billEntry.ConsumerBillId);
-		this.UpdateBillEntryStock(billEntry, billQuantity.Quantity);
+                this.UpdateBillEntryStock(billEntry, billQuantity.Quantity);
             }
             _context.SaveChanges();
 
-	    //Producer bill
+            //Producer bill
             producerBill = _context.ProducerBills.Include(x => x.BillEntries).Include(x => x.AdherentStolon).Include(x => x.AdherentStolon.Stolon).Include(x => x.AdherentStolon.Adherent).First(x => x.BillId == billCorrection.ProducerBillId);
             producerBill.BillEntries.ForEach(x => x.ProductStock = _context.ProductsStocks.Include(y => y.Product).First(stock => stock.Id == x.ProductStockId));
             producerBill.ModificationReason += billCorrection.Reason;
@@ -290,32 +310,32 @@ namespace Stolons.Controllers
             }
             _context.SaveChanges();
             //Stolon bill
-            var stolonBillToModify = _context.StolonsBills.Include(x=>x.BillEntries).ThenInclude(x=>x.ProducerBill).ThenInclude(x=>x.AdherentStolon).ThenInclude(x=>x.Adherent)
-                                                          .Include(x=>x.BillEntries).ThenInclude(x=>x.ConsumerBill).ThenInclude(x=>x.AdherentStolon).ThenInclude(x => x.Adherent)
-                                                          .Include(x=>x.BillEntries).ThenInclude(x=>x.ProductStock).ThenInclude(x=>x.Product)
-                                                          .First(x=>x.BillEntries.Any(y=>y.Id == producerBill.BillEntries.First().Id));
+            var stolonBillToModify = _context.StolonsBills.Include(x => x.BillEntries).ThenInclude(x => x.ProducerBill).ThenInclude(x => x.AdherentStolon).ThenInclude(x => x.Adherent)
+                                                          .Include(x => x.BillEntries).ThenInclude(x => x.ConsumerBill).ThenInclude(x => x.AdherentStolon).ThenInclude(x => x.Adherent)
+                                                          .Include(x => x.BillEntries).ThenInclude(x => x.ProductStock).ThenInclude(x => x.Product)
+                                                          .First(x => x.BillEntries.Any(y => y.Id == producerBill.BillEntries.First().Id));
             stolonBillToModify.UpdateBillInfo();
             stolonBillToModify.HasBeenModified = true;
             stolonBillToModify.ModificationReason = billCorrection.Reason;
             stolonBillToModify.HtmlBillContent = BillGenerator.GenerateHtmlContent(stolonBillToModify);
-	    BillGenerator.GeneratePDF(stolonBillToModify.HtmlBillContent, stolonBillToModify.GetStolonBillFilePath());
+            BillGenerator.GeneratePDF(stolonBillToModify.HtmlBillContent, stolonBillToModify.GetStolonBillFilePath());
             _context.SaveChanges();
             return true;
         }
 
-	//Updates the stock of a productStock after the billEntry has been modified
-	private void UpdateBillEntryStock(BillEntry billEntry, int newQuantity)
-	{
-	    var productStock = _context.ProductsStocks.Include(x => x.Product).First(x => x.Id == billEntry.ProductStockId);
-	    var diffQty = billEntry.Quantity - newQuantity;
+        //Updates the stock of a productStock after the billEntry has been modified
+        private void UpdateBillEntryStock(BillEntry billEntry, int newQuantity)
+        {
+            var productStock = _context.ProductsStocks.Include(x => x.Product).First(x => x.Id == billEntry.ProductStockId);
+            var diffQty = billEntry.Quantity - newQuantity;
 
-	    if (productStock.Product.StockManagement == Product.StockType.Fixed)
-	    {
-	        productStock.RemainingStock = productStock.RemainingStock + diffQty;
-	    }
+            if (productStock.Product.StockManagement == Product.StockType.Fixed)
+            {
+                productStock.RemainingStock = productStock.RemainingStock + diffQty;
+            }
             billEntry.Quantity = newQuantity;
             billEntry.HasBeenModified = true;
-	}
+        }
 
         // GET: ShowBill
         public IActionResult ShowStolonsBill(string id)

@@ -6,7 +6,6 @@ namespace Stolons.Models
 {
     public interface IProduct
     {
-        int AverageQuantity { get; set; }
         string Description { get; set; }
         DateTime DLC { get; set; }
         Product.StorageType Storage { get; set; }
@@ -31,6 +30,7 @@ namespace Stolons.Models
         Product.SellType Type { get; set; }
         decimal UnitPrice { get; set; }
         string GetFirstImageFullPath();
-        string GetQuantityString(decimal quantity);
+        decimal MinimumWeight { get; set; }
+        decimal MaximumWeight { get; set; }
     }
 }

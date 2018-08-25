@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Authorization;
 using Stolons.Models.Users;
 using Stolons.ViewModels.Common;
 using static Stolons.Models.Product;
+using MoreLinq;
 
 namespace Stolons.Controllers
 {
@@ -55,6 +56,27 @@ namespace Stolons.Controllers
             }
             products.ForEach(prod => prod.ProductStocks.ForEach(stock => stock.Product = prod));
             ProductsViewModel vm = new ProductsViewModel(GetActiveAdherentStolon(), products, producer);
+
+            var variableWeighBillsEntries = _context.BillEntrys.Include(x => x.ProducerBill).ThenInclude(x => x.AdherentStolon).Include(x => x.StolonsBill).Where(x => x.IsNotAssignedVariableWeigh && x.ProducerBill.AdherentStolon.AdherentId == producer.Id).ToList() ;
+            foreach(var billEntry in variableWeighBillsEntries)
+            {
+                var varWeighVm = vm.VariableWeighViewModel.VariableWeighProductsViewModel.FirstOrDefault(x => x.ProductId == billEntry.ProductId);
+                if (varWeighVm==null)
+                {
+                    varWeighVm = new VariableWeighProductViewModel()
+                    {
+                        ProductId = billEntry.ProductId,
+                        ProductName = billEntry.Name,
+                        MinimumWeight = billEntry.MinimumWeight,
+                        MaximumWeight = billEntry.MaximumWeight,
+                        ProductUnit = billEntry.ProductUnit
+                    };
+                    vm.VariableWeighViewModel.VariableWeighProductsViewModel.Add(varWeighVm);
+                }
+                varWeighVm.ConsumersAssignedWeighs.Add(new ConsumerAssignedWeigh(billEntry));
+
+            }
+            
             return View(vm);
         }
 
@@ -86,6 +108,37 @@ namespace Stolons.Controllers
                 vmProductsStock.Add(new ProductStockViewModel(GetActiveAdherentStolon(), productStock, orderedQty));
             }
             return Json(vmProductsStock);
+        }
+
+        [HttpGet("api/productStock/{productStockId}")]
+        public IActionResult JsonProductStock(Guid productStockId)
+        {
+            if (!AuthorizedProducer())
+                return Unauthorized();
+            if (productStockId == null)
+                return NotFound();
+
+            Adherent producer = GetCurrentAdherentSync() as Adherent;
+            var productStock = _context.ProductsStocks
+		.Include(x => x.AdherentStolon)
+		.ThenInclude(x => x.Stolon)
+		.Include(x => x.Product)
+		.ThenInclude(x => x.Producer)
+		.Include(x => x.Product)
+		.ThenInclude(m => m.Familly)
+		.ThenInclude(m => m.Type)
+		.AsNoTracking()
+		.First(x => x.Id == productStockId);
+
+	    if (productStock == null)
+		return NotFound();
+
+            // int orderedQty = 0;
+            // foreach (var validatedWeekBasket in _context.ValidatedWeekBaskets.Include(x => x.AdherentStolon).ThenInclude(x => x.Adherent).Include(x => x.BillEntries).AsNoTracking().ToList())
+            // {
+            //     validatedWeekBasket.BillEntries.Where(x => x.ProductStockId == productStock.Id).ToList().ForEach(x => orderedQty += x.Quantity);
+            // }
+            return Json(productStock);
         }
 
         // GET: ProductsManagement/Details/5

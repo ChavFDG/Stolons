@@ -105,11 +105,9 @@
 
                                 @if (item.HasBeenModified)
                                 {
-                                    <div class="warning-container isa_warning">
+                                    <div title="@Html.Raw(item.ModificationReason.Replace("\n\r", "<br/>"))"
+                                      data-toggle="tooltip">
                                         <i class="glyphicon glyphicon-warning-sign"></i>
-                                        <div class="warning-informations right">
-                                            @Html.Raw(item.ModificationReason.Replace("\n\r", "<br/>"))
-                                        </div>
                                     </div>
                                 }
                             </td>

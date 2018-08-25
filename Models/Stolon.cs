@@ -51,21 +51,22 @@ namespace Stolons.Models
 
         [Display(Name = "Avoir une commission sur les producteurs")]
         public bool UseProducersFee { get; set; } = true;
-        [Display(Name = "Montant de la commission sur les producteurs (en %)")]
-        public int ProducersFee { get; set; } = 5;
+        [Display(Name = "Montant de la commission par défault sur les producteurs (en %)")]
+        public int DefaultProducersFee { get; set; } = 5;
 
         [Display(Name = "Texte de : \"Qui sommes nous ?\"")]
         public string AboutText { get; set; } = @"Texte de présentation de ma structure";
 
         [Display(Name = "Texte de : \"Rejoignez nous !\"")]
         public string JoinUsText { get; set; } = @"Texte d'explication sur comment rejoindre la structure";
+
+        [Display(Name = "Avoir des sympathisants")]
+        public bool UseSympathizer { get; set; } = true;
+
         //Cotisation
 
         [Display(Name = "Avoir un système de cotisation")]
         public bool UseSubscipstion { get; set; } = true;
-
-        [Display(Name = "Avoir des sympathisants")]
-        public bool UseSympathizer { get; set; } = true;
 
         [Display(Name = "Cotisation sympathisant (€)")]
         public decimal SympathizerSubscription { get; set; } = 2;
@@ -75,6 +76,8 @@ namespace Stolons.Models
         public decimal ProducerSubscription { get; set; } = 20;
         [Display(Name = "Mois de départ des cotisations")]
         public Month SubscriptionStartMonth { get; set; } = Month.September;
+        [Display(Name = "Réduire la cotisation de moitié à mis année")]
+        public bool UseHalftSubscipstion { get; set; } = false;
 
 
         //Site page text
@@ -193,6 +196,15 @@ namespace Stolons.Models
             November = 11,
             [Display(Name = "Decembre")]
             December = 12
+        }
+
+        public static Month AddMonth(Month month , int quantity)
+        {
+            int actualMonth = (int)month;
+            actualMonth += quantity;
+            if (actualMonth > 12)
+                actualMonth = actualMonth - 12;
+            return (Month)Enum.ToObject(typeof(Month), actualMonth);
         }
 
         public string GetStringPickUpTime()

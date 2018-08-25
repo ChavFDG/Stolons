@@ -55,6 +55,9 @@ namespace Stolons.Models
 
         [Display(Name = "Est un producteur")]
         public bool IsProducer { get; set; }
+        
+        [Display(Name = "Commission (en %)")]
+        public int ProducerFee { get; set; } = 5;
 
         [Display(Name = "Role")]
         public Role Role { get; set; } = Role.Adherent;
@@ -73,6 +76,9 @@ namespace Stolons.Models
 
         [Display(Name = "Stols")]
         public decimal Token { get; set; } = 0;
+
+        [Display(Name = "Est supprimer")]
+        public bool Deleted { get; set; } = false;
 
 
         #region Consumer

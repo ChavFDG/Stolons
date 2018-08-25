@@ -66,7 +66,7 @@ namespace Stolons.Models
         {
             get
             {
-                return ProductStock.Product.GetQuantityString(Quantity);
+                return GetQuantityString(Quantity);
             }
         }
 
@@ -76,6 +76,15 @@ namespace Stolons.Models
             get
             {
                 return ProductStock.Product.GetQuantityHtmlShortString(Quantity);
+            }
+        }
+
+        [NotMapped]
+        public bool IsNotAssignedVariableWeigh
+        {
+            get
+            {
+                return Type == SellType.VariableWeigh && !WeightAssigned;
             }
         }
 
@@ -186,46 +195,30 @@ namespace Stolons.Models
         [Required]
         public SellType Type { get; set; }
 
-        public int ProducersFee { get; set; }
-
-        [NotMapped]
-        public decimal PriceWithoutFee
-        {
-            get
-            {
-                return Price - (Price / 100 * ProducersFee);
-            }
-        }
+        public int ProducerFee { get; set; }
 
         [Display(Name = "Prix unitaire")]
         [Required]
         public decimal UnitPrice { get; set; }
+
         [NotMapped]
-        public decimal UnitPriceWithoutFee
-        {
-            get
-            {
-                return UnitPrice - (UnitPrice / 100 * ProducersFee);
-            }
-        }
-        [NotMapped]
-        public decimal UnitPriceWithoutFeeAndTax
+        public decimal UnitPriceWithoutTax
         {
             get
             {
                 if (Tax == 0)
-                    return UnitPriceWithoutFee;
-                return Math.Round(UnitPriceWithoutFee / (1 + Tax / 100), 2);
+                    return UnitPrice;
+                return UnitPrice - UnitPrice * Tax / 100;
             }
         }
         [NotMapped]
-        public decimal PriceWithoutFeeAndTax
+        public decimal PriceWithoutTax
         {
             get
             {
                 if (Tax == 0)
-                    return PriceWithoutFee;
-                return Math.Round(PriceWithoutFee / (1 + Tax / 100), 2);
+                    return Price;
+                return Price - Price * Tax / 100;
             }
         }
 
@@ -270,8 +263,61 @@ namespace Stolons.Models
         }
 
 
-        [Display(Name = "Quantité moyenne")]
-        public int AverageQuantity { get; set; }
+        #region AverageWeigh
+        [Display(Name = "Poids minimum")]
+        [Required]
+        public decimal MinimumWeight { get; set; }
+
+        [Display(Name = "Poids maximum")]
+        [Required]
+        public decimal MaximumWeight { get; set; }
+
+        [Display(Name = "Poids attribué")]
+        public bool WeightAssigned { get; set; } = false;
+
+        [Display(Name = "Poids moyen")]
+        [NotMapped]
+        public decimal AverageWeigh
+        {
+            get
+            {
+                return (MaximumWeight - MinimumWeight) / 2 + MinimumWeight;
+            }
+        }
+
+        [Display(Name = "Prix moyen")]
+        [NotMapped]
+        public decimal AveragePrice
+        {
+            get
+            {
+                return AverageWeigh * WeightPrice;
+            }
+        }
+
+        [Display(Name = "Prix minimum")]
+        [NotMapped]
+        public decimal MinimumPrice
+        {
+            get
+            {
+                return MinimumWeight * WeightPrice;
+            }
+        }
+
+        [Display(Name = "Prix maximum")]
+        [NotMapped]
+        public decimal MaximumPrice
+        {
+            get
+            {
+                return MaximumWeight * WeightPrice;
+            }
+        }
+        #endregion AverageWeigh
+
+
+
         [Display(Name = "Unité de mesure")]
         public Unit ProductUnit { get; set; }
 
@@ -320,7 +366,7 @@ namespace Stolons.Models
         {
             if (_Pictures.Any())
             {
-                return Path.Combine("uploads", "images", "products", _Pictures[0]+".png");
+                return Path.Combine("uploads", "images", "products", _Pictures[0] + ".png");
             }
             else
             {
@@ -364,10 +410,10 @@ namespace Stolons.Models
 
 
 
-
+        //Utilisé dans le web aussi
         public string GetQuantityString(decimal quantity)
         {
-            if (Type == SellType.Piece)
+            if (Type == SellType.Piece || (Type == SellType.VariableWeigh && WeightAssigned))
             {
                 if (quantity == 1)
                 {
@@ -424,7 +470,9 @@ namespace Stolons.Models
                 HasBeenModified = this.HasBeenModified,
                 Type = this.Type,
                 DLC = this.DLC,
-                Storage = this.Storage
+                Storage = this.Storage,
+                MinimumWeight = this.MinimumWeight,
+                MaximumWeight = this.MaximumWeight
             };
             return clonedBillEntry;
         }
@@ -444,6 +492,8 @@ namespace Stolons.Models
             billEntry.Type = productStock.Product.Type;
             billEntry.DLC = productStock.Product.DLC;
             billEntry.Storage = productStock.Product.Storage;
+            billEntry.MinimumWeight = productStock.Product.MinimumWeight;
+            billEntry.MaximumWeight = productStock.Product.MaximumWeight;
             return billEntry;
         }
     }

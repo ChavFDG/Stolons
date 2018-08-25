@@ -10,25 +10,27 @@
     <div class="bannerAccount">
 
         <div id="stols" class="banner-stols-container">
-            <div class="warning-container ">
+            <div
+                class="bannerRightInformations"
+                title="Votre portemonnaie virtuel de Ṩ (Stols) vous permet de créditer <br />par avance votre compte en euros auprès de votre Stolon.<br /> Vous avez ensuite la possibilité de régler vos<br /> factures en ligne en utilisant vos Ṩ (Stols)."
+                data-toggle="tooltip"
+                data-placement="bottom"
+            >
                 @(Model.ActiveAdherentStolon.Token) <b>Ṩ</b>
-                <div class="warning-informations right">
-                    Votre portemonnaie virtuel de Ṩ (Stols) vous permet de créditer <br />par avance votre compte en euros auprès de votre Stolon.<br /> Vous avez ensuite la possibilité de régler vos<br /> factures en ligne en utilisant vos Ṩ (Stols).
-                </div>
             </div>
         </div>
-
-
 
         @{
             if (Model.ActiveAdherentStolon.Stolon.UseSubscipstion && !Model.ActiveAdherentStolon.SubscriptionPaid)
             {
                 <div class="pull-left">
-                    <div class="warning-container">
+                    <div
+                        class="bannerRightInformations"
+                        title="Cotisation non payée, <br />penser à la régler à la prochaine commande"
+                        data-toggle="tooltip"
+                        data-placement="bottom"
+                    >
                         <img class="warning" src="/images/warning.png" />
-                        <div class="warning-informations">
-                            Cotisation non payée, <br />penser à la régler à la prochaine commande
-                        </div>
                     </div>
                 </div>
             }

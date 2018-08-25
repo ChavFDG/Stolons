@@ -72,4 +72,9 @@
     <Folder Include="wwwroot\bills\" />
     <Folder Include="wwwroot\images\financers\" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Update="Views\Users\_PartialEditProducerFee.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+  </ItemGroup>
 </Project>

@@ -77,9 +77,7 @@
                     CA TTC
                 </th>
                 <th>
-                    Comission totale
-                </th>
-                <th>
+                    Commission totale
                 </th>
                 <th>
                 </th>
@@ -93,18 +91,22 @@
                     <td data-toggle="modal" data-target="#@stolonBill.Key.BillNumber">@stolonBill.Key.Consumers </td>
                     <td data-toggle="modal" data-target="#@stolonBill.Key.BillNumber">@stolonBill.Key.Producers </td>
                     <td data-toggle="modal" data-target="#@stolonBill.Key.BillNumber">@stolonBill.Key.Amount.ToString("0.00") €</td>
-                    <td data-toggle="modal" data-target="#@stolonBill.Key.BillNumber">@stolonBill.Key.FeeAmount.ToString("0.00") € (@stolonBill.Key.ProducersFee %)</td>
                     <td>
-                        <a class="btn btn-small btn-default" title="Voir" asp-action="ShowStolonsBill" asp-route-id="@stolonBill.Key.BillNumber"><span class="glyphicon glyphicon glyphicon-eye-open"> </span></a>
-                        <a class="btn btn-small btn-default" title="Télécharger" target="_blank" href="/@stolonBill.Key.UrlPath"><span class="glyphicon glyphicon glyphicon-download-alt"> </span></a>
+                        <a class="btn btn-small btn-default" title="Voir" asp-action="ShowStolonsBill" asp-route-id="@stolonBill.Key.BillNumber">
+                            <span class="glyphicon glyphicon-eye-open"> </span>
+                        </a>
+                        <a class="btn btn-small btn-default" title="Télécharger" target="_blank" href="/@stolonBill.Key.UrlPath">
+                            <span class="glyphicon glyphicon-download-alt"> </span>
+                        </a>
 
                         @if (stolonBill.Key.HasBeenModified)
                         {
-                            <div class="warning-container isa_warning">
+                            <div
+                                class="isa_warning"
+                                title="@Html.Raw(stolonBill.Key.ModificationReason.Replace("\n\r", "<br />"))"
+                                data-toggle="tooltip"
+                            >
                                 <i class="glyphicon glyphicon-warning-sign"></i>
-                                <div class="warning-informations right">
-                                    @Html.Raw(stolonBill.Key.ModificationReason.Replace("\n\r", "<br/>"))
-                                </div>
                             </div>
                         }
                     </td>
@@ -143,7 +145,7 @@
                                     CA TTC
                                 </th>
                                 <th>
-                                    Comission totale
+                                    Commission totale
                                 </th>
                                 <th>
                                     Facture
@@ -165,7 +167,7 @@
                                         @(item.BillAmount.ToString("0.00") + "€ TTC")
                                     </td>
                                     <td>
-                                        @(item.FeeAmount.ToString("0.00") + "€ TTC")
+                                        @(item.FeeAmount.ToString("0.00") + "€ TTC (" + item.ProducerFee +"%)")
                                     </td>
                                     <td>
                                         @{
@@ -174,12 +176,11 @@
                                             <a class="btn btn-small btn-default" title="Télécharger" target="_blank" href="/@Configurations.GetBillUrl(item)"><span class="glyphicon glyphicon glyphicon-download-alt"> </span></a>
                                             @if (item.HasBeenModified)
                                             {
-                                                <div class="warning-container isa_warning">
-                                                    <i class="glyphicon glyphicon-warning-sign"></i>
-                                                    <div class="warning-informations right">
-                                                        @Html.Raw(item.ModificationReason.Replace("\n\r", "<br/>"))
-                                                    </div>
-                                                </div>
+
+                                            <div title="@Html.Raw(item.ModificationReason.Replace("\n\r", "<br/>"))"
+                                                 data-toggle="tooltip">
+                                                <span class="glyphicon glyphicon-alert" />
+                                            </div>
                                             }
                                         }
                                     </td>
@@ -226,11 +227,9 @@
                                             <a class="btn btn-small btn-default" title="Télécharger" target="_blank" href="/@Configurations.GetBillUrl(item)"><span class="glyphicon glyphicon glyphicon-download-alt"> </span></a>
                                             @if (item.HasBeenModified)
                                             {
-                                                <div class="warning-container isa_warning">
-                                                    <i class="glyphicon glyphicon-warning-sign"></i>
-                                                    <div class="warning-informations right">
-                                                        @Html.Raw(item.ModificationReason.Replace("\n\r", "<br/>"))
-                                                    </div>
+                                                <div title="@Html.Raw(item.ModificationReason.Replace("\n\r", "<br/>"))"
+                                                     data-toggle="tooltip">
+                                                    <span class="glyphicon glyphicon-alert"/>
                                                 </div>
                                             }
                                         }

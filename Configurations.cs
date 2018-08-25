@@ -180,11 +180,16 @@ namespace Stolons
 
         public static decimal GetSubscriptionAmount(AdherentStolon adherentStolon)
         {
-            int currentMonth = DateTime.Now.Month - 6;
-            int subscriptionMonth = (int)adherentStolon.Stolon.SubscriptionStartMonth;
-            if (currentMonth < subscriptionMonth)
-                currentMonth += 12;
-            bool isHalfSubscription = currentMonth > (subscriptionMonth + 6);
+            bool isHalfSubscription = false;
+            if (adherentStolon.Stolon.UseHalftSubscipstion)
+            {
+                int currentMonth = DateTime.Now.Month ;
+                int subscriptionMonth = (int)adherentStolon.Stolon.SubscriptionStartMonth;
+                if (currentMonth < subscriptionMonth)
+                    subscriptionMonth -= 12;
+                isHalfSubscription = currentMonth > (subscriptionMonth + 6);
+                
+            }
             //
             if (adherentStolon.IsProducer)
                 return isHalfSubscription ? adherentStolon.Stolon.ProducerSubscription / 2 : adherentStolon.Stolon.ProducerSubscription;

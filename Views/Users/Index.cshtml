@@ -2,7 +2,35 @@
 @model AdherentsViewModel
 
 <h1>Adhérents de @Model.Stolon.Label</h1>
+@if (Model.Stolon.StolonType == Stolon.OrganisationType.Association)
+{
+    <div class="panel-group">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" href="#subscriptionPanel">Cotisations <span class="glyphicon glyphicon-info-sign pull-right"></span></a>
+                </h4>
+            </div>
+            <div id="subscriptionPanel" class="panel-collapse collapse">
+                <div class="panel-body">
+                    <div>Cotisation de @(Stolons.Helpers.EnumHelper<Stolon.Month>.GetDisplayValue(Model.Stolon.SubscriptionStartMonth)) à @(Stolons.Helpers.EnumHelper<Stolon.Month>.GetDisplayValue(Stolon.AddMonth(Model.Stolon.SubscriptionStartMonth, 11)))</div>
+                    @if (Model.Stolon.UseHalftSubscipstion)
+                    {
+                        <div> - pleinne de @(Stolons.Helpers.EnumHelper<Stolon.Month>.GetDisplayValue(Model.Stolon.SubscriptionStartMonth)) à  @(Stolons.Helpers.EnumHelper<Stolon.Month>.GetDisplayValue(Stolon.AddMonth(Model.Stolon.SubscriptionStartMonth, 5)))</div>
+                        <div> - demi de @(Stolons.Helpers.EnumHelper<Stolon.Month>.GetDisplayValue(Stolon.AddMonth(Model.Stolon.SubscriptionStartMonth, 6))) à @(Stolons.Helpers.EnumHelper<Stolon.Month>.GetDisplayValue(Stolon.AddMonth(Model.Stolon.SubscriptionStartMonth, 11)))</div>
+                    }
+                    @if (Model.Stolon.UseSympathizer)
+                    {
+                        <div>Sympathisant : @(Model.Stolon.SympathizerSubscription)€ @(Model.Stolon.UseHalftSubscipstion ? "/ "+(Model.Stolon.SympathizerSubscription / 2).ToString() + "€" : "")</div>
+                    }
+                    <div>Consommateurs : @(Model.Stolon.ConsumerSubscription)€ @(Model.Stolon.UseHalftSubscipstion ? "/ "+(Model.Stolon.ConsumerSubscription / 2).ToString() + "€" : "")</div>
+                    <div>Producteurs : @(Model.Stolon.ProducerSubscription)€ @(Model.Stolon.UseHalftSubscipstion ? "/ " + (Model.Stolon.ProducerSubscription / 2).ToString() + "€" : "")</div>
 
+                </div>
+            </div>
+        </div>
+    </div>
+}
 <!--Il n'y a pas d'administrateur à ce Stolon-->
 @if (!Model.AdherentsStolonViewModel.AdherentsStolon.Any(x => x.Role == Role.Admin))
 {

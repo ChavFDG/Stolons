@@ -389,7 +389,7 @@ namespace Stolons
             stolon.OrderDeliveryMessage = "Votre panier est disponible jeudi de 17h30 à 19h au : 10 place de l'hotel de ville, 07000 Privas";
 
             stolon.UseProducersFee = true;
-            stolon.ProducersFee = 5;
+            stolon.DefaultProducersFee = 5;
 
             stolon.UseSympathizer = true;
             stolon.SympathizerSubscription = 2;

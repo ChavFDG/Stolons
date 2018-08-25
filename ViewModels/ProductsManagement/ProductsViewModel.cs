@@ -11,12 +11,14 @@ namespace Stolons.ViewModels.ProductsManagement
     {
         public IEnumerable<Product> Products { get; private set; }
         public Adherent Producer { get; private set; }
+        public VariableWeighViewModel VariableWeighViewModel { get; private set; } 
 
         public ProductsViewModel(AdherentStolon activeAdherentStolon, IEnumerable<Product> products, Adherent producer)
         {
             Products = products;
             Producer = producer;
             ActiveAdherentStolon = activeAdherentStolon;
+            VariableWeighViewModel = new VariableWeighViewModel(activeAdherentStolon);
         }
     }
 }

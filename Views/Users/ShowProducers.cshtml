@@ -2,119 +2,159 @@
 @model AdherentsStolonViewModel
 
 @if (Model.Stolon.StolonType == Stolon.OrganisationType.Association
-                ||
-                (Model.Stolon.StolonType == Stolon.OrganisationType.Producer && !Model.AdherentsStolon.Any(x => x.IsProducer)))
+       ||
+       (Model.Stolon.StolonType == Stolon.OrganisationType.Producer && !Model.AdherentsStolon.Any(x => x.IsProducer)))
 {
-        <div class="dropdown">
-            <a class="dropdown-toggle btn btn-small btn-default" data-toggle="dropdown" href="#">
-                Ajouter ...
-                <span class="caret"></span>
-            </a>
-            <ul class="dropdown-menu">
-                <li><a href="#" onclick="showCreateAdherent(this);" data-Id="@Model.Stolon.Id" data-edition="@((int)AdherentEdition.Producer)" data-title="Ajout d'un nouveau producteur">... un nouveau producteur</a></li>
-                <li><a href="#" onclick="showAddAdherent(this);" data-id="@Model.Stolon.Id" data-edition="@((int)AdherentEdition.Producer)" data-title="Ajout d'un producteur existant">... un producteur existant d'un autre Stolon</a></li>
-            </ul>
-        </div>
+    <div class="dropdown">
+        <a class="dropdown-toggle btn btn-small btn-default" data-toggle="dropdown" href="#">
+            Ajouter ...
+            <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu">
+            <li><a href="#" onclick="showCreateAdherent(this);" data-Id="@Model.Stolon.Id" data-edition="@((int)AdherentEdition.Producer)" data-title="Ajout d'un nouveau producteur">... un nouveau producteur</a></li>
+            <li><a href="#" onclick="showAddAdherent(this);" data-id="@Model.Stolon.Id" data-edition="@((int)AdherentEdition.Producer)" data-title="Ajout d'un producteur existant">... un producteur existant d'un autre Stolon</a></li>
+        </ul>
+    </div>
 }
 
 <table class="table">
     <thead>
-	<tr>
+        <tr>
             <th>
-		@Html.DisplayNameFor(item => item.AdherentsStolon.First().LocalId)
+                @Html.DisplayNameFor(item => item.AdherentsStolon.First().LocalId)
             </th>
             <th>
-		@Html.DisplayNameFor(item => item.AdherentsStolon.First().Adherent.SellerType)
+                @Html.DisplayNameFor(item => item.AdherentsStolon.First().Adherent.SellerType)
             </th>
             <th>
-		@Html.DisplayNameFor(item => item.AdherentsStolon.First().Adherent.CompanyName)
+                @Html.DisplayNameFor(item => item.AdherentsStolon.First().Adherent.CompanyName)
             </th>
             <th>
-		@Html.DisplayNameFor(item => item.AdherentsStolon.First().Adherent.AvatarFileName)
+                @Html.DisplayNameFor(item => item.AdherentsStolon.First().Adherent.AvatarFileName)
             </th>
             <th>
-		@Html.DisplayNameFor(item => item.AdherentsStolon.First().Adherent.Name)
+                @Html.DisplayNameFor(item => item.AdherentsStolon.First().Adherent.Name)
             </th>
             <th>
-		@Html.DisplayNameFor(item => item.AdherentsStolon.First().Adherent.Surname)
+                @Html.DisplayNameFor(item => item.AdherentsStolon.First().Adherent.Surname)
             </th>
             <th>
-		@Html.DisplayNameFor(item => item.AdherentsStolon.First().Adherent.PhoneNumber)
+                @Html.DisplayNameFor(item => item.AdherentsStolon.First().Adherent.PhoneNumber)
             </th>
             <th>
-		@Html.DisplayNameFor(item => item.AdherentsStolon.First().SubscriptionPaid)
+                @Html.DisplayNameFor(item => item.AdherentsStolon.First().SubscriptionPaid)
+            </th>
+            @if (Model.Stolon.UseProducersFee)
+            {
+                <th>
+                    @Html.DisplayNameFor(item => item.AdherentsStolon.First().ProducerFee)
+                </th>
+            }
+            <th>
+                @Html.DisplayNameFor(item => item.AdherentsStolon.First().Enable)
             </th>
             <th>
-		@Html.DisplayNameFor(item => item.AdherentsStolon.First().Enable)
-            </th>
-            <th>
-		@Html.DisplayNameFor(item => item.AdherentsStolon.First().Role)
+                @Html.DisplayNameFor(item => item.AdherentsStolon.First().Role)
             </th>
             <th></th>
-	</tr>
+        </tr>
     </thead>
     <tbody>
-    @foreach (var item in Model.AdherentsStolon.Where(x => x.IsProducer).OrderBy(x=>x.LocalId))
-    {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.LocalId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Adherent.SellerType)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Adherent.CompanyName)
-            </td>
-            <td class="tdAvatarList">
-                <div class="userListAvatar">
-                    <img src="@Html.DisplayFor(modelItem => item.Adherent.AvatarFilePath)" class="responsiveImage circleAvatarDiv" />
-                </div>
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Adherent.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Adherent.Surname)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Adherent.PhoneNumber)
-            </td>
-            @if (item.SubscriptionPaid)
-            {
+        @foreach (var item in Model.AdherentsStolon.Where(x => x.IsProducer).OrderBy(x => x.LocalId))
+        {
+            <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.SubscriptionPaid)
+                    @Html.DisplayFor(modelItem => item.LocalId)
+                    @if (item.Adherent.IsWebAdmin)
+                    {
+
+                        <div class="bannerRightInformations"
+                             title=" Ce membre est administrateur web"
+                             data-toggle="tooltip">
+                            <span class="glyphicon glyphicon-education"></span>
+                        </div>
+                    }
                 </td>
-            }
-            else
-            {
-                <td bgcolor="#ff8000">
-                    @Html.DisplayFor(modelItem => item.SubscriptionPaid)
-                </td>
-            }
-            @if (item.Enable)
-            {
                 <td>
-                    @Html.DisplayFor(modelItem => item.Enable)
+                    @Html.DisplayFor(modelItem => item.Adherent.SellerType)
                 </td>
-            }
-            else
-            {
-                <td bgcolor="#ff0000">
-                    @Html.DisplayFor(modelItem => item.Enable)
+                <td>
+                    @Html.DisplayFor(modelItem => item.Adherent.CompanyName)
                 </td>
-            }
-            <td>
-                @{
-                    Html.RenderPartial("../Users/RoleActions", new AdherentStolonViewModel(Model.ActiveAdherentStolon, item));
+                <td class="tdAvatarList">
+                    <div class="userListAvatar">
+                        <img src="@Html.DisplayFor(modelItem => item.Adherent.AvatarFilePath)" class="responsiveImage circleAvatarDiv" />
+                    </div>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Adherent.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Adherent.Surname)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Adherent.PhoneNumber)
+                </td>
+                @if (item.SubscriptionPaid)
+                {
+                    <td>
+                        @Html.DisplayFor(modelItem => item.SubscriptionPaid)
+                    </td>
                 }
-            </td>
-            <td>
-                @{
-                    Html.RenderPartial("../Users/AdherentActions", new AdherentStolonViewModel(Model.ActiveAdherentStolon, item));
+                else
+                {
+                    <td bgcolor="#ff8000">
+                        @Html.DisplayFor(modelItem => item.SubscriptionPaid)
+                    </td>
                 }
-            </td>
-        </tr>
-	}
+                @if (Model.Stolon.UseProducersFee)
+                {
+
+                    @if (Model.ActiveAdherentStolon.Authorized(Role.Admin))
+                    {
+                        <td>
+                            <div class="dropdown">
+                                <a class="dropdown-toggle btn btn-small btn-default" data-toggle="dropdown" href="#">
+                                    @Html.DisplayFor(modelItem => item.ProducerFee)%
+                                    <span class="caret"></span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="#" onclick="showEditFee(this);" data-id="@item.Id" data-fee="@item.ProducerFee" data-title="@("Modification de la cotisation de " + item.Adherent.CompanyName)">Changer le montant de la commission</a></li>
+                               </ul>
+                            </div>
+                        </td>
+                    }
+                    else
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ProducerFee)%
+                        </td>
+                    }
+                }
+                @if (item.Enable)
+                {
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Enable)
+                    </td>
+                }
+                else
+                {
+                    <td bgcolor="#ff0000">
+                        @Html.DisplayFor(modelItem => item.Enable)
+                    </td>
+                }
+                <td>
+                    @{
+                        Html.RenderPartial("../Users/RoleActions", new AdherentStolonViewModel(Model.ActiveAdherentStolon, item));
+                    }
+                </td>
+                <td>
+                    @{
+                        Html.RenderPartial("../Users/AdherentActions", new AdherentStolonViewModel(Model.ActiveAdherentStolon, item));
+                    }
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+

@@ -53,11 +53,11 @@
                 @Html.DisplayFor(modelItem => item.LocalId)
                 @if (item.Adherent.IsWebAdmin)
                 {
-                    <div class="warning-container">
-                        <i class="glyphicon glyphicon-leaf"></i>
-                        <div class="warning-informations right">
-                            Ce membre est administrateur web    
-                        </div>
+
+                    <div class="bannerRightInformations"
+                         title=" Ce membre est administrateur web"
+                         data-toggle="tooltip">
+                        <span class="glyphicon glyphicon-education"></span>
                     </div>
                 }
             </td>
