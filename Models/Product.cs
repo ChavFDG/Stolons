@@ -388,39 +388,48 @@ namespace Stolons.Models
         {
             if (Type == SellType.Piece || Type == SellType.VariableWeigh )
             {
-                if (quantity == 1)
-                {
-                    return quantity + " pièce";
-                }
-                else
-                {
-                    return quantity + " pièces";
-                }
+                return FormatUnitQuantityString(quantity);
             }
             else
             {
-                decimal qty = (quantity * QuantityStep);
-                string strUnit;
-                if (ProductUnit == Product.Unit.Kg)
+                return FormatQuantityString(quantity * QuantityStep);
+            }
+        }
+
+        public string FormatUnitQuantityString(decimal quantity)
+        {
+            if (quantity == 1)
+            {
+                return quantity + " pièce";
+            }
+            else
+            {
+                return quantity + " pièces";
+            }
+        }
+
+        public string FormatQuantityString(decimal quantity)
+        {
+            string strUnit;
+            if (ProductUnit == Product.Unit.Kg)
+            {
+                strUnit = " g";
+                if (quantity >= 1000)
                 {
-                    strUnit = " g";
-                    if (qty >= 1000)
-                    {
-                        qty /= 1000;
-                        strUnit = " Kg";
-                    }
-                    return qty + strUnit;
+                    quantity /= 1000;
+                    strUnit = " Kg";
                 }
-                else
+                return quantity + strUnit;
+            }
+            else
+            {
+                strUnit = " mL";
+                if (quantity >= 1000)
                 {
-                    strUnit = " mL";
-                    if (qty >= 1000)
-                    {
-                        qty /= 1000;
-                        strUnit = " L";
-                    }
-                    return qty + strUnit;
+                    quantity /= 1000;
+                    strUnit = " L";
                 }
+                return quantity + strUnit;
             }
         }
 

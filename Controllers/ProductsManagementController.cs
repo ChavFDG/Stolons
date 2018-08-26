@@ -128,18 +128,20 @@ namespace Stolons.Controllers
                         if (cpt >= 1)
                         {
                             var clonedBillEntry = billEntry.Clone();
-                            clonedBillEntry.QuantityStep = data.AssignedWeigh;
+                            clonedBillEntry.Quantity = data.AssignedWeigh*1000;
                             _context.Add(clonedBillEntry);
                             _context.SaveChanges();
                         }
                         else
                         {
-                            billEntry.QuantityStep = data.AssignedWeigh;
-                            billEntry.Quantity = 1;
+                            billEntry.Quantity = data.AssignedWeigh*1000;
+                            billEntry.QuantityStep = 1;
+                            billEntry.UnitPrice = billEntry.WeightPrice / 1000;
                             billEntry.WeightAssigned = true;
                         }
                         cpt++;
-                        htmlSummary.AppendLine("<tr><td>" + billEntry.QuantityStep / 1000 + " " + variableWeighProductViewModels.ProductUnit.ToString() + "</td></tr>");
+                        htmlSummary.AppendLine("<tr><td>" + billEntry.Quantity/1000 + " " + variableWeighProductViewModels.ProductUnit.ToString() + "</td></tr>");
+                        _context.SaveChanges();
                     }
                 }
                 htmlSummary.AppendLine("</table>");
@@ -147,11 +149,11 @@ namespace Stolons.Controllers
 
 
             string str = htmlSummary.ToString();
-            _context.SaveChanges();
 
             //Regeneration of orders
             // - producer
-            var producerBill = _context.ProducerBills.Include(x=>x.BillEntries).ThenInclude(x=>x.ProductStock).ThenInclude(x=>x.Product).Include(x=>x.AdherentStolon).ThenInclude(x=>x.Adherent).Include(x => x.BillEntries).ThenInclude(x=>x.ConsumerBill).First(x => x.BillId == variableWeighOrderViewModel.ProducerBillId);
+            var producerBill = _context.ProducerBills.Include(x=>x.BillEntries).ThenInclude(x=>x.ProductStock).ThenInclude(x=>x.Product).Include(x=>x.AdherentStolon).ThenInclude(x=>x.Adherent).Include(x => x.AdherentStolon).ThenInclude(x => x.Stolon).Include(x => x.BillEntries).ThenInclude(x=>x.ConsumerBill).First(x => x.BillId == variableWeighOrderViewModel.ProducerBillId);
+            producerBill.HtmlBillContent = BillGenerator.GenerateHtmlBillContent(producerBill, _context);
             producerBill.HtmlOrderContent = BillGenerator.GenerateHtmlOrderContent(producerBill, _context);
             BillGenerator.GenerateOrderPDF(producerBill);
             _context.SaveChanges();
@@ -160,7 +162,7 @@ namespace Stolons.Controllers
             foreach (var id in consumerBillsId)
             {
                 var consumerBill = _context.ConsumerBills.Include(x=>x.BillEntries).ThenInclude(x => x.ProductStock).ThenInclude(x => x.Product).First(x => x.BillId == id);
-                BillGenerator.GenerateHtmlBillContent(consumerBill, _context);
+                consumerBill.HtmlBillContent = BillGenerator.GenerateHtmlBillContent(consumerBill, _context);
                 BillGenerator.GenerateBillPDF(consumerBill);
             }
             _context.SaveChanges();

@@ -10,5 +10,13 @@
 }
 else
 {
-    @Html.Raw(Model.HtmlBillContent)
+    if (Model is ProducerBill)
+    {
+        @Html.Raw(((ProducerBill)Model).HtmlOrderContent)
+
+    }
+    else
+    {
+        @Html.Raw(Model.HtmlBillContent)
+    }
 }

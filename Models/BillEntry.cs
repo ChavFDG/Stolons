@@ -88,6 +88,15 @@ namespace Stolons.Models
             }
         }
 
+        [NotMapped]
+        public bool IsAssignedVariableWeigh
+        {
+            get
+            {
+                return Type == SellType.VariableWeigh && WeightAssigned;
+            }
+        }
+
         public decimal WeightPrice { get; set; }
 
         [NotMapped]
@@ -96,15 +105,15 @@ namespace Stolons.Models
             get
             {
                 decimal price = 0;
-                if (this.Type == Product.SellType.Piece)
+                if (Type == Product.SellType.Piece ||  IsNotAssignedVariableWeigh)
                 {
                     price = Quantity * UnitPrice;
                 }
                 else
                 {
-                    price = WeightPrice * Quantity * QuantityStep;
+                    price = WeightPrice / 1000 * Quantity * QuantityStep ;
                 }
-                return Quantity * UnitPrice;
+                return price;
             }
         }
 
@@ -413,7 +422,7 @@ namespace Stolons.Models
         //Utilisé dans le web aussi
         public string GetQuantityString(decimal quantity)
         {
-            if (Type == SellType.Piece || (Type == SellType.VariableWeigh && IsNotAssignedVariableWeigh))
+            if (Type == SellType.Piece || IsNotAssignedVariableWeigh)
             {
                 if (quantity == 1)
                 {
@@ -463,6 +472,7 @@ namespace Stolons.Models
                 Name = this.Name,
                 WeightPrice = this.WeightPrice,
                 UnitPrice = this.UnitPrice,
+                QuantityStep = this.QuantityStep,
                 Tax = this.Tax,
                 TaxEnum = this.TaxEnum,
                 ProductUnit = this.ProductUnit,
@@ -472,7 +482,8 @@ namespace Stolons.Models
                 DLC = this.DLC,
                 Storage = this.Storage,
                 MinimumWeight = this.MinimumWeight,
-                MaximumWeight = this.MaximumWeight
+                MaximumWeight = this.MaximumWeight,
+                WeightAssigned = this.WeightAssigned
             };
             return clonedBillEntry;
         }
@@ -486,6 +497,7 @@ namespace Stolons.Models
             billEntry.Name = productStock.Product.Name;
             billEntry.WeightPrice = productStock.Product.WeightPrice;
             billEntry.UnitPrice = productStock.Product.UnitPrice;
+            billEntry.QuantityStep = productStock.Product.QuantityStep;
             billEntry.Tax = productStock.Product.Tax;
             billEntry.TaxEnum = productStock.Product.TaxEnum;
             billEntry.ProductUnit = productStock.Product.ProductUnit;

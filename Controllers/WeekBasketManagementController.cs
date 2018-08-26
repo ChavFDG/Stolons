@@ -294,7 +294,9 @@ namespace Stolons.Controllers
             producerBill.ModificationReason += billCorrection.Reason;
             producerBill.HasBeenModified = true;
             producerBill.HtmlBillContent = BillGenerator.GenerateHtmlBillContent(producerBill, _context);
+            producerBill.HtmlOrderContent = BillGenerator.GenerateHtmlOrderContent(producerBill, _context);
             BillGenerator.GenerateBillPDF(producerBill);
+            _context.SaveChanges();
             //Consumers bills
             foreach (var billId in modifiedBills)
             {

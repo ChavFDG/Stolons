@@ -176,8 +176,8 @@ namespace Stolons.Tools
                 }
                 //Generate bill for producer
                 ProducerBill bill = CreateBill<ProducerBill>(producer, billEntries);
-                bill.HtmlOrderContent = GenerateHtmlOrderContent(bill, dbContext);
                 bill.HtmlBillContent = GenerateHtmlBillContent(bill, dbContext);
+                bill.HtmlOrderContent = GenerateHtmlOrderContent(bill, dbContext);
                 producerBills.Add(bill);
                 if (billEntries.Any())
                 {
@@ -473,6 +473,8 @@ namespace Stolons.Tools
             {
                 int quantity = 0;
                 productBillEntries.ForEach(x => quantity += x.Quantity);
+                if (productBillEntries.First().IsAssignedVariableWeigh)
+                    quantity = quantity / productBillEntries.Key.QuantityStep;
                 orderBuilder.AppendLine("<tr>");
                 orderBuilder.AppendLine("<td>" + productBillEntries.Key.Name + "</td>");
                 orderBuilder.AppendLine("<td>" + productBillEntries.Key.GetQuantityString(quantity) + "</td>");
@@ -574,7 +576,7 @@ namespace Stolons.Tools
                 decimal productTotalWithoutTax = Convert.ToDecimal(productBillEntries.First().UnitPriceWithoutTax * quantity);
                 billBuilder.AppendLine("<tr>");
                 billBuilder.AppendLine("<td>" + productBillEntries.Key.Name + "</td>");
-                billBuilder.AppendLine("<td>" + productBillEntries.Key.GetQuantityString(quantity) + "</td>");
+                billBuilder.AppendLine("<td>" + (productBillEntries.Key.Type == SellType.VariableWeigh?productBillEntries.Key.FormatQuantityString(quantity):productBillEntries.Key.GetQuantityString(quantity)) + "</td>");
                 billBuilder.AppendLine("<td>" + (productBillEntries.Key.TaxEnum == Product.TAX.None ? "NA" : productBillEntries.Key.Tax.ToString("0.00") + " %</td>"));
                 billBuilder.AppendLine("<td>" + (productBillEntries.Key.Type == SellType.Piece ? productBillEntries.First().UnitPriceWithoutTax : productBillEntries.First().PriceWithoutTax).ToString("0.00") + " €" + "</td>");
                 billBuilder.AppendLine("<td>" + productTotalWithoutTax.ToString("0.00") + " €" + "</td>");
@@ -668,7 +670,15 @@ namespace Stolons.Tools
             foreach (var tmpBillEntry in bill.BillEntries)
             {
                 var billEntry = dbContext.BillEntrys.Include(x => x.ProductStock).ThenInclude(x => x.Product).First(x => x.Id == tmpBillEntry.Id);
-                decimal total = billEntry.ProductStock.Product.Type == SellType.VariableWeigh? Convert.ToDecimal(billEntry.ProductStock.Product.AveragePrice * billEntry.Quantity) : Convert.ToDecimal(billEntry.UnitPrice * billEntry.Quantity);
+                decimal total = 0;
+                if(billEntry.IsNotAssignedVariableWeigh)
+                {
+                    total = Convert.ToDecimal(billEntry.ProductStock.Product.AveragePrice * billEntry.Quantity);
+                }
+                else
+                {
+                    total = Convert.ToDecimal(billEntry.UnitPrice * billEntry.Quantity);
+                }
                 builder.AppendLine("<tr>");
                 builder.AppendLine("<td>" + billEntry.Name + "</td>");
                 builder.AppendLine("<td>" + billEntry.UnitPrice.ToString("0.00") + " €" + "</td>");
@@ -681,6 +691,7 @@ namespace Stolons.Tools
             builder.AppendLine("<p>Montant total : " + bill.OrderAmount.ToString("0.00") + " €</p>");
             builder.AddBootstrap();
             builder.AddFooterAndHeaderRemoval();
+            string test = builder.ToString();
             return builder.ToString();
         }
 

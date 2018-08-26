@@ -9,10 +9,8 @@
 
 @if (Model.Stolon.GetMode() == Stolon.Modes.DeliveryAndStockUpdate && Model.WeekStolonsBill != null)
 {
-    <p>
+    <div>
         @Model.ConsumerBills.Count paniers cette semaine
-        <a class="btn btn-small btn-default" title="Voir" asp-action="ShowStolonsBill" asp-route-id="@Model.WeekStolonsBill.BillNumber"><span class="glyphicon glyphicon glyphicon-eye-open"> </span></a>
-        <a class="btn btn-small btn-default" title="Télécharger" target="_blank" href="/@Model.WeekStolonsBill.UrlPath"><span class="glyphicon glyphicon glyphicon-download-alt"> </span></a>
         @if (Model.WeekStolonsBill.HasBeenModified)
         {
             <div class="bannerRightInformations"
@@ -22,7 +20,9 @@
                 <i class="glyphicon glyphicon-warning-sign"></i>
             </div>
         }
-    </p>
+        <a class="btn btn-small btn-default" title="Voir" asp-action="ShowStolonsBill" asp-route-id="@Model.WeekStolonsBill.BillNumber"><span class="glyphicon glyphicon glyphicon-eye-open"> </span></a>
+        <a class="btn btn-small btn-default" title="Télécharger" target="_blank" href="/@Model.WeekStolonsBill.UrlPath"><span class="glyphicon glyphicon glyphicon-download-alt"> </span></a>
+    </div>
 }
 else
 {
@@ -248,7 +248,7 @@ else
                                 <col>
                                 </col>
                                 <% _.forEach(producerBill.getProductStocks(), function(productStock) { %>
-                                <col id="product-col-<%= productStock.get("Id") %>">
+                                <col id="product-col-<%= productStock.get(" Id") %>">
                                 </col>
                                 <% }); %>
                             </colgroup>
@@ -260,7 +260,7 @@ else
                                     </th>
                                     <% _.forEach(producerBill.getProductStocks(), function(productStock) { %>
                                     <td class="correction-product-description productMgtImage">
-                                        <img src="<%= productStock.get("Product").getPictureUrl("light") %>">
+                                        <img src="<%= productStock.get(" Product").getPictureUrl("light") %>">
                                         <span><%= productStock.get("Product").get("Name") %></span>
                                     </td>
                                     <% }); %>
