@@ -69,8 +69,8 @@ SellTypeWeightView = Backbone.View.extend({
     el: "#productForm",
 
     events: {
-	"input #Product_QuantityStep": "updatePriceField",
-	"change #price": "updatePriceField"
+	"keyup #quantityStep": "updatePriceField",
+	"keyup #price": "updatePriceField"
     },
 
     initialize: function(opts) {
@@ -98,16 +98,15 @@ SellTypeWeightView = Backbone.View.extend({
 	    return false;
 	}
         var sellType = $("#SellType").val();
-	var price = $("#price").val();
+	var price = parseFloat($("#price").val().replace(',', '.'));
 
         if (sellType == 1) {
             $("#unitPrice").removeAttr("readonly");
         } else {
             $("#unitPrice").attr("readonly", true);
-            var qtyStep = $("#Product_QuantityStep").val();
-            if (price && qtyStep) {
-                var tempPrice = price.replace(',', '.');
-                var unitPrice = (tempPrice * qtyStep / 1000);
+            var qtyStep = parseFloat($("#quantityStep").val());
+            if (_.isNumber(price) && qtyStep) {
+                var unitPrice = (price * qtyStep / 1000);
                 if (unitPrice != 'NaN') {
                     var tempUnitPrice = unitPrice.toString().replace('.', ',');
                     $("#unitPrice").val(tempUnitPrice);
