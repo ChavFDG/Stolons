@@ -65,6 +65,7 @@ $(document).ready(function () {
             "Confirmer la récupération et le payement de la facture",
             function (result) {
                 if (result) {
+                    $.blockUI();
                     $.ajax({
                         type: "POST",
                         url: "UpdateConsumerBill",
@@ -74,8 +75,10 @@ $(document).ready(function () {
                         },
                         dataType: 'json',
                         success: function (data) {
-                            if (data === true)
+                            $.unblockUI();
+                            if (data === true) {
                                 $("#" + billId).remove();
+                            }
                         }
                     });
                 }
@@ -88,6 +91,7 @@ $(document).ready(function () {
             "Confirmer la livraison de la commande",
             function (result) {
                 if (result) {
+                    $.blockUI();
                     $.ajax({
                         type: "POST",
                         url: "UpdateProducerBill",
@@ -97,6 +101,7 @@ $(document).ready(function () {
                         },
                         dataType: 'json',
                         success: function (data) {
+                            $.unblockUI();
                             if (data.Error === false) {
                                 $("#" + billId).remove();
                                 addProducerBillToPay(data.Bill, data.ActiveAdherentStolon)
@@ -113,6 +118,7 @@ $(document).ready(function () {
             "Confirmer le payement de la facture",
             function (result) {
                 if (result) {
+                    $.blockUI();
                     $.ajax({
                         type: "POST",
                         url: "UpdateProducerBill",
@@ -122,6 +128,7 @@ $(document).ready(function () {
                         },
                         dataType: 'json',
                         success: function (data) {
+                            $.unblockUI();
                             if (data.Error === false) {
                                 $("#" + billId).remove();
                             }

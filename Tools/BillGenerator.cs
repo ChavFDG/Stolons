@@ -718,7 +718,7 @@ namespace Stolons.Tools
             builder.AppendLine("<table class=\"table\">");
             builder.AppendLine("<tr>");
             builder.AppendLine("<th>Produit</th>");
-            builder.AppendLine("<th>Prix unitaire</th>");
+            builder.AppendLine("<th>Prix unitaire ou au kg</th>");
             builder.AppendLine("<th>Quantité</th>");
             builder.AppendLine("<th>Prix total</th>");
             builder.AppendLine("</tr>");
@@ -736,7 +736,10 @@ namespace Stolons.Tools
                 }
                 builder.AppendLine("<tr>");
                 builder.AppendLine("<td>" + billEntry.Name + "</td>");
-                builder.AppendLine("<td>" + billEntry.UnitPrice.ToString("0.00") + " €" + "</td>");
+                if (billEntry.Type == Product.SellType.Piece || billEntry.IsNotAssignedVariableWeigh)
+                    builder.AppendLine("<td>" + billEntry.UnitPrice.ToString("0.00") + " €" + "</td>");
+                else
+                    builder.AppendLine("<td>" + billEntry.WeightPrice.ToString("0.00") + " € / kg" + "</td>");
                 builder.AppendLine("<td>" + billEntry.QuantityString + "</td>");
                 builder.AppendLine("<td>" + total.ToString("0.00") + " €" + (billEntry.IsNotAssignedVariableWeigh ? " (poids variable)" : "") + "</td>");
                 builder.AppendLine("</tr>");
