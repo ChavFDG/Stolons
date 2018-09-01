@@ -851,7 +851,7 @@ namespace Stolons.Tools
                 }
                 dbContext.Remove(bill);
             }
-            foreach (var bill in dbContext.ProducerBills.Where(x => x.BillNumber.EndsWith(billToRemove)).Include(x => x.BillEntries).ToList())
+            foreach (var bill in dbContext.ProducerBills.Where(x => x.BillNumber.EndsWith(billToRemove) && x.AdherentStolon.StolonId == stolon.Id).Include(x => x.BillEntries).ToList())
             {
                 foreach (var billEntry in bill.BillEntries)
                 {
