@@ -128,13 +128,13 @@ namespace Stolons.Controllers
                         if (cpt >= 1)
                         {
                             var clonedBillEntry = billEntry.Clone();
-                            clonedBillEntry.Quantity = data.AssignedWeigh*1000;
+                            clonedBillEntry.Quantity = Convert.ToInt32(data.AssignedWeigh * 1000);
                             _context.Add(clonedBillEntry);
                             _context.SaveChanges();
                         }
                         else
                         {
-                            billEntry.Quantity = data.AssignedWeigh*1000;
+                            billEntry.Quantity = Convert.ToInt32(data.AssignedWeigh*1000);
                             billEntry.QuantityStep = 1;
                             billEntry.UnitPrice = billEntry.WeightPrice / 1000;
                             billEntry.WeightAssigned = true;
@@ -168,7 +168,7 @@ namespace Stolons.Controllers
             _context.SaveChanges();
 
             // - global
-            var stolonBill = _context.StolonsBills.Include(x=>x.BillEntries).ThenInclude(x => x.ProductStock).ThenInclude(x => x.Product).First(x => x.BillEntries.Any(y => y.Id == producerBill.BillEntries.First().Id));
+            var stolonBill = _context.StolonsBills.Include(x => x.BillEntries).ThenInclude(x=>x.ProducerBill).ThenInclude(x=>x.AdherentStolon).ThenInclude(x=>x.Adherent).Include(x=>x.BillEntries).ThenInclude(x => x.ProductStock).ThenInclude(x => x.Product).First(x => x.BillEntries.Any(y => y.Id == producerBill.BillEntries.First().Id));
             stolonBill.HtmlBillContent = BillGenerator.GenerateHtmlContent(stolonBill);
             
             BillGenerator.GeneratePDF(stolonBill.HtmlBillContent, stolonBill.GetStolonBillFilePath());
@@ -356,6 +356,7 @@ namespace Stolons.Controllers
                         vmProduct.Product.Pictures.Add(pictureName);
                     }
                 }
+
 
                 if (vmProduct.IsNew)
                 {

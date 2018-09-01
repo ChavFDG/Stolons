@@ -277,7 +277,7 @@ namespace Stolons.Controllers
         public bool UpdateBillCorrection(VmBillCorrection billCorrection)
         {
             billCorrection.Reason = "Modification le : " + DateTime.Now.ToString() + "\n\rRaison : " + billCorrection.Reason + "\n\r\n\r";
-            ProducerBill producerBill = _context.ProducerBills.Include(x => x.BillEntries).Include(x => x.AdherentStolon).First(x => x.BillId == billCorrection.ProducerBillId);
+            ProducerBill producerBill = _context.ProducerBills.Include(x => x.BillEntries).ThenInclude(x=>x.ConsumerBill).ThenInclude(x=>x.AdherentStolon).Include(x => x.AdherentStolon).First(x => x.BillId == billCorrection.ProducerBillId);
             List<Guid?> modifiedBills = new List<Guid?>();
             foreach (var billQuantity in billCorrection.NewQuantities)
             {

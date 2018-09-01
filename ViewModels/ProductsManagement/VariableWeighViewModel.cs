@@ -71,7 +71,7 @@ namespace Stolons.ViewModels.ProductsManagement
 
         public Guid BillEntryId { get; set; }
         public int ConsumerLocalId { get; set; }
-        //En gramme
-        public int AssignedWeigh { get; set; }
+        //En kg
+        public decimal AssignedWeigh { get; set; }
     }
 }
