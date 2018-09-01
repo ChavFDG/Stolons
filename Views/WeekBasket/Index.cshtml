@@ -217,7 +217,7 @@ else
                         <span> <%= entry.QuantityHtmlShortString %> </span>
                     </td>
                     <td>
-                        <span> <%= entry.Price %>€ </span>
+                        <span> <%= WeekBasket.roundPrice(entry.Price) %>€ </span>
                     </td>
                 </tr>
                 <% });
@@ -234,7 +234,7 @@ else
                     </td>
                     <td colspan="2">
                         <b>
-                            <%= validatedBasket.TotalPrice %>
+                            <%= WeekBasket.roundPrice(validatedBasket.TotalPrice) %>
                             <span class="glyphicon glyphicon-euro" data-toggle="tooltip" title="Prix en euros">
                             </span>
                         </b>
@@ -283,7 +283,7 @@ else
                     <span><%= entry.QuantityHtmlShortString %></span>
                 </td>
                 <td>
-                    <span> <%= entry.Price %>€ </span>
+                    <span> <%= WeekBasket.roundPrice(entry.Price) %>€ </span>
                 </td>
                 <td data-toggle="tooltip" title="Cliquer pour supprimer le produit du panier">
                     <a href="#" class="deleteEntry" onclick="WeekBasket.TmpWeekBasketModel.removeBillEntry('<%= entry.ProductId %>');return false;">
@@ -307,7 +307,7 @@ else
                 </td>
                 <td colspan="2">
                     <b>
-                        <%= tmpBasket.TotalPrice %>
+                        <%= WeekBasket.roundPrice(tmpBasket.TotalPrice) %>
                         <span class="glyphicon glyphicon-euro" data-toggle="tooltip" title="Prix en euros">
                         </span>
                     </b>

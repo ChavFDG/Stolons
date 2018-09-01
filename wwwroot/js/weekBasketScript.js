@@ -3,6 +3,9 @@ document.addEventListener("DOMContentLoaded", function () { // line equivalent t
     var hasJustSwitched = false
     function updateBasketPosition() {
         var tmpBasket = document.getElementById('basket__wrapper')
+	if (!tmpBasket) {
+	    return;
+	}
         if (window.screen.width >= 990) {
             if (window.pageYOffset >= 300) {
                 tmpBasket.classList.add('fixed')

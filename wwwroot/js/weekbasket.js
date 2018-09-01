@@ -2,6 +2,10 @@ window.WeekBasket = {};
 
 WeekBasket = window.WeekBasket;
 
+WeekBasket.roundPrice = function(decimal) {
+    return Math.round(decimal * 100) / 100;
+};
+
 ProductTypeModel = Backbone.Model.extend({
 
     defaults: {},
@@ -29,11 +33,8 @@ ProductTypesModel = Backbone.Collection.extend({
 
 BillEntryModel = Backbone.Model.extend({
 
-    idAttribute: "Id",
+    idAttribute: "Id"
 
-    getQuantityString: function() {
-	
-    }
 });
 
 TmpWeekBasketModel = Backbone.Model.extend(
