@@ -125,12 +125,12 @@ SellTypePieceView = Backbone.View.extend({
     el: "#productForm",
 
     events: {
-	"change #HideWeightPrice": "hideWeightPrice"
+	"change #HideWeightPrice": "hideWeightPrice",
+	"keyup #unitPrice": "updateUnitPrice"
     },
 
     initialize: function(opts) {
 	this.parent = opts.parent;
-	console.log("Sell type: piece");
 	//Vente à la pièce, on desactive tout ce qui concerne le poids
 	$("#unitPrice").attr("readonly", false);
 	$("#unitPriceContainer").toggleClass("hidden", false);
@@ -160,14 +160,19 @@ SellTypePieceView = Backbone.View.extend({
 	    $("#price-error-container").toggleClass("hidden", true);
 	    $("#weight-price-container").toggleClass("hidden", true);
         } else {
-	    console.log("show weight price");
 	    $("#weight-price-container").toggleClass("hidden", false);
 	}
 	this.parent.validateWeightPrice();
     },
 
+    updateUnitPrice: function(ev) {
+	console.log("Update unit price");
+	$("#unitPrice").val($("#unitPrice").val().replace(".", ","));
+	this.validate();
+    },
+
     validate: function() {
-	return this.parent.validateWeightPrice();
+    	return this.parent.validateWeightPrice();
     }
 });
 
