@@ -2,7 +2,7 @@
 
 $(document).ready(function () {
 
-    bootbox.setLocale("fr")
+    bootbox.setLocale("fr");
 
-    $('[data-toggle="tooltip"]').tooltip({ container: 'body', html: true })
+    $('[data-toggle="tooltip"]').tooltip({ container: 'body', html: true });
 });
