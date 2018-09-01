@@ -67,9 +67,62 @@ namespace Stolons.Tools
             }
         }
 
+        public static Timer orderRememberTimer;
+
+        public static void StartOrderRemember()
+        {
+            orderRememberTimer = new Timer((e) =>
+            {
+                TriggerOrderRemember();
+
+            }, null, TimeSpan.Zero, TimeSpan.FromHours(1));
+        }
+
+        private static void TriggerOrderRemember()
+        {
+            using (var scope = DotnetHelper.GetNewScope())
+            {
+                using (ApplicationDbContext dbContext = DotnetHelper.getDbContext(scope))
+                {
+                    foreach (Stolon stolon in dbContext.Stolons.Where(x=>x.BasketPickUpStartDay == DateTime.Now.DayOfWeek && x.OrderRememberHour == DateTime.Now.Hour).ToList())
+                    {
+                        var consumerBills = dbContext.ConsumerBills
+                                            .Include(x => x.AdherentStolon)
+                                            .Include(x => x.AdherentStolon.Adherent)
+                                            .Include(x => x.AdherentStolon.Stolon)
+                                            .Where(x => x.State == BillState.Pending && x.AdherentStolon.StolonId == stolon.Id && x.AdherentStolon.Adherent.ReceivedOrderRemember)
+                                            .AsNoTracking()
+                                            .ToList();
+                        string message = "<h2>Rappel " + stolon.Label + " : panier à récupérer aujourd'hui</h2>";
+                        message += stolon.OrderDeliveryMessage;
+
+                        foreach (var consumerBill in consumerBills)
+                        {
+                            try
+                            {
+                                AuthMessageSender.SendEmail(consumerBill.AdherentStolon.Stolon.Label,
+                                            consumerBill.AdherentStolon.Adherent.Email,
+                                            consumerBill.AdherentStolon.Adherent.Name,
+                                            "Rappel " + stolon.Label + " : panier à récupérer aujourd'hui ",
+                                            message,
+                                            null,
+                                            "");
+                            }
+                            catch (Exception exept)
+                            {
+                                Logger.LogError("Error on sending mail " + exept);
+                            }
+
+                        }
+                    }
+                }
+            }
+        }
+
         public static void StopThread()
         {
             shouldRun = false;
+            orderRememberTimer.Dispose();
         }
 
         private static void GetCurrentStolonsModes()
@@ -238,7 +291,9 @@ namespace Stolons.Tools
             {
                 Task.Factory.StartNew(() => { GenerateOrderPdfAndSendEmail(bill); });
             }
+
         }
+
 
         private static void GenerateOrderPdfAndSendEmail(ProducerBill bill)
         {
@@ -266,9 +321,9 @@ namespace Stolons.Tools
                             if (bill.BillEntries.Any(x => x.IsNotAssignedVariableWeigh))
                             {
                                 string productWeightLink = "http://" + Configurations.SiteUrl + @"\ProductsManagement";
-                                message += "<a href=\"" + productWeightLink + "\">/!\\ Vous avez des produits en attente de saisie de poids /!\\</a>";
+                                message += "<h3><a href=\"" + productWeightLink + "\">/!\\ Vous avez des produits en attente de saisie de poids /!\\</a></h3>";
                             }
-                            
+
                         }
                         AuthMessageSender.SendEmail(bill.AdherentStolon.Stolon.Label,
                                         bill.AdherentStolon.Adherent.Email,
@@ -505,7 +560,7 @@ namespace Stolons.Tools
                     orderBuilder.AppendLine("<tr>");
                     orderBuilder.AppendLine("<td></td>");
                     orderBuilder.AppendLine("<td>" + entries.Name + "</td>");
-                    orderBuilder.AppendLine("<td>" + entries.GetQuantityString(entries.Quantity)+ "</td>");
+                    orderBuilder.AppendLine("<td>" + entries.GetQuantityString(entries.Quantity) + "</td>");
                     orderBuilder.AppendLine("</tr>");
                 }
             }
@@ -576,7 +631,7 @@ namespace Stolons.Tools
                 decimal productTotalWithoutTax = Convert.ToDecimal(productBillEntries.First().UnitPriceWithoutTax * quantity);
                 billBuilder.AppendLine("<tr>");
                 billBuilder.AppendLine("<td>" + productBillEntries.Key.Name + "</td>");
-                billBuilder.AppendLine("<td>" + (productBillEntries.Key.Type == SellType.VariableWeigh?productBillEntries.Key.FormatQuantityString(quantity):productBillEntries.Key.GetQuantityString(quantity)) + "</td>");
+                billBuilder.AppendLine("<td>" + (productBillEntries.Key.Type == SellType.VariableWeigh ? productBillEntries.Key.FormatQuantityString(quantity) : productBillEntries.Key.GetQuantityString(quantity)) + "</td>");
                 billBuilder.AppendLine("<td>" + (productBillEntries.Key.TaxEnum == Product.TAX.None ? "NA" : productBillEntries.Key.Tax.ToString("0.00") + " %</td>"));
                 billBuilder.AppendLine("<td>" + (productBillEntries.Key.Type == SellType.Piece ? productBillEntries.First().UnitPriceWithoutTax : productBillEntries.First().PriceWithoutTax).ToString("0.00") + " €" + "</td>");
                 billBuilder.AppendLine("<td>" + productTotalWithoutTax.ToString("0.00") + " €" + "</td>");
@@ -671,7 +726,7 @@ namespace Stolons.Tools
             {
                 var billEntry = dbContext.BillEntrys.Include(x => x.ProductStock).ThenInclude(x => x.Product).First(x => x.Id == tmpBillEntry.Id);
                 decimal total = 0;
-                if(billEntry.IsNotAssignedVariableWeigh)
+                if (billEntry.IsNotAssignedVariableWeigh)
                 {
                     total = Convert.ToDecimal(billEntry.ProductStock.Product.AveragePrice * billEntry.Quantity);
                 }
@@ -683,7 +738,7 @@ namespace Stolons.Tools
                 builder.AppendLine("<td>" + billEntry.Name + "</td>");
                 builder.AppendLine("<td>" + billEntry.UnitPrice.ToString("0.00") + " €" + "</td>");
                 builder.AppendLine("<td>" + billEntry.QuantityString + "</td>");
-                builder.AppendLine("<td>" + total.ToString("0.00") + " €" + (billEntry.IsNotAssignedVariableWeigh?" (poids variable)":"") + "</td>");
+                builder.AppendLine("<td>" + total.ToString("0.00") + " €" + (billEntry.IsNotAssignedVariableWeigh ? " (poids variable)" : "") + "</td>");
                 builder.AppendLine("</tr>");
                 bill.OrderAmount += total;
             }

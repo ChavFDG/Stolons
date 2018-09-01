@@ -114,6 +114,13 @@ namespace Stolons.Models
         [Display(Name = "Minute")]
         public int BasketPickUpEndMinute { get; set; } = 30;
 
+        //OrderRememberTime
+
+        [Display(Name = "Heure d'envoie du mail de rappel des commandes")]
+        public int OrderRememberHour { get; set; } = 12;
+
+        //Others
+
         [Display(Name = "Mode simulation")]
         public bool IsModeSimulated { get; set; } = false;
 

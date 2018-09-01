@@ -206,10 +206,14 @@ namespace Stolons.Controllers
 
         public void UpdateAdherent(AdherentViewModel vmAdherent, string uploadAvatar)
         {
+            //Change mail if different
             ApplicationUser appUser = _context.Users.First(x => x.Email == vmAdherent.OriginalEmail);
-            appUser.Email = vmAdherent.Adherent.Email;
-            _context.Update(appUser);
-            _context.SaveChanges();
+            if(appUser.Email != vmAdherent.Adherent.Email)
+            {
+                appUser.Email = vmAdherent.Adherent.Email;
+                _context.Update(appUser);
+                _context.SaveChanges();
+            }
 
             _environment.DeleteFile(vmAdherent.Adherent.AvatarFilePath);
             vmAdherent.Adherent.AvatarFileName = _environment.UploadBase64Image(uploadAvatar, Configurations.AvatarStockagePath);

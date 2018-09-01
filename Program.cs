@@ -24,6 +24,7 @@ namespace Stolons
 
             Thread billManager = new Thread(() => BillGenerator.ManageBills());
             billManager.Start();
+            BillGenerator.StartOrderRemember();
 
             var logger = DotnetHelper.GetLogger<Program>();
 

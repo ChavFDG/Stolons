@@ -1,4 +1,4 @@
-@using Stolons.Helpers
+﻿@using Stolons.Helpers
 @using Stolons.ViewModels.Stolons
 @model StolonViewModel
 
@@ -192,6 +192,7 @@
         </div>
         <div class="col-lg-4">
             <h3>Paniers</h3>
+            <h5>Période de commande</h5>
             <dl class="dl-horizontal">
                 <dt>
                     @Html.DisplayNameFor(model => model.Stolon.OrderDeliveryMessage)
@@ -217,6 +218,9 @@
                 <dd>
                     @Html.DisplayFor(model => model.Stolon.OrderMinuteStartDate)
                 </dd>
+            </dl>
+            <h5>Période de livraison et mise à jour des stocks</h5>
+            <dl class="dl-horizontal">
                 <dt>
                     @Html.DisplayNameFor(model => model.Stolon.DeliveryAndStockUpdateDayStartDate)
                 </dt>
@@ -235,6 +239,9 @@
                 <dd>
                     @Html.DisplayFor(model => model.Stolon.DeliveryAndStockUpdateDayStartDateMinuteStartDate)
                 </dd>
+            </dl>
+            <h5>Période de récupération des paniers</h5>
+            <dl class="dl-horizontal">
                 <dt>
                     @Html.DisplayNameFor(model => model.Stolon.BasketPickUpStartDay)
                 </dt>
@@ -270,6 +277,12 @@
                 </dt>
                 <dd>
                     @Html.DisplayFor(model => model.Stolon.BasketPickUpEndMinute)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Stolon.OrderRememberHour)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Stolon.OrderRememberHour)
                 </dd>
             </dl>
         </div>

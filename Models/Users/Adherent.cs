@@ -64,14 +64,16 @@ namespace Stolons.Models.Users
 
         #region MailSubscription
         [Display(Name = "Informations importantes")]
-        public bool ReceivedInformationsEmail { get; set; }
-        
+        public bool ReceivedInformationsEmail { get; set; } = true;
+
+        [Display(Name = "Rappel par mail si l'utilisateur a une commande")]
+        public bool ReceivedOrderRemember { get; set; } = true;
 
         [Display(Name = "Rappel à l'ouverture des commandes")]
-        public bool ReceivedProductListByEmail { get; set; } = false;
+        public bool ReceivedProductListByEmail { get; set; } = true;
 
         [Display(Name = "Bons plans")]
-        public bool ReceivedGoodPlanByEmail { get; set; } = false;
+        public bool ReceivedGoodPlanByEmail { get; set; } = true;
 
         #endregion MailSubscription
 
@@ -139,28 +141,28 @@ namespace Stolons.Models.Users
 
         public void CloneAllPropertiesFrom(Adherent adherent)
         {
-            this.Address = adherent.Address;
-            this.Area = adherent.Area;
-            this.AvatarFileName = adherent.AvatarFileName;
-            this.City = adherent.City;
-            this.CompanyName = adherent.CompanyName;
-            this.Email = adherent.Email;
-            this.ExploitationPicuresSerialized = adherent.ExploitationPicuresSerialized;
-            this.IsWebAdmin = adherent.IsWebAdmin;
-            this.Latitude = adherent.Latitude;
-            this.Longitude =  adherent.Longitude;
-            this.Name = adherent.Name;
-            this.OpenText = adherent.OpenText;
-            this.PhoneNumber = adherent.PhoneNumber;
-            this.PostCode = adherent.PostCode;
-            this.Production = adherent.Production;
-            this.ReceivedGoodPlanByEmail = adherent.ReceivedGoodPlanByEmail;
-            this.ReceivedInformationsEmail = adherent.ReceivedInformationsEmail;
-            this.ReceivedProductListByEmail = adherent.ReceivedProductListByEmail;
-            this.StartDate = adherent.StartDate;
-            this.SellerType = adherent.SellerType;
-            this.Surname = adherent.Surname;
-            this.WebSiteLink = adherent.WebSiteLink;
+            Address = adherent.Address;
+            Area = adherent.Area;
+            AvatarFileName = adherent.AvatarFileName;
+            City = adherent.City;
+            CompanyName = adherent.CompanyName;
+            Email = adherent.Email;
+            ExploitationPicuresSerialized = adherent.ExploitationPicuresSerialized;
+            Latitude = adherent.Latitude;
+            Longitude =  adherent.Longitude;
+            Name = adherent.Name;
+            OpenText = adherent.OpenText;
+            PhoneNumber = adherent.PhoneNumber;
+            PostCode = adherent.PostCode;
+            Production = adherent.Production;
+            ReceivedGoodPlanByEmail = adherent.ReceivedGoodPlanByEmail;
+            ReceivedInformationsEmail = adherent.ReceivedInformationsEmail;
+            ReceivedOrderRemember = adherent.ReceivedOrderRemember;
+            ReceivedProductListByEmail = adherent.ReceivedProductListByEmail;
+            StartDate = adherent.StartDate;
+            SellerType = adherent.SellerType;
+            Surname = adherent.Surname;
+            WebSiteLink = adherent.WebSiteLink;
         }
 
         #endregion Producer

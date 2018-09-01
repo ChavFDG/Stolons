@@ -51,7 +51,7 @@
     </div>
     <div>
         <h3>Souscription aux courriels : </h3>
-        <dl >
+        <dl>
             <dt>
                 @Html.DisplayNameFor(model => model.Adherent.ReceivedInformationsEmail)
             </dt>
@@ -64,14 +64,20 @@
             <dd>
                 @Html.DisplayFor(model => model.Adherent.ReceivedProductListByEmail)
             </dd>
-            <!--
             <dt>
-                @Html.DisplayNameFor(model => model.Adherent.ReceivedGoodPlanByEmail)
+                @Html.DisplayNameFor(model => model.Adherent.ReceivedOrderRemember)
             </dt>
             <dd>
-                @Html.DisplayFor(model => model.Adherent.ReceivedGoodPlanByEmail)
+                @Html.DisplayFor(model => model.Adherent.ReceivedOrderRemember)
             </dd>
-        -->
+            <!--
+        <dt>
+            @Html.DisplayNameFor(model => model.Adherent.ReceivedGoodPlanByEmail)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Adherent.ReceivedGoodPlanByEmail)
+        </dd>
+    -->
         </dl>
     </div>
     @if (Model.Edition == Stolons.ViewModels.Adherents.AdherentEdition.Producer)

@@ -1,4 +1,4 @@
-
+﻿
 
 
 @model Stolons.ViewModels.Stolons.StolonViewModel
@@ -291,118 +291,139 @@ $(function() {
     <h3>Paniers</h3>
 
 
+    <h5>Période de commande</h5>
+    <div class="container">
+        <div class="form-group">
+            <label asp-for="Stolon.OrderDeliveryMessage" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <textarea asp-for="Stolon.OrderDeliveryMessage" class="form-control"></textarea>
+                <span asp-validation-for="Stolon.OrderDeliveryMessage" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Stolon.OrderDayStartDate" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <select asp-for="Stolon.OrderDayStartDate" class="form-control">
+                    @foreach (DayOfWeek item in Enum.GetValues(typeof(DayOfWeek)))
+                    {
+                        <option value="@item">@DayToFrench(item)</option>
+                    }
+                </select>
+                <span asp-validation-for="Stolon.OrderDayStartDate" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Stolon.OrderHourStartDate" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Stolon.OrderHourStartDate" class="form-control" />
+                <span asp-validation-for="Stolon.OrderHourStartDate" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Stolon.OrderMinuteStartDate" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Stolon.OrderMinuteStartDate" class="form-control" />
+                <span asp-validation-for="Stolon.OrderMinuteStartDate" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
 
-    <div class="form-group">
-        <label asp-for="Stolon.OrderDeliveryMessage" class="col-md-2 control-label"></label>
-        <div class="col-md-10">
-            <textarea asp-for="Stolon.OrderDeliveryMessage" class="form-control"></textarea>
-            <span asp-validation-for="Stolon.OrderDeliveryMessage" class="text-danger"></span>
+    <h5>Période de livraison et mise à jour des stocks</h5>
+    <div class="container">
+        <div class="form-group">
+            <label asp-for="Stolon.DeliveryAndStockUpdateDayStartDate" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <select asp-for="Stolon.DeliveryAndStockUpdateDayStartDate" class="form-control">
+                    @foreach (DayOfWeek item in Enum.GetValues(typeof(DayOfWeek)))
+                    {
+                        <option value="@item">@DayToFrench(item)</option>
+                    }
+                </select>
+                <span asp-validation-for="Stolon.DeliveryAndStockUpdateDayStartDate" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Stolon.DeliveryAndStockUpdateDayStartDateHourStartDate" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Stolon.DeliveryAndStockUpdateDayStartDateHourStartDate" class="form-control" />
+                <span asp-validation-for="Stolon.DeliveryAndStockUpdateDayStartDateHourStartDate" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Stolon.DeliveryAndStockUpdateDayStartDateMinuteStartDate" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Stolon.DeliveryAndStockUpdateDayStartDateMinuteStartDate" class="form-control" />
+                <span asp-validation-for="Stolon.DeliveryAndStockUpdateDayStartDateMinuteStartDate" class="text-danger"></span>
+            </div>
         </div>
     </div>
-    <div class="form-group">
-        <label asp-for="Stolon.OrderDayStartDate" class="col-md-2 control-label"></label>
-        <div class="col-md-10">
-            <select asp-for="Stolon.OrderDayStartDate" class="form-control">
-                @foreach (DayOfWeek item in Enum.GetValues(typeof(DayOfWeek)))
-                {
-                    <option value="@item">@DayToFrench(item)</option>
-                }
-            </select>
-            <span asp-validation-for="Stolon.OrderDayStartDate" class="text-danger"></span>
+
+
+    <h5>Période de récupération des paniers</h5>
+    <div class="container">
+        <div class="form-group">
+            <label asp-for="Stolon.BasketPickUpStartDay" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <select asp-for="Stolon.BasketPickUpStartDay" class="form-control">
+                    @foreach (DayOfWeek item in Enum.GetValues(typeof(DayOfWeek)))
+                    {
+                        <option value="@item">@DayToFrench(item)</option>
+                    }
+                </select>
+                <span asp-validation-for="Stolon.BasketPickUpStartDay" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Stolon.BasketPickUpStartHour" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Stolon.BasketPickUpStartHour" class="form-control" />
+                <span asp-validation-for="Stolon.BasketPickUpStartHour" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Stolon.BasketPickUpStartMinute" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Stolon.BasketPickUpStartMinute" class="form-control" />
+                <span asp-validation-for="Stolon.BasketPickUpStartMinute" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Stolon.BasketPickEndUpDay" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <select asp-for="Stolon.BasketPickEndUpDay" class="form-control">
+                    @foreach (DayOfWeek item in Enum.GetValues(typeof(DayOfWeek)))
+                    {
+                        <option value="@item">@DayToFrench(item)</option>
+                    }
+                </select>
+                <span asp-validation-for="Stolon.BasketPickEndUpDay" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Stolon.BasketPickUpEndHour" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Stolon.BasketPickUpEndHour" class="form-control" />
+                <span asp-validation-for="Stolon.BasketPickUpEndHour" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Stolon.BasketPickUpEndMinute" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Stolon.BasketPickUpEndMinute" class="form-control" />
+                <span asp-validation-for="Stolon.BasketPickUpEndMinute" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Stolon.OrderRememberHour" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Stolon.OrderRememberHour" class="form-control" min="0" max="23" />
+                <span asp-validation-for="Stolon.OrderRememberHour" class="text-danger"></span>
+            </div>
         </div>
     </div>
-    <div class="form-group">
-        <label asp-for="Stolon.OrderHourStartDate" class="col-md-2 control-label"></label>
-        <div class="col-md-10">
-            <input asp-for="Stolon.OrderHourStartDate" class="form-control" />
-            <span asp-validation-for="Stolon.OrderHourStartDate" class="text-danger"></span>
-        </div>
-    </div>
-    <div class="form-group">
-        <label asp-for="Stolon.OrderMinuteStartDate" class="col-md-2 control-label"></label>
-        <div class="col-md-10">
-            <input asp-for="Stolon.OrderMinuteStartDate" class="form-control" />
-            <span asp-validation-for="Stolon.OrderMinuteStartDate" class="text-danger"></span>
-        </div>
-    </div>
-    <div class="form-group">
-        <label asp-for="Stolon.DeliveryAndStockUpdateDayStartDate" class="col-md-2 control-label"></label>
-        <div class="col-md-10">
-            <select asp-for="Stolon.DeliveryAndStockUpdateDayStartDate" class="form-control">
-                @foreach (DayOfWeek item in Enum.GetValues(typeof(DayOfWeek)))
-                {
-                    <option value="@item">@DayToFrench(item)</option>
-                }
-            </select>
-            <span asp-validation-for="Stolon.DeliveryAndStockUpdateDayStartDate" class="text-danger"></span>
-        </div>
-    </div>
-    <div class="form-group">
-        <label asp-for="Stolon.DeliveryAndStockUpdateDayStartDateHourStartDate" class="col-md-2 control-label"></label>
-        <div class="col-md-10">
-            <input asp-for="Stolon.DeliveryAndStockUpdateDayStartDateHourStartDate" class="form-control" />
-            <span asp-validation-for="Stolon.DeliveryAndStockUpdateDayStartDateHourStartDate" class="text-danger"></span>
-        </div>
-    </div>
-    <div class="form-group">
-        <label asp-for="Stolon.DeliveryAndStockUpdateDayStartDateMinuteStartDate" class="col-md-2 control-label"></label>
-        <div class="col-md-10">
-            <input asp-for="Stolon.DeliveryAndStockUpdateDayStartDateMinuteStartDate" class="form-control" />
-            <span asp-validation-for="Stolon.DeliveryAndStockUpdateDayStartDateMinuteStartDate" class="text-danger"></span>
-        </div>
-    </div>
-    <div class="form-group">
-        <label asp-for="Stolon.BasketPickUpStartDay" class="col-md-2 control-label"></label>
-        <div class="col-md-10">
-            <select asp-for="Stolon.BasketPickUpStartDay" class="form-control">
-                @foreach (DayOfWeek item in Enum.GetValues(typeof(DayOfWeek)))
-                {
-                    <option value="@item">@DayToFrench(item)</option>
-                }
-            </select>
-            <span asp-validation-for="Stolon.BasketPickUpStartDay" class="text-danger"></span>
-        </div>
-    </div>
-    <div class="form-group">
-        <label asp-for="Stolon.BasketPickUpStartHour" class="col-md-2 control-label"></label>
-        <div class="col-md-10">
-            <input asp-for="Stolon.BasketPickUpStartHour" class="form-control" />
-            <span asp-validation-for="Stolon.BasketPickUpStartHour" class="text-danger"></span>
-        </div>
-    </div>
-    <div class="form-group">
-        <label asp-for="Stolon.BasketPickUpStartMinute" class="col-md-2 control-label"></label>
-        <div class="col-md-10">
-            <input asp-for="Stolon.BasketPickUpStartMinute" class="form-control" />
-            <span asp-validation-for="Stolon.BasketPickUpStartMinute" class="text-danger"></span>
-        </div>
-    </div>
-    <div class="form-group">
-        <label asp-for="Stolon.BasketPickEndUpDay" class="col-md-2 control-label"></label>
-        <div class="col-md-10">
-            <select asp-for="Stolon.BasketPickEndUpDay" class="form-control">
-                @foreach (DayOfWeek item in Enum.GetValues(typeof(DayOfWeek)))
-                {
-                    <option value="@item">@DayToFrench(item)</option>
-                }
-            </select>
-            <span asp-validation-for="Stolon.BasketPickEndUpDay" class="text-danger"></span>
-        </div>
-    </div>
-    <div class="form-group">
-        <label asp-for="Stolon.BasketPickUpEndHour" class="col-md-2 control-label"></label>
-        <div class="col-md-10">
-            <input asp-for="Stolon.BasketPickUpEndHour" class="form-control" />
-            <span asp-validation-for="Stolon.BasketPickUpEndHour" class="text-danger"></span>
-        </div>
-    </div>
-    <div class="form-group">
-        <label asp-for="Stolon.BasketPickUpEndMinute" class="col-md-2 control-label"></label>
-        <div class="col-md-10">
-            <input asp-for="Stolon.BasketPickUpEndMinute" class="form-control" />
-            <span asp-validation-for="Stolon.BasketPickUpEndMinute" class="text-danger"></span>
-        </div>
-    </div>
+
+
+
 
 
     <h3>Bon plans</h3>
