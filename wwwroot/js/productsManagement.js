@@ -358,7 +358,7 @@ var VariableWeightsProductsManagementView = Backbone.View.extend({
                         _.forEach(vwProductVM.ConsumersAssignedWeighs, function (assignedW, idx) {
                             if (assignedW.BillEntryId == billEntryId && idx == consumerIdx) {
 				that.validateVWInput(inputElem);
-                                assignedW.AssignedWeigh = parseFloat(inputElem.val());
+                                assignedW.AssignedWeigh = parseFloat(inputElem.val().replace(",", "."));
                             }
                         });
                     }
