@@ -51,7 +51,7 @@ namespace Stolons.Tools
                             if (lastModes[stolon.Id] == Stolon.Modes.Order && currentMode == Stolon.Modes.DeliveryAndStockUpdate)
                             {
 #if (DEBUG)
-                                DebugRemoveBills(dbContext);
+                                DebugRemoveBills(dbContext,stolon);
 #endif
                                 TriggerDeliveryAndStockUpdateMode(stolon, dbContext);
                             }
@@ -837,10 +837,10 @@ namespace Stolons.Tools
         }
 
         //For tests and developpment, remove existing consumer bill and producer bill => That will never exist in normal mode cause they can only have one bill by week per user
-        private static void DebugRemoveBills(ApplicationDbContext dbContext)
+        private static void DebugRemoveBills(ApplicationDbContext dbContext, Stolon stolon)
         {
             string billToRemove = DateTime.Now.Year + "_" + DateTime.Now.GetIso8601WeekOfYear();
-            foreach (var bill in dbContext.ConsumerBills.Where(x => x.BillNumber.EndsWith(billToRemove)).Include(x => x.BillEntries).ToList())
+            foreach (var bill in dbContext.ConsumerBills.Include(x=>x.AdherentStolon).Where(x => x.BillNumber.EndsWith(billToRemove) && x.AdherentStolon.StolonId == stolon.Id).Include(x => x.BillEntries).ToList())
             {
                 foreach (var billEntry in bill.BillEntries)
                 {
