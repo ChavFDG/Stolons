@@ -283,7 +283,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-		    <span>Entrez les poids réels de vos produits à poids variables</span>
+		    <span class="modale-title">Entrez les poids réels de vos produits à poids variables</span>
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
                 </div>
                 <div class="modal-body">
@@ -292,29 +292,37 @@
 			    <% _.forEach(vwVM.get("VariableWeighOrdersViewModel"), function(vwOrderVM) { %>
 			    <div class="row">
 				<div class="col-lg-12">
-				    <span><b>Commande <%= vwOrderVM.OrderNumber %> pour <%= vwOrderVM.StolonLabel %></b></span>
-				    <% _.forEach(vwOrderVM.VariableWeighProductsViewModel, function(vwProductVM) { %>
-				    <br />
-			            <span><%= vwProductVM.ProductName %> -- de <%= vwProductVM.MinimumWeight %> <%= vwProductVM.ProductUnit %> à <%= vwProductVM.MaximumWeight %> <%= vwProductVM.ProductUnit %> (x<%= vwOrderVM.VariableWeighProductsViewModel.length %> quantité) </span>
-				    <table style="border: 1px solid;">
-					<thead>
-					    <th>Consommateur</th>
-					    <th>Poids réel</th>
-					</thead>
-					<tbody>
+				    <form><fieldset class="vw-fieldset">
+					<legend class="vw-stolon-title">
+					    Commande <%= vwOrderVM.OrderNumber %> pour <%= vwOrderVM.StolonLabel %>
+					</legend>
+					    <% _.forEach(vwOrderVM.VariableWeighProductsViewModel, function(vwProductVM) { %>
+						<span class="vw-product-title">
+						    <%= vwProductVM.ProductName %> de <%= vwProductVM.MinimumWeight %> <%= vwProductVM.ProductUnit %> à <%= vwProductVM.MaximumWeight %> <%= vwProductVM.ProductUnit %> (x<%= vwProductVM.ConsumersAssignedWeighs.length %> quantité)
+						</span>
+						<table class="vw-products-table">
+						    <thead>
+					                <th>Consommateur</th>
+					                <th>Poids réel</th>
+					            </thead>
+						    <tbody>
 					    <% _.forEach(vwProductVM.ConsumersAssignedWeighs, function(consumerAssignedW, idx) { %>
-					    <tr style="border: 1px solid;">
-						<td style="border: 1px solid;"><span><%= consumerAssignedW.ConsumerLocalId %></span></td>
-						<td style="border: 1px solid;"><input type="number" data-order-number="<%= vwOrderVM.OrderNumber %>" data-product-id="<%= vwProductVM.ProductId %>" data-bill-entry-id="<%= consumerAssignedW.BillEntryId %>" data-consumer-idx="<%= idx %>" class="variable-weigh" placeholder="poids réel" /></td>
+					    <tr>
+						<td><span><%= consumerAssignedW.ConsumerLocalId %></span></td>
+						<td>
+						    <input class="vw-input" data-order-number="<%= vwOrderVM.OrderNumber %>" data-product-id="<%= vwProductVM.ProductId %>" data-bill-entry-id="<%= consumerAssignedW.BillEntryId %>" data-consumer-idx="<%= idx %>" class="variable-weigh" placeholder="poids réel" />
+						</td>
 					    </tr>
-					    <% }); %>
-					</tbody>
-				    </table>
-				<% }); %>
+					    <% }); %> 
+					  </tbody>
+				        </table>
+				     <% }); %>
+				   <button id="saveVW" class="vw-submit" type="button" title="Valider pour <%= vwOrderVM.StolonLabel %>" data-order-number="<%= vwOrderVM.OrderNumber %>" class="btn btn-small btn-default center">Valider</button>
+				</fieldset></form>
 				</div>
 			    </div>
-			    <button id="saveVW" type="button" data-order-number="<%= vwOrderVM.OrderNumber %>" class="btn btn-small btn-default center">Valider</button>
 			    <% }); %>
+			    <span id="server-error" class="hidden error" style="color: red;">Une erreur est survenue lors de l'enregistrement des poids réels</span>
 			</div>
 		    </div>
 		</div>

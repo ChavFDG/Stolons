@@ -17,5 +17,19 @@ var VariableWeightProductsVM = Backbone.Model.extend({
 	    });
 	 }
 	return data;
+    },
+
+    getVWProductVM: function(orderNumber, productId) {
+	var productVM;
+	_.forEach(this.get("VariableWeighOrdersViewModel"), function (vwOrderVM) {
+	    if (vwOrderVM.OrderNumber == orderNumber) {
+		_.forEach(vwOrderVM.VariableWeighProductsViewModel, function (vwProductVM) {
+		    if (vwProductVM.ProductId == productId) {
+			productVM = vwProductVM;
+		    }
+		});
+	    }
+	});
+	return productVM;
     }
 });
