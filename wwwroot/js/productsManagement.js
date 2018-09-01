@@ -118,7 +118,6 @@ var StockMgtViewModal = Backbone.View.extend({
 
     weekStockStepUp: function () {
         var newStock;
-        console.log("weekStockStepUp " + parseFloat(this.currentProductStock.get("WeekStock")) + " | " + this.currentProductStock.get("Product").get("QuantityStep"));
         if (this.currentProductStock.get("Product").get("Type") == 1 || this.currentProductStock.get("Product").get("Type") == 3) {
             newStock = parseInt(this.currentProductStock.get("WeekStock")) + 1;
         } else {
@@ -294,7 +293,7 @@ var VariableWeightsProductsManagementView = Backbone.View.extend({
 
     events: {
         "click #saveVW": "saveOrderVariableWeighs",
-        "change input.variable-weigh": "onVWChange"
+        "keyup input.vw-input": "onVWChange"
     },
 
     initialize: function () {
@@ -302,6 +301,7 @@ var VariableWeightsProductsManagementView = Backbone.View.extend({
             this.variableWeightOrdersVM = new VariableWeightProductsVM();
             this.fetchDeferred = this.variableWeightOrdersVM.fetch();
         }
+	this.errors = {};
     },
 
     render: function () {
@@ -327,9 +327,23 @@ var VariableWeightsProductsManagementView = Backbone.View.extend({
         this.$el.empty();
     },
 
+    validateVWInput: function(inputElem) {
+	var newVal = parseFloat(inputElem.val());
+	var productId = inputElem.data("product-id");
+	var orderNumber = inputElem.data("order-number");
+	var vwProductVM = this.variableWeightOrdersVM.getVWProductVM(orderNumber, productId);
+	var valid = true;
+
+	if (!_.isNumber(newVal) || _.isNaN(newVal) || newVal < vwProductVM.MinimumWeight || newVal > vwProductVM.MaximumWeight) {
+	    valid = false;
+	}
+	inputElem.toggleClass("error", !valid);
+	return valid;
+    },
+
     onVWChange: function (ev) {
+	var that = this;
         var inputElem = $(ev.currentTarget);
-        console.log("saving VW: " + $(ev.currentTarget).val());
         var orderNumber = inputElem.data("order-number");
         var productId = inputElem.data("product-id");
         var billEntryId = inputElem.data("bill-entry-id");
@@ -342,9 +356,8 @@ var VariableWeightsProductsManagementView = Backbone.View.extend({
                     if (vwProductVM.ProductId == productId) {
                         _.forEach(vwProductVM.ConsumersAssignedWeighs, function (assignedW, idx) {
                             if (assignedW.BillEntryId == billEntryId && idx == consumerIdx) {
-                                //TODO validate value first
-                                assignedW.AssignedWeigh = inputElem.val();
-                                console.log("FOUND!!! assigning value" + assignedW.AssignedWeigh);
+				that.validateVWInput(inputElem);
+                                assignedW.AssignedWeigh = parseFloat(inputElem.val());
                             }
                         });
                     }
@@ -354,16 +367,40 @@ var VariableWeightsProductsManagementView = Backbone.View.extend({
         return true;
     },
 
+    validateVWStolonOrder: function(orderNumber) {
+	var that = this;
+	var valid = true;
+
+	$("input.vw-input").each(function(idx, jqElem) {
+	    var inputElem = $(jqElem);
+	    var elemOrderNumber = inputElem.data("order-number");
+	    if (elemOrderNumber != orderNumber) {
+		return;
+	    }
+	    if (!that.validateVWInput(inputElem)) {
+		valid = false;
+	    }
+	});
+	return valid;
+    },
+
     saveOrderVariableWeighs: function (ev) {
+	var that = this;
         var buttonElem = $(ev.currentTarget);
         var orderNumber = buttonElem.data("order-number");
 
         var vwOrder;
+	if (!this.validateVWStolonOrder(orderNumber)) {
+	    return false;
+	}
         _.forEach(this.variableWeightOrdersVM.get("VariableWeighOrdersViewModel"), function (vwOrderVM) {
             if (vwOrderVM.OrderNumber === orderNumber) {
                 vwOrder = vwOrderVM;
             }
         });
+	if (!vwOrder) {
+	    return false;
+	}
         var promise = $.ajax({
             url: "/api/variableWeightProducts",
             type: 'POST',
@@ -371,8 +408,13 @@ var VariableWeightsProductsManagementView = Backbone.View.extend({
                 "variableWeighOrderViewModel": vwOrder
             }
         });
-        promise.then(function () {
-            console.log("POST DONE");
+        promise.always(function (res) {
+	    console.log(res);
+	    if (res.status !== 200) {
+		$("#server-error").toggleClass("hidden", false);
+	    } else {
+		window.location.reload();
+	    }
         });
     }
 

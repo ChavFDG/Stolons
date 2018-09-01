@@ -13,7 +13,7 @@ ProducerBillModel = Backbone.Model.extend({
 
     initialize: function(billId) {
 	this.billId = billId;
-	this.fetch();
+	this.fetchDeferred = this.fetch();
     },
 
     //return the list of unique products for this producerBill by grouping billentries by products

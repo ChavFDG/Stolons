@@ -149,7 +149,7 @@ else
                     </td>
                     <td>
                         <a href="#" class="btn btn-small btn-default" onclick="validateProdDelivery('@item.BillId','@(((int)item.State) + 1)')">Valider la livraison</a>
-                        <a href="#" class="btn btn-small btn-default" onclick="BillsManagement.openCorrectionModal('@item.BillId'); return false;">Réctifier la livraison</a>
+                        <a href="#" class="btn btn-small btn-default open-correction-modal" data-bill-id="@item.BillId">Réctifier la livraison</a>
                     </td>
                     <td>
                         @{
@@ -193,6 +193,7 @@ else
                 </th>
             </tr>
         </table>
+
         <script id="producerBillToPayTemplate" type="text/template">
             <tr id="<%= bill.BillId%>">
                 <td>
@@ -224,6 +225,7 @@ else
                 </td>
             </tr>
         </script>
+
     </div>
 </div>
 
@@ -248,7 +250,7 @@ else
                                 <col>
                                 </col>
                                 <% _.forEach(producerBill.getProductStocks(), function(productStock) { %>
-                                <col id="product-col-<%= productStock.get(" Id") %>">
+                                <col id="product-col-<%= productStock.get("Id") %>">
                                 </col>
                                 <% }); %>
                             </colgroup>
@@ -260,7 +262,7 @@ else
                                     </th>
                                     <% _.forEach(producerBill.getProductStocks(), function(productStock) { %>
                                     <td class="correction-product-description productMgtImage">
-                                        <img src="<%= productStock.get(" Product").getPictureUrl("light") %>">
+                                        <img src="<%= productStock.get("Product").getPictureUrl("light") %>">
                                         <span><%= productStock.get("Product").get("Name") %></span>
                                     </td>
                                     <% }); %>

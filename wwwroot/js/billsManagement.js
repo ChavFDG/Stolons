@@ -174,12 +174,19 @@ $(function () {
     });
 });
 
+var openCorrectionModal = function (billId) {
+    producerBillModel = new ProducerBillModel(billId);
+    producerBillModel.fetchDeferred.done(function () {
+        CorrectionView = new BillsManagement.CorrectionView(producerBillModel);
+        CorrectionView.open();
+    });
+};
+
 $(function () {
-    BillsManagement.openCorrectionModal = function (billId) {
-        producerBillModel = new ProducerBillModel(billId);
-        producerBillModel.on("sync", function () {
-            CorrectionView = new BillsManagement.CorrectionView(producerBillModel);
-            CorrectionView.open();
-        }, this);
-    }
+    $("a.open-correction-modal").each(function(idx, elem) {
+	var billId = $(elem).data("bill-id");
+	$(elem).click(function() {
+	    openCorrectionModal(billId);
+	});
+    });
 });
