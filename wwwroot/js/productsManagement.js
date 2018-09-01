@@ -408,9 +408,8 @@ var VariableWeightsProductsManagementView = Backbone.View.extend({
                 "variableWeighOrderViewModel": vwOrder
             }
         });
-        promise.always(function (res) {
-	    console.log(res);
-	    if (res.status !== 200) {
+        promise.always(function (j, s, res) {
+	    if (res.status != 200) {
 		$("#server-error").toggleClass("hidden", false);
 	    } else {
 		window.location.reload();
