@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using System;
 using Stolons.Models.Users;
 using System.Collections.Generic;
+using Stolons.ViewModels.BillHistory;
 
 namespace Stolons.Controllers
 {
@@ -26,20 +27,40 @@ namespace Stolons.Controllers
 
         // GET: 
         [Authorize()]
-        public async Task<IActionResult> Index()
+        public IActionResult Index(string id)
         {
-            Adherent stolonsUser = await this.GetCurrentAdherentAsync();
+            AdherentStolon activeAdherentStolon = GetActiveAdherentStolon();
+            AdherentStolon adherentStolon ;
             List<ProducerBill> bills = new List<ProducerBill>();
-            _context.ProducerBills
-        .Include(x => x.AdherentStolon)
-        .Include(x => x.AdherentStolon.Adherent)
-        .Include(x => x.AdherentStolon.Stolon)
-        .Where(x => x.AdherentStolon.Adherent.Email == stolonsUser.Email)
-        .AsNoTracking()
-        .ToList()
-        .ForEach(x => bills.Add(x));
-            return View(bills);
+            if (!String.IsNullOrWhiteSpace(id))
+            {
+                adherentStolon = _context.AdherentStolons.Include(x => x.Adherent).Include(x => x.Stolon).First(x => x.Id.ToString() == id);
+                _context.ProducerBills
+                    .Include(x => x.AdherentStolon)
+                    .Include(x => x.AdherentStolon.Adherent)
+                    .Include(x => x.AdherentStolon.Stolon)
+                    .Where(x => x.AdherentStolon.Id == adherentStolon.Id)
+                    .AsNoTracking()
+                    .ToList()
+                    .ForEach(x => bills.Add(x));
+            }
+            else
+            {
+                adherentStolon = activeAdherentStolon;
+                _context.ProducerBills
+                .Include(x => x.AdherentStolon)
+                .Include(x => x.AdherentStolon.Adherent)
+                .Include(x => x.AdherentStolon.Stolon)
+                .Where(x => x.AdherentStolon.AdherentId == adherentStolon.AdherentId)
+                .AsNoTracking()
+                .ToList()
+                .ForEach(x => bills.Add(x));
+            }
+
+            
+            return View(new BillsViewModel(activeAdherentStolon, adherentStolon, bills));
         }
+
 
         // GET: ShowBill
         public IActionResult ShowBill(string id)

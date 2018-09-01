@@ -9,7 +9,12 @@
         <span class="caret"></span>
     </a>
     <ul class="dropdown-menu">
-        <li><a asp-action="ShowBills" asp-route-id="@Model.AdherentStolon.Id">Voir factures</a></li>
+        <li><a asp-controller="Orders" asp-action="Index" asp-route-id="@Model.AdherentStolon.Id">Voir commandes de paniers</a></li>
+        @if (Model.AdherentStolon.IsProducer)
+        {
+            <li><a asp-controller="BillsHistory" asp-action="Index" asp-route-id="@Model.AdherentStolon.Id">Voir factures et bon de commandes</a></li>
+
+        }
         <li><a href="#" data-target="" onclick="showDetailsAdherent(this);" data-id="@Model.AdherentStolon.Id" data-title="@("Détail de " + Model.AdherentStolon.Adherent.Surname +" "+Model.AdherentStolon.Adherent.Name)">Voir détail</a></li>
         <li><a href="#" data-target="" onclick="showEditAdherent(this);" data-id="@Model.AdherentStolon.Id" data-title="@("Modification de " + Model.AdherentStolon.Adherent.Surname +" "+Model.AdherentStolon.Adherent.Name)">Modifier</a></li>
         <li><a href="#" data-target="" onclick="showCreditToken(this);" data-id="@Model.AdherentStolon.Id" data-title="@("Créditer des stols à " + Model.AdherentStolon.Adherent.Surname +" "+Model.AdherentStolon.Adherent.Name)">Créditer des stols</a></li>

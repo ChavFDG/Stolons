@@ -1,9 +1,16 @@
-﻿@model IEnumerable<ConsumerBill>
+﻿@model Stolons.ViewModels.Orders.OrdersViewModel
 @using System
 @using Stolons.Helpers
 @using Stolons.Models
 
-<h2>Mes commandes</h2>
+@if (Model.ActiveAdherentStolon.Id == Model.AdherentStolon.Id)
+{
+    <h2>Mes paniers commandés</h2>
+}
+else
+{
+    <h2>Paniers commandés par @Model.AdherentStolon.Adherent.Surname @Model.AdherentStolon.Adherent.Name</h2>
+}
 
 <div class="boxContainer row">
     <div class="col-lg-5 col-md-5">
@@ -23,7 +30,7 @@
             <tbody class="clickable-table">
                 @{
                     decimal total = 0;
-                    foreach (var item in Model.OrderBy(x => x.EditionDate))
+                    foreach (var item in Model.Bills.OrderBy(x => x.EditionDate))
                     {
                         <div id="html_content_@item.BillId" class="hidden">
                             @item.HtmlBillContent

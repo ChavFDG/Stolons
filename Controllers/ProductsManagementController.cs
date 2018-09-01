@@ -188,7 +188,7 @@ namespace Stolons.Controllers
             }
             catch (Exception exept)
             {
-
+                return StatusCode(500);
             }
             return Ok();
         }

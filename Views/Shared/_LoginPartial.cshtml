@@ -46,10 +46,10 @@
         </a>
         <ul class="dropdown-menu">
             <li><a asp-controller="Manage" asp-action="Index" title="Manage">Mon compte</a></li>
-            <li><a asp-controller="Orders" asp-action="Index">Mes commandes</a></li>
+            <li><a asp-controller="Orders" asp-action="Index" asp-route-id="">Mes paniers commandés</a></li>
             @if (Model.ActiveAdherentStolon.Adherent.AdherentStolons.Any(x => x.IsProducer))
             {
-                <li><a asp-controller="BillsHistory" asp-action="Index">Mes factures</a></li>
+                <li><a asp-controller="BillsHistory" asp-action="Index" asp-route-id="">Mes factures et bon de commandes</a></li>
             }
             <li>
                 <a href="#" onclick="document.forms['logoutForm'].submit();return false;">Déconnexion</a>

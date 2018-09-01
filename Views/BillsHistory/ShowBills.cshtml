@@ -2,14 +2,8 @@
 @using Stolons.Helpers
 @using Stolons.Models
 
-@if (Model.ActiveAdherentStolon.Id == Model.AdherentStolon.Id)
-{
-    <h2>Mes Factures et bon de commandes</h2>
-}
-else
-{
-    <h2>Factures de @Model.AdherentStolon.Adherent.Surname @Model.AdherentStolon.Adherent.Name</h2>
-}
+
+<h2>Factures de @Model.Adherent.Surname @Model.Adherent.Name</h2>
 
 <div class="boxContainer">
     <div class="col-lg-4">
@@ -65,7 +59,7 @@ else
                 }
             </tbody>
         </table>
-        <p>Total commandes : @total.ToString("0.00") €</p>
+        <p>Montant total : @total.ToString("0.00") €</p>
         <table class="table">
             <tr>
                 <th>
@@ -127,7 +121,6 @@ else
                 }
             </tbody>
         </table>
-        <p>Total factures: @total.ToString("0.00") €</p>
     </div>
     <div class="col-lg-8">
         <div id="billContent">
