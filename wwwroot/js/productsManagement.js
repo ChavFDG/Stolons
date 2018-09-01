@@ -328,7 +328,7 @@ var VariableWeightsProductsManagementView = Backbone.View.extend({
     },
 
     validateVWInput: function(inputElem) {
-	var newVal = parseFloat(inputElem.val());
+	var newVal = parseFloat(inputElem.val().replace(",", "."));
 	var productId = inputElem.data("product-id");
 	var orderNumber = inputElem.data("order-number");
 	var vwProductVM = this.variableWeightOrdersVM.getVWProductVM(orderNumber, productId);
@@ -350,6 +350,7 @@ var VariableWeightsProductsManagementView = Backbone.View.extend({
         var consumerIdx = inputElem.data("consumer-idx");
 
         var orderVM;
+	inputElem.val(inputElem.val().replace(".", ","));
         _.forEach(this.variableWeightOrdersVM.get("VariableWeighOrdersViewModel"), function (vwOrderVM) {
             if (vwOrderVM.OrderNumber == orderNumber) {
                 _.forEach(vwOrderVM.VariableWeighProductsViewModel, function (vwProductVM) {
@@ -408,9 +409,8 @@ var VariableWeightsProductsManagementView = Backbone.View.extend({
                 "variableWeighOrderViewModel": vwOrder
             }
         });
-        promise.always(function (res) {
-	    console.log(res);
-	    if (res.status !== 200) {
+        promise.always(function (j, s, res) {
+	    if (res.status != 200) {
 		$("#server-error").toggleClass("hidden", false);
 	    } else {
 		window.location.reload();
