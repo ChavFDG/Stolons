@@ -122,7 +122,7 @@ var StockMgtViewModal = Backbone.View.extend({
         if (this.currentProductStock.get("Product").get("Type") == 1 || this.currentProductStock.get("Product").get("Type") == 3) {
             newStock = parseInt(this.currentProductStock.get("WeekStock")) + 1;
         } else {
-            newStock = parseFloat(this.currentProductStock.get("WeekStock") + 1) * (this.currentProductStock.get("Product").get("QuantityStep") / 1000);
+            newStock = (parseFloat(this.currentProductStock.get("WeekStock") + 1) * (this.currentProductStock.get("Product").get("QuantityStep") / 1000)).toFixed(4);
         }
         $("#WeekStock").val(newStock);
         $("#WeekStock").trigger("change");
@@ -134,7 +134,7 @@ var StockMgtViewModal = Backbone.View.extend({
         if (this.currentProductStock.get("Product").get("Type") == 1 || this.currentProductStock.get("Product").get("Type") == 3) {
             newStock = parseInt(this.currentProductStock.get("WeekStock")) - 1;
         } else {
-            newStock = parseFloat(this.currentProductStock.get("WeekStock") - 1) * (this.currentProductStock.get("Product").get("QuantityStep") / 1000);
+            newStock = (parseFloat(this.currentProductStock.get("WeekStock") - 1) * (this.currentProductStock.get("Product").get("QuantityStep") / 1000)).toFixed(4);
         }
         $("#WeekStock").val(newStock);
         $("#WeekStock").trigger("change");
@@ -146,7 +146,7 @@ var StockMgtViewModal = Backbone.View.extend({
         if (this.currentProductStock.get("Product").get("Type") == 1 || this.currentProductStock.get("Product").get("Type") == 3) {
             newStock = parseInt(this.currentProductStock.get("RemainingStock")) + 1;
         } else {
-            newStock = parseFloat(this.currentProductStock.get("RemainingStock") + 1) * (this.currentProductStock.get("Product").get("QuantityStep") / 1000);
+            newStock = (parseFloat(this.currentProductStock.get("RemainingStock") + 1) * (this.currentProductStock.get("Product").get("QuantityStep") / 1000)).toFixed(4);
         }
         $("#RemainingStock").val(newStock);
         $("#RemainingStock").trigger("change");
@@ -158,7 +158,7 @@ var StockMgtViewModal = Backbone.View.extend({
         if (this.currentProductStock.get("Product").get("Type") == 1 || this.currentProductStock.get("Product").get("Type") == 3) {
             newStock = parseInt(this.currentProductStock.get("RemainingStock")) - 1;
         } else {
-            newStock = parseFloat(this.currentProductStock.get("RemainingStock") - 1) * (this.currentProductStock.get("Product").get("QuantityStep") / 1000);
+            newStock = (parseFloat(this.currentProductStock.get("RemainingStock") - 1) * (this.currentProductStock.get("Product").get("QuantityStep") / 1000)).toFixed(4);
         }
         $("#RemainingStock").val(newStock);
         $("#RemainingStock").trigger("change");
