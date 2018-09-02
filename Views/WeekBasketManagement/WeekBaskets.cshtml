@@ -277,7 +277,11 @@ else
                                     <td class="td-disabled correction-bill-entry">
                                         Pas de commande
                                     </td>
-                                    <% } else { %>
+                                    <% } else if (consumerBillEntry.IsAssignedVariableWeigh === true) { %>
+				    <td class="td-disabled correction-bill-entry">
+                                        Produit poids variable
+                                    </td>
+				    <% } else  { %>
                                     <td>
                                         <div class="correction-bill-entry">
                                             <div class="productQuantityChanger">
@@ -302,9 +306,16 @@ else
                                         <h5>Total</h5>
                                     </td>
                                     <% _.forEach(producerBill.getProductStocks(), function(productStock) { %>
+				      <% if (producerBill.isAssignedVariableWeigh(productStock) === true) { %>
+					<td class="td-disabled correction-bill-entry">
+					Produit poids variable
+					</td>
+				       <% } else { %>
                                     <td>
                                         <div class="correction-bill-entry">
-                                            <div class="productQuantityChanger">
+
+
+                                             <div class="productQuantityChanger">
                                                 <a href="#" class="minus decrementTotal" data-product-stock-id="<%= productStock.get('Id') %>">
                                                     <img src="/images/basket-remove.png" />
                                                 </a>
@@ -314,9 +325,10 @@ else
                                                 <a href="#" class="plus incrementTotal" data-product-stock-id="<%= productStock.get('Id') %>">
                                                     <img src="/images/basket-add.png" />
                                                 </a>
-                                            </div>
-                                        </div>
-                                    </td>
+						</div>
+                                           </div>
+                                         </td>
+				       <% } %>
                                     <% }); %>
                                 </tr>
                             </tbody>
