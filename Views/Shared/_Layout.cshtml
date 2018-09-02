@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 @using Microsoft.AspNetCore.Identity;
 @using System.Security.Claims;
 @using Stolons.ViewModels;
@@ -24,6 +24,13 @@
     <script src="~/lib/jquery-ui/jquery-ui.min.js"></script>
     <script src="~/lib/jquery-ui/ui/i18n/datepicker-fr.js"></script>
     <script src="~/lib/jquery-ui-addon/jquery-ui-timepicker-addon.js"></script>
+
+    <script>
+     /*** Handle jQuery plugin naming conflict between jQuery UI and Bootstrap ***/
+     $.widget.bridge('uibutton', $.ui.button);
+     $.widget.bridge('uitooltip', $.ui.tooltip);
+    </script>
+
     <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="~/lib/bootbox.min.js"></script>
     <script src="~/lib/jquery.blockUI.js"></script>
