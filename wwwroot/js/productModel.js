@@ -12,7 +12,7 @@ ProductModel = Backbone.Model.extend({
             //Default image
             return "/images/panier.jpg";
         }
-        if (type == 'light') {
+        if (type === 'light') {
             return this.get("LightPath") + "\\" + pictures[0];
         }
         return this.get("HeavyPath") + "\\" + pictures[0];
@@ -34,13 +34,13 @@ ProductStockModel = Backbone.Model.extend({
       return the html string according to this product's sell type
      */
     getSellTypeString: function () {
-        if (this.get("Product").get("Type") == 0) {
+        if (this.get("Product").get("Type") === 0) {
             return "Au poids";
-        } else if (this.get("Product").get("Type") == 1) {
+        } else if (this.get("Product").get("Type") === 1) {
             return "À la pièce";
-        } else if (this.get("Product").get("Type") == 2) {
+        } else if (this.get("Product").get("Type") === 2) {
             return "Emballé";
-        } else if (this.get("Product").get("Type") == 3) {
+        } else if (this.get("Product").get("Type") === 3) {
             return "Poids variable";
         }
     },

@@ -411,7 +411,7 @@ ProductsView = Backbone.View.extend(
                 //Hide loading
                 $('#loading').toggleClass('hidden', true);
                 $('#topButton').toggleClass('hidden', false);
-                $('#filtersPanel').toggleClass('hidden', false);
+                $('#filtersPanelGroup').toggleClass('hidden', false);
 
             }, this);
         }
