@@ -51,7 +51,6 @@
                 else
                 {
                     <img src="@Model.ActiveAdherentStolon.Stolon.LogoFilePath" class="stolon-avatar-banner" />
-
                 }
             </div>
             <div class=" col-sm-7 col-xs-10">
@@ -88,27 +87,27 @@
                                 }
                             }
 
-                        <a asp-controller="WeekBasket" asp-action="Index" class="@classToAdd">
-                            <img src="/images/panier.jpg" class="basket-banner-logo" />
-                            @if (Model.TempWeekBasket == null || Model.TempWeekBasket.TotalPrice == 0)
-                            {
-                                <span>Commander</span>
-                            }
-                            else
-                            {
-                                <span>Mon panier (@Model.TempWeekBasket.TotalPrice.ToString("0.00")€)</span>
-                                @if (Model.TempWeekBasket?.Validated == false)
+                            <a asp-controller="WeekBasket" asp-action="Index" class="@classToAdd">
+                                <img src="/images/panier.jpg" class="basket-banner-logo" />
+                                @if (Model.TempWeekBasket == null || Model.TempWeekBasket.TotalPrice == 0)
                                 {
-                                    <div class="bannerRightInformations" 
-                                         title="Le panier n'est pas validé"
-                                         data-toggle="tooltip"
-                                         data-placement="bottom">
-                                        <span class="glyphicon glyphicon-warning-sign"></span> 
-                                    </div>
+                                    <span>Commander</span>
                                 }
-                            }
+                                else
+                                {
+                                    <span>Mon panier (@Model.TempWeekBasket.TotalPrice.ToString("0.00")€)</span>
+                                    @if (Model.TempWeekBasket?.Validated == false)
+                                    {
+                                        <div class="bannerRightInformations"
+                                             title="Le panier n'est pas validé"
+                                             data-toggle="tooltip"
+                                             data-placement="bottom">
+                                            <span class="glyphicon glyphicon-warning-sign"></span>
+                                        </div>
+                                    }
+                                }
 
-                        </a>
+                            </a>
                         }
                         else
                         {
@@ -146,56 +145,102 @@
                 </div>
                 <div id="navbar" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
-                        <li><a asp-controller="Home" asp-action="Index">Accueil</a></li>
-                        <li><a asp-controller="WeekBasket" asp-action="Index">Mon panier</a></li>
-                        <li><a asp-controller="Producers" asp-action="Index">Nos producteurs</a></li>
-                        @if (Model.ActiveAdherentStolon.IsProducer)
-                        {
-                            <li><a asp-controller="ProductsManagement" asp-action="Index">Mes produits et mes stocks</a></li>
-                            <li><a asp-controller="News" asp-action="Index">Mes nouvelles</a></li>
-                        }
+                        <li><a asp-controller="Home" asp-action="Index" class="active"><i class="fas fa-home"></i> Accueil</a></li>
+                        <li><a asp-controller="WeekBasket" asp-action="Index"><i class="fas fa-shopping-bag"></i> Mon panier</a></li>
+                        <li><a asp-controller="Producers" asp-action="Index"><i class="fas fa-users"></i> Nos producteurs</a></li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
                         @if (Model.ActiveAdherentStolon.Authorized(Role.Volunteer))
                         {
                             <li class="dropdown">
                                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                                    Gestion des paniers
+                                    <i class="fas fa-leaf"></i> @(Model.ActiveAdherentStolon.Stolon.StolonType == Stolon.OrganisationType.Association ? Model.ActiveAdherentStolon.Stolon.Label : "Mon dépot")
                                     <span class="caret"></span>
                                 </a>
                                 <ul class="dropdown-menu">
-                                    <li><a asp-controller="WeekBasketManagement" asp-action="WeekBaskets">Paniers de la semaine</a></li>
-                                    <li><a asp-controller="WeekBasketManagement" asp-action="History">Historique</a></li>
-                                </ul>
-                            </li>
-
-
-
-                            <li><a asp-controller="Users" asp-action="Index">Adhérents</a></li>
-                            <li class="dropdown">
-                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                                    Administration
-                                    <span class="caret"></span>
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li><a asp-controller="Mails" asp-action="Index">Courriels</a></li>
-                                    <li><a asp-controller="Transactions" asp-action="Index">Transactions</a></li>
-                                    <li><a asp-controller="News" asp-action="Index">Les nouvelles</a></li>
+                                    <li class="dropdown-header">Gestion des paniers</li>
+                                    <li><a asp-controller="WeekBasketManagement" asp-action="WeekBaskets"><i class="fas fa-shopping-basket"></i> Paniers de la semaine</a></li>
+                                    <li><a asp-controller="WeekBasketManagement" asp-action="History"><i class="fas fa-history"></i> Historique</a></li>
+                                    <li class="dropdown-header">Gestion des adhérents</li>
+                                    <li><a asp-controller="Users" asp-action="Index"><i class="fas fa-users-cog"></i> Adhérents</a></li>
+                                    <li><a asp-controller="Mails" asp-action="Index"><i class="fas fa-envelope"></i> Courriels</a></li>
+                                    <li><a asp-controller="News" asp-action="Index"><i class="fas fa-newspaper"></i> Les nouvelles</a></li>
+                                    <li class="dropdown-header">Administrations</li>
+                                    <li><a asp-controller="Transactions" asp-action="Index"><i class="fas fa-exchange-alt"></i> Transactions</a></li>
                                     @if (Model.ActiveAdherentStolon.Authorized(Role.Admin))
                                     {
-                                        <li><a asp-controller="Stolon" asp-action="Index">@Model.ActiveAdherentStolon.Stolon.Label</a></li>
-                                    }
-                                    @if (Model.ActiveAdherentStolon.Adherent.IsWebAdmin)
-                                    {
-                                        <li><a asp-controller="ApplicationConfig" asp-action="Index">Le site</a></li>
-                                        <li><a asp-controller="Stolons" asp-action="Index">Les Stolons</a></li>
-                                        <li><a asp-controller="ProductsManagement" asp-action="ManageFamilies">Familles de produits</a></li>
+                                        <li><a asp-controller="Stolon" asp-action="Index"><i class="fas fa-cog"></i> Paramétre</a></li>
                                     }
                                 </ul>
                             </li>
                         }
+
+                        @if (Model.ActiveAdherentStolon.IsProducer)
+                        {
+                            <li class="dropdown">
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                    <span class="glyphicon glyphicon-grain"></span> @(Model.ActiveAdherentStolon.Stolon.StolonType == Stolon.OrganisationType.Association ? Model.ActiveAdherentStolon.Adherent.CompanyName : "Ma ferme")
+                                    <span class="caret"></span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a asp-controller="ProductsManagement" asp-action="Index"><i class="fab fa-product-hunt"></i> Mes produits et mes stocks</a></li>
+                                    <li><a asp-controller="BillsHistory" asp-action="Index" asp-route-id=""><i class="fas fa-file-invoice"></i> Mes factures et bon de commandes</a></li>
+                                    <li><a asp-controller="News" asp-action="Index"><i class="fas fa-newspaper"></i> Mes nouvelles</a></li>
+                                </ul>
+                            </li>
+                        }
+
+                        @if (Model.ActiveAdherentStolon.Adherent.IsWebAdmin)
+                        {
+                            <li class="dropdown">
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                    <i class="fas fa-cog"></i> Administration
+                                    <span class="caret"></span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a asp-controller="ApplicationConfig" asp-action="Index"><i class="fas fa-cogs"></i> Le site</a></li>
+                                    <li><a asp-controller="Stolons" asp-action="Index"><i class="fab fa-pagelines"></i> Les Stolons</a></li>
+                                    <li><a asp-controller="ProductsManagement" asp-action="ManageFamilies"><i class="fas fa-object-group"></i> Familles de produits</a></li>
+                                </ul>
+                            </li>
+                        }
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                <i class="fas fa-user"></i> Mon compte
+                                <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a asp-controller="Manage" asp-action="Index" title="Manage"><i class="fas fa-user-edit"></i> Mes informations</a></li>
+                                <li><a asp-controller="Orders" asp-action="Index" asp-route-id=""><i class="fas fa-shopping-cart"></i> Mes paniers commandés</a></li>
+                                <li>
+                                    <a href="#" onclick="document.forms['logoutForm'].submit();return false;"><i class="fas fa-sign-out-alt"></i> Déconnexion</a>
+                                    <form asp-controller="Account" asp-action="LogOff" method="post" id="logoutForm"></form>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a>
+                                <div title="Votre portemonnaie virtuel de Ṩ (Stols) vous permet de créditer <br />par avance votre compte en euros auprès de votre Stolon.<br /> Vous avez ensuite la possibilité de régler vos<br /> factures en ligne en utilisant vos Ṩ (Stols)."
+                                     data-toggle="tooltip"
+                                     data-placement="bottom">
+                                    @(Model.ActiveAdherentStolon.Token)<b>Ṩ</b>
+                                </div>
+                            </a>
+                        </li>
+
+                        @if (Model.ActiveAdherentStolon.Stolon.UseSubscipstion && !Model.ActiveAdherentStolon.SubscriptionPaid)
+                        {
+                            <li>
+                                <a>
+                                    <div title="Cotisation non payée, <br />penser à la régler à la prochaine commande"
+                                         data-toggle="tooltip"
+                                         data-placement="bottom">
+                                        <span class="glyphicon glyphicon-warning-sign text-warning"></span>
+                                    </div>
+                                </a>
+                            </li>
+                        }
                     </ul>
-                </div>
-                <div class="navbar-right">
-                    @await Html.PartialAsync("_LoginPartial")
                 </div>
             </div>
         </nav>

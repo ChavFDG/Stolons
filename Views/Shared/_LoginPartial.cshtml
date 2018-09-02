@@ -7,56 +7,8 @@
 
 @if (SignInManager.IsSignedIn(User))
 {
-    <div class="bannerAccount">
-
-        <div id="stols" class="banner-stols-container">
-            <div
-                class="bannerRightInformations"
-                title="Votre portemonnaie virtuel de Ṩ (Stols) vous permet de créditer <br />par avance votre compte en euros auprès de votre Stolon.<br /> Vous avez ensuite la possibilité de régler vos<br /> factures en ligne en utilisant vos Ṩ (Stols)."
-                data-toggle="tooltip"
-                data-placement="bottom"
-            >
-                @(Model.ActiveAdherentStolon.Token) <b>Ṩ</b>
-            </div>
-        </div>
-
-        @{
-            if (Model.ActiveAdherentStolon.Stolon.UseSubscipstion && !Model.ActiveAdherentStolon.SubscriptionPaid)
-            {
-                <div class="pull-left">
-                    <div
-                        class="bannerRightInformations"
-                        title="Cotisation non payée, <br />penser à la régler à la prochaine commande"
-                        data-toggle="tooltip"
-                        data-placement="bottom"
-                    >
-                        <img class="warning" src="/images/warning.png" />
-                    </div>
-                </div>
-            }
-        }
 
 
-
-        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-            <div class="bannerAvatar">
-                <img class="avatar" src="@Model.ActiveAdherentStolon.Adherent.AvatarFilePath" />
-            </div>
-            <span class="caret"></span>
-        </a>
-        <ul class="dropdown-menu">
-            <li><a asp-controller="Manage" asp-action="Index" title="Manage">Mon compte</a></li>
-            <li><a asp-controller="Orders" asp-action="Index" asp-route-id="">Mes paniers commandés</a></li>
-            @if (Model.ActiveAdherentStolon.Adherent.AdherentStolons.Any(x => x.IsProducer))
-            {
-                <li><a asp-controller="BillsHistory" asp-action="Index" asp-route-id="">Mes factures et bon de commandes</a></li>
-            }
-            <li>
-                <a href="#" onclick="document.forms['logoutForm'].submit();return false;">Déconnexion</a>
-                <form asp-controller="Account" asp-action="LogOff" method="post" id="logoutForm"></form>
-            </li>
-        </ul>
-    </div>
 }
 else
 {
