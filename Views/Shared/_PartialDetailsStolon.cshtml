@@ -241,7 +241,14 @@
                 </dd>
             </dl>
             <h5>Période de récupération des paniers</h5>
+            
             <dl class="dl-horizontal">
+                <dt>
+                </dt>
+                <dd>
+                    Du :
+
+                </dd>
                 <dt>
                     @Html.DisplayNameFor(model => model.Stolon.BasketPickUpStartDay)
                 </dt>
@@ -259,6 +266,12 @@
                 </dt>
                 <dd>
                     @Html.DisplayFor(model => model.Stolon.BasketPickUpStartMinute)
+                </dd>
+                <dt>
+                </dt>
+                <dd>
+                    Au :
+
                 </dd>
                 <dt>
                     @Html.DisplayNameFor(model => model.Stolon.BasketPickEndUpDay)
@@ -279,13 +292,19 @@
                     @Html.DisplayFor(model => model.Stolon.BasketPickUpEndMinute)
                 </dd>
                 <dt>
+                </dt>
+                <dd>
+                    Rappel :
+
+                </dd>
+                <dt>
                     @Html.DisplayNameFor(model => model.Stolon.OrderRememberHour)
                 </dt>
                 <dd>
                     @Html.DisplayFor(model => model.Stolon.OrderRememberHour)
                 </dd>
             </dl>
-        </div>
+</div>
     </div>
 </div>
 

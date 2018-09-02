@@ -98,7 +98,7 @@
             <a href="http://www.marionroger.fr/" target="_blank">Illustrations : Marion ROGER</a>
         </div>
 
-        
+
     </div>
 
     <div class="modal fade" id="connexion" tabindex="-1" role="dialog">
@@ -321,47 +321,47 @@
         </div>
     </div>
 
-        <script id="stolonDetailsTemplate" type="text/template">
-            <div class="rowAdjust">
-                <div class="col-xs-12 stolonDetailsContainer">
-                    <div>
-                        <button class="close" onclick="closeStolonDetail()" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-2 col-xs-1">
-                            <div class="stolonLogoContainer">
-                                <img src="<%= stolon.LogoFilePath %>" class="avatar stolonLogo" />
-                            </div>
-                        </div>
-                        <div class="col-lg-10 col-xs-2">
-                            <h1><%= stolon.Label %></h1>
+    <script id="stolonDetailsTemplate" type="text/template">
+        <div class="rowAdjust">
+            <div class="col-xs-12 stolonDetailsContainer">
+                <div>
+                    <button class="close" onclick="closeStolonDetail()" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="row">
+                    <div class="col-lg-2 col-xs-1">
+                        <div class="stolonLogoContainer">
+                            <img src="<%= stolon.LogoFilePath %>" class="avatar stolonLogo" />
                         </div>
                     </div>
-                    <div class="row">
-	                <span class="producersStolonInformationsNumber"><%= stolon.Producers.length %> </span> Producteurs
-	                <span class="producersStolonInformationsNumber"><%= stolon.Products.length %> </span> Produits bio et locaux
-                    </div>
-                    <div class="row">
-                        <h3>Adresse :</h3>
-                        <span><%= stolon.Address %></span>
-                    </div>
-                    <div class="row">
-                        <h3>Horaires de récupération des paniers :</h3>
-	                <span><%= stolon.StringPickupTime %></span>
-                    </div>
-                    <br />
-                    <div class="row buttonGoToStonContainer">
-                        <a href="/Home/StolonContact/<%= stolon.Id %>" class="btn btn-primary">Voir les détails de ce Stolon</a>
+                    <div class="col-lg-10 col-xs-2">
+                        <h1><%= stolon.Label %></h1>
                     </div>
                 </div>
+                <div class="row">
+                    <span class="producersStolonInformationsNumber"><%= stolon.Producers.length %> </span> Producteurs
+                    <span class="producersStolonInformationsNumber"><%= stolon.Products.length %> </span> Produits bio et locaux
+                </div>
+                <div class="row">
+                    <h3>Adresse :</h3>
+                    <span><%= stolon.Address %></span>
+                </div>
+                <div class="row">
+                    <h3>Horaires de récupération des paniers :</h3>
+                    <span><%= stolon.StringPickupTime %></span>
+                </div>
+                <br />
+                <div class="row buttonGoToStonContainer">
+                    <a href="/Home/StolonContact/<%= stolon.Id %>" class="btn btn-primary">Voir les détails de ce Stolon</a>
+                </div>
             </div>
-        </script>
+        </div>
+    </script>
 
-        <script>
-            function closeStolonDetail() {
-                $("#stolonDetails").toggleClass("hidden", true);
-            }
-        </script>
+    <script>
+        function closeStolonDetail() {
+            $("#stolonDetails").toggleClass("hidden", true);
+        }
+    </script>
 
-        <script src="/js/publicStolons.js"></script>
-        <script src="/lib/leaflet.js"></script>
+    <script src="/js/publicStolons.js"></script>
+    <script src="/lib/leaflet.js"></script>

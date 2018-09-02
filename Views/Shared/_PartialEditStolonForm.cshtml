@@ -361,6 +361,7 @@ $(function() {
 
     <h5>Période de récupération des paniers</h5>
     <div class="container">
+        Du
         <div class="form-group">
             <label asp-for="Stolon.BasketPickUpStartDay" class="col-md-2 control-label"></label>
             <div class="col-md-10">
@@ -387,6 +388,7 @@ $(function() {
                 <span asp-validation-for="Stolon.BasketPickUpStartMinute" class="text-danger"></span>
             </div>
         </div>
+        Au
         <div class="form-group">
             <label asp-for="Stolon.BasketPickEndUpDay" class="col-md-2 control-label"></label>
             <div class="col-md-10">
@@ -413,6 +415,7 @@ $(function() {
                 <span asp-validation-for="Stolon.BasketPickUpEndMinute" class="text-danger"></span>
             </div>
         </div>
+        <h5>Rappel</h5>
         <div class="form-group">
             <label asp-for="Stolon.OrderRememberHour" class="col-md-2 control-label"></label>
             <div class="col-md-10">

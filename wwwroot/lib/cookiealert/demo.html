@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Bootstrap cookie alert</title>
+
+    <!-- Bootstrap 4.1.1 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.min.css">
+
+    <!-- cookiealert.css -->
+    <link rel="stylesheet" href="cookiealert.css">
+</head>
+<body>
+
+<div class="container">
+
+    <div class="card" style="margin-top: 70px">
+        <div class="card-body">
+            <div id="fillme"></div>
+        </div>
+    </div>
+
+</div>
+
+<!-- COOKIES -->
+<div class="alert text-center cookiealert" role="alert">
+    <b>Do you like cookies?</b> &#x1F36A; We use cookies to ensure you get the best experience on our website. <a href="http://cookiesandyou.com/" target="_blank">Learn more</a>
+
+    <button type="button" class="btn btn-primary btn-sm acceptcookies" aria-label="Close">
+        I agree
+    </button>
+</div>
+<!-- /COOKIES -->
+
+<!-- JAVASCRIPT -->
+
+<!-- Only for the demo -->
+<script>
+    for (var i = 1; i <= 150; i++)
+        document.querySelector("#fillme").innerHTML += "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ";
+</script>
+
+<!-- If you already use jQuery and jsCookie on your site, you can use the smaller and -->
+<!-- cleaner version of cookiealert. Please check out the note at the bottom of README.md -->
+<script src="cookiealert-standalone.js"></script>
+
+</body>
+</html>
