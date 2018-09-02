@@ -2,7 +2,7 @@ window.WeekBasket = {};
 
 WeekBasket = window.WeekBasket;
 
-WeekBasket.roundPrice = function(decimal) {
+WeekBasket.roundPrice = function (decimal) {
     return Math.round(decimal * 100) / 100;
 };
 
@@ -12,9 +12,9 @@ ProductTypeModel = Backbone.Model.extend({
 
     idAttribute: "Id",
 
-    parse: function(data) {
-	data["ProductFamilly"] = _.sortBy(data["ProductFamilly"], "FamillyName");
-	return data;
+    parse: function (data) {
+        data["ProductFamilly"] = _.sortBy(data["ProductFamilly"], "FamillyName");
+        return data;
     }
 });
 
@@ -25,7 +25,7 @@ ProductTypesModel = Backbone.Collection.extend({
     model: ProductTypeModel,
 
     initialize: function () {
-	this.fetch();
+        this.fetch();
     },
 
     comparator: "Name"
@@ -305,10 +305,10 @@ ProductActionView = Backbone.View.extend(
             if (!this.billEntry) {
                 return false;
             }
-	    //Infinite stock
-	    if (this.billEntry.ProductStock.Product.StockManagement == 2) {
-		return true;
-	    }
+            //Infinite stock
+            if (this.billEntry.ProductStock.Product.StockManagement == 2) {
+                return true;
+            }
             var validatedBillEntry = WeekBasket.ValidatedWeekBasketModel.getProductEntry(this.productId);
             var validatedQty = (validatedBillEntry && validatedBillEntry.Quantity) || 0;
             var diffQty = this.billEntry.Quantity - validatedQty;
@@ -322,11 +322,11 @@ ProductActionView = Backbone.View.extend(
             var validatedQty = (validatedBillEntry && validatedBillEntry.Quantity) || 0;
             var productModel = WeekBasket.ProductsModel.get(this.productId);
 
-	    if (!this.billEntry) {
-		//Infinite stock
-		if (productModel.get("Product").get("StockManagement")  == 2) {
-		    return true;
-		}
+            if (!this.billEntry) {
+                //Infinite stock
+                if (productModel.get("Product").get("StockManagement") == 2) {
+                    return true;
+                }
                 if (productModel.get("RemainingStock") + validatedQty > 0) {
                     return true;
                 } else {
@@ -368,7 +368,7 @@ ProductActionView = Backbone.View.extend(
         },
 
         render: function () {
-	    var that = this;
+            var that = this;
             this.$el.html(that.template({
                 billEntry: that.billEntry,
                 canAddToBasket: _.bind(that.canAddToBasket, that),
@@ -391,7 +391,7 @@ ProductsView = Backbone.View.extend(
             this.views = {};
         },
 
-	//TODO here group by categories
+        //TODO here group by categories
         render: function () {
             this.$el.html(this.template({ products: this.model, productTypes: WeekBasket.ProductTypesModel.toJSON() }));
             this.model.forEach(function (productStockModel) {
@@ -412,7 +412,7 @@ ProductsView = Backbone.View.extend(
                 $('#loading').toggleClass('hidden', true);
                 $('#topButton').toggleClass('hidden', false);
                 $('#filtersPanel').toggleClass('hidden', false);
-                
+
             }, this);
         }
     }
@@ -475,10 +475,10 @@ ValidatedWeekBasketView = Backbone.View.extend(
 
         render: function () {
             this.$el.html(this.template({
-		tmpBasket: this.tmpBasketModel.toJSON(),
-		validatedBasketModel: this.model,
-		validatedBasket: this.model.toJSON()
-	    }));
+                tmpBasket: this.tmpBasketModel.toJSON(),
+                validatedBasketModel: this.model,
+                validatedBasket: this.model.toJSON()
+            }));
         }
     }
 );
@@ -489,8 +489,8 @@ var initModels = function () {
     WeekBasket.ProductsModel = new ProductsModel();
     WeekBasket.ValidatedWeekBasketModel = new ValidatedWeekBasketModel();
     WeekBasket.TmpWeekBasketModel = new TmpWeekBasketModel();
-    WeekBasket.ProductsModel.on("sync", function() {
-	WeekBasket.TmpWeekBasketModel.fetch();
+    WeekBasket.ProductsModel.on("sync", function () {
+        WeekBasket.TmpWeekBasketModel.fetch();
     }, this);
 };
 

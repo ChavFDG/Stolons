@@ -9,7 +9,7 @@ ProductModel = Backbone.Model.extend({
     getPictureUrl: function (type) {
         var pictures = this.get("Pictures");
         if (_.isEmpty(pictures) || _.isEmpty(pictures[0])) {
-	    //Default image
+            //Default image
             return "/images/panier.jpg";
         }
         if (type == 'light') {
@@ -46,7 +46,7 @@ ProductStockModel = Backbone.Model.extend({
     },
 
     getStockUnitString: function () {
-        if (this.get("Product").get("Type") == 1 || this.get("Product").get("Type") == 3)  {
+        if (this.get("Product").get("Type") == 1 || this.get("Product").get("Type") == 3) {
             return "Pièces";
         }
         var productUnit = this.get("Product").get("ProductUnit");
@@ -54,54 +54,54 @@ ProductStockModel = Backbone.Model.extend({
     },
 
     getUnitPriceString: function () {
-	var sellType = this.get("Product").get("Type");
-	//A la piece
-        if (sellType == 1) {
+        var sellType = this.get("Product").get("Type");
+        //A la piece
+        if (sellType === 1) {
             return this.get("Product").get("UnitPrice") + " € l'unité";
-        } else if (sellType == 0 || sellType == 2) { //Poids/emballé
+        } else if (sellType === 0 || sellType === 2) { //Poids/emballé
             var weightStepPrice = parseFloat(this.get("Product").get("WeightPrice"));
             weightStepPrice = weightStepPrice * (parseFloat(this.get("Product").get("QuantityStep")) / 1000);
             return weightStepPrice.toFixed(2) + " € pour " + this.get("Product").get("QuantityStepString");
-	} else if (sellType == 3) { //Poids variable
-	    var txt = "<small>De " + this.get("Product").get("MinimumWeight") + " " + this.unitsEnum[this.get("Product").get("ProductUnit")] + " (" + this.get("Product").get("MinimumPrice") + "€)";
-	    txt += " à " + this.get("Product").get("MaximumWeight") + " " + this.unitsEnum[this.get("Product").get("ProductUnit")] + " (" + this.get("Product").get("MaximumPrice") + "€)</small>";
-	    return txt;
-	}
+        } else if (sellType === 3) { //Poids variable
+            var txt = "<small>De " + this.get("Product").get("MinimumWeight") + " " + this.unitsEnum[this.get("Product").get("ProductUnit")] + " (" + this.get("Product").get("MinimumPrice") + "€)";
+            txt += " à " + this.get("Product").get("MaximumWeight") + " " + this.unitsEnum[this.get("Product").get("ProductUnit")] + " (" + this.get("Product").get("MaximumPrice") + "€)</small>";
+            return txt;
+        }
     },
 
     getVolumePriceString: function () {
         var productUnit = this.get("Product").get("ProductUnit");
 
-	if (this.get("Product").get("Type") == 3) {
-	    var tooltipText = "Produit vendu au poids variable. Le prix moyen est à titre d'information. Le poids ainsi que le prix définitif vous seront communiqués lors de la récupération des produits";
-	    return "<label data-toggle='tooltip' title='" + tooltipText + "' class=\"required \">≈ " + this.get("Product").get("UnitPrice") + " € (" + this.get("Product").get("WeightPrice") + "€/" + this.unitsEnum[productUnit] + ")</label>";
-	} else {
-	    if (this.get("Product").get("WeightPrice") === 0 || this.get("Product").get("QuantityStep") === 1000) {
-		return "";
+        if (this.get("Product").get("Type") === 3) {
+            var tooltipText = "Produit vendu au poids variable. Le prix moyen est à titre d'information. Le poids ainsi que le prix définitif vous seront communiqués lors de la récupération des produits";
+            return "<label>≈ " + this.get("Product").get("UnitPrice") + " € (" + this.get("Product").get("WeightPrice") + "€/" + this.unitsEnum[productUnit] + ")<div title = '" + tooltipText + "' data-toggle=\"tooltip\"> <i class=\"far fa-question-circle\"></i></div></label>";
+        } else {
+            if (this.get("Product").get("WeightPrice") === 0 || this.get("Product").get("QuantityStep") === 1000) {
+                return "";
             }
             return "(" + this.get("Product").get("WeightPrice") + " € / " + this.unitsEnum[productUnit] + ")";
-	}
+        }
     },
 
     getSellStepString: function () {
-	//Piece et poids variable
-        if (this.get("Product").get("Type") == 1 || this.get("Product").get("Type") == 3) {
+        //Piece et poids variable
+        if (this.get("Product").get("Type") === 1 || this.get("Product").get("Type") === 3) {
             return " Pièce(s)";
         }
         var productUnit = this.get("Product").get("ProductUnit");
     },
 
-    getStockManagementString: function() {
-	switch (this.get("Product").get("StockManagement")) {
-	case 0:
-	    return "A la semaine";
-	case 1:
-	    return "Stock fixe";
-	case 2:
-	    return "Illimité";
-	default:
-	    return "";
-	}
+    getStockManagementString: function () {
+        switch (this.get("Product").get("StockManagement")) {
+            case 0:
+                return "A la semaine";
+            case 1:
+                return "Stock fixe";
+            case 2:
+                return "Illimité";
+            default:
+                return "";
+        }
     },
 
     //retourne la string correctement formattee pour le poids donne en grammes
@@ -115,10 +115,10 @@ ProductStockModel = Backbone.Model.extend({
     //Stock restant en fonction du type de vente et de la quantity step
     getRemainingQuantityStock: function () {
         // Stock illimité
-        if (this.get("Product").get("StockManagement") == 2) {
+        if (this.get("Product").get("StockManagement") === 2) {
             return Infinity;
         }
-        if (this.get("Product").get("Type") == 1 || this.get("Product").get("Type") == 3)  {
+        if (this.get("Product").get("Type") === 1 || this.get("Product").get("Type") === 3) {
             return this.get("RemainingStock");
         } else {
             return (this.get("RemainingStock") * this.get("Product").get("QuantityStep")) / 1000;
@@ -126,12 +126,12 @@ ProductStockModel = Backbone.Model.extend({
     },
 
     //Quantity already ordered by consumers this week
-    getWeekQuantityOrdered: function() {
-        if (this.get("Product").get("StockManagement") == 2) {
+    getWeekQuantityOrdered: function () {
+        if (this.get("Product").get("StockManagement") === 2) {
             return 0; //NA
         }
-	var diff = this.get("WeekStock") - this.get("RemainingStock");
-        if (this.get("Product").get("Type") == 1 || this.get("Product").get("Type") == 3) {
+        var diff = this.get("WeekStock") - this.get("RemainingStock");
+        if (this.get("Product").get("Type") === 1 || this.get("Product").get("Type") === 3) {
             return diff;
         } else {
             return (diff * this.get("Product").get("QuantityStep")) / 1000;
@@ -140,7 +140,7 @@ ProductStockModel = Backbone.Model.extend({
 
     //Stock restant en fonction du type de vente et de la quantity step
     getWeekQuantityStock: function () {
-        if (this.get("Product").get("Type") == 1 || this.get("Product").get("Type") == 3) {
+        if (this.get("Product").get("Type") === 1 || this.get("Product").get("Type") === 3) {
             return this.get("WeekStock");
         } else {
             return (this.get("WeekStock") * this.get("Product").get("QuantityStep")) / 1000;
@@ -172,7 +172,7 @@ ProductsModel = Backbone.Collection.extend(
             this.forEach(function (productModel) {
                 var productFamilly = productModel.get("Product").get("Familly");
                 if (!_.isEmpty(productFamilly)) {
-                    if (productFamilly.FamillyName == family) {
+                    if (productFamilly.FamillyName === family) {
                         products.push(productModel);
                     }
                 }
@@ -185,7 +185,7 @@ ProductsModel = Backbone.Collection.extend(
             this.forEach(function (productModel) {
                 var familly = productModel.get("Product").get("Familly");
                 if (!_.isEmpty(familly)) {
-                    if (familly.Type.Name == typeName) {
+                    if (familly.Type.Name === typeName) {
                         products.push(productModel);
                     }
                 }
@@ -215,7 +215,7 @@ ProducerProductStockCollection = Backbone.Collection.extend(
             this.forEach(function (productModel) {
                 var productFamilly = productModel.get("Product").get("Familly");
                 if (!_.isEmpty(productFamilly)) {
-                    if (productFamilly.FamillyName == family) {
+                    if (productFamilly.FamillyName === family) {
                         products.push(productModel);
                     }
                 }
@@ -228,7 +228,7 @@ ProducerProductStockCollection = Backbone.Collection.extend(
             this.forEach(function (productModel) {
                 var familly = productModel.get("Product").get("Familly");
                 if (!_.isEmpty(familly)) {
-                    if (familly.Type.Name == typeName) {
+                    if (familly.Type.Name === typeName) {
                         products.push(productModel);
                     }
                 }
