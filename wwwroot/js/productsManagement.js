@@ -387,6 +387,14 @@ var VariableWeightsProductsManagementView = Backbone.View.extend({
         return valid;
     },
 
+    toFrenchDecimal: function(vwOrder) {
+	_.forEach(vwOrder.VariableWeighProductsViewModel, function(VWproductVM) {
+	    _.forEach(VWproductVM.ConsumersAssignedWeighs, function(assignedWeight) {
+		assignedWeight.AssignedWeigh = assignedWeight.AssignedWeigh.toString().replace(".", ",");
+	    });
+	});
+    },
+
     saveOrderVariableWeighs: function (ev) {
         var that = this;
         var buttonElem = $(ev.currentTarget);
@@ -404,6 +412,7 @@ var VariableWeightsProductsManagementView = Backbone.View.extend({
         if (!vwOrder) {
             return false;
         }
+	this.toFrenchDecimal(vwOrder);
         $.blockUI();
         var promise = $.ajax({
             url: "/api/variableWeightProducts",
