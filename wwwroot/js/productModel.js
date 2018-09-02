@@ -73,8 +73,8 @@ ProductStockModel = Backbone.Model.extend({
         var productUnit = this.get("Product").get("ProductUnit");
 
         if (this.get("Product").get("Type") === 3) {
-            var tooltipText = "Produit vendu au poids variable. Le prix moyen est à titre d'information. Le poids ainsi que le prix définitif vous seront communiqués lors de la récupération des produits";
-            return "<label>≈ " + this.get("Product").get("UnitPrice") + " € (" + this.get("Product").get("WeightPrice") + "€/" + this.unitsEnum[productUnit] + ")<div title = '" + tooltipText + "' data-toggle=\"tooltip\"> <i class=\"far fa-question-circle\"></i></div></label>";
+            var tooltipText = "Produit vendu au poids variable. Le prix moyen est à titre informatif. Le poids ainsi que le prix définitif vous seront communiqués lors de la récupération des produits";
+            return "<label>≈ " + this.get("Product").get("UnitPrice") + " € (" + this.get("Product").get("WeightPrice") + "€/" + this.unitsEnum[productUnit] + ") <i data-toggle=\"tooltip\" title=\"" + tooltipText + "\" style=\"display: inline;\" class=\"far fa-question-circle\"></i></label>";
         } else {
             if (this.get("Product").get("WeightPrice") === 0 || this.get("Product").get("QuantityStep") === 1000) {
                 return "";
