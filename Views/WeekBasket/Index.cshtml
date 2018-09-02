@@ -318,8 +318,7 @@ else
 
         <div class="basketValidation">
             <% if (!tmpBasket.Validated && !(tmpBasketModel.isEmpty() && !validatedBasketModel.exists())) { %>
-                <div class="basketValidation__msg isa_warning">
-                    <span class="glyphicon glyphicon-warning-sign"></span>
+                <div class="basketValidation__msg isa_warning"><i class="fas fa-exclamation-triangle"></i>
                     <span class="warning-text">Ce panier doit être validé</span>
                 </div>
             <% } else if (validatedBasketModel.exists()) { %>

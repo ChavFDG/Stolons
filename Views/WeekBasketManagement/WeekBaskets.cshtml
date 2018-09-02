@@ -16,8 +16,7 @@
             <div class="bannerRightInformations"
                  title="@Html.Raw(Model.WeekStolonsBill.ModificationReason.Replace("\n\r", "<br/>"))"
                  data-toggle="tooltip"
-                 data-placement="bottom">
-                <i class="glyphicon glyphicon-warning-sign"></i>
+                 data-placement="bottom"><i class="fas fa-exclamation-triangle"></i>
             </div>
         }
         <a class="btn btn-small btn-default" title="Voir" asp-action="ShowStolonsBill" asp-route-id="@Model.WeekStolonsBill.BillNumber"><span class="glyphicon glyphicon glyphicon-eye-open"> </span></a>
@@ -104,8 +103,7 @@ else
                                 <div class="bannerRightInformations"
                                      title="@Html.Raw(item.ModificationReason.Replace("\n\r", "<br/>"))"
                                      data-toggle="tooltip"
-                                     data-placement="bottom">
-                                    <i class="glyphicon glyphicon-warning-sign"></i>
+                                     data-placement="bottom"><i class="fas fa-exclamation-triangle"></i>
                                 </div>
                             }
                         }
@@ -162,8 +160,7 @@ else
                                 <div class="bannerRightInformations"
                                      title="@Html.Raw(item.ModificationReason.Replace("\n\r", "<br/>"))"
                                      data-toggle="tooltip"
-                                     data-placement="bottom">
-                                    <i class="glyphicon glyphicon-warning-sign"></i>
+                                     data-placement="bottom"><i class="fas fa-exclamation-triangle"></i>
                                 </div>
 
                             }
@@ -215,12 +212,12 @@ else
                     <a class="btn btn-small btn-default" title="Voir" target="_blank" href="/billsHistory/ShowBill/<%= bill.BillNumber %>"><span class="glyphicon glyphicon glyphicon-eye-open"> </span></a>
                     <a class="btn btn-small btn-default" title="Télécharger" target="_blank" href="/bills/<%= bill.BillNumber %>.pdf"><span class="glyphicon glyphicon glyphicon-download-alt"> </span></a>
                     <% if (bill.HasBeenModified) { %>
-                    <div class="bannerRightInformations"
-                         title="<%= bill.ModificationReason %>"
-                         data-toggle="tooltip"
-                         data-placement="bottom">
-                        <i class="glyphicon glyphicon-warning-sign"></i>
-                    </div>
+                        <a class="bannerRightInformations"
+                             title="<%= bill.ModificationReason %>"
+                             data-toggle="tooltip"
+                             data-placement="bottom">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </a>
                     <% } %>
                 </td>
             </tr>

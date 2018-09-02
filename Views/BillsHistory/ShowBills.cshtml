@@ -106,8 +106,7 @@
                                 @if (item.HasBeenModified)
                                 {
                                     <div title="@Html.Raw(item.ModificationReason.Replace("\n\r", "<br/>"))"
-                                         data-toggle="tooltip">
-                                        <i class="glyphicon glyphicon-warning-sign"></i>
+                                         data-toggle="tooltip"><i class="fas fa-exclamation-triangle"></i>
                                     </div>
                                 }
                             </td>

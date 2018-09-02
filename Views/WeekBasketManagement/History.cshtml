@@ -101,13 +101,11 @@
 
                         @if (stolonBill.Key.HasBeenModified)
                         {
-                            <div
-                                class="isa_warning"
-                                title="@Html.Raw(stolonBill.Key.ModificationReason.Replace("\n\r", "<br />"))"
-                                data-toggle="tooltip"
-                            >
-                                <i class="glyphicon glyphicon-warning-sign"></i>
-                            </div>
+                            <a class="isa_warning"
+                               title="@Html.Raw(stolonBill.Key.ModificationReason.Replace("\n\r", "<br />"))"
+                               data-toggle="tooltip">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </a>
                         }
                     </td>
                 </tr>
@@ -167,7 +165,7 @@
                                         @(item.BillAmount.ToString("0.00") + "€ TTC")
                                     </td>
                                     <td>
-                                        @(item.FeeAmount.ToString("0.00") + "€ TTC (" + item.ProducerFee +"%)")
+                                        @(item.FeeAmount.ToString("0.00") + "€ TTC (" + item.ProducerFee + "%)")
                                     </td>
                                     <td>
                                         @{
@@ -176,11 +174,10 @@
                                             <a class="btn btn-small btn-default" title="Télécharger" target="_blank" href="/@Configurations.GetBillUrl(item)"><span class="glyphicon glyphicon glyphicon-download-alt"> </span></a>
                                             @if (item.HasBeenModified)
                                             {
-
-                                            <div title="@Html.Raw(item.ModificationReason.Replace("\n\r", "<br/>"))"
-                                                 data-toggle="tooltip">
-                                                <span class="glyphicon glyphicon-alert" />
-                                            </div>
+                                                <a class="isa_warning" title="@Html.Raw(item.ModificationReason.Replace("\n\r", "<br/>"))"
+                                                   data-toggle="tooltip">
+                                                    <i class="fas fa-exclamation-triangle"></i>
+                                                </a>
                                             }
                                         }
                                     </td>
@@ -227,10 +224,10 @@
                                             <a class="btn btn-small btn-default" title="Télécharger" target="_blank" href="/@Configurations.GetBillUrl(item)"><span class="glyphicon glyphicon glyphicon-download-alt"> </span></a>
                                             @if (item.HasBeenModified)
                                             {
-                                                <div title="@Html.Raw(item.ModificationReason.Replace("\n\r", "<br/>"))"
-                                                     data-toggle="tooltip">
-                                                    <span class="glyphicon glyphicon-alert"/>
-                                                </div>
+                                                <a class="isa_warning" title="@Html.Raw(item.ModificationReason.Replace("\n\r", "<br/>"))"
+                                                   data-toggle="tooltip">
+                                                    <i class="fas fa-exclamation-triangle"></i>
+                                                </a>
                                             }
                                         }
                                     </td>
