@@ -275,6 +275,8 @@ ProductView = Backbone.View.extend(
                 product: this.model.get("Product").toJSON(),
                 productModel: this.model.get("Product")
             }));
+	    //Force tooltips
+	    $('[data-toggle="tooltip"]').tooltip({ container: 'body', html: true });
         }
     }
 );
