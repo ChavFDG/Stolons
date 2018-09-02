@@ -37,12 +37,14 @@ $(document).ready(function () {
             "Est vous sur de vouloir supprimer ce message ?",
             function (result) {
                 if (result) {
+                    $.blockUI();
                     $.ajax({
                         type: "POST",
                         url: "Chat/RemoveMessage",
                         data: { id: id },
                         dataType: 'json',
                         success: function (data) {
+                            $.unblockUI();
                             if (data === true)
                                 $(("#" + id)).remove();
                         }
@@ -61,7 +63,8 @@ $(document).ready(function () {
                 title: "Edition du message : ",
                 inputType: "textarea",
                 callback: function (result) {
-                    if (result != null) {
+                    if (result !== null) {
+                        $.blockUI();
                         $.ajax({
                             type: "POST",
                             url: "Chat/EditMessage",
@@ -71,6 +74,7 @@ $(document).ready(function () {
                             },
                             dataType: 'json',
                             success: function (data) {
+                                $.unblockUI();
                                 if (data === true)
                                     $(("#" + id + " .messageContent")).html(result);
                             }
