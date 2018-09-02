@@ -296,6 +296,7 @@ namespace Stolons.Controllers
             producerBill.HtmlBillContent = BillGenerator.GenerateHtmlBillContent(producerBill, _context);
             producerBill.HtmlOrderContent = BillGenerator.GenerateHtmlOrderContent(producerBill, _context);
             BillGenerator.GenerateBillPDF(producerBill);
+            BillGenerator.GenerateOrderPDF(producerBill);
             _context.SaveChanges();
             //Consumers bills
             foreach (var billId in modifiedBills)

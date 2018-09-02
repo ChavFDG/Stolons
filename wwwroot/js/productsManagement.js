@@ -46,31 +46,31 @@ var ProductsManagementView = Backbone.View.extend({
         var productStockId = $(ev.currentTarget).data("product-stock-id");
 
         this.getProductStockModel(productStockId).done(function (productStockModel) {
-	    if ($(ev.currentTarget).uitooltip("instance")) {
-		$(ev.currentTarget).uitooltip("destroy");
-		$(ev.currentTarget).attr("title", "");//Fck this`
-	    }
-	    if (!$(ev.currentTarget).uitooltip("instance")) {
-		$(ev.currentTarget).uitooltip(
-		    {
-			track: true,
-			classes: {
+            if ($(ev.currentTarget).uitooltip("instance")) {
+                $(ev.currentTarget).uitooltip("destroy");
+                $(ev.currentTarget).attr("title", "");//Fck this`
+            }
+            if (!$(ev.currentTarget).uitooltip("instance")) {
+                $(ev.currentTarget).uitooltip(
+                    {
+                        track: true,
+                        classes: {
                             "ui-tooltip": "productPreviewTooltip",
                             "ui-tooltip-content": "productPreviewTooltipContent"
-			},
-			show: true,
-			content: that.publicProductTemplate(
+                        },
+                        show: true,
+                        content: that.publicProductTemplate(
                             {
-				product: productStockModel.get("Product").toJSON(),
-				productModel: productStockModel.get("Product"),
-				productStock: productStockModel.toJSON(),
-				productStockModel: productStockModel
+                                product: productStockModel.get("Product").toJSON(),
+                                productModel: productStockModel.get("Product"),
+                                productStock: productStockModel.toJSON(),
+                                productStockModel: productStockModel
                             })
                     }
-		);
-	    }
-	    $(ev.currentTarget).uitooltip("enable");
-	    $(ev.currentTarget).uitooltip("open");
+                );
+            }
+            $(ev.currentTarget).uitooltip("enable");
+            $(ev.currentTarget).uitooltip("open");
         });
     }
 });
@@ -303,7 +303,7 @@ var VariableWeightsProductsManagementView = Backbone.View.extend({
             this.variableWeightOrdersVM = new VariableWeightProductsVM();
             this.fetchDeferred = this.variableWeightOrdersVM.fetch();
         }
-	this.errors = {};
+        this.errors = {};
     },
 
     render: function () {
@@ -329,22 +329,22 @@ var VariableWeightsProductsManagementView = Backbone.View.extend({
         this.$el.empty();
     },
 
-    validateVWInput: function(inputElem) {
-	var newVal = parseFloat(inputElem.val().replace(",", "."));
-	var productId = inputElem.data("product-id");
-	var orderNumber = inputElem.data("order-number");
-	var vwProductVM = this.variableWeightOrdersVM.getVWProductVM(orderNumber, productId);
-	var valid = true;
+    validateVWInput: function (inputElem) {
+        var newVal = parseFloat(inputElem.val().replace(",", "."));
+        var productId = inputElem.data("product-id");
+        var orderNumber = inputElem.data("order-number");
+        var vwProductVM = this.variableWeightOrdersVM.getVWProductVM(orderNumber, productId);
+        var valid = true;
 
-	if (!_.isNumber(newVal) || _.isNaN(newVal) || newVal < vwProductVM.MinimumWeight || newVal > vwProductVM.MaximumWeight) {
-	    valid = false;
-	}
-	inputElem.toggleClass("error", !valid);
-	return valid;
+        if (!_.isNumber(newVal) || _.isNaN(newVal) || newVal < vwProductVM.MinimumWeight || newVal > vwProductVM.MaximumWeight) {
+            valid = false;
+        }
+        inputElem.toggleClass("error", !valid);
+        return valid;
     },
 
     onVWChange: function (ev) {
-	var that = this;
+        var that = this;
         var inputElem = $(ev.currentTarget);
         var orderNumber = inputElem.data("order-number");
         var productId = inputElem.data("product-id");
@@ -352,14 +352,14 @@ var VariableWeightsProductsManagementView = Backbone.View.extend({
         var consumerIdx = inputElem.data("consumer-idx");
 
         var orderVM;
-	inputElem.val(inputElem.val().replace(".", ","));
+        inputElem.val(inputElem.val().replace(".", ","));
         _.forEach(this.variableWeightOrdersVM.get("VariableWeighOrdersViewModel"), function (vwOrderVM) {
             if (vwOrderVM.OrderNumber == orderNumber) {
                 _.forEach(vwOrderVM.VariableWeighProductsViewModel, function (vwProductVM) {
                     if (vwProductVM.ProductId == productId) {
                         _.forEach(vwProductVM.ConsumersAssignedWeighs, function (assignedW, idx) {
                             if (assignedW.BillEntryId == billEntryId && idx == consumerIdx) {
-				that.validateVWInput(inputElem);
+                                that.validateVWInput(inputElem);
                                 assignedW.AssignedWeigh = parseFloat(inputElem.val().replace(",", "."));
                             }
                         });
@@ -370,40 +370,41 @@ var VariableWeightsProductsManagementView = Backbone.View.extend({
         return true;
     },
 
-    validateVWStolonOrder: function(orderNumber) {
-	var that = this;
-	var valid = true;
+    validateVWStolonOrder: function (orderNumber) {
+        var that = this;
+        var valid = true;
 
-	$("input.vw-input").each(function(idx, jqElem) {
-	    var inputElem = $(jqElem);
-	    var elemOrderNumber = inputElem.data("order-number");
-	    if (elemOrderNumber != orderNumber) {
-		return;
-	    }
-	    if (!that.validateVWInput(inputElem)) {
-		valid = false;
-	    }
-	});
-	return valid;
+        $("input.vw-input").each(function (idx, jqElem) {
+            var inputElem = $(jqElem);
+            var elemOrderNumber = inputElem.data("order-number");
+            if (elemOrderNumber != orderNumber) {
+                return;
+            }
+            if (!that.validateVWInput(inputElem)) {
+                valid = false;
+            }
+        });
+        return valid;
     },
 
     saveOrderVariableWeighs: function (ev) {
-	var that = this;
+        var that = this;
         var buttonElem = $(ev.currentTarget);
         var orderNumber = buttonElem.data("order-number");
 
         var vwOrder;
-	if (!this.validateVWStolonOrder(orderNumber)) {
-	    return false;
-	}
+        if (!this.validateVWStolonOrder(orderNumber)) {
+            return false;
+        }
         _.forEach(this.variableWeightOrdersVM.get("VariableWeighOrdersViewModel"), function (vwOrderVM) {
             if (vwOrderVM.OrderNumber === orderNumber) {
                 vwOrder = vwOrderVM;
             }
         });
-	if (!vwOrder) {
-	    return false;
-	}
+        if (!vwOrder) {
+            return false;
+        }
+        $.blockUI();
         var promise = $.ajax({
             url: "/api/variableWeightProducts",
             type: 'POST',
@@ -412,11 +413,12 @@ var VariableWeightsProductsManagementView = Backbone.View.extend({
             }
         });
         promise.always(function (j, s, res) {
-	    if (res.status != 200) {
-		$("#server-error").toggleClass("hidden", false);
-	    } else {
-		window.location.reload();
-	    }
+            $.unblockUI();
+            if (res.status != 200) {
+                $("#server-error").toggleClass("hidden", false);
+            } else {
+                window.location.reload();
+            }
         });
     }
 

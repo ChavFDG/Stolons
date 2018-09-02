@@ -16,7 +16,7 @@
             <div class="bannerRightInformations"
                  title="@Html.Raw(Model.WeekStolonsBill.ModificationReason.Replace("\n\r", "<br/>"))"
                  data-toggle="tooltip"
-                 data-placement="bottom"><i class="fas fa-exclamation-triangle"></i>
+                 data-placement="bottom"><i class="fas fa-exclamation-triangle isa_warning"></i>
             </div>
         }
         <a class="btn btn-small btn-default" title="Voir" asp-action="ShowStolonsBill" asp-route-id="@Model.WeekStolonsBill.BillNumber"><span class="glyphicon glyphicon glyphicon-eye-open"> </span></a>
@@ -103,7 +103,7 @@ else
                                 <div class="bannerRightInformations"
                                      title="@Html.Raw(item.ModificationReason.Replace("\n\r", "<br/>"))"
                                      data-toggle="tooltip"
-                                     data-placement="bottom"><i class="fas fa-exclamation-triangle"></i>
+                                     data-placement="bottom"><i class="fas fa-exclamation-triangle isa_warning"></i>
                                 </div>
                             }
                         }
@@ -160,7 +160,7 @@ else
                                 <div class="bannerRightInformations"
                                      title="@Html.Raw(item.ModificationReason.Replace("\n\r", "<br/>"))"
                                      data-toggle="tooltip"
-                                     data-placement="bottom"><i class="fas fa-exclamation-triangle"></i>
+                                     data-placement="bottom"><i class="fas fa-exclamation-triangle isa_warning"></i>
                                 </div>
 
                             }
@@ -216,7 +216,7 @@ else
                              title="<%= bill.ModificationReason %>"
                              data-toggle="tooltip"
                              data-placement="bottom">
-                            <i class="fas fa-exclamation-triangle"></i>
+                            <i class="fas fa-exclamation-triangle isa_warning"></i>
                         </a>
                     <% } %>
                 </td>

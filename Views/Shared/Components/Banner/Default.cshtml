@@ -167,7 +167,7 @@
                                     <li><a asp-controller="Transactions" asp-action="Index"><i class="fas fa-exchange-alt"></i> Transactions</a></li>
                                     @if (Model.ActiveAdherentStolon.Authorized(Role.Admin))
                                     {
-                                        <li><a asp-controller="Stolon" asp-action="Index"><i class="fas fa-cog"></i> Paramétre</a></li>
+                                        <li><a asp-controller="Stolon" asp-action="Index"><i class="fas fa-cog"></i> Paramètres</a></li>
                                     }
                                 </ul>
                             </li>
@@ -228,11 +228,11 @@
 
                         @if (Model.ActiveAdherentStolon.Stolon.UseSubscipstion && !Model.ActiveAdherentStolon.SubscriptionPaid)
                         {
-                            <li>
-                                <a>
-                                    <div title="Cotisation non payée, <br />penser à la régler à la prochaine commande"
+                            <li >
+                                <a >
+                                    <div  title="Cotisation non payée, <br />penser à la régler à la prochaine commande"
                                          data-toggle="tooltip"
-                                         data-placement="bottom"><i class="fas fa-exclamation-triangle"></i>
+                                         data-placement="bottom"><i class="fas fa-exclamation-triangle isa_warning"></i>
                                     </div>
                                 </a>
                             </li>
