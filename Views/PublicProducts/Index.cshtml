@@ -5,44 +5,48 @@
 }
 
 
+
+
 <div class="publicProductsContainer">
-  <div class="row">
-    <h2></h2>
-  </div>
-  <div class="row">
-    <div id="filters">
+    <div class="row">
+        <h2></h2>
     </div>
-    <div class="products">
-      <div id="products">
-      </div>
+    <div class="row">
+        <div id="filters">
+        </div>
+        <div class="products">
+            <div id="products">
+            </div>
+        </div>
     </div>
-  </div>
 </div>
+
+
 
 <div id="productModal" class="modal fade"></div>
 <div id="producerModal" class="modal fade"></div>
 
 <script id="filtersTemplate" type="text/template">
 
-  <div class="searchFilter">
-    <dt><label>Recherche</label></dt>
-    <dt><input id="search" type="text"></dt>
-  </div>
-  <div id="tree">
-  </div>
+    <div class="searchFilter">
+        <dt><label>Recherche</label></dt>
+        <dt><input id="search" type="text"></dt>
+    </div>
+    <div id="tree">
+    </div>
 
 </script>
 
 <script id="productsTemplate" type="text/template">
 
-  <% _.forEach(products, function(productModel) { %>
-  <div id="product-<%= productModel.get('Id') %>">
-  </div>
-  <% }); %>
+    <% _.forEach(products, function(productModel) { %>
+    <div id="product-<%= productModel.get('Id') %>">
+    </div>
+    <% }); %>
 
-  <div id="emptyProducts" class="hidden">
-    <span>Aucun produit disponible ou pas de produits correspondants à votre recherche</span>
-  </div>
+    <div id="emptyProducts" class="hidden">
+        <span>Aucun produit disponible ou pas de produits correspondants à votre recherche</span>
+    </div>
 
 </script>
 

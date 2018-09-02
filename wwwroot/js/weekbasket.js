@@ -194,95 +194,6 @@ ValidatedWeekBasketModel = Backbone.Model.extend({
 
 /* ---------------------------  Bellow Views definitions -------------------- */
 
-FiltersView = Backbone.View.extend({
-
-    el: "#filters",
-
-    template: _.template($("#filtersTemplate").html()),
-
-    initialize: function (args) {
-        this.model = args.model;
-        this.productsModel = args.productsModel;
-	this.model.on('sync', this.render, this);
-        this.productsModel.on('sync', this.render, this);
-        //this.selectedFamily = "Tous";
-    },
-
-    famillyMatch: function (product) {
-        if (!this.selectedNode) {
-            return true;
-        } else {
-            if (this.selectedNode.category) {
-                if (this.selectedNode.id === "Tous") {
-                    return true
-                }
-                if (!product.Familly || !product.Familly.Type) {
-                    return false;
-                }
-                return product.Familly.Type && product.Familly.Type.Name == this.selectedNode.text;
-            } else {
-                if (!product.Familly) {
-                    return false;
-                }
-                return product.Familly.FamillyName === this.selectedNode.text;
-            }
-        }
-    },
-
-    productNameMatch: function (product, searchTerm) {
-        return _.isEmpty(searchTerm) || product.Name.toLowerCase().indexOf(searchTerm) != -1;
-    },
-
-    productDescMatch: function (product, searchTerm) {
-        if (_.isEmpty(product.Description)) {
-            return false;
-        }
-        return _.isEmpty(searchTerm) || product.Description.toLowerCase().indexOf(searchTerm) != -1;
-    },
-
-    filterProducts: function () {
-        var searchTerm = this.$("#search").val() || "";
-        searchTerm = searchTerm.toLowerCase();
-        var nbMatch = 0;
-        this.productsModel.forEach(function (productStockModel) {
-            var product = productStockModel.get("Product").toJSON();
-
-            if (this.famillyMatch(product) && (this.productNameMatch(product, searchTerm) || this.productDescMatch(product, searchTerm))) {
-                $("#product-" + productStockModel.get("Id")).removeClass("hidden");
-                nbMatch++;
-            } else {
-                $("#product-" + productStockModel.get("Id")).removeClass("hidden").addClass("hidden");
-            }
-        }, this);
-        if (nbMatch === 0) {
-            $("#emptyProducts").removeClass("hidden");
-        } else {
-            $("#emptyProducts").addClass("hidden");
-        }
-    },
-
-    render: function () {
-        this.$el.html(this.template({
-	    productTypes: this.model.toJSON(),
-	    products: WeekBasket.ProductsModel
-	}));
-	$('#filters > li.dropdown').hover(function() {
-	    $(this).find('.dropdown-menu').stop(true, true).delay(0).fadeIn(1000);
-	}, function() {
-	    $(this).find('.dropdown-menu').stop(true, true).delay(300).fadeOut(200);
-	});
-	$('#filters li a').click(function(event) {
-	    var anchor = $(event.currentTarget).attr("href").substr(1);
-	    $('html, body').animate({
-		scrollTop: $("[id='" + anchor + "']").offset().top
-	    }, 1000);
-	    event.preventDefault();
-	});
-	this.$('#search').on("input", _.bind(function () {
-            this.filterProducts();
-        }, this));
-    }
-});
 
 ProductModalView = Backbone.View.extend({
 
@@ -500,6 +411,7 @@ ProductsView = Backbone.View.extend(
                 //Hide loading
                 $('#loading').toggleClass('hidden', true);
                 $('#topButton').toggleClass('hidden', false);
+                $('#filtersPanel').toggleClass('hidden', false);
                 
             }, this);
         }
@@ -588,7 +500,7 @@ var initViews = function () {
 
     window.ProducerModalView = new ProducerModalView();
 
-    WeekBasket.FiltersView = new FiltersView({ model: WeekBasket.ProductTypesModel, productsModel: WeekBasket.ProductsModel });
+    //WeekBasket.FiltersView = new FiltersView({ model: WeekBasket.ProductTypesModel, productsModel: WeekBasket.ProductsModel });
 
     WeekBasket.ValidatedWeekBasketView = new ValidatedWeekBasketView(
         {

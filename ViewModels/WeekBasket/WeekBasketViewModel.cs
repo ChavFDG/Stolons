@@ -13,8 +13,8 @@ namespace Stolons.ViewModels.WeekBasket
     {
 
         public AdherentStolon AdherentStolon { get; set; }
-        public List<ProductStockStolon> ProductsStocks { get; set; }
-        public List<ProductType> ProductTypes { get; set; }
+        public List<ProductStockStolon> ProductsStocks { get; set; } 
+        public List<ProductType> ProductTypes { get; set; } = new List<ProductType>();
         public TempWeekBasket TempWeekBasket { get; set; }
         public ValidatedWeekBasket ValidatedWeekBasket { get; set; }
 
@@ -26,9 +26,25 @@ namespace Stolons.ViewModels.WeekBasket
         {
             TempWeekBasket = tempWeekBasket;
             ValidatedWeekBasket = validatedWeekBasket;
-	        base.ActiveAdherentStolon = AdherentStolon = adherentStolon;
-            ProductsStocks = context.ProductsStocks.Include(x => x.Product).Include(x => x.AdherentStolon).Where(x => x.AdherentStolon.Id == AdherentStolon.Stolon.Id).Where(x => x.Product.IsAvailable).Where(x => x.State == Product.ProductState.Enabled).ToList();
-            ProductTypes = context.ProductTypes.Include(x => x.ProductFamilly).ToList();
+	        ActiveAdherentStolon = AdherentStolon = adherentStolon;
+            ProductsStocks = context.ProductsStocks
+                .Include(x => x.Product)
+                .ThenInclude(x => x.Familly)
+                .ThenInclude(x => x.Type)
+                .Include(x => x.AdherentStolon)
+                .Where(x => x.AdherentStolon.StolonId == adherentStolon.Stolon.Id)
+                .Where(x => x.State == Product.ProductState.Enabled)
+                .AsNoTracking()
+                .ToList();
+
+            
+            foreach (var familly in ProductsStocks.GroupBy(x=>x.Product.Familly))
+            {
+                if(!ProductTypes.Any(x=>x.Id == familly.Key.Type.Id))
+                {
+                    ProductTypes.Add(familly.Key.Type);
+                }
+             }
         }
     }
 }

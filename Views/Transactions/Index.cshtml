@@ -6,9 +6,9 @@
 <h2>Transactions</h2>
 
 <p>
-    Solde actuel : @(Model.Balance)€
+    Solde actuel : @(Model.Balance.ToString("0.00"))€
     <br/>
-    Solde actuel réel : @(Model.RealBalance)€
+    Solde actuel réel : @(Model.RealBalance.ToString("0.00") )€
 </p>
 <a asp-action="Create" class="btn btn-small btn-default">Ajouter une transaction</a>
 

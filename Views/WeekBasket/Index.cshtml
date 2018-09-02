@@ -22,11 +22,35 @@ else
     @if (Model.ActiveAdherentStolon.Authorized(Role.Admin) && Configurations.Environment.IsProduction() != true)
     {
         <a class="btn btn-small btn-default" asp-controller="WeekBasket" asp-action="GenerateRandomOrders">/!\ Générer des commandes aléatoires /!\</a>
-}
-    <div class="row">
-        <div id="filters">
+    }
+
+
+    <div id="filtersPanel" class="panel-group hidden">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" href="#filtersPanel">Catégories <i class="fas fa-filter pull-right"></i></a>
+                </h4>
+            </div>
+            <div id="filtersPanel" class="panel-collapse collapse">
+                <div class="panel-body" >
+                        @foreach (var productType in Model.ProductTypes.OrderBy(x=>x.Name))
+                        {
+                            <div class="col-sm-@(12/Model.ProductTypes.Count) col-xs-12">
+                                <ul class="list-unstyled">
+                                    <li><img class="productCategoryImage" src="@productType.Image" /><a class="js-scrollTo" href="#@productType.Name.Replace(" ","_")"><b>@productType.Name.ToUpper()</b></a></li>
+                                    @foreach (var familly in productType.ProductFamilly.Where(x=>Model.ProductsStocks.Any(y=>y.Product.FamillyId == x.Id)).OrderBy(x=>x.FamillyName))
+                                    {
+                                        <li><img class="productCategoryImage" src="@familly.Image" /><a class="js-scrollTo" href="#@familly.FamillyName.Replace(" ","_")">@familly.FamillyName</a></li>
+                                    }
+                                </ul>
+                            </div>
+                        }
+                </div>
+            </div>
         </div>
     </div>
+
     <div class="row">
         <div id="products" class="col-xs-12 col-md-9">
         </div>
@@ -55,42 +79,22 @@ else
     </div>
 
     <script>
+        $(document).ready(function () {
+            $('.js-scrollTo').on('click', function () { // Au clic sur un élément
+                var page = $(this).attr('href'); // Page cible
+                var speed = 600; // Durée de l'animation (en ms)
+                $('html, body').animate({ scrollTop: $(page).offset().top }, speed); // Go
+                return false;
+            });
+        });
         // When the user clicks on the button, scroll to the top of the document
         function topFunction() {
             var body = $("html, body");
             body.stop().animate({ scrollTop: 0 }, 500, 'swing', function () {
             });
-        }
+        } 
     </script>
-
-    <!-- below are templates definitions to be rendered under placeholders defined above -->
-
-    <script id="filtersTemplate" type="text/template">
-        <% _.forEach(productTypes, function(type) { %>
-        <% var typesProducts = products.getProductsForType(type.Name); %>
-        <% if (typesProducts.length > 0) { %>
-        <li class="dropdown">
-            <a id="link_<%= type.Name %>" href="#<%= type.Name %>" class="dropdown-toggle" data-toggle="dropdown">
-                <img src="<%= type.Image %>" class="productCategoryImage" />
-                <div class="dropdown__item__text"><%= type.Name %></div>
-            </a>
-            <ul class="dropdown-menu">
-                <% _.forEach(type.ProductFamilly, function(family) { %>
-                <% var familyProducts = products.getProductsForFamily(family.FamillyName); %>
-                <% if (familyProducts.length > 0) { %>
-                <li>
-                    <a id="link_<%= family.FamillyName %>" href="#<%= family.FamillyName %>">
-                        <img src="<%= family.Image %>" class="productCategoryImage" />
-                        <%= family.FamillyName %>
-                    </a>
-                </li>
-                <% } %>
-                <% }); %>
-            </ul>
-        </li>
-        <% } %>
-        <% }); %>
-    </script>
+    
 
     <!-- Include the product template -->
     { await Html.RenderPartialAsync("Templates/ProductTemplate"); }
@@ -139,7 +143,7 @@ else
         <% if (!_.isEmpty(typeProducts)) { %>
         <div class="product__type">
             <div class="product__type__title">
-                <div id="<%= type.Name %>" class="anchorProductType">
+                <div id="<%= type.Name.replace(' ','_') %>" class="anchorProductType">
                     <%= type.Name.split('').reverse().map(function (l) {
                     return '<div class="verticaltext">' + l + '</div>';
                     }).join('') %>
@@ -151,7 +155,7 @@ else
                 <% var famillyProducts = products.getProductsForFamily(family.FamillyName) %>
                 <% if (famillyProducts.length > 0)  { %>
                 <div class="product__type__content__familly">
-                    <div class="anchorProductFamily" id="<%= family.FamillyName %>">
+                    <div class="anchorProductFamily" id="<%= family.FamillyName.replace(' ','_') %>">
                         <img src="<%= family.Image %>" class="productCategoryImage" />
                         <%= family.FamillyName %>
                     </div>
@@ -318,14 +322,15 @@ else
 
         <div class="basketValidation">
             <% if (!tmpBasket.Validated && !(tmpBasketModel.isEmpty() && !validatedBasketModel.exists())) { %>
-                <div class="basketValidation__msg isa_warning"><i class="fas fa-exclamation-triangle"></i>
-                    <span class="warning-text">Ce panier doit être validé</span>
-                </div>
+            <div class="basketValidation__msg isa_warning">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span class="warning-text">Ce panier doit être validé</span>
+            </div>
             <% } else if (validatedBasketModel.exists()) { %>
-                <span class="basketValidation__msg isa_success">
-                    <span class="glyphicon glyphicon-check"></span>
-                    <span>Ces produits ont déjà été validés</span>
-                </span>
+            <span class="basketValidation__msg isa_success">
+                <span class="glyphicon glyphicon-check"></span>
+                <span>Ces produits ont déjà été validés</span>
+            </span>
             <% } %>
 
             <form id="validateBasketForm" action="WeekBasket/ValidateBasket" method="post">
@@ -333,18 +338,18 @@ else
                     <input name="basketId" value="<%= tmpBasket.Id %>" class="form-control" />
                 </div>
                 <% if (!tmpBasket.Validated) { %>
-                    <% if (tmpBasketModel.isEmpty()) { %>
-                        <% if (validatedBasketModel.exists()) { %>
-                            <input type="submit" value="Annuler mon panier" class="btn btn-small btn-default" />
-                        <% } %>
-                        <!-- Si il n'y a rien a valider/annuler, on affichir rien -->
-                    <% } else { %>
-                        <!-- <input type="submit" value="Valider mon panier" class="btn btn-small btn-default" /> -->
-                        <button type="submit" class="basketValidation__btnsubmit btn btn-default">
-                            <i class="glyphicon glyphicon-shopping-cart"></i>
-                            Valider mon panier
-                        </button>
-                    <% } %>
+                <% if (tmpBasketModel.isEmpty()) { %>
+                <% if (validatedBasketModel.exists()) { %>
+                <input type="submit" value="Annuler mon panier" class="btn btn-small btn-default" />
+                <% } %>
+                <!-- Si il n'y a rien a valider/annuler, on affichir rien -->
+                <% } else { %>
+                <!-- <input type="submit" value="Valider mon panier" class="btn btn-small btn-default" /> -->
+                <button type="submit" class="basketValidation__btnsubmit btn btn-default">
+                    <i class="glyphicon glyphicon-shopping-cart"></i>
+                    Valider mon panier
+                </button>
+                <% } %>
                 <% } %>
             </form>
         </div>
