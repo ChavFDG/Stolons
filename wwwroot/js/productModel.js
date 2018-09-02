@@ -63,8 +63,8 @@ ProductStockModel = Backbone.Model.extend({
             weightStepPrice = weightStepPrice * (parseFloat(this.get("Product").get("QuantityStep")) / 1000);
             return weightStepPrice.toFixed(2) + " € pour " + this.get("Product").get("QuantityStepString");
 	} else if (sellType == 3) { //Poids variable
-	    var txt = "<small>De " + this.get("Product").get("MinimumWeight") + " " + this.unitsEnum[this.get("Product").get("ProductUnit")] + " (" + this.get("Product").get("MinimumPrice") + "€)";
-	    txt += " à " + this.get("Product").get("MaximumWeight") + " " + this.unitsEnum[this.get("Product").get("ProductUnit")] + " (" + this.get("Product").get("MaximumPrice") + "€)</small>";
+	    var txt = "<small>Min " + this.get("Product").get("MinimumWeight") + " " + this.unitsEnum[this.get("Product").get("ProductUnit")] + " (" + this.get("Product").get("MinimumPrice") + " €)";
+	    txt += ", Max " + this.get("Product").get("MaximumWeight") + " " + this.unitsEnum[this.get("Product").get("ProductUnit")] + " (" + this.get("Product").get("MaximumPrice") + " €)</small>";
 	    return txt;
 	}
     },
@@ -73,8 +73,7 @@ ProductStockModel = Backbone.Model.extend({
         var productUnit = this.get("Product").get("ProductUnit");
 
 	if (this.get("Product").get("Type") == 3) {
-	    var tooltipText = "Produit vendu au poids variable. Le prix moyen est à titre d'information. Le poids ainsi que le prix définitif vous seront communiqués lors de la récupération des produits";
-	    return "<label data-toggle='tooltip' title='" + tooltipText + "' class=\"required \">≈ " + this.get("Product").get("UnitPrice") + " € (" + this.get("Product").get("WeightPrice") + "€/" + this.unitsEnum[productUnit] + ")</label>";
+	    return "<label class=\"required variable-price-tooltip\">" + this.get("Product").get("UnitPrice") + " € prix moyen (" + this.get("Product").get("WeightPrice") + " € / " + this.unitsEnum[productUnit] + ")</label>";
 	} else {
 	    if (this.get("Product").get("WeightPrice") === 0 || this.get("Product").get("QuantityStep") === 1000) {
 		return "";

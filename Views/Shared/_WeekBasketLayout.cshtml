@@ -38,37 +38,32 @@
     <script src="~/lib/bootbox.min.js"></script>
     <script src="~/lib/jquery.blockUI.js"></script>
     <script src="~/js/site.js"></script>
+    <script src="~/js/weekBasketScript.js"></script>
 
     <!-- Jquery dotnetcore js Validation -->
     <script src="~/lib/jquery-validation/jquery.validate.min.js"></script>
     <script src="~/lib/jquery-validation/additional-methods.min.js"></script>
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" media="screen and (min-device-width: 1850px)" href="~/css/weekbasket.lg.css" />
+    <!--link rel="stylesheet" media="screen and (min-device-width: 1440px) and (max-device-width: 1849px)" href="~/css/weekbasket.lg1.css" /-->
+    <link rel="stylesheet" media="screen and (max-device-width: 1439px)" href="~/css/weekbasket.md.css" />
+
 </head>
 <body>
     <div id="wrapper">
         @if (User.Identity.IsAuthenticated)
-        {
+            {
             @await Component.InvokeAsync("Banner")
         }
         <div class="buddy container body-content">
             @RenderBody()
         </div>
-	<!-- Include the footer partial -->
-	@{ await Html.RenderPartialAsync("Footer"); }
-    </div>
 
-    <div class="modal fade" id="bodyAndFooterModal" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title"></h4>
-                </div>
-                <div class="modal-bodyAndFooter">
+        <!-- Include the footer partial -->
+        @{ await Html.RenderPartialAsync("Footer"); }
 
-                </div>
-            </div>
-        </div>
     </div>
     @RenderSection("scripts", required: false)
 </body>
