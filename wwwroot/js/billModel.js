@@ -123,7 +123,7 @@ ProducerBillModel = Backbone.Model.extend({
     },
 
     getQuantityString: function (product, quantity) {
-	    if (product.Type == 1) {
+	    if (product.Type == 1 || product.Type == 3) {
 	        if (quantity > 1) {
 		    return  quantity + " pièces";
 	        } else {
@@ -150,19 +150,17 @@ ProducerBillModel = Backbone.Model.extend({
 	    }
     },
 
-    // getProductStockQuantityString: function(billEntryId) {
-    // 	//TODO ?,
-    // },
+    isAssignedVariableWeigh: function(productStock) {
+	var allAssigned = true;
+	var billEntries = this.getBillEntriesForProductStock(productStock.get("Id"));
 
-    //Decrement bill entry quantity based on product type
-    decrementBillEntryQuantity: function(billEntry) {
-	var product = billEntry.ProductStock.Product;
-
-	if (product.Type == 1) {
-	    billEntry.Quantity -= 1;
-	} else {
-	    
-	}
+	_.forEach(billEntries, function(billEntry) {
+	    if (billEntry.IsAssignedVariableWeigh !== true) {
+		allAssigned = false;
+		return false;
+	    }
+	});
+	return allAssigned;
     },
 
     parse: function(data) {

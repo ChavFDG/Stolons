@@ -105,6 +105,9 @@ $(function () {
 
             // validates that the total product quantity is equal to the sum of the quantities in billentries.
             _.each(this.model.getProductStocks(), function (productStock) {
+		if (that.model.isAssignedVariableWeigh(productStock) == true) {
+		    return;
+		}
                 var productStockId = productStock.get("Id");
                 var billEntries = that.model.getBillEntriesForProductStock(productStockId);
                 var totalEntriesQty = 0;
