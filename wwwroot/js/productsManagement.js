@@ -46,30 +46,32 @@ var ProductsManagementView = Backbone.View.extend({
         var productStockId = $(ev.currentTarget).data("product-stock-id");
 
         this.getProductStockModel(productStockId).done(function (productStockModel) {
-            $(ev.currentTarget).tooltip(
-                {
-                    track: true,
-                    classes: {
-                        "ui-tooltip": "productPreviewTooltip",
-                        "ui-tooltip-content": "productPreviewTooltipContent"
-                    },
-                    show: true,
-                    content: that.publicProductTemplate(
-                        {
-                            product: productStockModel.get("Product").toJSON(),
-                            productModel: productStockModel.get("Product"),
-                            productStock: productStockModel.toJSON(),
-                            productStockModel: productStockModel
-                        })
-                }
-            );
-            that.tooltipSetup[productStockId] = true;
-            $(ev.currentTarget).removeClass("setupProductPreview");
-            //Force a new hover event after tooltip setup to show it immediately
-            $(ev.currentTarget).trigger("mouseenter");
+	    if ($(ev.currentTarget).uitooltip("instance")) {
+		$(ev.currentTarget).uitooltip("destroy");
+		$(ev.currentTarget).attr("title", "");//Fck this`
+	    }
+	    if (!$(ev.currentTarget).uitooltip("instance")) {
+		$(ev.currentTarget).uitooltip(
+		    {
+			track: true,
+			classes: {
+                            "ui-tooltip": "productPreviewTooltip",
+                            "ui-tooltip-content": "productPreviewTooltipContent"
+			},
+			show: true,
+			content: that.publicProductTemplate(
+                            {
+				product: productStockModel.get("Product").toJSON(),
+				productModel: productStockModel.get("Product"),
+				productStock: productStockModel.toJSON(),
+				productStockModel: productStockModel
+                            })
+                    }
+		);
+	    }
+	    $(ev.currentTarget).uitooltip("enable");
+	    $(ev.currentTarget).uitooltip("open");
         });
-        ev.preventDefault();
-        return false;
     }
 });
 
