@@ -4,6 +4,10 @@
 
 @model WeekBasketViewModel
 
+@{
+    Layout = "_WeekBasketLayout";
+}
+
 @if (Model.AdherentStolon.Stolon.GetMode() == Stolon.Modes.DeliveryAndStockUpdate)
 {
     <h3>Commande indisponible</h3>
