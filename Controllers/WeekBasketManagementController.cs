@@ -151,6 +151,58 @@ namespace Stolons.Controllers
             return Json(new VmProducersBills(GetActiveAdherentStolon(),producerBillsToPay));
         }
 
+        // GET: CancelConsumerBill
+        [HttpPost, ActionName("CancelConsumerBill")]
+        public IActionResult CancelConsumerBill(Guid billId, string reason)
+        {
+            //Consumer
+            ConsumerBill bill = _context.ConsumerBills.Include(x => x.AdherentStolon).Include(x => x.AdherentStolon.Adherent).Include(x=>x.AdherentStolon.Stolon).Include(x=>x.BillEntries).ThenInclude(x=>x.ProducerBill).First(x => x.BillId == billId);
+            string prodModificationReason = "Modification de la facture: " + DateTime.Now.ToString() + "\n\rRaison : Annulation du panier de l'adhérent "+bill.AdherentStolon.LocalId+", raison :" + reason + "\n\r\n\r";
+            bill.ModificationReason += "Annulation du panier : " + DateTime.Now.ToString() + "\n\rRaison :" + reason + "\n\r\n\r";
+            bill.HasBeenModified = true;
+            bill.State = BillState.Cancelled;
+            bill.HtmlBillContent = BillGenerator.GenerateHtmlBillContent(bill, _context);
+            _context.SaveChanges();
+            BillGenerator.GenerateBillPDF(bill);
+            AuthMessageSender.SendEmail(bill.AdherentStolon.Stolon.Label,
+                   bill.AdherentStolon.Adherent.Email,
+                   bill.AdherentStolon.Adherent.Surname + " " + bill.AdherentStolon.Adherent.Name,
+                   "Votre  commande de la semaine chez " + bill.AdherentStolon.Stolon.Label + "a été annulé (Commande " + bill.BillNumber + ")",
+                   "Oops, il y a eu un petit problème avec votre commande. Elle a été annulé\n\rEn voici la raison : \n\r" + bill.ModificationReason + "\n\rToutes nos excuses pour ce désagrément.");
+
+
+
+            //Producers
+            foreach (var prodBill in bill.BillEntries.GroupBy(x=>x.ProducerBill))
+            {
+                var producerBill = _context.ProducerBills.Include(x => x.BillEntries).Include(x => x.AdherentStolon).Include(x => x.AdherentStolon.Stolon).Include(x => x.AdherentStolon.Adherent).First(x => x.BillId == prodBill.Key.BillId);
+                producerBill.ModificationReason += prodModificationReason;
+                producerBill.HasBeenModified = true;
+                producerBill.HtmlBillContent = BillGenerator.GenerateHtmlBillContent(producerBill, _context);
+                producerBill.HtmlOrderContent = BillGenerator.GenerateHtmlOrderContent(producerBill, _context);
+                _context.SaveChanges();
+                BillGenerator.GenerateOrderPDF(producerBill);
+                //Send mail ?
+                AuthMessageSender.SendEmail(producerBill.AdherentStolon.Stolon.Label,
+                       producerBill.AdherentStolon.Adherent.Email,
+                       producerBill.AdherentStolon.Adherent.CompanyName,
+                       "Votre bon de commande de la semaine chez " + producerBill.AdherentStolon.Stolon.Label + "a été modifié (Bon de commande " + producerBill.BillNumber + ")",
+                       "Oops, il y a eu un petit problème avec votre commande. Malheureusement tous les produits commandés ne sont pas disponible.\n\rVotre bon de commande a été modifiée.\n\rEn voici la raison : \n\r" + prodModificationReason + "\n\rToutes nos excuses pour ce désagrément.\n\r" + producerBill.HtmlBillContent);
+            }
+
+            //Stolon bill
+            var stolonBillToModify = _context.StolonsBills.Include(x => x.BillEntries).ThenInclude(x => x.ProducerBill).ThenInclude(x => x.AdherentStolon).ThenInclude(x => x.Adherent)
+                                                          .Include(x => x.BillEntries).ThenInclude(x => x.ConsumerBill).ThenInclude(x => x.AdherentStolon).ThenInclude(x => x.Adherent)
+                                                          .Include(x => x.BillEntries).ThenInclude(x => x.ProductStock).ThenInclude(x => x.Product)
+                                                          .First(x => x.BillEntries.Any(y => y.Id == bill.BillEntries.First().Id));
+            stolonBillToModify.UpdateBillInfo();
+            stolonBillToModify.HasBeenModified = true;
+            stolonBillToModify.ModificationReason += "Modification des commandes : " + DateTime.Now.ToString() + "\n\rRaison : Annulation du panier de l'adhérent " + bill.AdherentStolon.LocalId + ", raison :" + reason + "\n\r\n\r";
+            stolonBillToModify.HtmlBillContent = BillGenerator.GenerateHtmlContent(stolonBillToModify);
+            BillGenerator.GeneratePDF(stolonBillToModify.HtmlBillContent, stolonBillToModify.GetStolonBillFilePath());
+            _context.SaveChanges();
+            return Json(true);
+        }
 
         // GET: UpdateConsumerBill
         [HttpPost, ActionName("UpdateConsumerBill")]
@@ -321,7 +373,7 @@ namespace Stolons.Controllers
                                                           .First(x => x.BillEntries.Any(y => y.Id == producerBill.BillEntries.First().Id));
             stolonBillToModify.UpdateBillInfo();
             stolonBillToModify.HasBeenModified = true;
-            stolonBillToModify.ModificationReason = billCorrection.Reason;
+            stolonBillToModify.ModificationReason += billCorrection.Reason;
             stolonBillToModify.HtmlBillContent = BillGenerator.GenerateHtmlContent(stolonBillToModify);
             BillGenerator.GeneratePDF(stolonBillToModify.HtmlBillContent, stolonBillToModify.GetStolonBillFilePath());
             _context.SaveChanges();

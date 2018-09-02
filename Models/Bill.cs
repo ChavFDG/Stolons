@@ -160,7 +160,9 @@ namespace Stolons.Models
         [Display(Name = "Livré (attente de paiement)")]
         Delivered = 1,
         [Display(Name = "Payé")]
-        Paid = 2
+        Paid = 2,
+        [Display(Name = "Annulé")]
+        Cancelled = 3
     }
 
     public class StolonsBill

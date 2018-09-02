@@ -57,8 +57,47 @@ $(document).ready(function () {
         },
     });
 
+    window.deleteWeekBasket = function (billId) {
+        bootbox.confirm(
+            "Confirmer l'annulation du panier",
+            function (result) {
+                if (result) {
+                    bootbox.prompt(
+                        {
+                            value: "",
+                            title: "Entrer la raison de l'annulation du panier: ",
+                            inputType: "textarea",
+                            callback: function (result) {
+                                $.blockUI();
+                                if (result !== null) {
+                                    $.blockUI();
+                                    $.ajax(
+                                        {
+                                            type: "POST",
+                                            url: "CancelConsumerBill",
+                                            data:
+                                            {
+                                                billId: billId,
+                                                reason: result
+                                            },
+                                            dataType: 'json',
+                                            success: function (data) {
+                                                $.unblockUI();
+                                                location.reload();
+                                                /* Trop d'information à reset alors on refresh la page
+                                                 if (data === true) {
+                                                    $("#" + billId).remove();
+                                                }*/
+                                            }
+                                        });
+                                }
+                            }
+                        });
+                }
+            }
+        );
+    };
 
-    
 
     window.payConsumerBill = function (billId, payementMode) {
         bootbox.confirm(
@@ -85,7 +124,7 @@ $(document).ready(function () {
             }
         );
     };
-    
+
     window.validateProdDelivery = function (billId, state) {
         bootbox.confirm(
             "Confirmer la livraison de la commande",

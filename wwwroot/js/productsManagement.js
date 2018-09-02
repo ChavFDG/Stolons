@@ -105,7 +105,7 @@ var StockMgtViewModal = Backbone.View.extend({
         //this.currentProductStock = ProductsModel.get(productStockId).clone();
         this.currentProductStock = productStockModel.clone();//ProductsModel.get(productStockId).clone();
         this.renderModal();
-        if (this.currentProductStock.get("AdherentStolon").Stolon.Mode == 0 || this.currentProductStock.get("Product").get("StockManagement") == 1) {
+        if (this.currentProductStock.get("AdherentStolon").Stolon.Mode === 0 || this.currentProductStock.get("Product").get("StockManagement") == 1) {
             this.validateRemainingStock();
         } else {
             this.validateWeekStock();
@@ -120,7 +120,7 @@ var StockMgtViewModal = Backbone.View.extend({
 
     weekStockStepUp: function () {
         var newStock;
-        if (this.currentProductStock.get("Product").get("Type") == 1 || this.currentProductStock.get("Product").get("Type") == 3) {
+        if (this.currentProductStock.get("Product").get("Type") === 1 || this.currentProductStock.get("Product").get("Type") == 3) {
             newStock = parseInt(this.currentProductStock.get("WeekStock")) + 1;
         } else {
             newStock = (parseFloat(this.currentProductStock.get("WeekStock") + 1) * (this.currentProductStock.get("Product").get("QuantityStep") / 1000)).toFixed(4);
@@ -132,7 +132,7 @@ var StockMgtViewModal = Backbone.View.extend({
 
     weekStockStepDown: function () {
         var newStock;
-        if (this.currentProductStock.get("Product").get("Type") == 1 || this.currentProductStock.get("Product").get("Type") == 3) {
+        if (this.currentProductStock.get("Product").get("Type") === 1 || this.currentProductStock.get("Product").get("Type") == 3) {
             newStock = parseInt(this.currentProductStock.get("WeekStock")) - 1;
         } else {
             newStock = (parseFloat(this.currentProductStock.get("WeekStock") - 1) * (this.currentProductStock.get("Product").get("QuantityStep") / 1000)).toFixed(4);
@@ -144,7 +144,7 @@ var StockMgtViewModal = Backbone.View.extend({
 
     remainingStockStepUp: function () {
         var newStock;
-        if (this.currentProductStock.get("Product").get("Type") == 1 || this.currentProductStock.get("Product").get("Type") == 3) {
+        if (this.currentProductStock.get("Product").get("Type") === 1 || this.currentProductStock.get("Product").get("Type") == 3) {
             newStock = parseInt(this.currentProductStock.get("RemainingStock")) + 1;
         } else {
             newStock = (parseFloat(this.currentProductStock.get("RemainingStock") + 1) * (this.currentProductStock.get("Product").get("QuantityStep") / 1000)).toFixed(4);
@@ -156,7 +156,7 @@ var StockMgtViewModal = Backbone.View.extend({
 
     remainingStockStepDown: function () {
         var newStock;
-        if (this.currentProductStock.get("Product").get("Type") == 1 || this.currentProductStock.get("Product").get("Type") == 3) {
+        if (this.currentProductStock.get("Product").get("Type") === 1 || this.currentProductStock.get("Product").get("Type") == 3) {
             newStock = parseInt(this.currentProductStock.get("RemainingStock")) - 1;
         } else {
             newStock = (parseFloat(this.currentProductStock.get("RemainingStock") - 1) * (this.currentProductStock.get("Product").get("QuantityStep") / 1000)).toFixed(4);
@@ -169,7 +169,7 @@ var StockMgtViewModal = Backbone.View.extend({
     validateWeekStock: function () {
         var weekStock = Math.abs(parseFloat($("#WeekStock").val()));
 
-        if (this.currentProductStock.get("Product").get("Type") != 1 && this.currentProductStock.get("Product").get("Type") != 3) {
+        if (this.currentProductStock.get("Product").get("Type") !== 1 && this.currentProductStock.get("Product").get("Type") != 3) {
             if ((Math.abs(weekStock * 1000) % this.currentProductStock.get("Product").get("QuantityStep")) != 0) {
                 this.validation.weekStockError = "Le stock doit être divisible par le palier de vente (" + this.currentProductStock.get("Product").get("QuantityStepString") + ").";
                 this.render();
@@ -191,7 +191,7 @@ var StockMgtViewModal = Backbone.View.extend({
     validateRemainingStock: function () {
         var remainingStock = Math.abs(parseFloat($("#RemainingStock").val()));
 
-        if (this.currentProductStock.get("Product").get("Type") != 1 && this.currentProductStock.get("Product").get("Type") != 3) {
+        if (this.currentProductStock.get("Product").get("Type") !== 1 && this.currentProductStock.get("Product").get("Type") != 3) {
             if (Math.abs(remainingStock * 1000) % this.currentProductStock.get("Product").get("QuantityStep") != 0) {
                 this.validation.remainingStockError = "Le stock doit être divisible par le palier de vente (" + this.currentProductStock.get("Product").get("QuantityStepString") + ").";
                 this.render();
@@ -215,7 +215,7 @@ var StockMgtViewModal = Backbone.View.extend({
     },
 
     saveStocks: function () {
-        if ($("#saveStocks").attr("disabled") == "disabled") {
+        if ($("#saveStocks").attr("disabled") === "disabled") {
             return false;
         }
         var self = this;
@@ -234,7 +234,7 @@ var StockMgtViewModal = Backbone.View.extend({
             }
         };
         var promise;
-        if (this.currentProductStock.get("AdherentStolon").Stolon.Mode == 0 || this.currentProductStock.get("Product").get("StockManagement") == 1) {
+        if (this.currentProductStock.get("AdherentStolon").Stolon.Mode === 0 || this.currentProductStock.get("Product").get("StockManagement") == 1) {
             changeWeekStock = false;
             var diffStock = this.currentProductStock.get("RemainingStock") - this.initRemainingStock;
             promise = $.ajax({
@@ -354,11 +354,11 @@ var VariableWeightsProductsManagementView = Backbone.View.extend({
         var orderVM;
         inputElem.val(inputElem.val().replace(".", ","));
         _.forEach(this.variableWeightOrdersVM.get("VariableWeighOrdersViewModel"), function (vwOrderVM) {
-            if (vwOrderVM.OrderNumber == orderNumber) {
+            if (vwOrderVM.OrderNumber === orderNumber) {
                 _.forEach(vwOrderVM.VariableWeighProductsViewModel, function (vwProductVM) {
-                    if (vwProductVM.ProductId == productId) {
+                    if (vwProductVM.ProductId === productId) {
                         _.forEach(vwProductVM.ConsumersAssignedWeighs, function (assignedW, idx) {
-                            if (assignedW.BillEntryId == billEntryId && idx == consumerIdx) {
+                            if (assignedW.BillEntryId === billEntryId && idx === consumerIdx) {
                                 that.validateVWInput(inputElem);
                                 assignedW.AssignedWeigh = parseFloat(inputElem.val().replace(",", "."));
                             }
@@ -377,7 +377,7 @@ var VariableWeightsProductsManagementView = Backbone.View.extend({
         $("input.vw-input").each(function (idx, jqElem) {
             var inputElem = $(jqElem);
             var elemOrderNumber = inputElem.data("order-number");
-            if (elemOrderNumber != orderNumber) {
+            if (elemOrderNumber !== orderNumber) {
                 return;
             }
             if (!that.validateVWInput(inputElem)) {
@@ -423,7 +423,7 @@ var VariableWeightsProductsManagementView = Backbone.View.extend({
         });
         promise.always(function (j, s, res) {
             $.unblockUI();
-            if (res.status != 200) {
+            if (res.status !== 200) {
                 $("#server-error").toggleClass("hidden", false);
             } else {
                 window.location.reload();

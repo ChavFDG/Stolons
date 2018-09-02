@@ -210,6 +210,8 @@ namespace Stolons.Tools
             .Include(x => x.BillEntries)
             .ThenInclude(x => x.ProductStock)
             .ThenInclude(x => x.Product)
+            .Include(x => x.BillEntries)
+            .ThenInclude(x => x.ConsumerBill)
             .Include(x => x.AdherentStolon)
             .Include(x => x.AdherentStolon.Adherent)
             .Include(x => x.AdherentStolon.Stolon)
@@ -443,7 +445,7 @@ namespace Stolons.Tools
                 builder.AppendLine("<br>Semaine : " + DateTime.Now.GetIso8601WeekOfYear());
                 builder.AppendLine("<br><b>Nombre de panier : " + consumersBills.Count + "</b></p>");
                 builder.AppendLine("<p>Adhérents ayant un panier : <small><br>");
-                consumersBills.OrderBy(x => x.AdherentStolon.LocalId)
+                consumersBills.Where(x=>x.State != BillState.Cancelled).OrderBy(x => x.AdherentStolon.LocalId)
                     .ForEach(x => builder.AppendLine("<a href=\"#" + x.AdherentStolon.LocalId + "\">" + x.AdherentStolon.GetNumberSurnameName() + "</a><br>"));
                 builder.AppendLine("</small></p>");
                 if (bill.HasBeenModified)
@@ -456,7 +458,7 @@ namespace Stolons.Tools
 
                 builder.AppendLine("<div style=\"page-break-after:always\"></div>");
                 int count = 0;
-                foreach (var consumerBill in consumersBills.OrderBy(x => x.AdherentStolon.LocalId))
+                foreach (var consumerBill in consumersBills.Where(x=>x.State != BillState.Cancelled).OrderBy(x => x.AdherentStolon.LocalId))
                 {
                     count++;
                     builder.AppendLine("<h1 id=\"" + consumerBill.AdherentStolon.LocalId + "\">Adhérent : " + consumerBill.AdherentStolon.LocalId + " / " + consumerBill.AdherentStolon.Adherent.Surname + " / " + consumerBill.AdherentStolon.Adherent.Name + "</h1>");
@@ -524,7 +526,7 @@ namespace Stolons.Tools
             orderBuilder.AppendLine("<th>Quantité</th>");
             orderBuilder.AppendLine("</tr>");
 
-            foreach (var productBillEntries in bill.BillEntries.GroupBy(x => x.ProductStock.Product, x => x).OrderBy(x => x.Key.Name))
+            foreach (var productBillEntries in bill.BillEntries.Where(x=>x.ConsumerBill.State != BillState.Cancelled).GroupBy(x => x.ProductStock.Product, x => x).OrderBy(x => x.Key.Name))
             {
                 int quantity = 0;
                 productBillEntries.ForEach(x => quantity += x.Quantity);
@@ -542,7 +544,7 @@ namespace Stolons.Tools
             #region Par client
             orderBuilder.AppendLine("<h3>Commande par client</h3>");
 
-            var billEntriesByConsumer = bill.BillEntries.GroupBy(x => x.ConsumerBill.AdherentStolon);
+            var billEntriesByConsumer = bill.BillEntries.Where(x => x.ConsumerBill.State != BillState.Cancelled).GroupBy(x => x.ConsumerBill.AdherentStolon);
             orderBuilder.AppendLine("<table class=\"table\">");
             orderBuilder.AppendLine("<tr>");
             orderBuilder.AppendLine("<th>Client</th>");
@@ -581,7 +583,7 @@ namespace Stolons.Tools
         {
             //Calcul total amount
             decimal totalAmount = 0;
-            foreach (var billEntry in bill.BillEntries)
+            foreach (var billEntry in bill.BillEntries.Where(x=>x.ConsumerBill.State != BillState.Cancelled))
             {
                 totalAmount += billEntry.Price;
             }
@@ -624,7 +626,7 @@ namespace Stolons.Tools
             //Taux tax / Total HT
             Dictionary<decimal, decimal> taxTotal = new Dictionary<decimal, decimal>();
             decimal totalWithoutTax = 0;
-            foreach (var productBillEntries in bill.BillEntries.GroupBy(x => x.ProductStock.Product, x => x).OrderBy(x => x.Key.Name))
+            foreach (var productBillEntries in bill.BillEntries.Where(x => x.ConsumerBill.State != BillState.Cancelled).GroupBy(x => x.ProductStock.Product, x => x).OrderBy(x => x.Key.Name))
             {
                 int quantity = 0;
                 productBillEntries.ForEach(x => quantity += x.Quantity);
@@ -746,7 +748,10 @@ namespace Stolons.Tools
                 bill.OrderAmount += total;
             }
             builder.AppendLine("</table>");
-            builder.AppendLine("<p>Montant total : " + bill.OrderAmount.ToString("0.00") + " €</p>");
+            if(bill.State == BillState.Cancelled)
+                builder.AppendLine("<h2><b>Commande annulé</b></h2><p>"+bill.ModificationReason+"</p>");
+            else
+                builder.AppendLine("<p>Montant total : " + bill.OrderAmount.ToString("0.00") + " €</p>");
             builder.AddBootstrap();
             builder.AddFooterAndHeaderRemoval();
             string test = builder.ToString();
@@ -761,6 +766,8 @@ namespace Stolons.Tools
             bill.BillNumber = GenerateBillNumber(adherentStolon.Stolon.ShortLabel, adherentStolon.LocalId, bill is ProducerBill);
             if (bill is ProducerBill)
                 (bill as ProducerBill).OrderNumber = GenerateOrderNumber(adherentStolon.Stolon.ShortLabel, adherentStolon.LocalId);
+            else if (bill is ConsumerBill)
+                billEntries.ForEach(x => x.ConsumerBill = bill as ConsumerBill);
             bill.AdherentStolon = adherentStolon;
             bill.State = BillState.Pending;
             bill.EditionDate = DateTime.Now;

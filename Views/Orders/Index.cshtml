@@ -58,6 +58,9 @@ else
                                     case BillState.Pending:
                                         @("(A récupérer)")
                                         break;
+                                    case BillState.Cancelled:
+                                        @("ANNULÉ")
+                                        break;
                                 }
 
                                 @if (item.HasBeenModified)
@@ -65,7 +68,8 @@ else
                                     <div class="bannerRightInformations"
                                          title="@Html.Raw(item.ModificationReason.Replace("\n\r", "<br/>"))"
                                          data-toggle="tooltip"
-                                         data-placement="bottom"><i class="fas fa-exclamation-triangle"></i>
+                                         data-placement="bottom">
+                                        <i class="fas fa-exclamation-triangle"></i>
                                     </div>
                                 }
                             </td>

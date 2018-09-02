@@ -81,17 +81,18 @@ else
                         @Html.DisplayFor(modelItem => item.AdherentStolon.Token)Ṩ
                     </td>
                     <td>
-                        <div class="dropdown">
-                            <a class="dropdown-toggle btn btn-small btn-default" data-toggle="dropdown" href="#">
+                        <div class="dropdown btn-group">
+                            <button class="dropdown-toggle btn btn-small btn-default" data-toggle="dropdown" href="#">
                                 Récupération et payement en ...
                                 <span class="caret"></span>
-                            </a>
+                            </button>
                             <ul class="dropdown-menu">
                                 <li> <a href="#" onclick="payConsumerBill('@item.BillId','@((int)Transaction.PaymentMode.Check)')">Chèque</a></li>
                                 <li> <a href="#" onclick="payConsumerBill('@item.BillId','@((int)Transaction.PaymentMode.Cash)')">Liquide</a></li>
-                                <li><a href="#" @(item.AdherentStolon.Token >= item.OrderAmount ? "" : "disable") onclick="payConsumerBill('@item.BillId','@((int)Transaction.PaymentMode.Token)')">Stol (Ṩ)</a></li>
+                                <li> <a href="#" @(item.AdherentStolon.Token >= item.OrderAmount ? "" : "disable") onclick="payConsumerBill('@item.BillId','@((int)Transaction.PaymentMode.Token)')">Stol (Ṩ)</a></li>
                             </ul>
                         </div>
+                        <a class="btn btn-small btn-default" href="#" title="Annuler le panier" onclick="deleteWeekBasket('@item.BillId')"><i class="fas fa-times"></i></a>
                     </td>
                     <td>
                         @{
