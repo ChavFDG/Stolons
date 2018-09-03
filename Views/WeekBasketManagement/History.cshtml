@@ -10,14 +10,12 @@
 {
     <a class="btn btn-small btn-default" asp-controller="WeekBasketManagement" asp-action="RegenerateOrders">(Test) Regénérer les commandes en pdf</a>
     <a class="btn btn-small btn-default" asp-controller="WeekBasketManagement" asp-action="LinkBillEntry">(Test)  Re créer le lien entre stolon bill et bill entry</a>
-
 }
 
 @{
     var years = Model.HistoryBills.Keys.Select(s => s.EditionDate.Year).Distinct().ToList();
     years.Sort();
     years.Reverse();
-
 }
 
 @foreach (var year in years)
@@ -47,7 +45,7 @@
             averageWeekAmount = averageWeekAmount / yearBills.Count();
             averageWeekFee = averageWeekFee / yearBills.Count();
         }
-        <p>Nombre de consomateur moyen par semaine : @averageWeekConsumers.ToString("0")</p>
+        <p>Nombre de consommateur moyen par semaine : @averageWeekConsumers.ToString("0")</p>
         <p>Nombre de producteur solicité moyen par semaine : @averageWeekProducer.ToString("0")</p>
         <p>Chiffre d'affaire moyen par semaine : @averageWeekAmount.ToString("0.00") €</p>
         <p>Commission perçue moyenne par semaine : @averageWeekFee.ToString("0.00") €</p>
@@ -68,7 +66,7 @@
                     Numéro
                 </th>
                 <th>
-                    Consomateurs
+                    Consommateurs
                 </th>
                 <th>
                     Producteurs
@@ -184,7 +182,7 @@
                                 </tr>
                             }
                         </table>
-                        <h3>Consomateurs</h3>
+                        <h3>Consommateurs</h3>
                         <table class="table">
                             <tr>
                                 <th>
@@ -220,7 +218,7 @@
                                     <td>
                                         @{
                                             @item.BillNumber
-                                            <a class="btn btn-small btn-default" title="Voir" target="_blank" href="/billsHistory/ShowBill/@item.BillNumber"><span class="glyphicon glyphicon glyphicon-eye-open"> </span></a>
+                                            <a class="btn btn-small btn-default" title="Voir" target="_blank" href="/Orders/ShowOrder/@item.BillNumber"><span class="glyphicon glyphicon glyphicon-eye-open"> </span></a>
                                             <a class="btn btn-small btn-default" title="Télécharger" target="_blank" href="/@Configurations.GetBillUrl(item)"><span class="glyphicon glyphicon glyphicon-download-alt"> </span></a>
                                             @if (item.HasBeenModified)
                                             {

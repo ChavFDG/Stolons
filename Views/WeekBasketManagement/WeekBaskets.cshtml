@@ -88,7 +88,7 @@ else
                             </button>
                             <ul class="dropdown-menu">
                                 <li> <a href="#" onclick="payConsumerBill('@item.BillId','@((int)Transaction.PaymentMode.Check)')">Chèque</a></li>
-                                <li> <a href="#" onclick="payConsumerBill('@item.BillId','@((int)Transaction.PaymentMode.Cash)')">Liquide</a></li>
+                                <li> <a href="#" onclick="payConsumerBill('@item.BillId','@((int)Transaction.PaymentMode.Cash)')">Espèces</a></li>
                                 <li> <a href="#" @(item.AdherentStolon.Token >= item.OrderAmount ? "" : "disable") onclick="payConsumerBill('@item.BillId','@((int)Transaction.PaymentMode.Token)')">Stol (Ṩ)</a></li>
                             </ul>
                         </div>

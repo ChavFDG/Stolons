@@ -34,7 +34,7 @@ $(document).ready(function () {
 
     window.removeMessage = function (id) {
         bootbox.confirm(
-            "Est vous sur de vouloir supprimer ce message ?",
+            "Êtes-vous sûr de vouloir supprimer ce message ?",
             function (result) {
                 if (result) {
                     $.blockUI();

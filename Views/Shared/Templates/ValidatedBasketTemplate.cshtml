@@ -72,10 +72,10 @@ else
                     @Html.DisplayFor(modelItem => item.UnitPrice) €
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.QuantityString) @(item.IsNotAssignedVariableWeigh?" (poids variable)":"")
+                    @Html.DisplayFor(modelItem => item.QuantityString) 
                 </td>
                 <td>
-                    @((item.Quantity * item.UnitPrice).ToString("0.00")) €
+                    @((item.Quantity * item.UnitPrice).ToString("0.00")) €  @(item.IsNotAssignedVariableWeigh ? " (poids variable)" : "")
                 </td>
             </tr>
         }

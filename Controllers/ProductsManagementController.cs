@@ -112,7 +112,7 @@ namespace Stolons.Controllers
                 htmlSummary.AppendLine("<h2>" + variableWeighProductViewModels.ProductName + "</h2>");
                 htmlSummary.AppendLine("<table>");
                 htmlSummary.AppendLine("<tr>");
-                htmlSummary.AppendLine("<th>Consomateurs</th>");
+                htmlSummary.AppendLine("<th>Consommateurs</th>");
                 htmlSummary.AppendLine("<th>Poids attribué</th>");
                 htmlSummary.AppendLine("</tr>");
                 foreach (var items in variableWeighProductViewModels.ConsumersAssignedWeighs.GroupBy(x => x.BillEntryId))

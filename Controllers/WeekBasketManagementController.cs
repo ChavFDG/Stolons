@@ -156,7 +156,7 @@ namespace Stolons.Controllers
         public IActionResult CancelConsumerBill(Guid billId, string reason)
         {
             //Consumer
-            ConsumerBill bill = _context.ConsumerBills.Include(x => x.AdherentStolon).Include(x => x.AdherentStolon.Adherent).Include(x=>x.AdherentStolon.Stolon).Include(x=>x.BillEntries).ThenInclude(x=>x.ProducerBill).First(x => x.BillId == billId);
+            ConsumerBill bill = _context.ConsumerBills.Include(x => x.AdherentStolon).Include(x => x.AdherentStolon.Adherent).Include(x=>x.AdherentStolon.Stolon).Include(x=>x.BillEntries).ThenInclude(x=>x.ProducerBill).Include(x => x.BillEntries).ThenInclude(x => x.ConsumerBill).First(x => x.BillId == billId);
             string prodModificationReason = "Modification de la facture: " + DateTime.Now.ToString() + "\n\rRaison : Annulation du panier de l'adhérent "+bill.AdherentStolon.LocalId+", raison :" + reason + "\n\r\n\r";
             bill.ModificationReason += "Annulation du panier : " + DateTime.Now.ToString() + "\n\rRaison :" + reason + "\n\r\n\r";
             bill.HasBeenModified = true;
@@ -169,13 +169,13 @@ namespace Stolons.Controllers
                    bill.AdherentStolon.Adherent.Surname + " " + bill.AdherentStolon.Adherent.Name,
                    "Votre  commande de la semaine chez " + bill.AdherentStolon.Stolon.Label + "a été annulé (Commande " + bill.BillNumber + ")",
                    "Oops, il y a eu un petit problème avec votre commande. Elle a été annulé\n\rEn voici la raison : \n\r" + bill.ModificationReason + "\n\rToutes nos excuses pour ce désagrément.");
-
-
-
+            
             //Producers
             foreach (var prodBill in bill.BillEntries.GroupBy(x=>x.ProducerBill))
             {
-                var producerBill = _context.ProducerBills.Include(x => x.BillEntries).Include(x => x.AdherentStolon).Include(x => x.AdherentStolon.Stolon).Include(x => x.AdherentStolon.Adherent).First(x => x.BillId == prodBill.Key.BillId);
+                if (prodBill.Key.State != BillState.Pending)
+                    continue;
+                var producerBill = _context.ProducerBills.Include(x => x.BillEntries).ThenInclude(x=>x.ConsumerBill).ThenInclude(x=>x.AdherentStolon).Include(x => x.BillEntries).ThenInclude(x=>x.ProductStock).ThenInclude(x=>x.Product).Include(x => x.AdherentStolon).Include(x => x.AdherentStolon.Stolon).Include(x => x.AdherentStolon.Adherent).First(x => x.BillId == prodBill.Key.BillId);
                 producerBill.ModificationReason += prodModificationReason;
                 producerBill.HasBeenModified = true;
                 producerBill.HtmlBillContent = BillGenerator.GenerateHtmlBillContent(producerBill, _context);
@@ -187,7 +187,7 @@ namespace Stolons.Controllers
                        producerBill.AdherentStolon.Adherent.Email,
                        producerBill.AdherentStolon.Adherent.CompanyName,
                        "Votre bon de commande de la semaine chez " + producerBill.AdherentStolon.Stolon.Label + "a été modifié (Bon de commande " + producerBill.BillNumber + ")",
-                       "Oops, il y a eu un petit problème avec votre commande. Malheureusement tous les produits commandés ne sont pas disponible.\n\rVotre bon de commande a été modifiée.\n\rEn voici la raison : \n\r" + prodModificationReason + "\n\rToutes nos excuses pour ce désagrément.\n\r" + producerBill.HtmlBillContent);
+                       "Oops, il y a eu un petit problème avec votre commande. \n\rVotre bon de commande a été modifiée.\n\rEn voici la raison : \n\r" + prodModificationReason + "\n\rToutes nos excuses pour ce désagrément.\n\r" + producerBill.HtmlBillContent);
             }
 
             //Stolon bill
@@ -304,13 +304,13 @@ namespace Stolons.Controllers
             Dictionary<StolonsBill, bool> weeks = new Dictionary<StolonsBill, bool>();
             weekStolonBill.ForEach(x => weeks.Add(x, BillGenerator.GeneratePDF(x.HtmlBillContent, x.GetStolonBillFilePath())));
             report.AppendLine("RESUME : ");
-            report.AppendLine("Commandes consomateurs générées : " + consumers.Count(x => x.Value == true) + "/" + consumers.Count);
+            report.AppendLine("Commandes consommateurs générées : " + consumers.Count(x => x.Value == true) + "/" + consumers.Count);
             report.AppendLine("Commandes producteurs générées : " + producers.Count(x => x.Value == true) + "/" + producers.Count);
             report.AppendLine("Commandes stolons générées : " + weeks.Count(x => x.Value == true) + "/" + weeks.Count);
             report.AppendLine("DETAILS : ");
-            report.AppendLine("-- Consomateurs ok : ");
+            report.AppendLine("-- Consommateurs ok : ");
             consumers.Where(x => x.Value).ToList().ForEach(consumer => report.AppendLine(consumer.Key.AdherentStolon.LocalId + " " + consumer.Key.AdherentStolon.Adherent.Name.ToUpper() + " " + consumer.Key.AdherentStolon.Adherent.Surname));
-            report.AppendLine("-- Consomateurs nok : ");
+            report.AppendLine("-- Consommateurs nok : ");
             consumers.Where(x => x.Value == false).ToList().ForEach(consumer => report.AppendLine(consumer.Key.AdherentStolon.LocalId + " " + consumer.Key.AdherentStolon.Adherent.Name.ToUpper() + " " + consumer.Key.AdherentStolon.Adherent.Surname));
             report.AppendLine("-- Producteurs ok : ");
             producers.Where(x => x.Value).ToList().ForEach(producer => report.AppendLine(producer.Key.AdherentStolon.LocalId + " " + producer.Key.AdherentStolon.Adherent.Name.ToUpper() + " " + producer.Key.AdherentStolon.Adherent.Surname));
