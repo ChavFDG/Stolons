@@ -1,4 +1,4 @@
-function getNewMessages(lastMessageDate) {
+ï»¿function getNewMessages(lastMessageDate) {
     if (lastMessageDate === null) {
         lastMessageDate = $('div.comment').last().attr('data-date');
     }
@@ -12,29 +12,29 @@ function getNewMessages(lastMessageDate) {
             $.each(data.Messages, function (i, message) {
                 addMessage(message, data.ActiveAdherentStolon);
             });
-        },
+        }
     });
 }
 
 function addMessage(message, activeAdherentStolon) {
 
     var template = _.template($("#chatMessageTemplate").html());
-    var html = template((
+    var html = template(
         {
             message: message,
             activeAdherentStolon: activeAdherentStolon
         }
-    ));
+    );
     $(html).insertAfter('div.comment:last');
 }
 
 $(document).ready(function () {
-    getNewMessages("1900-01-01")
+    getNewMessages("1900-01-01");
     $("div.chat").animate({ scrollTop: 50000000 }, 1000);
 
     window.removeMessage = function (id) {
         bootbox.confirm(
-            "Êtes-vous sûr de vouloir supprimer ce message ?",
+            "ÃŠtes-vous sÃ»r de vouloir supprimer ce message ?",
             function (result) {
                 if (result) {
                     $.blockUI();
@@ -46,17 +46,16 @@ $(document).ready(function () {
                         success: function (data) {
                             $.unblockUI();
                             if (data === true)
-                                $(("#" + id)).remove();
+                                $("#" + id).remove();
                         }
                     });
                 }
-
             }
         );
     };
 
     window.editMessage = function (id) {
-        var content = $(("#" + id + " .messageContent")).html();
+        var content = $("#" + id + " .messageContent").html();
         bootbox.prompt(
             {
                 value: $.trim(content),
@@ -76,7 +75,7 @@ $(document).ready(function () {
                             success: function (data) {
                                 $.unblockUI();
                                 if (data === true)
-                                    $(("#" + id + " .messageContent")).html(result);
+                                    $("#" + id + " .messageContent").html(result);
                             }
                         });
                     }
@@ -119,7 +118,9 @@ $(document).ready(function () {
         return false;
     });
 
+    /*
     window.setInterval(function () {
         getNewMessages();
     }, 30000);
+    */
 });

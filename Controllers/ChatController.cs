@@ -43,18 +43,6 @@ namespace Stolons.Controllers
             return GetNewMessages(date);
         }
 
-        [HttpPost, ActionName("GetPreviousMessage")]
-        public IActionResult GetPreviousMessages(DateTime date)
-        {
-            date = date.AddMilliseconds(1);
-            var adherentStolon = GetActiveAdherentStolon();
-            ChatMessageListViewModel chatMessagesViewModel 
-                = new ChatMessageListViewModel(adherentStolon, 
-                _context.ChatMessages.Include(x => x.PublishBy).Include(x => x.PublishBy.Stolon).Include(x => x.PublishBy.Adherent)
-                    .Where(x => x.PublishBy.StolonId == adherentStolon.StolonId && x.DateOfPublication < date).OrderBy(x => x.DateOfPublication).ToList());
-            return Json(chatMessagesViewModel);
-        }
-
         [HttpPost, ActionName("GetNewMessages")]
         public IActionResult GetNewMessages(DateTime date)
         {
