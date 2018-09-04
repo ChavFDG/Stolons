@@ -152,7 +152,11 @@ namespace Stolons.Controllers
 
             //Regeneration of orders
             // - producer
-            var producerBill = _context.ProducerBills.Include(x=>x.BillEntries).ThenInclude(x=>x.ProductStock).ThenInclude(x=>x.Product).Include(x=>x.AdherentStolon).ThenInclude(x=>x.Adherent).Include(x => x.AdherentStolon).ThenInclude(x => x.Stolon).Include(x => x.BillEntries).ThenInclude(x=>x.ConsumerBill).First(x => x.BillId == variableWeighOrderViewModel.ProducerBillId);
+            var producerBill = _context.ProducerBills.Include(x=>x.BillEntries).ThenInclude(x=>x.ProductStock).ThenInclude(x=>x.Product)
+                                                     .Include(x=>x.AdherentStolon).ThenInclude(x=>x.Adherent)
+                                                     .Include(x => x.AdherentStolon).ThenInclude(x => x.Stolon)
+                                                     .Include(x => x.BillEntries).ThenInclude(x=>x.ConsumerBill).ThenInclude(x=> x.AdherentStolon)
+                                                     .First(x => x.BillId == variableWeighOrderViewModel.ProducerBillId);
             producerBill.HtmlBillContent = BillGenerator.GenerateHtmlBillContent(producerBill, _context);
             producerBill.HtmlOrderContent = BillGenerator.GenerateHtmlOrderContent(producerBill, _context);
             BillGenerator.GenerateOrderPDF(producerBill);
@@ -161,7 +165,8 @@ namespace Stolons.Controllers
             // - consumers
             foreach (var id in consumerBillsId)
             {
-                var consumerBill = _context.ConsumerBills.Include(x=>x.BillEntries).ThenInclude(x => x.ProductStock).ThenInclude(x => x.Product).First(x => x.BillId == id);
+                var consumerBill = _context.ConsumerBills.Include(x=>x.BillEntries).ThenInclude(x => x.ProductStock).ThenInclude(x => x.Product)
+                                                         .Include(x=>x.AdherentStolon).ThenInclude(x=>x.Adherent).First(x => x.BillId == id);
                 consumerBill.HtmlBillContent = BillGenerator.GenerateHtmlBillContent(consumerBill, _context);
                 BillGenerator.GenerateBillPDF(consumerBill);
             }
