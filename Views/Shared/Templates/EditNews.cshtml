@@ -2,16 +2,7 @@
 @using Stolons.Models.Messages;
 @using Stolons.ViewModels.News
 @model NewsViewModel
- 
 
-<script type='text/javascript'>
-    $(document).ready(function () {
-        $.datepicker.setDefaults($.datepicker.regional["fr"]);
-        $.timepicker.setDefaults($.timepicker.regional['fr']);
-        $('#InputPublishEnd').datetimepicker();
-        $('#InputPublishStart').datetimepicker();
-        });
-</script>
 
 <script>
     function resizeImageToSpecificWidth(width) {
@@ -58,7 +49,6 @@
     });
 </script>
 
-
 <div class="form-horizontal">
     <hr />
     <input asp-for="News.Id" hidden="hidden" />
@@ -97,14 +87,14 @@
     <div class="form-group" id="News.PublishStart">
         <label asp-for="News.PublishStart" class="col-md-2 control-label"></label>
         <div class="col-md-10">
-            <input asp-for="News.PublishStart" class="form-control" id="InputPublishStart" asp-format="{0:dd/MM/yyyy HH:mm}" />
+            <input asp-for="News.PublishStart" class="form-control" id="InputPublishStart" />
             <span asp-validation-for="News.PublishStart" class="text-danger" />
         </div>
     </div>
     <div class="form-group" id="News.PublishEnd">
         <label asp-for="News.PublishEnd" class="col-md-2 control-label"></label>
         <div class="col-md-10">
-            <input asp-for="News.PublishEnd" class="form-control" id="InputPublishEnd" asp-format="{0:dd/MM/yyyy HH:mm}" />
+            <input asp-for="News.PublishEnd" class="form-control" id="InputPublishEnd" />
             <span asp-validation-for="News.PublishEnd" class="text-danger" />
         </div>
     </div>

@@ -1,13 +1,6 @@
 @model TransactionViewModel
 @using Stolons.ViewModels.Transactions
 
-<script type='text/javascript'>
-    $(document).ready(function () {
-        $.datepicker.setDefaults($.datepicker.regional["fr"]);
-        $.timepicker.setDefaults($.timepicker.regional['fr']);
-        $('#InputTransactionDate').datetimepicker();
-        });
-</script>
 
 <div class="form-horizontal">
     <input asp-for="Stolon.Id" hidden="hidden" />
@@ -31,7 +24,7 @@
     <div class="form-group" id="Transaction.Date">
         <label asp-for="Transaction.Date" class="col-md-2 control-label"></label>
         <div class="col-md-10">
-            <input asp-for="Transaction.Date" class="form-control" id="InputTransactionDate" asp-format="{0:dd/MM/yyyy HH:mm}" />
+            <input asp-for="Transaction.Date" class="form-control" id="InputTransactionDate" />
             <span asp-validation-for="Transaction.Date" class="text-danger" />
         </div>
     </div>
