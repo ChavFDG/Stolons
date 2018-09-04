@@ -31,9 +31,9 @@ else
 
 
 <ul class="nav nav-tabs">
-    <li class="active"><a data-toggle="tab" href="#consumersPickUp" name="consumersPickUp">Adhérants ayant une commande</a></li>
+    <li class="active"><a data-toggle="tab" href="#consumersPickUp" name="consumersPickUp">Adhérents ayant une commande</a></li>
     <li><a data-toggle="tab" href="#producersDelivery" name="producersDelivery">Producteurs ayant à livrer</a></li>
-    <li><a data-toggle="tab" href="#producersToPay" name="producersToPay">Producteurs en attente de payement</a></li>
+    <li><a data-toggle="tab" href="#producersToPay" name="producersToPay">Producteurs en attente de paiement</a></li>
 </ul>
 
 <div class="tab-content">
@@ -83,7 +83,7 @@ else
                     <td>
                         <div class="dropdown btn-group">
                             <button class="dropdown-toggle btn btn-small btn-default" data-toggle="dropdown" href="#">
-                                Récupération et payement en ...
+                                Récupération et paiement en ...
                                 <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu">
@@ -148,7 +148,7 @@ else
                     </td>
                     <td>
                         <a href="#" class="btn btn-small btn-default" onclick="validateProdDelivery('@item.BillId','@(((int)item.State) + 1)')">Valider la livraison</a>
-                        <a href="#" class="btn btn-small btn-default open-correction-modal" data-bill-id="@item.BillId">Réctifier la livraison</a>
+                        <a href="#" class="btn btn-small btn-default open-correction-modal" data-bill-id="@item.BillId">Rectifier la livraison</a>
                     </td>
                     <td>
                         @{

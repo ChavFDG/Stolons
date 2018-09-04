@@ -101,7 +101,7 @@ $(document).ready(function () {
 
     window.payConsumerBill = function (billId, payementMode) {
         bootbox.confirm(
-            "Confirmer la récupération et le payement de la facture",
+            "Confirmer la récupération et le paiement de la facture",
             function (result) {
                 if (result) {
                     $.blockUI();
@@ -154,7 +154,7 @@ $(document).ready(function () {
 
     window.validateProdPayement = function (billId, state) {
         bootbox.confirm(
-            "Confirmer le payement de la facture",
+            "Confirmer le paiement de la facture",
             function (result) {
                 if (result) {
                     $.blockUI();
