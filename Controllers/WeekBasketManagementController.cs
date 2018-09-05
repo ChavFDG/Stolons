@@ -408,7 +408,7 @@ namespace Stolons.Controllers
         public IActionResult ProducerBill(string billId)
         {
             IBill bill = _context.ProducerBills.Include(x => x.AdherentStolon).ThenInclude(x => x.Adherent).AsNoTracking().First(x => x.BillId.ToString() == billId);
-            bill.BillEntries = _context.BillEntrys.Include(x => x.ProductStock).Where(x => x.ProducerBillId.ToString() == billId).AsNoTracking().ToList();
+            bill.BillEntries = _context.BillEntrys.Include(x => x.ProductStock).Include(x=>x.ConsumerBill).Where(x => x.ProducerBillId.ToString() == billId && x.ConsumerBill.State != BillState.Cancelled).AsNoTracking().ToList();
 
             foreach (BillEntry billEntry in bill.BillEntries)
             {
