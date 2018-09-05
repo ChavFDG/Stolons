@@ -216,8 +216,6 @@ namespace Stolons.Models
         }
 
 
-        [Display(Name = "Quantité moyenne")]
-        public int AverageQuantity { get; set; }
         [Display(Name = "Unité de mesure")]
         public Unit ProductUnit { get; set; }
 
