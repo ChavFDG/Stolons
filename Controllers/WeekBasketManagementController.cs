@@ -353,7 +353,7 @@ namespace Stolons.Controllers
             //Consumers bills
             foreach (var billId in modifiedBills)
             {
-                var billToModify = _context.ConsumerBills.Include(x => x.AdherentStolon.Adherent).First(x => x.BillId == billId);
+                var billToModify = _context.ConsumerBills.Include(x => x.AdherentStolon.Adherent).Include(x=>x.BillEntries).First(x => x.BillId == billId);
                 billToModify.ModificationReason += billCorrection.Reason;
                 billToModify.HasBeenModified = true;
                 billToModify.HtmlBillContent = BillGenerator.GenerateHtmlBillContent(billToModify, _context);
