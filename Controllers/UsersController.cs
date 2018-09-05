@@ -232,7 +232,6 @@ namespace Stolons.Controllers
 
             AdherentStolon adherentStolon = _context.AdherentStolons.Include(x=>x.Adherent).First(x => x.Id == id);
             adherentStolon.Deleted = true;
-            _context.SaveChanges();
             if (!_context.AdherentStolons.Any(x => x.AdherentId == adherentStolon.AdherentId && x.Deleted == false))
             {
                 //On supprime son mail de connexion
