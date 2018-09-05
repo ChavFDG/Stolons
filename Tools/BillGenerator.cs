@@ -765,7 +765,10 @@ namespace Stolons.Tools
             bill.BillEntries = billEntries;
             bill.BillNumber = GenerateBillNumber(adherentStolon.Stolon.ShortLabel, adherentStolon.LocalId, bill is ProducerBill);
             if (bill is ProducerBill)
+            {
                 (bill as ProducerBill).OrderNumber = GenerateOrderNumber(adherentStolon.Stolon.ShortLabel, adherentStolon.LocalId);
+                billEntries.ForEach(x => x.ProducerBill = bill as ProducerBill);
+            }
             else if (bill is ConsumerBill)
                 billEntries.ForEach(x => x.ConsumerBill = bill as ConsumerBill);
             bill.AdherentStolon = adherentStolon;
