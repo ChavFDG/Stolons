@@ -51,7 +51,7 @@ namespace Stolons.Tools
                             if (lastModes[stolon.Id] == Stolon.Modes.Order && currentMode == Stolon.Modes.DeliveryAndStockUpdate)
                             {
 #if (DEBUG)
-                                DebugRemoveBills(dbContext,stolon);
+                                DebugRemoveBills(dbContext, stolon);
 #endif
                                 TriggerDeliveryAndStockUpdateMode(stolon, dbContext);
                             }
@@ -84,7 +84,7 @@ namespace Stolons.Tools
             {
                 using (ApplicationDbContext dbContext = DotnetHelper.getDbContext(scope))
                 {
-                    foreach (Stolon stolon in dbContext.Stolons.Where(x=>x.BasketPickUpStartDay == DateTime.Now.DayOfWeek && x.OrderRememberHour == DateTime.Now.Hour).ToList())
+                    foreach (Stolon stolon in dbContext.Stolons.Where(x => x.BasketPickUpStartDay == DateTime.Now.DayOfWeek && x.OrderRememberHour == DateTime.Now.Hour).ToList())
                     {
                         var consumerBills = dbContext.ConsumerBills
                                             .Include(x => x.AdherentStolon)
@@ -433,329 +433,364 @@ namespace Stolons.Tools
 
         public static string GenerateHtmlContent(StolonsBill bill, List<ConsumerBill> consumersBills)
         {
-            StringBuilder builder = new StringBuilder();
-            if (!consumersBills.Any())
+            try
             {
-                builder.AppendLine("Rien cette semaine !");
-            }
-            else
-            {
-                builder.AppendLine("<h1>Commandes numéro : " + bill.BillNumber + "</h1>");
-                builder.AppendLine("<p>Année : " + DateTime.Now.Year);
-                builder.AppendLine("<br>Semaine : " + DateTime.Now.GetIso8601WeekOfYear());
-                builder.AppendLine("<br><b>Nombre de panier : " + consumersBills.Count + "</b></p>");
-                builder.AppendLine("<p>Adhérents ayant un panier : <small><br>");
-                consumersBills.Where(x=>x.State != BillState.Cancelled).OrderBy(x => x.AdherentStolon.LocalId)
-                    .ForEach(x => builder.AppendLine("<a href=\"#" + x.AdherentStolon.LocalId + "\">" + x.AdherentStolon.GetNumberSurnameName() + "</a><br>"));
-                builder.AppendLine("</small></p>");
-                if (bill.HasBeenModified)
+                StringBuilder builder = new StringBuilder();
+                if (!consumersBills.Any())
                 {
-                    builder.AppendLine("<div style=\"color:red\">");
-                    builder.AppendLine("<p>Cette commande a été modifié pour les raisons suivante : </p>");
-                    builder.AppendLine("<p>" + bill.ModificationReason + "</p>");
-                    builder.AppendLine("</div>");
+                    builder.AppendLine("Rien cette semaine !");
                 }
-
-                builder.AppendLine("<div style=\"page-break-after:always\"></div>");
-                int count = 0;
-                foreach (var consumerBill in consumersBills.Where(x=>x.State != BillState.Cancelled).OrderBy(x => x.AdherentStolon.LocalId))
+                else
                 {
-                    count++;
-                    builder.AppendLine("<h1 id=\"" + consumerBill.AdherentStolon.LocalId + "\">Adhérent : " + consumerBill.AdherentStolon.LocalId + " / " + consumerBill.AdherentStolon.Adherent.Surname + " / " + consumerBill.AdherentStolon.Adherent.Name + "</h1>");
-                    builder.AppendLine("<p>Facture : " + consumerBill.BillNumber + "</p>");
-                    builder.AppendLine("<p>Téléphone : " + consumerBill.AdherentStolon.Adherent.PhoneNumber + "</p>");
-                    builder.AppendLine("<p>Total à régler : " + consumerBill.TotalPrice.ToString("0.00") + " €</p>");
-                    //Create list of bill entry by product
-                    var billEntryByProducer = consumerBill.BillEntries.GroupBy(x => x.ProducerBill);
-
-                    builder.AppendLine("<h2>Commande par producteur</h2>");
-
-                    builder.AppendLine("<table class=\"table\">");
-                    builder.AppendLine("<tr>");
-                    builder.AppendLine("<th>Producteur</th>");
-                    builder.AppendLine("<th>Produit</th>");
-                    builder.AppendLine("<th>Quantité</th>");
-                    builder.AppendLine("</tr>");
-
-                    foreach (var producerBillsEntry in billEntryByProducer.OrderBy(x => x?.Key?.AdherentStolon?.Adherent?.CompanyName))
+                    builder.AppendLine("<h1>Commandes numéro : " + bill.BillNumber + "</h1>");
+                    builder.AppendLine("<p>Année : " + DateTime.Now.Year);
+                    builder.AppendLine("<br>Semaine : " + DateTime.Now.GetIso8601WeekOfYear());
+                    builder.AppendLine("<br><b>Nombre de panier : " + consumersBills.Count + "</b></p>");
+                    builder.AppendLine("<p>Adhérents ayant un panier : <small><br>");
+                    consumersBills.Where(x => x.State != BillState.Cancelled).OrderBy(x => x.AdherentStolon.LocalId)
+                        .ForEach(x => builder.AppendLine("<a href=\"#" + x.AdherentStolon.LocalId + "\">" + x.AdherentStolon.GetNumberSurnameName() + "</a><br>"));
+                    builder.AppendLine("</small></p>");
+                    if (bill.HasBeenModified)
                     {
+                        builder.AppendLine("<div style=\"color:red\">");
+                        builder.AppendLine("<p>Cette commande a été modifié pour les raisons suivante : </p>");
+                        builder.AppendLine("<p>" + bill.ModificationReason + "</p>");
+                        builder.AppendLine("</div>");
+                    }
+
+                    builder.AppendLine("<div style=\"page-break-after:always\"></div>");
+                    int count = 0;
+                    foreach (var consumerBill in consumersBills.Where(x => x.State != BillState.Cancelled).OrderBy(x => x.AdherentStolon.LocalId))
+                    {
+                        count++;
+                        builder.AppendLine("<h1 id=\"" + consumerBill.AdherentStolon.LocalId + "\">Adhérent : " + consumerBill.AdherentStolon.LocalId + " / " + consumerBill.AdherentStolon.Adherent.Surname + " / " + consumerBill.AdherentStolon.Adherent.Name + "</h1>");
+                        builder.AppendLine("<p>Facture : " + consumerBill.BillNumber + "</p>");
+                        builder.AppendLine("<p>Téléphone : " + consumerBill.AdherentStolon.Adherent.PhoneNumber + "</p>");
+                        builder.AppendLine("<p>Total à régler : " + consumerBill.TotalPrice.ToString("0.00") + " €</p>");
+                        //Create list of bill entry by product
+                        var billEntryByProducer = consumerBill.BillEntries.GroupBy(x => x.ProducerBill);
+
+                        builder.AppendLine("<h2>Commande par producteur</h2>");
+
+                        builder.AppendLine("<table class=\"table\">");
                         builder.AppendLine("<tr>");
-                        builder.AppendLine("<td colspan=\"3\" style=\"border-top:1px solid;\">" + "<b>" + producerBillsEntry.Key.AdherentStolon.Adherent.CompanyName + "</b>" + "</td>");
+                        builder.AppendLine("<th>Producteur</th>");
+                        builder.AppendLine("<th>Produit</th>");
+                        builder.AppendLine("<th>Quantité</th>");
                         builder.AppendLine("</tr>");
-                        foreach (var billEntry in producerBillsEntry.OrderBy(x => x.ProductStock.Product.Name))
+
+                        foreach (var producerBillsEntry in billEntryByProducer.OrderBy(x => x.Key.AdherentStolon.Adherent.CompanyName))
                         {
                             builder.AppendLine("<tr>");
-                            builder.AppendLine("<td></td>");
-                            builder.AppendLine("<td>" + billEntry.ProductStock.Product.Name + "</td>");
-                            builder.AppendLine("<td>" + billEntry.QuantityString + (billEntry.IsNotAssignedVariableWeigh ? " (poids variable)" : "") + "</td>");
+                            builder.AppendLine("<td colspan=\"3\" style=\"border-top:1px solid;\">" + "<b>" + producerBillsEntry.Key.AdherentStolon.Adherent.CompanyName + "</b>" + "</td>");
                             builder.AppendLine("</tr>");
+                            foreach (var billEntry in producerBillsEntry.OrderBy(x => x.ProductStock.Product.Name))
+                            {
+                                builder.AppendLine("<tr>");
+                                builder.AppendLine("<td></td>");
+                                builder.AppendLine("<td>" + billEntry.ProductStock.Product.Name + "</td>");
+                                builder.AppendLine("<td>" + billEntry.QuantityString + (billEntry.IsNotAssignedVariableWeigh ? " (poids variable)" : "") + "</td>");
+                                builder.AppendLine("</tr>");
 
+                            }
                         }
-                    }
-                    builder.AppendLine("</table>");
-                    if (count != consumersBills.Count)
-                        builder.AppendLine("<div style=\"page-break-after:always\"></div>");
+                        builder.AppendLine("</table>");
+                        if (count != consumersBills.Count)
+                            builder.AppendLine("<div style=\"page-break-after:always\"></div>");
 
+                    }
                 }
+                builder.AddBootstrap();
+                builder.AddFooterAndHeaderRemoval();
+                return builder.ToString();
+
             }
-            builder.AddBootstrap();
-            builder.AddFooterAndHeaderRemoval();
-            return builder.ToString();
+            catch (Exception e)
+            {
+                Logger.LogError("Erreur lors de la génération de la stolon bill : " + e.Message, e);
+                return "Erreur lors de la génération" + e.Message;
+            }
         }
 
         //PRODUCER BILL
 
         public static string GenerateHtmlOrderContent(ProducerBill bill, ApplicationDbContext dbContext)
         {
-            //GENERATION COMMANDE
-            StringBuilder orderBuilder = new StringBuilder();
-            //Entete de facture
-            //  Producteur
-            orderBuilder.AppendLine("<h2> Commande n°" + bill.OrderNumber + "</h2>");
-            orderBuilder.AppendLine("<p>" + bill.AdherentStolon.Adherent.CompanyName + "<br>");
-            orderBuilder.AppendLine("<Année : " + DateTime.Now.Year + "<br>");
-            orderBuilder.AppendLine("Semaine : " + DateTime.Now.GetIso8601WeekOfYear() + "<br></p>");
-            orderBuilder.AppendLine("<br>");
-            #region Par produit
-
-            orderBuilder.AppendLine("<h3>Commande par produit</h3>");
-
-            orderBuilder.AppendLine("<table class=\"table\">");
-            orderBuilder.AppendLine("<tr>");
-            orderBuilder.AppendLine("<th>Produit</th>");
-            orderBuilder.AppendLine("<th>Quantité</th>");
-            orderBuilder.AppendLine("</tr>");
-
-            foreach (var productBillEntries in bill.BillEntries.Where(x=>x.ConsumerBill.State != BillState.Cancelled).GroupBy(x => x.ProductStock.Product, x => x).OrderBy(x => x.Key.Name))
+            try
             {
-                int quantity = 0;
-                productBillEntries.ForEach(x => quantity += x.Quantity);
-                if (productBillEntries.First().IsAssignedVariableWeigh)
-                    quantity = quantity / productBillEntries.Key.QuantityStep;
+                //GENERATION COMMANDE
+                StringBuilder orderBuilder = new StringBuilder();
+                //Entete de facture
+                //  Producteur
+                orderBuilder.AppendLine("<h2> Commande n°" + bill.OrderNumber + "</h2>");
+                orderBuilder.AppendLine("<p>" + bill.AdherentStolon.Adherent.CompanyName + "<br>");
+                orderBuilder.AppendLine("<Année : " + DateTime.Now.Year + "<br>");
+                orderBuilder.AppendLine("Semaine : " + DateTime.Now.GetIso8601WeekOfYear() + "<br></p>");
+                orderBuilder.AppendLine("<br>");
+                #region Par produit
+
+                orderBuilder.AppendLine("<h3>Commande par produit</h3>");
+
+                orderBuilder.AppendLine("<table class=\"table\">");
                 orderBuilder.AppendLine("<tr>");
-                orderBuilder.AppendLine("<td>" + productBillEntries.Key.Name + "</td>");
-                orderBuilder.AppendLine("<td>" + productBillEntries.Key.GetQuantityString(quantity) + "</td>");
+                orderBuilder.AppendLine("<th>Produit</th>");
+                orderBuilder.AppendLine("<th>Quantité</th>");
                 orderBuilder.AppendLine("</tr>");
-            }
-            orderBuilder.AppendLine("</table>");
 
-            #endregion Par produit
-
-            #region Par client
-            orderBuilder.AppendLine("<h3>Commande par client</h3>");
-
-            var billEntriesByConsumer = bill.BillEntries.Where(x => x.ConsumerBill.State != BillState.Cancelled).GroupBy(x => x.ConsumerBill.AdherentStolon);
-            orderBuilder.AppendLine("<table class=\"table\">");
-            orderBuilder.AppendLine("<tr>");
-            orderBuilder.AppendLine("<th>Client</th>");
-            orderBuilder.AppendLine("<th>Produit</th>");
-            orderBuilder.AppendLine("<th>Quantité</th>");
-            orderBuilder.AppendLine("<th></th>");
-            orderBuilder.AppendLine("</tr>");
-            foreach (var group in billEntriesByConsumer.OrderBy(x => x.Key.LocalId))
-            {
-                orderBuilder.AppendLine("<tr>");
-                orderBuilder.AppendLine("<td colspan=\"3\" style=\"border-top:1px solid;\">" + "<b>" + group.Key.LocalId + "</b>" + "</td>");
-                orderBuilder.AppendLine("</tr>");
-                foreach (var entries in group.OrderBy(x => x.ProductStock.ProductId))
+                foreach (var productBillEntries in bill.BillEntries.Where(x => x.ConsumerBill.State != BillState.Cancelled).GroupBy(x => x.ProductStock.Product, x => x).OrderBy(x => x.Key.Name))
                 {
+                    int quantity = 0;
+                    productBillEntries.ForEach(x => quantity += x.Quantity);
+                    if (productBillEntries.First().IsAssignedVariableWeigh)
+                        quantity = quantity / productBillEntries.Key.QuantityStep;
                     orderBuilder.AppendLine("<tr>");
-                    orderBuilder.AppendLine("<td></td>");
-                    orderBuilder.AppendLine("<td>" + entries.Name + "</td>");
-                    orderBuilder.AppendLine("<td>" + entries.GetQuantityString(entries.Quantity) + "</td>");
+                    orderBuilder.AppendLine("<td>" + productBillEntries.Key.Name + "</td>");
+                    orderBuilder.AppendLine("<td>" + productBillEntries.Key.GetQuantityString(quantity) + "</td>");
                     orderBuilder.AppendLine("</tr>");
                 }
+                orderBuilder.AppendLine("</table>");
+
+                #endregion Par produit
+
+                #region Par client
+                orderBuilder.AppendLine("<h3>Commande par client</h3>");
+
+                var billEntriesByConsumer = bill.BillEntries.Where(x => x.ConsumerBill.State != BillState.Cancelled).GroupBy(x => x.ConsumerBill.AdherentStolon);
+                orderBuilder.AppendLine("<table class=\"table\">");
+                orderBuilder.AppendLine("<tr>");
+                orderBuilder.AppendLine("<th>Client</th>");
+                orderBuilder.AppendLine("<th>Produit</th>");
+                orderBuilder.AppendLine("<th>Quantité</th>");
+                orderBuilder.AppendLine("<th></th>");
+                orderBuilder.AppendLine("</tr>");
+                foreach (var group in billEntriesByConsumer.OrderBy(x => x.Key.LocalId))
+                {
+                    orderBuilder.AppendLine("<tr>");
+                    orderBuilder.AppendLine("<td colspan=\"3\" style=\"border-top:1px solid;\">" + "<b>" + group.Key.LocalId + "</b>" + "</td>");
+                    orderBuilder.AppendLine("</tr>");
+                    foreach (var entries in group.OrderBy(x => x.ProductStock.ProductId))
+                    {
+                        orderBuilder.AppendLine("<tr>");
+                        orderBuilder.AppendLine("<td></td>");
+                        orderBuilder.AppendLine("<td>" + entries.Name + "</td>");
+                        orderBuilder.AppendLine("<td>" + entries.GetQuantityString(entries.Quantity) + "</td>");
+                        orderBuilder.AppendLine("</tr>");
+                    }
+                }
+                orderBuilder.AppendLine("</table>");
+
+                #endregion Par client
+
+                orderBuilder.AppendLine("<h3>Facturation</h3>");
+                orderBuilder.AppendLine("<p>" + "Montant total de la commande  " + bill.OrderAmount.ToString("0.00") + "€<br>");
+                orderBuilder.AppendLine("Montant total du % du Stolons " + bill.FeeAmount.ToString("0.00") + "€<br>");
+                orderBuilder.AppendLine("Montant total à percevoir     <b>" + bill.BillAmount.ToString("0.00") + "€</b> <i>(Dont " + bill.TaxAmount.ToString("0.00") + "€ TVA)</i></p>");
+                orderBuilder.AddBootstrap();
+                orderBuilder.AddFooterAndHeaderRemoval();
+                return orderBuilder.ToString();
+
+
             }
-            orderBuilder.AppendLine("</table>");
-
-            #endregion Par client
-
-            orderBuilder.AppendLine("<h3>Facturation</h3>");
-            orderBuilder.AppendLine("<p>" + "Montant total de la commande  " + bill.OrderAmount.ToString("0.00") + "€<br>");
-            orderBuilder.AppendLine("Montant total du % du Stolons " + bill.FeeAmount.ToString("0.00") + "€<br>");
-            orderBuilder.AppendLine("Montant total à percevoir     <b>" + bill.BillAmount.ToString("0.00") + "€</b> <i>(Dont " + bill.TaxAmount.ToString("0.00") + "€ TVA)</i></p>");
-            orderBuilder.AddBootstrap();
-            orderBuilder.AddFooterAndHeaderRemoval();
-            return orderBuilder.ToString();
+            catch (Exception e)
+            {
+                Logger.LogError("Erreur lors de la génération de la producer order : " + e.Message, e);
+                return "Erreur lors de la génération" + e.Message;
+            }
         }
 
         public static string GenerateHtmlBillContent(ProducerBill bill, ApplicationDbContext dbContext)
         {
-            //Calcul total amount
-            decimal totalAmount = 0;
-            foreach (var billEntry in bill.BillEntries.Where(x=>x.ConsumerBill.State != BillState.Cancelled))
+            try
             {
-                totalAmount += billEntry.Price;
-            }
-            bill.OrderAmount = totalAmount;
-            bill.ProducerFee = bill.AdherentStolon.ProducerFee;
-
-            //GENERATION FACTURE
-            StringBuilder billBuilder = new StringBuilder();
-            //Entete de facture
-            ////Producteur
-            billBuilder.AppendLine("<p>" + bill.AdherentStolon.Adherent.CompanyName + "<p>");
-            billBuilder.AppendLine("<p>" + bill.AdherentStolon.Adherent.Surname?.ToUpper() + " " + bill.AdherentStolon.Adherent.Name?.ToUpper() + "<p>");
-            billBuilder.AppendLine("<p>" + bill.AdherentStolon.Adherent.Address + "</p>");
-            billBuilder.AppendLine("<p>" + bill.AdherentStolon.Adherent.PostCode + " " + bill.AdherentStolon.Adherent.City?.ToUpper() + "</p>");
-            billBuilder.AppendLine("<p>" + bill.AdherentStolon.Adherent.PhoneNumber + "</p>");
-            billBuilder.AppendLine("<p>" + bill.AdherentStolon.Adherent.Email + "</p>");
-            billBuilder.AppendLine("<br>");
-            ////Stolon
-            billBuilder.AppendLine("<div style=\"float:right\">");
-            billBuilder.AppendLine("<p>" + bill.AdherentStolon.Stolon.Label + "<p>");
-            billBuilder.AppendLine("<p>" + bill.AdherentStolon.Stolon.Address + "<p>");
-            billBuilder.AppendLine("<p>" + bill.AdherentStolon.Stolon.PhoneNumber + "<p>");
-            billBuilder.AppendLine("<p>" + bill.AdherentStolon.Stolon.ContactMailAddress + "<p>");
-            billBuilder.AppendLine("</div>");
-            ////Facture info
-            billBuilder.AppendLine("<div style=\"font-weight:bold\">");
-            billBuilder.AppendLine("Facture n° " + bill.BillNumber);
-            billBuilder.AppendLine("Année : " + DateTime.Now.Year + ", semaine : " + DateTime.Now.GetIso8601WeekOfYear());
-            billBuilder.AppendLine("</div>");
-            //Tableau
-            billBuilder.AppendLine("<br>");
-            billBuilder.AppendLine("<table class=\"table\">");
-            billBuilder.AppendLine("<tr>");
-            billBuilder.AppendLine("<th>Produit</th>");
-            billBuilder.AppendLine("<th>Quantité</th>");
-            billBuilder.AppendLine("<th>TVA</th>");
-            billBuilder.AppendLine("<th>PU HT</th>");
-            billBuilder.AppendLine("<th>TOTAL HT</th>");
-            billBuilder.AppendLine("</tr>");
-            //Taux tax / Total HT
-            Dictionary<decimal, decimal> taxTotal = new Dictionary<decimal, decimal>();
-            decimal totalWithoutTax = 0;
-            foreach (var productBillEntries in bill.BillEntries.Where(x => x.ConsumerBill.State != BillState.Cancelled).GroupBy(x => x.ProductStock.Product, x => x).OrderBy(x => x.Key.Name))
-            {
-                int quantity = 0;
-                productBillEntries.ForEach(x => quantity += x.Quantity);
-                decimal productTotalWithoutTax = Convert.ToDecimal(productBillEntries.First().UnitPriceWithoutTax * quantity);
-                billBuilder.AppendLine("<tr>");
-                billBuilder.AppendLine("<td>" + productBillEntries.Key.Name + "</td>");
-                billBuilder.AppendLine("<td>" + (productBillEntries.Key.Type == SellType.VariableWeigh ? productBillEntries.Key.FormatQuantityString(quantity) : productBillEntries.Key.GetQuantityString(quantity)) + "</td>");
-                billBuilder.AppendLine("<td>" + (productBillEntries.Key.TaxEnum == Product.TAX.None ? "NA" : productBillEntries.Key.Tax.ToString("0.00") + " %</td>"));
-                billBuilder.AppendLine("<td>" + (productBillEntries.Key.Type == SellType.Piece ? productBillEntries.First().UnitPriceWithoutTax : productBillEntries.First().PriceWithoutTax).ToString("0.00") + " €" + "</td>");
-                billBuilder.AppendLine("<td>" + productTotalWithoutTax.ToString("0.00") + " €" + "</td>");
-                billBuilder.AppendLine("</tr>");
-                //Si tax, on ajoute au total du taux de la tva
-                if (productBillEntries.Key.TaxEnum != Product.TAX.None)
+                //Calcul total amount
+                decimal totalAmount = 0;
+                foreach (var billEntry in bill.BillEntries.Where(x => x.ConsumerBill.State != BillState.Cancelled))
                 {
-                    if (taxTotal.ContainsKey(productBillEntries.Key.Tax))
-                        taxTotal[productBillEntries.Key.Tax] += productTotalWithoutTax;
-                    else
-                        taxTotal.Add(productBillEntries.Key.Tax, productTotalWithoutTax);
+                    totalAmount += billEntry.Price;
                 }
-                totalWithoutTax += productTotalWithoutTax;
-            }
-            billBuilder.AppendLine("<tr>");
-            billBuilder.AppendLine("<td></td>");
-            billBuilder.AppendLine("<td></td>");
-            billBuilder.AppendLine("<td></td>");
-            billBuilder.AppendLine("<td>Total HT</td>");
-            billBuilder.AppendLine("<td>" + totalWithoutTax.ToString("0.00") + " €</td>");
-            billBuilder.AppendLine("</tr>");
-            bill.TaxAmount = 0;
-            foreach (var tax in taxTotal)
-            {
-                decimal taxAmount = Math.Round(tax.Value / 100m * tax.Key, 2);
+                bill.OrderAmount = totalAmount;
+                bill.ProducerFee = bill.AdherentStolon.ProducerFee;
+
+                //GENERATION FACTURE
+                StringBuilder billBuilder = new StringBuilder();
+                //Entete de facture
+                ////Producteur
+                billBuilder.AppendLine("<p>" + bill.AdherentStolon.Adherent.CompanyName + "<p>");
+                billBuilder.AppendLine("<p>" + bill.AdherentStolon.Adherent.Surname?.ToUpper() + " " + bill.AdherentStolon.Adherent.Name?.ToUpper() + "<p>");
+                billBuilder.AppendLine("<p>" + bill.AdherentStolon.Adherent.Address + "</p>");
+                billBuilder.AppendLine("<p>" + bill.AdherentStolon.Adherent.PostCode + " " + bill.AdherentStolon.Adherent.City?.ToUpper() + "</p>");
+                billBuilder.AppendLine("<p>" + bill.AdherentStolon.Adherent.PhoneNumber + "</p>");
+                billBuilder.AppendLine("<p>" + bill.AdherentStolon.Adherent.Email + "</p>");
+                billBuilder.AppendLine("<br>");
+                ////Stolon
+                billBuilder.AppendLine("<div style=\"float:right\">");
+                billBuilder.AppendLine("<p>" + bill.AdherentStolon.Stolon.Label + "<p>");
+                billBuilder.AppendLine("<p>" + bill.AdherentStolon.Stolon.Address + "<p>");
+                billBuilder.AppendLine("<p>" + bill.AdherentStolon.Stolon.PhoneNumber + "<p>");
+                billBuilder.AppendLine("<p>" + bill.AdherentStolon.Stolon.ContactMailAddress + "<p>");
+                billBuilder.AppendLine("</div>");
+                ////Facture info
+                billBuilder.AppendLine("<div style=\"font-weight:bold\">");
+                billBuilder.AppendLine("Facture n° " + bill.BillNumber);
+                billBuilder.AppendLine("Année : " + DateTime.Now.Year + ", semaine : " + DateTime.Now.GetIso8601WeekOfYear());
+                billBuilder.AppendLine("</div>");
+                //Tableau
+                billBuilder.AppendLine("<br>");
+                billBuilder.AppendLine("<table class=\"table\">");
+                billBuilder.AppendLine("<tr>");
+                billBuilder.AppendLine("<th>Produit</th>");
+                billBuilder.AppendLine("<th>Quantité</th>");
+                billBuilder.AppendLine("<th>TVA</th>");
+                billBuilder.AppendLine("<th>PU HT</th>");
+                billBuilder.AppendLine("<th>TOTAL HT</th>");
+                billBuilder.AppendLine("</tr>");
+                //Taux tax / Total HT
+                Dictionary<decimal, decimal> taxTotal = new Dictionary<decimal, decimal>();
+                decimal totalWithoutTax = 0;
+                foreach (var productBillEntries in bill.BillEntries.Where(x => x.ConsumerBill.State != BillState.Cancelled).GroupBy(x => x.ProductStock.Product, x => x).OrderBy(x => x.Key.Name))
+                {
+                    int quantity = 0;
+                    productBillEntries.ForEach(x => quantity += x.Quantity);
+                    decimal productTotalWithoutTax = Convert.ToDecimal(productBillEntries.First().UnitPriceWithoutTax * quantity);
+                    billBuilder.AppendLine("<tr>");
+                    billBuilder.AppendLine("<td>" + productBillEntries.Key.Name + "</td>");
+                    billBuilder.AppendLine("<td>" + (productBillEntries.Key.Type == SellType.VariableWeigh ? productBillEntries.Key.FormatQuantityString(quantity) : productBillEntries.Key.GetQuantityString(quantity)) + "</td>");
+                    billBuilder.AppendLine("<td>" + (productBillEntries.Key.TaxEnum == Product.TAX.None ? "NA" : productBillEntries.Key.Tax.ToString("0.00") + " %</td>"));
+                    billBuilder.AppendLine("<td>" + (productBillEntries.Key.Type == SellType.Piece ? productBillEntries.First().UnitPriceWithoutTax : productBillEntries.First().PriceWithoutTax).ToString("0.00") + " €" + "</td>");
+                    billBuilder.AppendLine("<td>" + productTotalWithoutTax.ToString("0.00") + " €" + "</td>");
+                    billBuilder.AppendLine("</tr>");
+                    //Si tax, on ajoute au total du taux de la tva
+                    if (productBillEntries.Key.TaxEnum != Product.TAX.None)
+                    {
+                        if (taxTotal.ContainsKey(productBillEntries.Key.Tax))
+                            taxTotal[productBillEntries.Key.Tax] += productTotalWithoutTax;
+                        else
+                            taxTotal.Add(productBillEntries.Key.Tax, productTotalWithoutTax);
+                    }
+                    totalWithoutTax += productTotalWithoutTax;
+                }
                 billBuilder.AppendLine("<tr>");
                 billBuilder.AppendLine("<td></td>");
                 billBuilder.AppendLine("<td></td>");
                 billBuilder.AppendLine("<td></td>");
-                billBuilder.AppendLine("<td font-style=italic>TVA " + tax.Key.ToString("0.00") + "%</td>");
-                billBuilder.AppendLine("<td font-style=italic>" + taxAmount.ToString("0.00") + " €</td>");
+                billBuilder.AppendLine("<td>Total HT</td>");
+                billBuilder.AppendLine("<td>" + totalWithoutTax.ToString("0.00") + " €</td>");
                 billBuilder.AppendLine("</tr>");
-                bill.TaxAmount += taxAmount;
+                bill.TaxAmount = 0;
+                foreach (var tax in taxTotal)
+                {
+                    decimal taxAmount = Math.Round(tax.Value / 100m * tax.Key, 2);
+                    billBuilder.AppendLine("<tr>");
+                    billBuilder.AppendLine("<td></td>");
+                    billBuilder.AppendLine("<td></td>");
+                    billBuilder.AppendLine("<td></td>");
+                    billBuilder.AppendLine("<td font-style=italic>TVA " + tax.Key.ToString("0.00") + "%</td>");
+                    billBuilder.AppendLine("<td font-style=italic>" + taxAmount.ToString("0.00") + " €</td>");
+                    billBuilder.AppendLine("</tr>");
+                    bill.TaxAmount += taxAmount;
+                }
+                billBuilder.AppendLine("<tr>");
+                billBuilder.AppendLine("<td></td>");
+                billBuilder.AppendLine("<td></td>");
+                billBuilder.AppendLine("<td></td>");
+                billBuilder.AppendLine("<td>Total TVA</td>");
+                billBuilder.AppendLine("<td>" + bill.TaxAmount.ToString("0.00") + " €</td>");
+                billBuilder.AppendLine("<tr>");
+                billBuilder.AppendLine("<td></td>");
+                billBuilder.AppendLine("<td></td>");
+                billBuilder.AppendLine("<td></td>");
+                billBuilder.AppendLine("<td>Total TTC</td>");
+                billBuilder.AppendLine("<td>" + bill.OrderAmount.ToString("0.00") + " €</td>");
+                billBuilder.AppendLine("<tr>");
+                billBuilder.AppendLine("<td></td>");
+                billBuilder.AppendLine("<td></td>");
+                billBuilder.AppendLine("<td></td>");
+                billBuilder.AppendLine("<td font-style=italic>Commission (" + bill.ProducerFee + "%)</td>");
+                billBuilder.AppendLine("<td font-style=italic>" + bill.FeeAmount.ToString("0.00") + " €</td>");
+                billBuilder.AppendLine("<tr>");
+                billBuilder.AppendLine("<td></td>");
+                billBuilder.AppendLine("<td></td>");
+                billBuilder.AppendLine("<td></td>");
+                billBuilder.AppendLine("<td font-style=bold>Net à payer</td>");
+                billBuilder.AppendLine("<td font-style=bold>" + bill.BillAmount.ToString("0.00") + " €</td>");
+                billBuilder.AppendLine("</tr>");
+                billBuilder.AppendLine("</table>");
+
+                billBuilder.AddBootstrap();
+                billBuilder.AddFooterAndHeaderRemoval();
+
+                return billBuilder.ToString();
             }
-            billBuilder.AppendLine("<tr>");
-            billBuilder.AppendLine("<td></td>");
-            billBuilder.AppendLine("<td></td>");
-            billBuilder.AppendLine("<td></td>");
-            billBuilder.AppendLine("<td>Total TVA</td>");
-            billBuilder.AppendLine("<td>" + bill.TaxAmount.ToString("0.00") + " €</td>");
-            billBuilder.AppendLine("<tr>");
-            billBuilder.AppendLine("<td></td>");
-            billBuilder.AppendLine("<td></td>");
-            billBuilder.AppendLine("<td></td>");
-            billBuilder.AppendLine("<td>Total TTC</td>");
-            billBuilder.AppendLine("<td>" + bill.OrderAmount.ToString("0.00") + " €</td>");
-            billBuilder.AppendLine("<tr>");
-            billBuilder.AppendLine("<td></td>");
-            billBuilder.AppendLine("<td></td>");
-            billBuilder.AppendLine("<td></td>");
-            billBuilder.AppendLine("<td font-style=italic>Commission (" + bill.ProducerFee + "%)</td>");
-            billBuilder.AppendLine("<td font-style=italic>" + bill.FeeAmount.ToString("0.00") + " €</td>");
-            billBuilder.AppendLine("<tr>");
-            billBuilder.AppendLine("<td></td>");
-            billBuilder.AppendLine("<td></td>");
-            billBuilder.AppendLine("<td></td>");
-            billBuilder.AppendLine("<td font-style=bold>Net à payer</td>");
-            billBuilder.AppendLine("<td font-style=bold>" + bill.BillAmount.ToString("0.00") + " €</td>");
-            billBuilder.AppendLine("</tr>");
-            billBuilder.AppendLine("</table>");
-
-            billBuilder.AddBootstrap();
-            billBuilder.AddFooterAndHeaderRemoval();
-
-            return billBuilder.ToString();
+            catch (Exception e)
+            {
+                Logger.LogError("Erreur lors de la génération de la producer bill : " + e.Message, e);
+                return "Erreur lors de la génération" + e.Message;
+            }
         }
 
         //CONSUMER BILL
         public static string GenerateHtmlBillContent(ConsumerBill bill, ApplicationDbContext dbContext)
         {
-            StringBuilder builder = new StringBuilder();
-            bill.OrderAmount = 0;
-
-            //Entete de facture
-            builder.AppendLine("<h2>Commande : " + bill.BillNumber + "</h2>");
-            builder.AppendLine("<p>Numéro d'adhérent : " + bill.AdherentStolon.LocalId + "<br>");
-            builder.AppendLine("Nom : " + bill.AdherentStolon.Adherent.Name + "<br>");
-            builder.AppendLine("Prénom : " + bill.AdherentStolon.Adherent.Surname + "<br>");
-            builder.AppendLine("Téléphone : " + bill.AdherentStolon.Adherent.PhoneNumber + "<br>");
-            builder.AppendLine("Année : " + DateTime.Now.Year + "<br>");
-            builder.AppendLine("Semaine : " + DateTime.Now.GetIso8601WeekOfYear() + "</p>");
-            //
-            builder.AppendLine("<h2>Produits de votre panier de la semaine :</h2>");
-            builder.AppendLine("<table class=\"table\">");
-            builder.AppendLine("<tr>");
-            builder.AppendLine("<th>Produit</th>");
-            builder.AppendLine("<th>Prix unitaire ou au kg</th>");
-            builder.AppendLine("<th>Quantité</th>");
-            builder.AppendLine("<th>Prix total</th>");
-            builder.AppendLine("</tr>");
-            foreach (var tmpBillEntry in bill.BillEntries)
+            try
             {
-                var billEntry = dbContext.BillEntrys.Include(x => x.ProductStock).ThenInclude(x => x.Product).First(x => x.Id == tmpBillEntry.Id);
-                decimal total = 0;
-                if (billEntry.IsNotAssignedVariableWeigh)
-                {
-                    total = Convert.ToDecimal(billEntry.ProductStock.Product.AveragePrice * billEntry.Quantity);
-                }
-                else
-                {
-                    total = Convert.ToDecimal(billEntry.UnitPrice * billEntry.Quantity);
-                }
+                StringBuilder builder = new StringBuilder();
+                bill.OrderAmount = 0;
+
+                //Entete de facture
+                builder.AppendLine("<h2>Commande : " + bill.BillNumber + "</h2>");
+                builder.AppendLine("<p>Numéro d'adhérent : " + bill.AdherentStolon.LocalId + "<br>");
+                builder.AppendLine("Nom : " + bill.AdherentStolon.Adherent.Name + "<br>");
+                builder.AppendLine("Prénom : " + bill.AdherentStolon.Adherent.Surname + "<br>");
+                builder.AppendLine("Téléphone : " + bill.AdherentStolon.Adherent.PhoneNumber + "<br>");
+                builder.AppendLine("Année : " + DateTime.Now.Year + "<br>");
+                builder.AppendLine("Semaine : " + DateTime.Now.GetIso8601WeekOfYear() + "</p>");
+                //
+                builder.AppendLine("<h2>Produits de votre panier de la semaine :</h2>");
+                builder.AppendLine("<table class=\"table\">");
                 builder.AppendLine("<tr>");
-                builder.AppendLine("<td>" + billEntry.Name + "</td>");
-                if (billEntry.Type == Product.SellType.Piece || billEntry.IsNotAssignedVariableWeigh)
-                    builder.AppendLine("<td>" + billEntry.UnitPrice.ToString("0.00") + " €" + "</td>");
-                else
-                    builder.AppendLine("<td>" + billEntry.WeightPrice.ToString("0.00") + " € / kg" + "</td>");
-                builder.AppendLine("<td>" + billEntry.QuantityString + "</td>");
-                builder.AppendLine("<td>" + total.ToString("0.00") + " €" + (billEntry.IsNotAssignedVariableWeigh ? " (poids variable)" : "") + "</td>");
+                builder.AppendLine("<th>Produit</th>");
+                builder.AppendLine("<th>Prix unitaire ou au kg</th>");
+                builder.AppendLine("<th>Quantité</th>");
+                builder.AppendLine("<th>Prix total</th>");
                 builder.AppendLine("</tr>");
-                bill.OrderAmount += total;
+                foreach (var tmpBillEntry in bill.BillEntries)
+                {
+                    var billEntry = dbContext.BillEntrys.Include(x => x.ProductStock).ThenInclude(x => x.Product).First(x => x.Id == tmpBillEntry.Id);
+                    decimal total = 0;
+                    if (billEntry.IsNotAssignedVariableWeigh)
+                    {
+                        total = Convert.ToDecimal(billEntry.ProductStock.Product.AveragePrice * billEntry.Quantity);
+                    }
+                    else
+                    {
+                        total = Convert.ToDecimal(billEntry.UnitPrice * billEntry.Quantity);
+                    }
+                    builder.AppendLine("<tr>");
+                    builder.AppendLine("<td>" + billEntry.Name + "</td>");
+                    if (billEntry.Type == Product.SellType.Piece || billEntry.IsNotAssignedVariableWeigh)
+                        builder.AppendLine("<td>" + billEntry.UnitPrice.ToString("0.00") + " €" + "</td>");
+                    else
+                        builder.AppendLine("<td>" + billEntry.WeightPrice.ToString("0.00") + " € / kg" + "</td>");
+                    builder.AppendLine("<td>" + billEntry.QuantityString + "</td>");
+                    builder.AppendLine("<td>" + total.ToString("0.00") + " €" + (billEntry.IsNotAssignedVariableWeigh ? " (poids variable)" : "") + "</td>");
+                    builder.AppendLine("</tr>");
+                    bill.OrderAmount += total;
+                }
+                builder.AppendLine("</table>");
+                if (bill.State == BillState.Cancelled)
+                    builder.AppendLine("<h2><b>Commande annulé</b></h2><p>" + bill.ModificationReason + "</p>");
+                else
+                    builder.AppendLine("<p>Montant total : " + bill.OrderAmount.ToString("0.00") + " €</p>");
+                builder.AddBootstrap();
+                builder.AddFooterAndHeaderRemoval();
+                string test = builder.ToString();
+                return builder.ToString();
             }
-            builder.AppendLine("</table>");
-            if(bill.State == BillState.Cancelled)
-                builder.AppendLine("<h2><b>Commande annulé</b></h2><p>"+bill.ModificationReason+"</p>");
-            else
-                builder.AppendLine("<p>Montant total : " + bill.OrderAmount.ToString("0.00") + " €</p>");
-            builder.AddBootstrap();
-            builder.AddFooterAndHeaderRemoval();
-            string test = builder.ToString();
-            return builder.ToString();
+            catch (Exception e)
+            {
+                Logger.LogError("Erreur lors de la génération de la consumer bill : " + e.Message, e);
+                return "Erreur lors de la génération" + e.Message;
+            }
         }
 
         private static T CreateBill<T>(AdherentStolon adherentStolon, List<BillEntry> billEntries) where T : class, IBill, new()
@@ -853,7 +888,7 @@ namespace Stolons.Tools
         private static void DebugRemoveBills(ApplicationDbContext dbContext, Stolon stolon)
         {
             string billToRemove = DateTime.Now.Year + "_" + DateTime.Now.GetIso8601WeekOfYear();
-            foreach (var bill in dbContext.ConsumerBills.Include(x=>x.AdherentStolon).Where(x => x.BillNumber.EndsWith(billToRemove) && x.AdherentStolon.StolonId == stolon.Id).Include(x => x.BillEntries).ToList())
+            foreach (var bill in dbContext.ConsumerBills.Include(x => x.AdherentStolon).Where(x => x.BillNumber.EndsWith(billToRemove) && x.AdherentStolon.StolonId == stolon.Id).Include(x => x.BillEntries).ToList())
             {
                 foreach (var billEntry in bill.BillEntries)
                 {
