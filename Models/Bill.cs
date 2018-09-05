@@ -255,7 +255,7 @@ namespace Stolons.Models
             Amount = 0;
             BillEntries.ForEach(x => Amount += x.Price);
             FeeAmount = 0;
-            BillEntries.DistinctBy(billEntry => billEntry.ProducerBill).Select(x => x.ProducerBill).ForEach(producerBill => FeeAmount += producerBill.FeeAmount);
+            BillEntries.DistinctBy(billEntry => billEntry.ProducerBill).ToList().ForEach(x => FeeAmount += x.ProducerBill.FeeAmount);
         }
     }
 }
