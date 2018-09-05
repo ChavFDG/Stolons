@@ -73,7 +73,7 @@ namespace Stolons.Controllers
             var activeAdherentStolon = GetActiveAdherentStolon();
             var variableWeightProductsVM = new VariableWeighViewModel(activeAdherentStolon);
             var producer = activeAdherentStolon.Adherent;
-            var variableWeighOrders = _context.BillEntrys.Include(x => x.ConsumerBill).ThenInclude(x => x.AdherentStolon).Include(x => x.ProductStock).ThenInclude(x => x.Product).Include(x => x.ProducerBill).ThenInclude(x => x.AdherentStolon).ThenInclude(x => x.Stolon).Include(x => x.StolonsBill).Where(x => x.IsNotAssignedVariableWeigh && x.ProducerBill.AdherentStolon.AdherentId == producer.Id).ToList().GroupBy(x => x.ProducerBill);
+            var variableWeighOrders = _context.BillEntrys.Include(x => x.ConsumerBill).ThenInclude(x => x.AdherentStolon).Include(x => x.ProductStock).ThenInclude(x => x.Product).Include(x => x.ProducerBill).ThenInclude(x => x.AdherentStolon).ThenInclude(x => x.Stolon).Include(x => x.StolonsBill).Where(x => x.IsNotAssignedVariableWeigh && x.ProducerBill.AdherentStolon.AdherentId == producer.Id).AsNoTracking().ToList().GroupBy(x => x.ProducerBill);
 
             foreach (var prodOrderBillsEntries in variableWeighOrders)
             {
