@@ -151,6 +151,7 @@ $(function () {
             _.each(this.billEntries, function (billEntry, billEntryId) {
                 data.NewQuantities.push({ "BillId": billEntryId, "Quantity": billEntry.Quantity });
             });
+	    $.blockUI();
             data["Reason"] = this.reason;
             if (_.isEmpty(data.NewQuantities)) {
                 location.reload();
@@ -162,8 +163,9 @@ $(function () {
                     type: 'POST',
                     data: data
                 }).then(function (success) {
-                    console.log(success);
-                    if (!success) {
+		    //success is a boolean sent as response from server
+		    $.unblockUI();
+                    if (success !== true) {
                         that.saveErrors = "Erreur lors de la sauvegarde."
                         that.render();
                     } else {
@@ -177,15 +179,15 @@ $(function () {
     });
 });
 
-var openCorrectionModal = function (billId) {
-    producerBillModel = new ProducerBillModel(billId);
-    producerBillModel.fetchDeferred.done(function () {
-        CorrectionView = new BillsManagement.CorrectionView(producerBillModel);
-        CorrectionView.open();
-    });
-};
-
 $(function () {
+    var openCorrectionModal = function (billId) {
+	producerBillModel = new ProducerBillModel(billId);
+	producerBillModel.fetchDeferred.done(function () {
+            CorrectionView = new BillsManagement.CorrectionView(producerBillModel);
+            CorrectionView.open();
+	});
+    };
+
     $("a.open-correction-modal").each(function(idx, elem) {
 	var billId = $(elem).data("bill-id");
 	$(elem).click(function() {
