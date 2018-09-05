@@ -477,7 +477,7 @@ namespace Stolons.Tools
                     builder.AppendLine("<th>Quantité</th>");
                     builder.AppendLine("</tr>");
 
-                    foreach (var producerBillsEntry in billEntryByProducer.OrderBy(x => x.Key.AdherentStolon.Adherent.CompanyName))
+                    foreach (var producerBillsEntry in billEntryByProducer.OrderBy(x => x?.Key?.AdherentStolon?.Adherent?.CompanyName))
                     {
                         builder.AppendLine("<tr>");
                         builder.AppendLine("<td colspan=\"3\" style=\"border-top:1px solid;\">" + "<b>" + producerBillsEntry.Key.AdherentStolon.Adherent.CompanyName + "</b>" + "</td>");
