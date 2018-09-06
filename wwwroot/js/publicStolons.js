@@ -70,7 +70,7 @@ var StolonsView = Backbone.View.extend(
             var map = L.map('stolons-map').setView(centerCoordinates, 6);
             var mapLink = '<a href="http://openstreetmap.org">OpenStreetMap</a>';
 
-            L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: 'Map data &copy; ' + mapLink, maxZoom: 24 }).addTo(map);
+            L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/voyager_labels_under/{z}/{x}/{y}{r}.png', { attribution: 'Map data &copy; ' + mapLink, maxZoom: 24, subdomains: 'abcd' }).addTo(map);
 
             //Adding producers markers to the map
             this.model.forEach(function (stolon) {
