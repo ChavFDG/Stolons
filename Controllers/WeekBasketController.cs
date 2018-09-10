@@ -44,7 +44,7 @@ namespace Stolons.Controllers
             ValidatedWeekBasket validatedWeekBasket = _context.ValidatedWeekBaskets.Include(x => x.AdherentStolon).Include(x => x.AdherentStolon.Adherent).Include(x => x.BillEntries).FirstOrDefault(x => x.AdherentStolon.Id == adherentStolon.Id);
             if (tempWeekBasket == null)
             {
-                //Il n'a pas encore de panier de la semaine, on lui en crÃ©e un
+                //Il n'a pas encore de panier de la semaine, on lui en crée un
                 tempWeekBasket = new TempWeekBasket
                 {
                     AdherentStolon = adherentStolon,
@@ -66,13 +66,13 @@ namespace Stolons.Controllers
             var productStocks = _context.ProductsStocks.Include(x => x.Product).Include(x => x.AdherentStolon).Where(x => x.State == Product.ProductState.Enabled && x.AdherentStolon.StolonId == stolon.Id).ToList();
             var idProductStocks = new Dictionary<int, ProductStockStolon>();
             int cpt = 0;
-            foreach(var productStock in productStocks)
+            foreach (var productStock in productStocks)
             {
                 idProductStocks.Add(cpt++, productStock);
             }
             //Adherent
-            var adhrentStolons =_context.AdherentStolons.Include(x => x.Adherent).Include(x => x.Stolon).Where(x => x.StolonId == stolon.Id).ToList();
-            adhrentStolons.RemoveRange(0, adhrentStolons.Count> 20? adhrentStolons.Count - 20 : 0);
+            var adhrentStolons = _context.AdherentStolons.Include(x => x.Adherent).Include(x => x.Stolon).Where(x => x.StolonId == stolon.Id).ToList();
+            adhrentStolons.RemoveRange(0, adhrentStolons.Count > 20 ? adhrentStolons.Count - 20 : 0);
             foreach (var adherentStolon in adhrentStolons)
             {
                 //Création du temps week basket
@@ -88,10 +88,10 @@ namespace Stolons.Controllers
                     _context.SaveChanges();
                 }
                 //Génération aléatoire de commande
-                var productQuantity = NumberHelper.GenerateRandom(random.Next(0, productStocks.Count/10),0, productStocks.Count-1);
+                var productQuantity = NumberHelper.GenerateRandom(random.Next(0, productStocks.Count / 10), 0, productStocks.Count - 1);
                 productQuantity.ForEach(x => AddToBasket(tempWeekBasket.Id.ToString(), idProductStocks[x].Id.ToString()));
                 //
-                ValidateBasket(tempWeekBasket.Id.ToString(),tempWeekBasket.AdherentStolon.Id.ToString());
+                ValidateBasket(tempWeekBasket.Id.ToString(), tempWeekBasket.AdherentStolon.Id.ToString());
             }
 
             return Redirect(nameof(Index));
@@ -102,12 +102,13 @@ namespace Stolons.Controllers
         public IActionResult JsonProductsStocks()
         {
             var productsStocks = _context.ProductsStocks
-        .Include(x => x.Product)
-        .ThenInclude(x => x.Familly)
-        .ThenInclude(x => x.Type)
-        .Where(x => x.AdherentStolon.StolonId == GetCurrentStolon().Id && x.State == Product.ProductState.Enabled)
-        .AsNoTracking()
-        .ToList();
+                                        .Include(x => x.Product)
+                                        .ThenInclude(x => x.Familly)
+                                        .ThenInclude(x => x.Type)
+                                        .Where(x => x.AdherentStolon.StolonId == GetCurrentStolon().Id && x.State == Product.ProductState.Enabled)
+                                        .AsNoTracking()
+                                        .OrderBy(x => x.Product.Name)
+                                        .ToList();
             foreach (ProductStockStolon p in productsStocks)
             {
                 p.Product.Producer = _context.Adherents.AsNoTracking().FirstOrDefault(x => x.Id == p.Product.ProducerId);
@@ -329,7 +330,7 @@ namespace Stolons.Controllers
         public IActionResult ValidateBasket(string basketId, string adherentStolonId = null)
         {
             var adherentStolon = GetActiveAdherentStolon();
-            if (!string.IsNullOrEmpty(adherentStolonId ))
+            if (!string.IsNullOrEmpty(adherentStolonId))
                 adherentStolon = _context.AdherentStolons.Include(x => x.Stolon).Include(x => x.Adherent).First(x => x.Id.ToString() == adherentStolonId);
             Stolon stolon = GetCurrentStolon();
             if (stolon.GetMode() == Stolon.Modes.DeliveryAndStockUpdate)

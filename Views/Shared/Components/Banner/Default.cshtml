@@ -9,14 +9,14 @@
     <div class="nav container">
         <div class="row">
             <div class=" col-sm-1 col-xs-2">
-                @if (Model.ActiveAdherentStolon.Adherent.AdherentStolons.Count != 1)
+                @if (Model.ActiveAdherentStolon.Adherent.AdherentStolons.Where(x=>!x.Deleted).ToList().Count != 1)
                 {
                     <div class="stolon-avatar-banner-container">
                         <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                             <img src="@Model.ActiveAdherentStolon.Stolon.LogoFilePath" class="stolon-avatar-banner" />
                         </a>
                         <ul class="dropdown-menu">
-                            @foreach (var adherentStolon in Model.ActiveAdherentStolon.Adherent.AdherentStolons)
+                            @foreach (var adherentStolon in Model.ActiveAdherentStolon.Adherent.AdherentStolons.Where(x=>!x.Deleted).OrderBy(x=>x.Stolon.Label))
                             {
                                 if (!adherentStolon.IsActiveStolon)
                                 {

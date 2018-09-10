@@ -144,6 +144,24 @@ namespace Stolons.Controllers
             if (!Authorized(Role.Volunteer))
                 return Unauthorized();
 
+            
+            if(_context.Adherents.Any(x=>x.Email == vmAdherent.Adherent.Email))
+            {
+                //Il existe un adhérent avec cet @ mail
+                if (_context.AdherentStolons.Include(x => x.Adherent).Any(x => x.Adherent.Email == vmAdherent.Adherent.Email && vmAdherent.Stolon.Id == x.StolonId)) // et il est déjà de ce stolon
+                {
+                    //Il est déjà dans ce stolon, on renvoid
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    //Il est dans un autre stolon, alors on l'ajoute à ce stolon
+                    var selectAdherentVm = new SelectAdherentViewModel(GetActiveAdherentStolon(), vmAdherent.Stolon, null, vmAdherent.Edition == AdherentEdition.Producer);
+                    selectAdherentVm.SelectedEmail = vmAdherent.Adherent.Email;
+                    return AddAdherent(selectAdherentVm);
+                }
+            }
+
             if (ModelState.IsValid)
             {
                 Stolon stolon = _context.Stolons.FirstOrDefault(x => x.Id == vmAdherent.Stolon.Id);
