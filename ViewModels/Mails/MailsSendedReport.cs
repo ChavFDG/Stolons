@@ -1,13 +1,21 @@
-﻿using System;
+﻿using Stolons.Models.Users;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Stolons.ViewModels.Mails
 {
-    public class MailsSendedReport
+    public class MailsSendedVm
     {
-        public int MailsSended { get; set; }
-        public int MailsNotSended { get; set; }
+        public List<IAdherent> Adherents { get; set; }
+
+        public MailMessage MailMessage { get; set; }
+
+        public MailsSendedVm(List<IAdherent> adherents, MailMessage mailMessage)
+        {
+            Adherents = adherents;
+            MailMessage = mailMessage;
+        }
     }
 }

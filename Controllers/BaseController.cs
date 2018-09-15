@@ -82,6 +82,7 @@ namespace Stolons.Controllers
 
             return _context.Adherents.Include(x => x.AdherentStolons).FirstOrDefault(x => x.Email == user.Email);
         }
+
         protected Adherent GetCurrentAdherentSync()
         {
             ApplicationUser user = _userManager.FindByIdAsync(_userManager.GetUserId(HttpContext.User)).GetAwaiter().GetResult();
@@ -97,7 +98,6 @@ namespace Stolons.Controllers
         protected AdherentStolon GetActiveAdherentStolonOf(Adherent adherent)
         {
             return _context.AdherentStolons.Include(x => x.Stolon).Include(x => x.Adherent).First(x => x.AdherentId == adherent.Id && x.IsActiveStolon);
-
         }
 
         protected AdherentStolon GetActiveAdherentStolon()
@@ -105,6 +105,8 @@ namespace Stolons.Controllers
             Adherent adherent = GetCurrentAdherentSync();
             return GetActiveAdherentStolonOf(adherent);
         }
+
+
 
 
         /// <summary>

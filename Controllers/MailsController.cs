@@ -56,24 +56,43 @@ namespace Stolons.Controllers
         {
             if (!Authorized(Role.Volunteer))
                 return Unauthorized();
-
-            return View("Report", SendMail(_context.Sympathizers.Where(x=> x.StolonId == GetCurrentStolon().Id ).ToList(), mailMessage));
+            var users = _context.Sympathizers.AsNoTracking().Where(x => x.StolonId == GetCurrentStolon().Id && x.ReceivedInformationsEmail).ToList();
+            var stolon = GetActiveAdherentStolon().Stolon;
+            Task.Run(() =>
+            {
+                SendMail(users, mailMessage, stolon);
+            });
+            MailsSendedVm mailsSendedVm = new MailsSendedVm(users.ToList<IAdherent>(), mailMessage);
+            return View("Report", mailsSendedVm);
         }
         
         public IActionResult SendToConsumers(MailMessage mailMessage)
         {
             if (!Authorized(Role.Volunteer))
                 return Unauthorized();
-
-            return View("Report",SendMail(_context.Adherents.Include(x => x.AdherentStolons).Where(x => x.AdherentStolons.Any(adhStol => adhStol.StolonId == GetCurrentStolon().Id && !adhStol.Deleted)).ToList(), mailMessage));
+            var users = _context.Adherents.AsNoTracking().Include(x => x.AdherentStolons).Where(x => x.AdherentStolons.Any(adhStol => adhStol.StolonId == GetCurrentStolon().Id && !adhStol.Deleted && x.ReceivedInformationsEmail)).ToList();
+            var stolon = GetActiveAdherentStolon().Stolon;
+            Task.Run(() =>
+            {
+                SendMail(users, mailMessage, stolon);
+            });
+            MailsSendedVm mailsSendedVm = new MailsSendedVm(users.ToList<IAdherent>(), mailMessage);
+            return View("Report", mailsSendedVm);
         }
         
         public IActionResult SendToProducers(MailMessage mailMessage)
         {
             if (!Authorized(Role.Volunteer))
                 return Unauthorized();
+            var users = _context.Adherents.AsNoTracking().Include(x => x.AdherentStolons).Where(x => x.AdherentStolons.Any(adhStol => adhStol.StolonId == GetCurrentStolon().Id && !adhStol.Deleted && adhStol.IsProducer)).ToList();
+            var stolon = GetActiveAdherentStolon().Stolon;
+            Task.Run(() =>
+            {
+                SendMail(users, mailMessage,stolon);
+            });
+            MailsSendedVm mailsSendedVm = new MailsSendedVm(users.ToList<IAdherent>(), mailMessage);
+            return View("Report", mailsSendedVm);
 
-            return View("Report",SendMail(_context.Adherents.Include(x => x.AdherentStolons).Where(x => x.AdherentStolons.Any(adhStol => adhStol.StolonId == GetCurrentStolon().Id && !adhStol.Deleted && adhStol.IsProducer)).ToList(), mailMessage));
         }
 
         // GET: News/Details/5
@@ -83,36 +102,37 @@ namespace Stolons.Controllers
                 return Unauthorized();
 
             List<IAdherent> users = new List<IAdherent>();
-            users.AddRange(_context.Sympathizers.Where(x=>x.StolonId == stolon.Id && x.ReceivedInformationsEmail).ToList());
-            users.AddRange(_context.Adherents.Include(x=>x.AdherentStolons).Where(x=>x.AdherentStolons.Any(adhStol=>adhStol.StolonId == stolon.Id && !adhStol.Deleted)).ToList());
-            return View("Report",  SendMail(users ,mailMessage));
+            users.AddRange(_context.Sympathizers.AsNoTracking().Where(x=>x.StolonId == stolon.Id && x.ReceivedInformationsEmail).ToList());
+            users.AddRange(_context.Adherents.AsNoTracking().Include(x=>x.AdherentStolons).Where(x=>x.AdherentStolons.Any(adhStol=>adhStol.StolonId == stolon.Id && !adhStol.Deleted && x.ReceivedInformationsEmail)).ToList());
+
+            Task.Run(() =>
+            {
+                SendMail(users, mailMessage, stolon);
+            });
+            MailsSendedVm mailsSendedVm = new MailsSendedVm(users, mailMessage);
+            return View("Report", mailsSendedVm);
         }
 
-        private MailsSendedReport SendMail(IEnumerable<IAdherent> users, MailMessage mailMessage)
+        private void  SendMail(IEnumerable<IAdherent> users, MailMessage mailMessage, Stolon from)
         {
-            var activeAdherentStolon = GetActiveAdherentStolon();
-            MailsSendedReport report = new MailsSendedReport();
-            foreach (Adherent user in users)
+            foreach (IAdherent user in users)
             {
                 if (!String.IsNullOrWhiteSpace(user.Email))
                 { 
                     try
                     {
-                        AuthMessageSender.SendEmail(activeAdherentStolon.Stolon.Label,
+                        AuthMessageSender.SendEmail(from.Label,
                                                     user.Email,
                                                     user.Name,
                                                     mailMessage.Title,
                                                     mailMessage.Message);
-                        report.MailsSended++;
                     }
                     catch(Exception ex)
                     {
                         DotnetHelper.GetLogger<MailsController>().LogError(ex.ToString());
-                        report.MailsNotSended++;
                     }
                 }
             }
-            return report;
         }
     }
 }

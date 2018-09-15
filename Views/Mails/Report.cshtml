@@ -2,24 +2,31 @@
 @using Stolons.Services
 @using Stolons.ViewModels.Mails
 
-@model MailsSendedReport
+@model MailsSendedVm
 
 @{
     ViewData["Title"] = "Rapport d'envoi";
 }
 
-<h2>@ViewData["Title"]</h2>
+<h2>Votre courriel viens de partir   =<i class="far fa-envelope"></i></h2>
 
-@if(Model.MailsNotSended == 0)
-{
-    <p style="color:green;">SUCCES : Les courriels aux @Model.MailsSended utilisateurs ont été envoyé avec succès</p>
-}
-else
-{
-    @if (Model.MailsNotSended == 0)
-    {
-        <p style="color:red;">ERREUR : @Model.MailsSended courriel ont été envoyé avec succès mais @Model.MailsNotSended n'ont pas réussie à être envoyé</p>
-    }
-}
+<p style="color:green;">Le courriel vient d'être envoyé  aux @Model.Adherents.Count utilisateurs</p>
 
+
+<h2>Aperçu du courriel envoyé</h2>
+
+<dl class="dl-horizontal">
+    <dt>
+        @Html.DisplayNameFor(model => model.MailMessage.Title)
+    </dt>
+    <dd>
+        @Html.DisplayFor(model => model.MailMessage.Title)
+    </dd>
+    <dt>
+        @Html.DisplayNameFor(model => model.MailMessage.Message)
+    </dt>
+    <dd>
+        @Html.Raw(Model.MailMessage.Message)
+    </dd>
+</dl>
 
