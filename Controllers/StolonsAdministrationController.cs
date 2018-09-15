@@ -101,6 +101,7 @@ namespace Stolons.Controllers
                 vm.Stolon.Id = Guid.NewGuid();
                 vm.Stolon.LogoFileName = await UploadFile(uploadFile, Configurations.StolonLogoStockagePath);
                 vm.Stolon.CreationDate = DateTime.Now;
+                vm.Stolon.ShortLabel.Replace(" ", "_");
                 _context.Add(vm.Stolon);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
@@ -141,6 +142,7 @@ namespace Stolons.Controllers
                         //J'upload le nouveau et récupére son nom
                         vm.Stolon.LogoFileName = _environment.UploadBase64Image(uploadLogo, StolonLogoStockagePath);
                     }
+                    vm.Stolon.ShortLabel.Replace(" ", "_");
                     _context.Update(vm.Stolon);
                     await _context.SaveChangesAsync();
                 }
