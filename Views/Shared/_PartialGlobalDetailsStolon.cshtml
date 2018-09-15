@@ -31,6 +31,12 @@
             success: function (data) {
                 $("#bodyAndFooterModal .modal-bodyAndFooter").html(data);
                 $('#bodyAndFooterModal').modal('show');
+		$("#Stolon_Latitude").keyup(function(ev) {
+                    $("#Stolon_Latitude").val($("#Stolon_Latitude").val().replace(".", ","));
+                });
+		$("#Stolon_Longitude").keyup(function(ev) {
+                    $("#Stolon_Longitude").val($("#Stolon_Longitude").val().replace(".", ","));
+		});
             },
         });
     }

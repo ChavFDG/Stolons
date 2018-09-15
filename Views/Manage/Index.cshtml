@@ -28,6 +28,12 @@
             success: function (data) {
                 $("#bodyAndFooterModal .modal-bodyAndFooter").html(data);
                 $('#bodyAndFooterModal').modal('show');
+		$("#latitude").keyup(function(ev) {
+		    $("#latitude").val($("#latitude").val().replace(".", ","));
+		});
+		$("#longitude").keyup(function(ev) {
+		    $("#longitude").val($("#longitude").val().replace(".", ","));
+		});
             },
         });
     }
