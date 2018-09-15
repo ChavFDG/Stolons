@@ -59,7 +59,7 @@ $(document).ready(function () {
 
     window.deleteWeekBasket = function (billId) {
         bootbox.confirm(
-            "Annuler le panier entrainera la modification en conséquent des factures producteurs concernées excepté si ces derniers ont déjà livré leurs produits. Dans ce cas leurs produits leurs seront dus<br><br>Confirmer vous l'annulation du panier ?",
+            "Annuler le panier entraînera la modification des factures des producteurs concernés sauf si la livraison de leurs produits a déjà été validée. Dans ce cas, leurs produits leurs seront dus.<br><br>Confirmer-vous l'annulation du panier ?",
             function (result) {
                 if (result) {
                     bootbox.prompt(

@@ -10,7 +10,7 @@
 @if (Model.Stolon.GetMode() == Stolon.Modes.DeliveryAndStockUpdate && Model.WeekStolonsBill != null)
 {
     <div>
-        @Model.ConsumerBills.Count paniers cette semaine
+        @Model.ConsumerBills.Count panier(s) cette semaine
         @if (Model.WeekStolonsBill.HasBeenModified)
         {
             <div class="bannerRightInformations"
