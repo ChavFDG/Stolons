@@ -23,7 +23,9 @@ ProducerBillModel = Backbone.Model.extend({
 	_.forEach(this.get("BillEntries"), function(billEntry) {
 	    productsIdx[billEntry.ProductStock.get("Id")] = billEntry.ProductStock;
 	});
-	return _.values(productsIdx);
+	return _.sortBy(_.values(productsIdx), function(productStock) {
+	    return productStock.get("Product").get("Name");
+	});
     },
 
     getProductStock: function(productStockId) {
@@ -45,7 +47,9 @@ ProducerBillModel = Backbone.Model.extend({
 	_.forEach(this.get("BillEntries"), function(billEntry) {
 	    consumersIdx[billEntry.ConsumerBill.AdherentStolon.Id] = billEntry.ConsumerBill.AdherentStolon;
 	});
-	return _.values(consumersIdx);
+	return _.sortBy(_.values(consumersIdx), function(consumer) {
+	    return consumer.LocalId;
+	});
     },
 
     getBillEntryById: function(billEntryId) {

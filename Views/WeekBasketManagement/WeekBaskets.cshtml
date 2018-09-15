@@ -243,6 +243,9 @@ else
                         </div>
                     </div>
                     <div class="row">
+			<div style="height: 20px; ">
+			   
+			</div>
                         <table id="correction-table">
                             <colgroup>
                                 <col>
@@ -259,10 +262,10 @@ else
                                         <span class="th-crossed-right">Produits</span>
                                     </th>
                                     <% _.forEach(producerBill.getProductStocks(), function(productStock) { %>
-                                    <td class="correction-product-description productMgtImage">
+                                    <th class="correction-product-description productMgtImage">
                                         <img src="<%= productStock.get("Product").getPictureUrl("light") %>">
                                         <span><%= productStock.get("Product").get("Name") %></span>
-                                    </td>
+                                    </th>
                                     <% }); %>
                                 </tr>
                             </thead>
