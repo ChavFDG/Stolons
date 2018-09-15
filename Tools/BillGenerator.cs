@@ -534,6 +534,7 @@ namespace Stolons.Tools
                 orderBuilder.AppendLine("<table class=\"table\">");
                 orderBuilder.AppendLine("<tr>");
                 orderBuilder.AppendLine("<th>Produit</th>");
+                orderBuilder.AppendLine("<th>Consomateur</th>");
                 orderBuilder.AppendLine("<th>Quantité</th>");
                 orderBuilder.AppendLine("</tr>");
 
@@ -544,9 +545,18 @@ namespace Stolons.Tools
                     if (productBillEntries.First().IsAssignedVariableWeigh)
                         quantity = quantity / productBillEntries.Key.QuantityStep;
                     orderBuilder.AppendLine("<tr>");
-                    orderBuilder.AppendLine("<td>" + productBillEntries.Key.Name + "</td>");
-                    orderBuilder.AppendLine("<td>" + productBillEntries.Key.GetQuantityString(quantity) + "</td>");
+                    orderBuilder.AppendLine("<td colspan=\"2\"><b>" + productBillEntries.Key.Name + "</b></td>");
+                    orderBuilder.AppendLine("<td><b>" + productBillEntries.Key.GetQuantityString(quantity) + "</b></td>");
                     orderBuilder.AppendLine("</tr>");
+                    foreach(var billEntry in productBillEntries.OrderBy(x=>x.ConsumerBill.AdherentStolon.LocalId))
+                    {
+                        orderBuilder.AppendLine("<tr>");
+                        orderBuilder.AppendLine("<td></td>");
+                        orderBuilder.AppendLine("<td>"+billEntry.ConsumerBill.AdherentStolon.LocalId+"</td>");
+                        orderBuilder.AppendLine("<td>" + billEntry.GetQuantityString(billEntry.Quantity) + "</td>");
+                        orderBuilder.AppendLine("</tr>");
+
+                    }
                 }
                 orderBuilder.AppendLine("</table>");
 
