@@ -1413,9 +1413,13 @@ h1 {
 }
 
 #correction-table {
+    max-width: 81%;
     margin: auto;
     margin-right: 10px;
     padding: 10px;
+    overflow-x: auto;
+    white-space: nowrap;
+    display: block;
 }
 
 #correction-table td, #correction-table th {
@@ -1441,13 +1445,7 @@ th.correction-product-description {
 }
 
 #correction-modal-dialog {
-    margin: 30px;
-}
-
-#correction-modal-dialog .modal-body {
-    overflow-x: scroll;
-    overflow-y: hidden;
-    white-space: nowrap;
+    margin: 30px auto;
 }
 
 #correction-modal-dialog table {
@@ -1602,10 +1600,19 @@ tr.collapsableHeader {
     cursor: pointer;
 }
 
+/* .autoWidthModal { */
+/*     position: relative; */
+/*     display: table; /\* This is important *\/  */
+/*     overflow-y: auto; */
+/*     overflow-x: auto; */
+/*     width: auto; */
+/*     min-width: 300px;    */
+/* } */
+
 .fullScreenModal {
-    width:auto;
-    height:auto;
-    margin:50px;
+    width: auto;
+    height: auto;
+    margin: 50px;
 }
 
 .billModalContent{
