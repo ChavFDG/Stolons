@@ -51,7 +51,7 @@ namespace Stolons.Models
 
         [Display(Name = "Avoir une commission sur les producteurs")]
         public bool UseProducersFee { get; set; } = true;
-        [Display(Name = "Montant de la commission par défault sur les producteurs (en %)")]
+        [Display(Name = "Montant de la commission par défaut sur les producteurs (en %)")]
         public int DefaultProducersFee { get; set; } = 5;
 
         [Display(Name = "Texte de : \"Qui sommes nous ?\"")]
@@ -76,7 +76,7 @@ namespace Stolons.Models
         public decimal ProducerSubscription { get; set; } = 20;
         [Display(Name = "Mois de départ des cotisations")]
         public Month SubscriptionStartMonth { get; set; } = Month.September;
-        [Display(Name = "Réduire la cotisation de moitié à mis année")]
+        [Display(Name = "Réduire la cotisation de moitié en milieu d'année")]
         public bool UseHalftSubscipstion { get; set; } = false;
 
 
@@ -116,7 +116,7 @@ namespace Stolons.Models
 
         //OrderRememberTime
 
-        [Display(Name = "Heure d'envoie du mail de rappel des commandes")]
+        [Display(Name = "Heure d'envoi du mail de rappel des commandes")]
         public int OrderRememberHour { get; set; } = 12;
 
         //Others

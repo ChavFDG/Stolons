@@ -155,7 +155,7 @@ namespace Stolons.Tools
             }
             dbContext.SaveChanges();
             //Send email to all adherent that have subscribe to product by mail
-            string htmlMessage = "Bonjour, les commandes sont ouverte chez " + stolon.Label + ". Vous pouvez dès maintenant et jusqu'à " + stolon.DeliveryAndStockUpdateDayStartDate.ToFrench() + " " + stolon.DeliveryAndStockUpdateDayStartDateHourStartDate + ":" + stolon.DeliveryAndStockUpdateDayStartDateMinuteStartDate + " commander vos produits sur " + Configurations.Application.StolonsUrl;
+            string htmlMessage = "Bonjour, les commandes sont ouvertes chez " + stolon.Label + ". Vous pouvez dès maintenant et jusqu'à " + stolon.DeliveryAndStockUpdateDayStartDate.ToFrench() + " " + stolon.DeliveryAndStockUpdateDayStartDateHourStartDate + ":" + stolon.DeliveryAndStockUpdateDayStartDateMinuteStartDate + " commander vos produits sur " + Configurations.Application.StolonsUrl;
             //TODO générer un jolie message avec la liste des produits
             foreach (var adherentStolon in dbContext.AdherentStolons.Include(x => x.Adherent).Where(x => x.StolonId == stolon.Id && x.Adherent.ReceivedProductListByEmail && !x.Deleted).AsNoTracking())
             {
@@ -363,7 +363,7 @@ namespace Stolons.Tools
                 //Send mail to consumer
                 string message = "<h3>" + bill.AdherentStolon.Stolon.OrderDeliveryMessage + "</h3>";
                 message += "<br/>";
-                message += "<h4>Votre comande de la semaine (Commande " + bill.BillNumber + ")" + ")</h4>";
+                message += "<h4>Votre commande de la semaine (Commande " + bill.BillNumber + ")" + ")</h4>";
                 message += bill.HtmlBillContent;
                 if (hasFile)
                     message += "<br/><h4>Retrouver aussi en pièce jointe votre commande de la semaine (Commande " + bill.BillNumber + ")</h4>";
@@ -538,7 +538,7 @@ namespace Stolons.Tools
                 orderBuilder.AppendLine("<table class=\"table\">");
                 orderBuilder.AppendLine("<tr>");
                 orderBuilder.AppendLine("<th>Produit</th>");
-                orderBuilder.AppendLine("<th>Consomateur</th>");
+                orderBuilder.AppendLine("<th>Consommateur</th>");
                 orderBuilder.AppendLine("<th>Quantité</th>");
                 orderBuilder.AppendLine("</tr>");
 
