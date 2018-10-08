@@ -410,7 +410,7 @@ namespace Stolons.Tools
         {
             builder.Insert(0, @"<style>@media print {
                                            @page { margin: 0; }
-                                           body { margin: 1.6cm; }
+                                           body { margin: 1.6cm; font-size: 12px; }
                                          }</style>");
         }
 
