@@ -90,7 +90,7 @@ namespace Stolons.Tools
                                             .Include(x => x.AdherentStolon)
                                             .Include(x => x.AdherentStolon.Adherent)
                                             .Include(x => x.AdherentStolon.Stolon)
-                                            .Where(x => x.State == BillState.Pending && x.AdherentStolon.StolonId == stolon.Id && x.AdherentStolon.Adherent.ReceivedOrderRemember)
+                                            .Where(x => x.State == BillState.Pending && x.AdherentStolon.StolonId == stolon.Id && x.AdherentStolon.Adherent.ReceivedOrderRemember && !x.AdherentStolon.Deleted)
                                             .AsNoTracking()
                                             .ToList();
                         string message = "<h2>Rappel " + stolon.Label + " : panier à récupérer aujourd'hui</h2>";
@@ -153,7 +153,7 @@ namespace Stolons.Tools
             //Send email to all adherent that have subscribe to product by mail
             string htmlMessage = "Bonjour, les commandes sont ouverte chez " + stolon.Label + ". Vous pouvez dès maintenant et jusqu'à " + stolon.DeliveryAndStockUpdateDayStartDate.ToFrench() + " " + stolon.DeliveryAndStockUpdateDayStartDateHourStartDate + ":" + stolon.DeliveryAndStockUpdateDayStartDateMinuteStartDate + " commander vos produits sur " + Configurations.Application.StolonsUrl;
             //TODO générer un jolie message avec la liste des produits
-            foreach (var adherentStolon in dbContext.AdherentStolons.Include(x => x.Adherent).Where(x => x.StolonId == stolon.Id && x.Adherent.ReceivedProductListByEmail).AsNoTracking())
+            foreach (var adherentStolon in dbContext.AdherentStolons.Include(x => x.Adherent).Where(x => x.StolonId == stolon.Id && x.Adherent.ReceivedProductListByEmail && !x.Deleted).AsNoTracking())
             {
                 AuthMessageSender.SendEmail(stolon.Label,
                                 adherentStolon.Adherent.Email,
