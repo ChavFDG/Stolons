@@ -512,7 +512,7 @@ namespace Stolons.Tools
             catch (Exception e)
             {
                 Logger.LogError("Erreur lors de la génération de la stolon bill : " + e.Message, e);
-                return "Erreur lors de la génération" + e.Message;
+                return "Erreur lors de la génération : " + e.Message;
             }
         }
 

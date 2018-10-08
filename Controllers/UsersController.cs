@@ -254,7 +254,7 @@ namespace Stolons.Controllers
             {
                 //On supprime son mail de connexion
                 _userManager.DeleteAsync(_userManager.Users.First(x => x.Email == adherentStolon.Adherent.Email));
-                //L'adhérent n'est dans aucun stolon, on le "supprime définitivement" ( on l'anonymise)
+                //L'adhérent n'est dans aucun stolon, on le "supprime définitivement" (on l'anonymise)
                 adherentStolon.Adherent.Name = "(Supprimer)";
                 adherentStolon.Adherent.Surname = "(Supprimer)";
                 adherentStolon.Adherent.PostCode = "";
@@ -263,7 +263,12 @@ namespace Stolons.Controllers
                 adherentStolon.Adherent.Email = "";
                 adherentStolon.Adherent.AvatarFileName = "";
                 adherentStolon.Adherent.PhoneNumber = "";
-
+            }
+            else
+            {
+                var adherentStolons = _context.AdherentStolons.Include(x => x.Adherent).Where(x => x.AdherentId == adherentStolon.AdherentId && !x.Deleted && x.Id != adherentStolon.Id);
+                if (adherentStolons.Any())
+                    adherentStolons.First().SetHasActiveStolon(_context);
             }
             _context.SaveChanges();
             return RedirectToAction("Index");
