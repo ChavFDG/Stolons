@@ -53,6 +53,10 @@ namespace Stolons.Tools
 #if (DEBUG)
                                 DebugRemoveBills(dbContext, stolon);
 #endif
+                                if(stolon.IsModeSimulated)
+                                {
+                                    DebugRemoveBills(dbContext, stolon);
+                                }
                                 TriggerDeliveryAndStockUpdateMode(stolon, dbContext);
                             }
                             else if (lastModes[stolon.Id] == Stolon.Modes.DeliveryAndStockUpdate && currentMode == Stolon.Modes.Order)

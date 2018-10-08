@@ -191,6 +191,17 @@ img.warning {
     float: left;
 }
 
+.simulationModeWarningContainerMessage {
+    background: red;
+}
+
+.simulationModeWarningMessage {
+    position: relative;
+    font: 36px Arial, sans-serif;
+    float: left;
+    top: 50%;
+    left: 35%;
+}
 /* Image */
 .responsiveImage {
     max-width: 100%;
