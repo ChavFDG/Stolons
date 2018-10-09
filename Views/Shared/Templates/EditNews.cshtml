@@ -3,7 +3,6 @@
 @using Stolons.ViewModels.News
 @model NewsViewModel
 
-
 <script>
     function resizeImageToSpecificWidth(width) {
         var input = document.getElementById('newsImage');
@@ -36,7 +35,6 @@
         }
     }
 
-
     $(document).ready(function () {
         var input = document.getElementById('newsImage');
         input.onclick = function () {
@@ -47,8 +45,11 @@
             resizeImageToSpecificWidth(600);
         };
 
+	$("#InputPublishStart").datetimepicker({sideBySide: true, format: "DD/MM/YYYY HH:mm:ss"});
 
+	$("#InputPublishEnd").datetimepicker({sideBySide: true, format: "DD/MM/YYYY HH:mm:ss"});
     });
+
 </script>
 
 <div class="form-horizontal">
@@ -89,14 +90,14 @@
     <div class="form-group" id="News.PublishStart">
         <label asp-for="News.PublishStart" class="col-md-2 control-label"></label>
         <div class="col-md-10">
-            <input asp-for="News.PublishStart" class="form-control" id="InputPublishStart" />
+            <input asp-for="News.PublishStart" class="form-control" id="InputPublishStart" value="@Model.News.PublishStart" />
             <span asp-validation-for="News.PublishStart" class="text-danger" />
         </div>
     </div>
     <div class="form-group" id="News.PublishEnd">
         <label asp-for="News.PublishEnd" class="col-md-2 control-label"></label>
         <div class="col-md-10">
-            <input asp-for="News.PublishEnd" class="form-control" id="InputPublishEnd" />
+            <input asp-for="News.PublishEnd" class="form-control" id="InputPublishEnd" value="@Model.News.PublishEnd" />
             <span asp-validation-for="News.PublishEnd" class="text-danger" />
         </div>
     </div>

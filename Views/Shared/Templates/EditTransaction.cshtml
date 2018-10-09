@@ -24,7 +24,7 @@
     <div class="form-group" id="Transaction.Date">
         <label asp-for="Transaction.Date" class="col-md-2 control-label"></label>
         <div class="col-md-10">
-            <input asp-for="Transaction.Date" class="form-control" id="InputTransactionDate" />
+            <input asp-for="Transaction.Date" class="form-control" id="InputTransactionDate" value="@Model.Transaction.Date" />
             <span asp-validation-for="Transaction.Date" class="text-danger" />
         </div>
     </div>
@@ -44,3 +44,7 @@
         </div>
     </div>
 </div>
+
+<script>
+ $("#InputTransactionDate").datetimepicker({sideBySide: true, format: "DD/MM/YYYY HH:mm:ss"});
+</script>
