@@ -28,7 +28,15 @@ ProductTypesModel = Backbone.Collection.extend({
         this.fetch();
     },
 
-    comparator: "Name"
+    comparator: function(a, b) {
+	//"Autres" est toujours affiché en dernier
+	if (a.get("Name") == "Autres") {
+	    return 1;
+	} else if (b.get("Name") == "Autres") {
+	    return -1;
+	}
+	return a.get("Name").localeCompare(b.get("Name"));
+    }
 });
 
 BillEntryModel = Backbone.Model.extend({
