@@ -33,7 +33,6 @@
         }
     }
 
-
     $(document).ready(function () {
         var input = document.getElementById('avatarImage');
         input.onclick = function () {
@@ -43,10 +42,6 @@
         input.onchange = function () {
             resizeImageToSpecificWidth(400);
         };
-
-        $('input#create-adherent').on('click', function () {
-            return formValidation.valid('editAdherent');
-        });
 
         var longitude = $('#longitude');
         longitude.onchange = function () {
@@ -88,21 +83,21 @@
     <div class="form-group">
         <label asp-for="Adherent.Name" class="col-md-2 control-label required"></label>
         <div class="col-md-10">
-            <input asp-for="Adherent.Name" class="form-control" />
-            <span asp-validation-for="Adherent.Name" class="text-danger" />
+            <input asp-for="Adherent.Name" class="form-control" required />
+	    <span asp-validation-for="Adherent.Name" class="text-danger" />
         </div>
     </div>
     <div class="form-group">
         <label asp-for="Adherent.Surname" class="col-md-2 control-label required"></label>
         <div class="col-md-10">
-            <input asp-for="Adherent.Surname" class="form-control" />
+            <input asp-for="Adherent.Surname" class="form-control" required />
             <span asp-validation-for="Adherent.Surname" class="text-danger" />
         </div>
     </div>
     <div class="form-group">
         <label asp-for="Adherent.Email" class="col-md-2 control-label required"></label>
         <div class="col-md-10">
-            <input asp-for="Adherent.Email" class="form-control" data-type="email" />
+            <input asp-for="Adherent.Email" class="form-control" data-type="email" required email />
             <span asp-validation-for="Adherent.Email" class="text-danger" />
         </div>
     </div>
@@ -133,7 +128,7 @@
     <div class="form-group">
         <label asp-for="Adherent.PostCode" class="col-md-2 control-label required"></label>
         <div class="col-md-10">
-            <input asp-for="Adherent.PostCode" class="form-control" />
+            <input asp-for="Adherent.PostCode" class="form-control" required />
             <span asp-validation-for="Adherent.PostCode" class="text-danger" />
         </div>
     </div>
@@ -190,7 +185,7 @@
         <div class="form-group">
             <label asp-for="Adherent.CompanyName" class="col-md-2 control-label required"></label>
             <div class="col-md-10">
-                <input asp-for="Adherent.CompanyName" class="form-control" />
+                <input asp-for="Adherent.CompanyName" class="form-control" required />
                 <span asp-validation-for="Adherent.CompanyName" class="text-danger" />
             </div>
         </div>

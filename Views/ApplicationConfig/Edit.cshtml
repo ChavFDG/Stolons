@@ -1,16 +1,15 @@
 ﻿@model Stolons.Models.ApplicationConfig
 
-
 <h2>Modification de la configuration du site</h2>
 
-<form asp-action="Edit">
+<form asp-action="Edit" name="siteConfigForm">
     <div class="form-horizontal">
 
         <h4>Informations</h4>
         <div class="form-group">
-            <label asp-for="StolonsUrl" class="col-md-2 control-label"></label>
+            <label asp-for="StolonsUrl" class="col-md-2 control-label required"></label>
             <div class="col-md-10">
-                <input asp-for="StolonsUrl" class="form-control" />
+                <input asp-for="StolonsUrl" class="form-control" required />
                 <span asp-validation-for="StolonsUrl" class="text-danger" />
             </div>
         </div>
@@ -22,9 +21,9 @@
             </div>
         </div>
         <div class="form-group">
-            <label asp-for="ContactMailAddress" class="col-md-2 control-label"></label>
+            <label asp-for="ContactMailAddress" class="col-md-2 control-label" required></label>
             <div class="col-md-10">
-                <input rows="2" asp-for="ContactMailAddress" class="form-control" />
+                <input rows="2" asp-for="ContactMailAddress" class="form-control" required email />
                 <span asp-validation-for="ContactMailAddress" class="text-danger" />
             </div>
         </div>
@@ -35,41 +34,33 @@
                 <span asp-validation-for="ContactPhoneNumber" class="text-danger" />
             </div>
         </div>
-        <h4>PDF</h4>
-        <div class="form-group">
-            <label asp-for="ChromiumFullPath" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="ChromiumFullPath" class="form-control"  />
-                <span asp-validation-for="ChromiumFullPath" class="text-danger" />
-            </div>
-        </div>
         <h4>Courriels</h4>
         <div class="form-group">
-            <label asp-for="MailAddress" class="col-md-2 control-label"></label>
+            <label asp-for="MailAddress" class="col-md-2 control-label required"></label>
             <div class="col-md-10">
-                <input asp-for="MailAddress" class="form-control" />
+                <input asp-for="MailAddress" class="form-control" required email />
 		<span asp-validation-for="MailAddress" class="text-danger" />
             </div>
         </div>
 
         <div class="form-group">
-            <label asp-for="MailPassword" class="col-md-2 control-label"></label>
+            <label asp-for="MailPassword" class="col-md-2 control-label required"></label>
             <div class="col-md-10">
-                <input asp-for="MailPassword" class="form-control" />
+                <input asp-for="MailPassword" class="form-control" required />
                 <span asp-validation-for="MailPassword" class="text-danger" />
             </div>
         </div>
         <div class="form-group">
-            <label asp-for="MailPort" class="col-md-2 control-label"></label>
+            <label asp-for="MailPort" class="col-md-2 control-label required"></label>
             <div class="col-md-10">
-                <input asp-for="MailPort" class="form-control" min="0" max="65535" />
+                <input asp-for="MailPort" class="form-control" required min="0" max="65535" />
                 <span asp-validation-for="MailPort" class="text-danger" />
             </div>
         </div>
         <div class="form-group">
-            <label asp-for="MailSmtp" class="col-md-2 control-label"></label>
+            <label asp-for="MailSmtp" class="col-md-2 control-label required"></label>
             <div class="col-md-10">
-                <input asp-for="MailSmtp" class="form-control" />
+                <input asp-for="MailSmtp" class="form-control" required />
                 <span asp-validation-for="MailSmtp" class="text-danger" />
             </div>
         </div>
@@ -103,8 +94,11 @@
 </div>
 
 @section Scripts {
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
-    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
     <script>tinymce.init({ selector: 'textarea', language: 'fr_FR', menubar: false });</script>
+    <script>
+     $("form[name='siteConfigForm']").validate();
+     $("form[name='siteConfigForm']").on('submit', function() {
+	 return $(this).valid();
+     });
+    </script>
 }

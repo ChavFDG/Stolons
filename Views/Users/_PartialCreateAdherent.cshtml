@@ -1,6 +1,6 @@
 ﻿@model Stolons.ViewModels.Adherents.AdherentViewModel
 
-<form asp-action="CreateAdherent"  enctype="multipart/form-data" name="editAdherent">
+<form asp-action="CreateAdherent" enctype="multipart/form-data" name="editAdherent">
     <div class="modal-body">
         @Html.Partial("EditAdherent")
     </div>
@@ -9,8 +9,14 @@
     </div>
 </form>
 
-@section Scripts {
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
-    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
-}
+<script>
+
+ $(function () {
+     $('form[name="editAdherent"]').validate();
+
+     $('form[name="editAdherent"]').on('submit', function () {
+         return $(this).valid();
+     });
+ });
+ 
+</script>

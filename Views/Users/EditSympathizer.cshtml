@@ -1,13 +1,5 @@
 @model Stolons.ViewModels.Sympathizers.SympathizerViewModel
 
-<script>
-    $(document).ready(function () {
-        $('input#editSympathizer').on('click', function () {
-            return formValidation.valid('editSympathizer');
-        });
-    });
-</script>
-
 <div class="form-horizontal">
     <input asp-for="Sympathizer.Id" hidden="hidden" />
     <input asp-for="Sympathizer.StolonId" hidden="hidden" />
@@ -17,21 +9,21 @@
     <div class="form-group">
         <label asp-for="Sympathizer.Name" class="col-md-2 control-label required"></label>
         <div class="col-md-10">
-            <input asp-for="Sympathizer.Name" class="form-control" />
+            <input asp-for="Sympathizer.Name" class="form-control" required />
             <span asp-validation-for="Sympathizer.Name" class="text-danger" />
         </div>
     </div>
     <div class="form-group">
         <label asp-for="Sympathizer.Surname" class="col-md-2 control-label required"></label>
         <div class="col-md-10">
-            <input asp-for="Sympathizer.Surname" class="form-control" />
+            <input asp-for="Sympathizer.Surname" class="form-control" required />
             <span asp-validation-for="Sympathizer.Surname" class="text-danger" />
         </div>
     </div>
     <div class="form-group">
         <label asp-for="Sympathizer.PostCode" class="col-md-2 control-label required"></label>
         <div class="col-md-10">
-            <input asp-for="Sympathizer.PostCode" class="form-control" />
+            <input asp-for="Sympathizer.PostCode" class="form-control" required />
             <span asp-validation-for="Sympathizer.PostCode" class="text-danger" />
         </div>
     </div>

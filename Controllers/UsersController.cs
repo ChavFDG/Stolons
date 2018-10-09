@@ -194,7 +194,7 @@ namespace Stolons.Controllers
 
                 return RedirectToAction("Index");
             }
-            return View(vmAdherent);
+            return View("_PartialCreateAdherent", vmAdherent);
         }
 
         public PartialViewResult _PartialEditAdherent(Guid id)

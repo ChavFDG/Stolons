@@ -16,7 +16,7 @@
                     <div>Cotisation de @(Stolons.Helpers.EnumHelper<Stolon.Month>.GetDisplayValue(Model.Stolon.SubscriptionStartMonth)) à @(Stolons.Helpers.EnumHelper<Stolon.Month>.GetDisplayValue(Stolon.AddMonth(Model.Stolon.SubscriptionStartMonth, 11)))</div>
                     @if (Model.Stolon.UseHalftSubscipstion)
                     {
-                        <div> - pleinne de @(Stolons.Helpers.EnumHelper<Stolon.Month>.GetDisplayValue(Model.Stolon.SubscriptionStartMonth)) à  @(Stolons.Helpers.EnumHelper<Stolon.Month>.GetDisplayValue(Stolon.AddMonth(Model.Stolon.SubscriptionStartMonth, 5)))</div>
+                        <div> - pleine de @(Stolons.Helpers.EnumHelper<Stolon.Month>.GetDisplayValue(Model.Stolon.SubscriptionStartMonth)) à  @(Stolons.Helpers.EnumHelper<Stolon.Month>.GetDisplayValue(Stolon.AddMonth(Model.Stolon.SubscriptionStartMonth, 5)))</div>
                         <div> - demi de @(Stolons.Helpers.EnumHelper<Stolon.Month>.GetDisplayValue(Stolon.AddMonth(Model.Stolon.SubscriptionStartMonth, 6))) à @(Stolons.Helpers.EnumHelper<Stolon.Month>.GetDisplayValue(Stolon.AddMonth(Model.Stolon.SubscriptionStartMonth, 11)))</div>
                     }
                     @if (Model.Stolon.UseSympathizer)
