@@ -511,8 +511,8 @@ namespace Stolons.Tools
             }
             catch (Exception e)
             {
-                Logger.LogError("Erreur lors de la génération de la stolon bill : " + e.Message, e);
-                return "Erreur lors de la génération : " + e.Message;
+                Logger.LogError(e, "Erreur lors de la génération de la stolon bill : " + e.Message);
+                return "Erreur lors de la génération" + e.Message;
             }
         }
 
@@ -607,7 +607,7 @@ namespace Stolons.Tools
             }
             catch (Exception e)
             {
-                Logger.LogError("Erreur lors de la génération de la producer order : " + e.Message, e);
+                Logger.LogError(e, "Erreur lors de la génération de la producer order : " + e.Message);
                 return "Erreur lors de la génération" + e.Message;
             }
         }
@@ -737,7 +737,7 @@ namespace Stolons.Tools
             }
             catch (Exception e)
             {
-                Logger.LogError("Erreur lors de la génération de la producer bill : " + e.Message, e);
+                Logger.LogError(e, "Erreur lors de la génération de la producer bill : " + e.Message);
                 return "Erreur lors de la génération" + e.Message;
             }
         }
@@ -802,7 +802,7 @@ namespace Stolons.Tools
             }
             catch (Exception e)
             {
-                Logger.LogError("Erreur lors de la génération de la consumer bill : " + e.Message, e);
+                Logger.LogError(e, "Erreur lors de la génération de la consumer bill : " + e.Message);
                 return "Erreur lors de la génération" + e.Message;
             }
         }
