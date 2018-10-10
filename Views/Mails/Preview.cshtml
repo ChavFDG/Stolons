@@ -21,7 +21,12 @@
     </dd>
 </dl>
 
-<a asp-action="Index" id="@Model" class="btn btn-small btn-default">Modifier</a>
+<form asp-action="Index" enctype="multipart/form-data">
+    <input type="hidden" asp-for="Title" class="form-control" />
+    <input type="hidden" asp-for="Message" class="form-control" />
+    <input type="submit" value="Modifier" />
+</form>
+
 <div class="dropdown">
     <a class="dropdown-toggle btn btn-small btn-default" data-toggle="dropdown" href="#">
         Envoyer ...
