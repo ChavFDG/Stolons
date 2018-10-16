@@ -57,7 +57,6 @@
 <div class="form-horizontal">
     <input asp-for="Adherent.Id" hidden="hidden" />
     <input asp-for="Stolon.Id" hidden="hidden" />
-    <input asp-for="OriginalEmail" hidden="hidden" />
     <input asp-for="Edition" hidden="hidden" />
     <input asp-for="Adherent.ExploitationPicuresSerialized" hidden="hidden" />
 
@@ -84,7 +83,7 @@
         <label asp-for="Adherent.Name" class="col-md-2 control-label required"></label>
         <div class="col-md-10">
             <input asp-for="Adherent.Name" class="form-control" required />
-	    <span asp-validation-for="Adherent.Name" class="text-danger" />
+            <span asp-validation-for="Adherent.Name" class="text-danger" />
         </div>
     </div>
     <div class="form-group">
@@ -94,13 +93,21 @@
             <span asp-validation-for="Adherent.Surname" class="text-danger" />
         </div>
     </div>
-    <div class="form-group">
-        <label asp-for="Adherent.Email" class="col-md-2 control-label required"></label>
-        <div class="col-md-10">
-            <input asp-for="Adherent.Email" class="form-control" data-type="email" required email />
-            <span asp-validation-for="Adherent.Email" class="text-danger" />
+    @if (Model.IsCreation)
+    {
+        <div class="form-group">
+            <label asp-for="Adherent.Email" class="col-md-2 control-label required"></label>
+            <div class="col-md-10">
+                <input asp-for="Adherent.Email" class="form-control" data-type="email" required email />
+                <span asp-validation-for="Adherent.Email" class="text-danger" />
+            </div>
         </div>
-    </div>
+
+    }
+    else
+    {
+        <input asp-for="Adherent.Email" hidden="hidden" />
+    }
     <div class="form-group">
         <label asp-for="Adherent.AvatarFileName" class="col-md-2 control-label"></label>
         <div class="col-md-10">

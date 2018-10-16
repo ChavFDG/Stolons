@@ -18,7 +18,7 @@ namespace Stolons.ViewModels.Adherents
         {
             ActiveAdherentStolon = activeAdherentStolon;
             AdherentStolon = adherentStolon;
-            AdherentViewModel = new AdherentViewModel(activeAdherentStolon, adherentStolon.Adherent, adherentStolon.Stolon, adherentStolon.IsProducer ? AdherentEdition.Producer : AdherentEdition.Consumer);
+            AdherentViewModel = new AdherentViewModel(activeAdherentStolon, adherentStolon.Adherent, adherentStolon.Stolon, adherentStolon.IsProducer ? AdherentEdition.Producer : AdherentEdition.Consumer,false);
         }
 
         public AdherentStolon AdherentStolon { get; set; }

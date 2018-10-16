@@ -178,6 +178,9 @@ namespace Stolons.Controllers
             return View();
         }
 
+
+       
+
         #region Helpers
 
         private void AddErrors(IdentityResult result)

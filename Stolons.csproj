@@ -76,6 +76,9 @@
     <Content Update="Views\BillsHistory\ShowBills.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+    <Content Update="Views\Manage\ChangeEmail.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Views\Users\_PartialEditProducerFee.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>

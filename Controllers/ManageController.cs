@@ -41,6 +41,7 @@ namespace Stolons.Controllers
             ViewData["StatusMessage"] =
                 message == ManageMessageId.ChangePasswordSuccess ? "Votre mot de passe a été changé avec succès."
                 : message == ManageMessageId.SetPasswordSuccess ? "Your password has been set."
+                : message == ManageMessageId.ChangeEmail ? "Un courriel vous a été envoyé pour confirmer le changement de courriel"
                 : message == ManageMessageId.SetTwoFactorSuccess ? "Your two-factor authentication provider has been set."
                 : message == ManageMessageId.Error ? "Une erreur est survenue"
                 : message == ManageMessageId.AddPhoneSuccess ? "Your phone number was added."
@@ -60,7 +61,7 @@ namespace Stolons.Controllers
                 return NotFound();
             }
             bool isProducer = _context.AdherentStolons.Any(x => x.IsProducer && x.AdherentId == adherentStolon.AdherentId);
-            return View(new AdherentViewModel(adherentStolon, adherentStolon.Adherent, adherentStolon.Stolon, isProducer? AdherentEdition.Producer: AdherentEdition.Consumer));
+            return View(new AdherentViewModel(adherentStolon, adherentStolon.Adherent, adherentStolon.Stolon, isProducer? AdherentEdition.Producer: AdherentEdition.Consumer,false));
         }
 
         // POST: Consumers/Edit/5
@@ -104,7 +105,7 @@ namespace Stolons.Controllers
                 if (result.Succeeded)
                 {
                     await _signInManager.SignInAsync(user, isPersistent: false);
-                    AuthMessageSender.SendEmail(GetCurrentStolon().Label,
+                    AuthMessageSender.SendEmail(Configurations.Application.StolonsLabel,
                                                     user.Email,
                                                     user.Email,
                                                     "Confirmation de changement de mot de passe",
@@ -116,6 +117,70 @@ namespace Stolons.Controllers
             }
             return RedirectToAction(nameof(Index), new { Message = ManageMessageId.Error });
         }
+
+        // GET: /Manage/ChangeEmail
+        [HttpGet]
+        [Authorize()]
+        public IActionResult ChangeEmail()
+        {
+            return View(new ChangeEmailViewModel() {UserId = GetCurrentAdherentSync().Id });
+        }
+
+        //
+        // POST: /Manage/ChangeEmail
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize()]
+        public async Task<IActionResult> ChangeEmail(ChangeEmailViewModel vm)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(vm);
+            }
+            var adherent = _context.Adherents.FirstOrDefault(x => x.Id == vm.UserId);
+            if (adherent == null)
+                return NotFound("Impossible de trouver l'utilisateur : " + vm.UserId);
+            var appUser = await GetCurrentAppUserAsync();
+            if (appUser != null)
+            {
+                var token = await _userManager.GenerateChangeEmailTokenAsync(appUser, vm.NewEmail);
+                var confirmationLink = Url.Action("ChangeEmailToken", "Manage", new { token, oldEmail = adherent.Email, newEmail = vm.NewEmail }, protocol: HttpContext.Request.Scheme);
+                AuthMessageSender.SendEmail(Configurations.Application.StolonsLabel, 
+                    vm.NewEmail,
+                    vm.NewEmail, 
+                    "Confirmation de changement de courriel",
+                    "<h2>Confirmation de changement de courriel</h2> " + "<a href=\"" + confirmationLink + "\">Cliquer ici pour valider votre changement de courriel</a>");
+
+                return RedirectToAction(nameof(Index), new { Message = ManageMessageId.ChangeEmail});                
+            }
+            return RedirectToAction(nameof(Index), new { Message = ManageMessageId.Error });
+        }
+
+
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<IActionResult> ChangeEmailToken([FromQuery] string token, [FromQuery] string oldEmail, [FromQuery] string newEmail)
+        {
+            //Change for appUser
+            ApplicationUser appUser = _context.Users.First(x => x.Email == oldEmail);
+            if (appUser == null)
+                return NotFound("Impossible de trouver l'utilisateur : " + oldEmail);
+            var result = await _userManager.ChangeEmailAsync(appUser, newEmail, token);
+            if (result.Succeeded)
+            {
+                //Change mail for Adherent
+                var adherent = _context.Adherents.FirstOrDefault(x => x.Email == oldEmail);
+                if (adherent == null)
+                    return NotFound("Impossible de trouver l'utilisateur : " + oldEmail);
+                adherent.Email = newEmail;
+                _context.SaveChanges();
+            }
+
+            //_signInManager.RefreshSignInAsync(appUser);
+            //_signInManager.SignOutAsync();
+            return Ok("Votre courriel vient d'être changé");
+        }
+
 
         [Authorize()]
         public async Task<IActionResult> ChangeUserInformations()
@@ -139,10 +204,6 @@ namespace Stolons.Controllers
             if (ModelState.IsValid)
             {
                 UploadAndSetAvatar(vmConsumer.Adherent, uploadFile);
-                ApplicationUser appUser = _context.Users.First(x => x.Email == vmConsumer.OriginalEmail);
-                appUser.Email = vmConsumer.Adherent.Email;
-                _context.Update(appUser);
-
                 _context.Update(vmConsumer.Adherent);
                 _context.SaveChanges();
                 return RedirectToAction("Index");
@@ -171,10 +232,6 @@ namespace Stolons.Controllers
             if (ModelState.IsValid)
             {
                 UploadAndSetAvatar(vmAdherent.Adherent, uploadFile);
-                 
-                ApplicationUser appUser = _context.Users.First(x => x.Email == vmAdherent.OriginalEmail);
-                appUser.Email = vmAdherent.Adherent.Email;
-                _context.Update(appUser);
                 _context.Update(vmAdherent.Adherent);
                 _context.SaveChanges();
                 return RedirectToAction("Index");
@@ -198,6 +255,7 @@ namespace Stolons.Controllers
             AddPhoneSuccess,
             AddLoginSuccess,
             ChangePasswordSuccess,
+            ChangeEmail,
             SetTwoFactorSuccess,
             SetPasswordSuccess,
             RemoveLoginSuccess,

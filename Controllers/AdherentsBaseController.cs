@@ -58,7 +58,7 @@ namespace Stolons.Controllers
                 return Unauthorized();
 
             Stolon stolon = stolonId == null ? GetCurrentStolon() : _context.Stolons.First(x => x.Id == stolonId);
-            return View(new AdherentViewModel(GetActiveAdherentStolon(), new Adherent(), stolon, edition));
+            return View(new AdherentViewModel(GetActiveAdherentStolon(), new Adherent(), stolon, edition,true));
         }
 
         // POST: Consumers/Create
@@ -119,7 +119,7 @@ namespace Stolons.Controllers
             {
                 return NotFound();
             }
-            return View(new AdherentViewModel(GetActiveAdherentStolon(), adherentStolon.Adherent, adherentStolon.Stolon, AdherentEdition.Consumer));
+            return View(new AdherentViewModel(GetActiveAdherentStolon(), adherentStolon.Adherent, adherentStolon.Stolon, AdherentEdition.Consumer,false));
         }
 
         [HttpPost]
@@ -140,10 +140,7 @@ namespace Stolons.Controllers
 
         public static void UpdateAdherent(ApplicationDbContext context, AdherentViewModel vmAdherent, IFormFile uploadFile)
         {
-            ApplicationUser appUser = context.Users.First(x => x.Email == vmAdherent.OriginalEmail);
-            appUser.Email = vmAdherent.Adherent.Email;
             vmAdherent.Adherent.Name = vmAdherent.Adherent.Name.ToUpper();
-            context.Update(appUser);
             context.Update(vmAdherent.Adherent);
             context.SaveChanges();
         }

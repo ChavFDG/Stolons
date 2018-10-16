@@ -133,7 +133,7 @@ namespace Stolons.Controllers
         public virtual PartialViewResult _PartialCreateAdherent(AdherentEdition edition, Guid? stolonId = null)
         {
             Stolon stolon = stolonId == null ? GetCurrentStolon() : _context.Stolons.First(x => x.Id == stolonId);
-            return PartialView(new AdherentViewModel(GetActiveAdherentStolon(), new Adherent(), stolon, edition));
+            return PartialView(new AdherentViewModel(GetActiveAdherentStolon(), new Adherent(), stolon, edition,true));
         }
 
 
@@ -201,7 +201,7 @@ namespace Stolons.Controllers
         {
             AdherentStolon adherentStolon = _context.AdherentStolons.Include(x => x.Adherent).Include(x => x.Stolon).FirstOrDefault(x => x.Id == id);
 
-            return PartialView(new AdherentViewModel(GetActiveAdherentStolon(), adherentStolon.Adherent, adherentStolon.Stolon, adherentStolon.IsProducer ? AdherentEdition.Producer : AdherentEdition.Consumer));
+            return PartialView(new AdherentViewModel(GetActiveAdherentStolon(), adherentStolon.Adherent, adherentStolon.Stolon, adherentStolon.IsProducer ? AdherentEdition.Producer : AdherentEdition.Consumer,false));
         }
 
         [HttpPost]
@@ -224,18 +224,10 @@ namespace Stolons.Controllers
 
         public void UpdateAdherent(AdherentViewModel vmAdherent, string uploadAvatar)
         {
-            //Change mail if different
-            ApplicationUser appUser = _context.Users.First(x => x.Email == vmAdherent.OriginalEmail);
-            if(appUser.Email != vmAdherent.Adherent.Email)
-            {
-                appUser.Email = vmAdherent.Adherent.Email;
-                _context.Update(appUser);
-                _context.SaveChanges();
-            }
-
+            //Avatar
             _environment.DeleteFile(vmAdherent.Adherent.AvatarFilePath);
             vmAdherent.Adherent.AvatarFileName = _environment.UploadBase64Image(uploadAvatar, Configurations.AvatarStockagePath);
-
+            //Adherents informations
             Adherent adherent = _context.Adherents.FirstOrDefault(x => x.Id == vmAdherent.Adherent.Id);
             adherent.CloneAllPropertiesFrom(vmAdherent.Adherent);
             _context.Update(adherent);
