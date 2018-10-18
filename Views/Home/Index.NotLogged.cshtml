@@ -14,7 +14,7 @@
     <div class="row">
         <div class="col-lg-12" id="links">
             <div class="col-lg-offset-3 col-lg-3 text-center"><a href="#" class="main-links" data-toggle="modal" data-target="#connexion" onclick="closeStolonDetail()">Se connecter</a></div>
-            <div class="col-lg-3 text-center"><a href="#" class="main-links" data-toggle="modal" data-target="#get-stolons" onclick="closeStolonDetail()">Créer un Stolon</a></div>
+            <div class="col-lg-3 text-center"><a href="#" class="main-links" data-toggle="modal" data-target="#get-stolons" onclick="closeStolonDetail()">Créer un compte</a></div>
         </div>
     </div>
 
@@ -120,112 +120,56 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">Obtenir Stolons</h4>
+                    <h4 class="modal-title">Créer un compte</h4>
                 </div>
                 <div class="modal-body">
-                    <div>
-                        <h3>Informations</h3>
+                    @*<div>
+                        <h3>Qui sommes-nous ?</h3>
                         <div id="presentation-text">
-                            Vous souhaitez créer votre propre groupement d'achat en ligne de produits bio et locaux ? Avoir des informations sur la plateforme ? Rien de plus simple !<br>
-                            Contactez Agri Bio Ardèche pour plus d'informations:<br>
-                            Mail: <a href="mailto:agribioardeche@aurabio.org">agribioardeche@aurabio.org</a><br>
-                            Telephone: 04 75 64 82 96<br>
+                            Le projet Stolons est porté par Agri Bio Ardèche, l'association des producteurs bio du département qui a pour mission de développer et promouvoir l'agriculture biologique. L'association fait partie du réseau FNAB, la Fédération Nationale de l'Agriculture Biologique.
+                            <br />
+                            En proposant un modèle de circuit court innovant, nous développons une alimentation bio et locale et mettons en lien producteurs et consommateurs au service de l'intérêt général.
+                            <br />
+                            Plus d'informations sur notre blog :  <a href="https://agribioardeche.wordpress.com/">https://agribioardeche.wordpress.com/</a>
                         </div>
                     </div>
                     <div>
-                        <h3>Comment créer mon stolon ?</h3>
+                        <h3>Stolons</h3>
                         <div id="presentation-text">
-                            L'outil Stolon est proposé à la fois aux producteurs individuels et aux collectifs de producteurs sous réserve du respect des critères suivants: <br />
-                            - produits alimentaires certifiés bio ou en dernière année de conversion à l'AB<br />
-                            - produits localement dans un rayon de 50 km autour du lieu de dépôt<br />
-                            - vendus au prix de vente directe pratiqué sur le territoire.<br />
-                            Si vous souhaitez créer votre propre groupement d'achat en ligne de produits bio et locaux et avoir des informations sur la plateforme, contactez-nous ! Agri Bio Ardèche s'engage à accompagner toutes les créations de Stolon.
-
+                            Stolon est un outil à but non lucratif de commandes hebdomadaires en ligne qui est proposé par Agri Bio Ardèche à des producteurs individuels ou des collectifs de producteurs qui répondent aux critères d'utilisation suivants, inscrits dans le règlement des stolons :
+                            <ul>
+                                <li>Produits certifiés bio ou en conversion vers l'agriculture biologique selon la règlementation européenne en vigueur</li>
+                                <li>Ferme située à moins de 50 km du lieu de distribution</li>
+                                <li>Vente au prix de vente directe pour garantir accessibilité aux consommateurs</li>
+                            </ul>
+                            Pour accéder au règlement des Stolons,  <a href="~/documents/Règlement_Stolons.pdf">cliquez ici (Règlement Stolons)</a>
+                        </div>
+                    </div>*@
+                    <div>
+                        <h3>Vous souhaitez créer un compte ?</h3>
+                        <div id="presentation-text">
+                            L'inscription ne se fait pas en ligne mais uniquement en contactant votre Stolon local.
+                            <br />
+                            Suivez les étapes suivantes :
+                            <ul>
+                                <li>Accédez aux coordonnées du Stolon de votre choix en cliquant sur la carte et sur ses détails</li>
+                                <li>Communiquez votre nom, prénom, courriel, numéro de téléphone et code postal par courriel ou téléphone</li>
+                                <li>Vous recevrez ensuite un mail avec vos identifiants et votre mot de passe pour vous connecter sur le site</li>
+                            </ul>
+                        </div>
+                    </div> 
+                    <div>
+                        <h3>Vous souhaitez créer un Stolon ?</h3>
+                        <div id="presentation-text">
+                            Vous êtes un collectif de consommateurs et/ou de producteurs et le projet Stolons vous intéresse ?
+                            <br />
+                            Contactez Agri Bio Ardèche :
+                            <br />
+                            agribioardeche@aurabio.org
+                            <br />
+                            04 75 64 82 96
                         </div>
                     </div>
-                    <br />
-                    <div id="presentation-text">
-                        Les tarifs ci-dessous comprennent les coûts d'hébergement et de maintenance du site internet :
-                    </div>
-                    <table class="table">
-                        <tr>
-                            <th></th>
-                            <th>PRODUCTEUR</th>
-                            <th>COLLECTIF</th>
-                        </tr>
-                        <tr>
-                            <td>Consommateur</td>
-                            <td>✓ illimité</td>
-                            <td>✓ illimité</td>
-                        </tr>
-                        <tr>
-                            <td>Producteur</td>
-                            <td>✓ 1</td>
-                            <td>✓ illimité</td>
-                        </tr>
-                        <tr>
-                            <td>Sympathisant</td>
-                            <td>✗</td>
-                            <td>✓ illimité</td>
-                        </tr>
-                        <tr>
-                            <td>Cotisation</td>
-                            <td>✗</td>
-                            <td>✓</td>
-                        </tr>
-                        @*<tr>
-                            <td>Planning</td>
-                            <td>✗</td>
-                            <td>✓</td>
-                            </tr>*@
-                        <tr>
-                            <td>Cotisation</td>
-                            <td>✗</td>
-                            <td>✓</td>
-                        </tr>
-                        <tr>
-                            <td>Pourcentage sur CA</td>
-                            <td>✗</td>
-                            <td>✓</td>
-                        </tr>
-                        <tr>
-                            <td>Facture avec TVA</td>
-                            <td>✓</td>
-                            <td>✓</td>
-                        </tr>
-                        <tr>
-                            <td>Compte automatique</td>
-                            <td>✓</td>
-                            <td>✓</td>
-                        </tr>
-                        @*<tr>
-                            <td>Bon plan</td>
-                            <td>✓</td>
-                            <td>✓</td>
-                            </tr>*@
-                        <tr>
-                            <td>Page personalisable</td>
-                            <td>✓</td>
-                            <td>✓</td>
-                        </tr>
-                        <tr>
-                            <td>Assistance technique</td>
-                            <td>✓</td>
-                            <td>✓</td>
-                        </tr>
-                        <tr>
-                            <td>TARIFS</td>
-                            <td>2€/sem (104€/an)</td>
-                            <td>
-                                4€/sem (208€/an)
-                                <div title="La première année, puis 5€/semaine (260€ par an)"
-                                     data-toggle="tooltip"
-                                     data-placement="bottom">
-                                    <i class="glyphicon glyphicon-info-sign"></i>
-                                </div>
-                            </td>
-                        </tr>
-                    </table>
                 </div>
             </div>
         </div>

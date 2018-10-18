@@ -197,10 +197,9 @@ img.warning {
 
 .simulationModeWarningMessage {
     position: relative;
-    font: 36px Arial, sans-serif;
+    font: 30px Arial, sans-serif;
     float: left;
-    top: 50%;
-    left: 35%;
+    margin : 5px;
 }
 /* Image */
 .responsiveImage {

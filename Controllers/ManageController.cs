@@ -175,9 +175,9 @@ namespace Stolons.Controllers
                 adherent.Email = newEmail;
                 _context.SaveChanges();
             }
-
-            //_signInManager.RefreshSignInAsync(appUser);
-            //_signInManager.SignOutAsync();
+            
+            await _signInManager.RefreshSignInAsync(appUser);
+            await _signInManager.SignOutAsync();
             return Ok("Votre courriel vient d'être changé");
         }
 

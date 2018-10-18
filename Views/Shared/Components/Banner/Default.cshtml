@@ -2,6 +2,7 @@
 @using Microsoft.AspNetCore.Identity;
 @using System.Security.Claims;
 @using Stolons.ViewModels;
+@using Stolons.Helpers;
 @model Stolons.ViewModels.Banner.BannerViewModel
 
 @if (User.Identity.IsAuthenticated)
@@ -11,11 +12,13 @@
         <div class="nav container">
             <div class="row simulationModeWarningContainerMessage">
                 <div class="simulationModeWarningMessage">
-                    MODE SIMULATION
+                    MODE SIMULATION : 
+                    @(EnumHelper<Stolon.Modes>.GetDisplayValue(Model.ActiveAdherentStolon.Stolon.Mode))
                 </div>
+                <a asp-action="SwitchMode" asp-controller="Stolons" asp-route-id="@Model.ActiveAdherentStolon.Stolon.Id" class="btn btn-small btn-default">@(Model.ActiveAdherentStolon.Stolon.GetMode() == Stolon.Modes.DeliveryAndStockUpdate ? "Passer en mode Commande" : "Passer en mode Livraison et mise à jour des stocks")</a>
 
             </div>
-        </div>
+           </div>
     }
     <div class="nav container">
         <div class="row">
