@@ -77,7 +77,7 @@ namespace Stolons.Helpers
 	    {
 		if (product.ProductUnit == Product.Unit.Kg)
 		{
-		    return " Kg";
+		    return " kg";
 		} else {
 		    return " L";
 		}

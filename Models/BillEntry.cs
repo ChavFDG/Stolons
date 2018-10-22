@@ -443,7 +443,7 @@ namespace Stolons.Models
                     if (qty >= 1000)
                     {
                         qty /= 1000;
-                        strUnit = " Kg";
+                        strUnit = " kg";
                     }
                     return qty + strUnit;
                 }
