@@ -169,6 +169,26 @@ namespace Stolons.Controllers
                                                          .Include(x=>x.AdherentStolon).ThenInclude(x=>x.Adherent).First(x => x.BillId == id);
                 consumerBill.HtmlBillContent = BillGenerator.GenerateHtmlBillContent(consumerBill, _context);
                 BillGenerator.GenerateBillPDF(consumerBill);
+                try
+                {
+                    //Send mail to consumer
+                    string message = "Mise à jour de votre commande :" + consumerBill.BillNumber;
+                    message += Environment.NewLine;
+                    message += "Des produits à poids variable on été assigné dans votre commande. Voici votre nouvelle facture :";
+                    message += Environment.NewLine;
+                    message += consumerBill.HtmlBillContent;
+                    AuthMessageSender.SendEmail(consumerBill.AdherentStolon.Stolon.Label,
+                                    consumerBill.AdherentStolon.Adherent.Email,
+                                    consumerBill.AdherentStolon.Adherent.CompanyName,
+                                    "Mise à jour de votre commande :" + consumerBill.BillNumber + ")",
+                                    message,
+                                    System.IO.File.ReadAllBytes(consumerBill.GetBillFilePath()),
+                                    "Commande " + consumerBill.GetBillFileName());
+                }
+                catch (Exception exept)
+                {
+                    return StatusCode(500);
+                }
             }
             _context.SaveChanges();
 
@@ -189,7 +209,8 @@ namespace Stolons.Controllers
                                 producerBill.AdherentStolon.Adherent.CompanyName,
                                 "Validation des poids variables saisis (Bon de commande " + producerBill.BillNumber + ")",
                                 message,
-                                null);
+                                 System.IO.File.ReadAllBytes(producerBill.GetOrderFilePath()),
+                                    "Bon de commande " + producerBill.GetOrderFileName());
             }
             catch (Exception exept)
             {

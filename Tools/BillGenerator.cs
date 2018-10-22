@@ -792,6 +792,10 @@ namespace Stolons.Tools
                     bill.OrderAmount += total;
                 }
                 builder.AppendLine("</table>");
+                //If poids variable afficher un message
+
+
+                //
                 if (bill.State == BillState.Cancelled)
                     builder.AppendLine("<h2><b>Commande annulé</b></h2><p>" + bill.ModificationReason + "</p>");
                 else
