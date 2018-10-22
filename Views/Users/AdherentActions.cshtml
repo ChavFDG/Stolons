@@ -4,11 +4,11 @@
 
 
 <div class="dropdown">
-    <a class="dropdown-toggle btn btn-small btn-default" data-toggle="dropdown" href="#">
+    <a class="dropdown-toggle btn btn-small btn-default" data-toggle="dropdown" href="#" @(Model.AdherentStolon.LocalId != 0?"":"disabled")>
         Actions
         <span class="caret"></span>
     </a>
-    <ul class="dropdown-menu">
+    <ul class="dropdown-menu" >
         <li><a asp-controller="Orders" asp-action="Index" asp-route-id="@Model.AdherentStolon.Id">Voir commandes de paniers</a></li>
         @if (Model.AdherentStolon.IsProducer)
         {

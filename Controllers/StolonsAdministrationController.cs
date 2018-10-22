@@ -25,7 +25,7 @@ namespace Stolons.Controllers
         public StolonsAdministrationController(ApplicationDbContext context, IHostingEnvironment environment,
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            IServiceProvider serviceProvider) : base(serviceProvider, userManager,context,environment, signInManager)
+            IServiceProvider serviceProvider) : base(serviceProvider, userManager, context, environment, signInManager)
         {
 
         }
@@ -104,6 +104,16 @@ namespace Stolons.Controllers
                 vm.Stolon.ShortLabel.Replace(" ", "_");
                 _context.Add(vm.Stolon);
                 await _context.SaveChangesAsync();
+                //Add contact@stolons.org ad member of the stolon
+                AdherentStolon adherentStolon = new AdherentStolon(_context.Adherents.First(x => x.Email == "contact@stolons.org"), _context.Stolons.First(x => x.Id == vm.Stolon.Id), false)
+                {
+                    RegistrationDate = DateTime.Now,
+                    Enable = true,
+                    Role = Role.Admin,
+                    LocalId = 0
+                };
+                _context.Add(adherentStolon);
+                _context.SaveChanges();
                 return RedirectToAction("Index");
             }
             return View(vm);
@@ -135,7 +145,7 @@ namespace Stolons.Controllers
                             vm.Stolon.UseSympathizer = false;
                             break;
                     }
-                    if(!String.IsNullOrWhiteSpace(uploadLogo))
+                    if (!String.IsNullOrWhiteSpace(uploadLogo))
                     {
                         //Je supprime l'ancien logo
                         _environment.DeleteFile(StolonLogoStockagePath, vm.Stolon.LogoFileName);
@@ -157,11 +167,11 @@ namespace Stolons.Controllers
                         throw;
                     }
                 }
-            return RedirectToAction("DetailsStolon", new {id = vm.Stolon.Id});
-//                return RedirectToAction("Index");
+                return RedirectToAction("DetailsStolon", new { id = vm.Stolon.Id });
+                //                return RedirectToAction("Index");
             }
             return RedirectToAction("Stolon", "StolonController");
-//            return View(vm.Stolon);
+            //            return View(vm.Stolon);
         }
 
         public async Task<IActionResult> DeleteStolon(Guid id)

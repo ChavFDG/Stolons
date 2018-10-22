@@ -4,11 +4,11 @@
 @if (Model.ActiveAdherentStolon.Authorized(Role.Admin))
 {
     <div class="dropdown">
-        <a class="dropdown-toggle btn btn-small btn-default" data-toggle="dropdown" href="#">
+        <a class="dropdown-toggle btn btn-small btn-default " data-toggle="dropdown" href="#" @(Model.AdherentStolon.LocalId != 0?"":"disabled")>
             @Html.DisplayFor(x => x.AdherentStolon.Role)
             <span class="caret"></span>
         </a>
-        <ul class="dropdown-menu">
+        <ul class="dropdown-menu" >
             @if (Model.AdherentStolon.Role != Role.Adherent && Model.ActiveAdherentStolon.Authorized(Role.Admin))
             {
                 <li><a asp-action="SetAsAdherent" asp-controller="Users" asp-route-id="@Model.AdherentStolon.Id">Passer adhérent</a></li>
@@ -46,4 +46,3 @@ else
 }
 
 
-    

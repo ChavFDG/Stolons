@@ -15,10 +15,10 @@ namespace Stolons.Models
         public string StolonsUrl { get; set; } = "www.stolons.org";
 
         [Display(Name = "Libellé des Stolons")]
-        public string StolonsLabel { get; set; } = "Association Stolons";
+        public string StolonsLabel { get; set; } = "Stolons.org par Agri Bio Ardeche";
 
         [Display(Name = "Numéro de téléphone de contact")]
-        public string ContactPhoneNumber { get; set; } = "06 64 86 66 93";
+        public string ContactPhoneNumber { get; set; } = "04 75 64 82 96";
         [Display(Name = "Courriel de contact")]
         public string ContactMailAddress { get; set; } = "contact@stolons.org";
         //Chromium pour PDF

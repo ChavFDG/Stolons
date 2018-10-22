@@ -768,6 +768,8 @@ namespace Stolons.Tools
                 builder.AppendLine("<th>Quantité</th>");
                 builder.AppendLine("<th>Prix total</th>");
                 builder.AppendLine("</tr>");
+                //
+                bool notAssignedVariableWeigh = false;
                 foreach (var tmpBillEntry in bill.BillEntries)
                 {
                     var billEntry = dbContext.BillEntrys.Include(x => x.ProductStock).ThenInclude(x => x.Product).First(x => x.Id == tmpBillEntry.Id);
@@ -775,6 +777,7 @@ namespace Stolons.Tools
                     if (billEntry.IsNotAssignedVariableWeigh)
                     {
                         total = Convert.ToDecimal(billEntry.ProductStock.Product.AveragePrice * billEntry.Quantity);
+                        notAssignedVariableWeigh = true;
                     }
                     else
                     {
@@ -792,10 +795,8 @@ namespace Stolons.Tools
                     bill.OrderAmount += total;
                 }
                 builder.AppendLine("</table>");
-                //If poids variable afficher un message
-
-
-                //
+                if(notAssignedVariableWeigh)
+                    builder.AppendLine("<h2><b>Attention / information :</b></h2><p>Le montant total de votre facture affiché ne prend pas en compte les poids variable non assigné. Lors de l'assignation des poids variable vous recevrez un mail comprenant le montant exact des produits à poids variable commandés.</p>");
                 if (bill.State == BillState.Cancelled)
                     builder.AppendLine("<h2><b>Commande annulé</b></h2><p>" + bill.ModificationReason + "</p>");
                 else

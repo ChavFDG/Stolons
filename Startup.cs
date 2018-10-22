@@ -71,8 +71,8 @@ namespace Stolons
             //stackoverflow.com/questions/27831597/how-do-i-define-the-password-rules-for-identity-in-asp-net-5-mvc-6-vnext
             services.AddIdentity<ApplicationUser, IdentityRole>(o =>
                 {
-                // configure identity options
-                o.Password.RequireDigit = false;
+                    // configure identity options
+                    o.Password.RequireDigit = false;
                     o.Password.RequireLowercase = false;
                     o.Password.RequireUppercase = false;
                     o.Password.RequiredLength = 1;
@@ -115,7 +115,7 @@ namespace Stolons
                 routes.MapRoute(
                         name: "default",
                         template: "{controller=Home}/{action=Index}/{id?}");
-                
+
             });
             Configurations.Environment = env;
             Configurations.SetupMailDebug(Configuration.GetSection("MailDebug"));
@@ -134,7 +134,7 @@ namespace Stolons
             var dbContext = services.GetRequiredService<ApplicationDbContext>();
             var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
 
-            
+
 
 
 
@@ -362,11 +362,11 @@ namespace Stolons
             stolon.CreationDate = DateTime.Now;
 
 
-            stolon.Label = "Stolon de Privas";
-            stolon.AboutText = "Le Stolon de Privas est une association loi 1901";
+            stolon.Label = "Stolon test";
+            stolon.AboutText = "Le Stolon de test est une association loi 1901";
             stolon.JoinUsText = "Pour nous rejoindre contacter nous ! Ou venez nous rendre visite";
             stolon.Address = "07000 PRIVAS";
-            stolon.PhoneNumber = "06 64 86 66 93";
+            stolon.PhoneNumber = "06 12 34 56 78";
             stolon.ContactMailAddress = "contact@stolons.org";
 
             stolon.DeliveryAndStockUpdateDayStartDate = DayOfWeek.Wednesday;
@@ -386,7 +386,7 @@ namespace Stolons
             stolon.UseSubscipstion = true;
             stolon.SubscriptionStartMonth = Stolon.Month.September;
 
-            stolon.OrderDeliveryMessage = "Votre panier est disponible jeudi de 17h30 à 19h au : 10 place de l'hotel de ville, 07000 Privas";
+            stolon.OrderDeliveryMessage = "Votre panier est disponible jeudi de 17h30 à 19h au : adresse, 07000 Privas";
 
             stolon.UseProducersFee = true;
             stolon.DefaultProducersFee = 5;
@@ -408,31 +408,13 @@ namespace Stolons
         {
             CreateAcount(context,
              userManager,
-             "PARAVEL",
-             "Damien",
-             "damien.paravel@gmail.com",
-             "damien.paravel@gmail.com",
+             "Administrateur",
+             "Stolons.org",
+             "contact@stolons.org",
+             "contact@stolons.org",
              Role.Admin,
              stolon,
              true);
-            CreateAcount(context,
-                 userManager,
-                 "MICHON",
-                 "Nicolas",
-                 "nicolas.michon@zoho.com",
-                 "nicolas.michon@zoho.com",
-                 Role.Admin,
-                 stolon,
-                 true);
-            CreateAcount(context,
-                 userManager,
-                 "TESTON",
-                 "Arnaud",
-                 "arnaudteston@gmail.com",
-                 "arnaudteston@gmail.com",
-                 Role.Admin,
-                 stolon,
-                 true);
         }
 
         private static void CreateTestAcount(ApplicationDbContext context, UserManager<ApplicationUser> userManager, Stolon stolon)
@@ -441,8 +423,8 @@ namespace Stolons
              userManager,
              "Maurice",
              "Robert",
-             "chavrouxfdg@hotmail.com",
-             "chavrouxfdg@hotmail.com",
+             "testproducer@yopmail.com",
+             "testproducer@yopmail.com",
              Role.Adherent,
              stolon,
              false,
@@ -472,25 +454,48 @@ namespace Stolons
             adherent.PostCode = "07000";
             adherent.IsWebAdmin = isWebAdmin;
 
-            AdherentStolon adherentStolon = new AdherentStolon(adherent, stolon, true)
-            {
-                RegistrationDate = DateTime.Now,
-                Enable = true,
-                Role = role
-            };
-            adherentStolon.LocalId = context.AdherentStolons.Where(x => x.StolonId == stolon.Id).Select(x => x.LocalId).DefaultIfEmpty(0).Max() + 1;
-
-            if (isProducer)
-            {
-                adherent.CompanyName = "La ferme de " + adherent.Name;
-                adherent.Latitude = 44.7354673;
-                adherent.Longitude = 4.601407399999971;
-                adherentStolon.IsProducer = true;
-            }
-
             context.Adherents.Add(adherent);
-            context.AdherentStolons.Add(adherentStolon);
             context.SaveChanges();
+
+            if (email == "contact@stolons.org")
+            {
+                bool active = true;
+                foreach (Stolon stol in context.Stolons.ToList())
+                {
+                    AdherentStolon adherentStolon = new AdherentStolon(adherent, stol, active)
+                    {
+                        RegistrationDate = DateTime.Now,
+                        Enable = true,
+                        Role = role,
+                        LocalId = 0
+                    };
+                    context.AdherentStolons.Add(adherentStolon);
+
+                    context.SaveChanges();
+                    active = false;
+                }
+            }
+            else
+            {
+                AdherentStolon adherentStolon = new AdherentStolon(adherent, stolon, true)
+                {
+                    RegistrationDate = DateTime.Now,
+                    Enable = true,
+                    Role = role
+                };
+                adherentStolon.LocalId = context.AdherentStolons.Where(x => x.StolonId == stolon.Id).Select(x => x.LocalId).DefaultIfEmpty(0).Max() + 1;
+
+                if (isProducer)
+                {
+                    adherent.CompanyName = "La ferme de " + adherent.Name;
+                    adherent.Latitude = 44.7354673;
+                    adherent.Longitude = 4.601407399999971;
+                    adherentStolon.IsProducer = true;
+                }
+                context.AdherentStolons.Add(adherentStolon);
+                context.SaveChanges();
+
+            }
 
             #region Creating linked application data
             var appUser = new ApplicationUser { UserName = adherent.Email, Email = adherent.Email };
