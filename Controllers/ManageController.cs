@@ -174,6 +174,8 @@ namespace Stolons.Controllers
                     return NotFound("Impossible de trouver l'utilisateur : " + oldEmail);
                 adherent.Email = newEmail;
                 _context.SaveChanges();
+                //Change username as we don't have username, we use mail as username to retrive the couple username/password
+                await _userManager.SetUserNameAsync(_context.Users.First(x => x.Email == newEmail), newEmail);
             }
             
             await _signInManager.RefreshSignInAsync(appUser);
