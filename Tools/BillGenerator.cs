@@ -796,7 +796,7 @@ namespace Stolons.Tools
                 }
                 builder.AppendLine("</table>");
                 if(notAssignedVariableWeigh)
-                    builder.AppendLine("<h2><b>Attention / information :</b></h2><p>Le montant total de votre facture affiché ne prend pas en compte les poids variable non assigné. Lors de l'assignation des poids variable vous recevrez un mail comprenant le montant exact des produits à poids variable commandés.</p>");
+                    builder.AppendLine("<h2><b>Attention / information :</b></h2><p>Le montant total affiché sur votre facture ne prend pas en compte les poids variables non assignés. Lors de l'assignation des poids variables, vous recevrez un mail avec votre facture mise à jour.</p>");
                 if (bill.State == BillState.Cancelled)
                     builder.AppendLine("<h2><b>Commande annulé</b></h2><p>" + bill.ModificationReason + "</p>");
                 else
