@@ -4,7 +4,7 @@
 
 
 <div class="dropdown">
-    <a class="dropdown-toggle btn btn-small btn-default" data-toggle="dropdown" href="#" @(Model.AdherentStolon.LocalId != 0?"":"disabled")>
+    <a class="dropdown-toggle btn btn-small btn-default @(Model.AdherentStolon.LocalId != 0?"":"disabled")" data-toggle="dropdown" href="#" @(Model.AdherentStolon.LocalId != 0?"":"disabled")>
         Actions
         <span class="caret"></span>
     </a>

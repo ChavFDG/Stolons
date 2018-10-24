@@ -171,7 +171,7 @@
                     <ul class="nav navbar-nav navbar-right">
                         @if (Model.ActiveAdherentStolon.Authorized(Role.Volunteer))
                         {
-                            <li class="dropdown">
+                            <li class="dropdown auto-dropdown">
                                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                                     <i class="fas fa-leaf"></i> @(Model.ActiveAdherentStolon.Stolon.StolonType == Stolon.OrganisationType.Association ? Model.ActiveAdherentStolon.Stolon.Label : "Mon dépot")
                                     <span class="caret"></span>
@@ -196,7 +196,7 @@
 
                         @if (Model.ActiveAdherentStolon.IsProducer)
                         {
-                            <li class="dropdown">
+                            <li class="dropdown auto-dropdown">
                                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                                     <span class="glyphicon glyphicon-grain"></span> @(Model.ActiveAdherentStolon.Stolon.StolonType == Stolon.OrganisationType.Association ? Model.ActiveAdherentStolon.Adherent.CompanyName : "Ma ferme")
                                     <span class="caret"></span>
@@ -211,7 +211,7 @@
 
                         @if (Model.ActiveAdherentStolon.Adherent.IsWebAdmin)
                         {
-                            <li class="dropdown">
+                            <li class="dropdown auto-dropdown">
                                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                                     <i class="fas fa-cog"></i> Administration
                                     <span class="caret"></span>
@@ -223,7 +223,7 @@
                                 </ul>
                             </li>
                         }
-                        <li class="dropdown">
+                        <li class="dropdown auto-dropdown">
                             <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                                 <i class="fas fa-user"></i> Mon compte
                                 <span class="caret"></span>
