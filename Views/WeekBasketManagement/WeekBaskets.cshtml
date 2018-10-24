@@ -16,11 +16,16 @@
             <div class="bannerRightInformations"
                  title="@Html.Raw(Model.WeekStolonsBill.ModificationReason.Replace("\n\r", "<br/>"))"
                  data-toggle="tooltip"
-                 data-placement="bottom"><i class="fas fa-exclamation-triangle isa_warning"></i>
+                 data-placement="bottom">
+                <i class="fas fa-exclamation-triangle isa_warning"></i>
             </div>
         }
         <a class="btn btn-small btn-default" title="Voir" asp-action="ShowStolonsBill" asp-route-id="@Model.WeekStolonsBill.BillNumber"><span class="glyphicon glyphicon glyphicon-eye-open"> </span></a>
         <a class="btn btn-small btn-default" title="Télécharger" target="_blank" href="/@Model.WeekStolonsBill.UrlPath"><span class="glyphicon glyphicon glyphicon-download-alt"> </span></a>
+        @if (Model.ActiveAdherentStolon.Adherent.IsWebAdmin)
+        {
+            <a class="btn btn-small btn-default" title="Regénérer" asp-action="RegenerateStolonBill" asp-route-id="@Model.WeekStolonsBill.StolonBillId"><span class="glyphicon glyphicon glyphicon-refresh"> </span></a>
+        }
     </div>
 }
 else
@@ -104,7 +109,8 @@ else
                                 <div class="bannerRightInformations"
                                      title="@Html.Raw(item.ModificationReason.Replace("\n\r", "<br/>"))"
                                      data-toggle="tooltip"
-                                     data-placement="bottom"><i class="fas fa-exclamation-triangle isa_warning"></i>
+                                     data-placement="bottom">
+                                    <i class="fas fa-exclamation-triangle isa_warning"></i>
                                 </div>
                             }
                         }
@@ -161,7 +167,8 @@ else
                                 <div class="bannerRightInformations"
                                      title="@Html.Raw(item.ModificationReason.Replace("\n\r", "<br/>"))"
                                      data-toggle="tooltip"
-                                     data-placement="bottom"><i class="fas fa-exclamation-triangle isa_warning"></i>
+                                     data-placement="bottom">
+                                    <i class="fas fa-exclamation-triangle isa_warning"></i>
                                 </div>
 
                             }
@@ -213,12 +220,12 @@ else
                     <a class="btn btn-small btn-default" title="Voir" target="_blank" href="/billsHistory/ShowBill/<%= bill.BillNumber %>"><span class="glyphicon glyphicon glyphicon-eye-open"> </span></a>
                     <a class="btn btn-small btn-default" title="Télécharger" target="_blank" href="/bills/<%= bill.BillNumber %>.pdf"><span class="glyphicon glyphicon glyphicon-download-alt"> </span></a>
                     <% if (bill.HasBeenModified) { %>
-                        <a class="bannerRightInformations"
-                             title="<%= bill.ModificationReason %>"
-                             data-toggle="tooltip"
-                             data-placement="bottom">
-                            <i class="fas fa-exclamation-triangle isa_warning"></i>
-                        </a>
+                    <a class="bannerRightInformations"
+                       title="<%= bill.ModificationReason %>"
+                       data-toggle="tooltip"
+                       data-placement="bottom">
+                        <i class="fas fa-exclamation-triangle isa_warning"></i>
+                    </a>
                     <% } %>
                 </td>
             </tr>
@@ -243,15 +250,15 @@ else
                         </div>
                     </div>
                     <div class="row">
-			<div style="height: 20px; ">
-			   
-			</div>
+                        <div style="height: 20px; ">
+
+                        </div>
                         <table id="correction-table">
                             <colgroup>
                                 <col>
                                 </col>
                                 <% _.forEach(producerBill.getProductStocks(), function(productStock) { %>
-                                <col id="product-col-<%= productStock.get("Id") %>">
+                                <col id="product-col-<%= productStock.get(" Id") %>">
                                 </col>
                                 <% }); %>
                             </colgroup>
@@ -263,7 +270,7 @@ else
                                     </th>
                                     <% _.forEach(producerBill.getProductStocks(), function(productStock) { %>
                                     <th class="correction-product-description productMgtImage">
-                                        <img src="<%= productStock.get("Product").getPictureUrl("light") %>">
+                                        <img src="<%= productStock.get(" Product").getPictureUrl("light") %>">
                                         <span><%= productStock.get("Product").get("Name") %></span>
                                     </th>
                                     <% }); %>
@@ -282,10 +289,10 @@ else
                                         Pas de commande
                                     </td>
                                     <% } else if (consumerBillEntry.IsAssignedVariableWeigh === true) { %>
-				    <td class="td-disabled correction-bill-entry">
+                                    <td class="td-disabled correction-bill-entry">
                                         Produit poids variable
                                     </td>
-				    <% } else  { %>
+                                    <% } else  { %>
                                     <td>
                                         <div class="correction-bill-entry">
                                             <div class="productQuantityChanger">
@@ -310,16 +317,16 @@ else
                                         <h5>Total</h5>
                                     </td>
                                     <% _.forEach(producerBill.getProductStocks(), function(productStock) { %>
-				      <% if (producerBill.isAssignedVariableWeigh(productStock) === true) { %>
-					<td class="td-disabled correction-bill-entry">
-					Produit poids variable
-					</td>
-				       <% } else { %>
+                                    <% if (producerBill.isAssignedVariableWeigh(productStock) === true) { %>
+                                    <td class="td-disabled correction-bill-entry">
+                                        Produit poids variable
+                                    </td>
+                                    <% } else { %>
                                     <td>
                                         <div class="correction-bill-entry">
 
 
-                                             <div class="productQuantityChanger">
+                                            <div class="productQuantityChanger">
                                                 <a href="#" class="minus decrementTotal" data-product-stock-id="<%= productStock.get('Id') %>">
                                                     <img src="/images/basket-remove.png" />
                                                 </a>
@@ -329,10 +336,10 @@ else
                                                 <a href="#" class="plus incrementTotal" data-product-stock-id="<%= productStock.get('Id') %>">
                                                     <img src="/images/basket-add.png" />
                                                 </a>
-						</div>
-                                           </div>
-                                         </td>
-				       <% } %>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <% } %>
                                     <% }); %>
                                 </tr>
                             </tbody>

@@ -12,13 +12,13 @@
         <div class="nav container">
             <div class="row simulationModeWarningContainerMessage">
                 <div class="simulationModeWarningMessage">
-                    <a asp-action="SwitchMode" asp-controller="Stolons" asp-route-id="@Model.ActiveAdherentStolon.Stolon.Id" ><i class="fas fa-sync"></i></a>
+                    <a asp-action="SwitchMode" asp-controller="Stolons" asp-route-id="@Model.ActiveAdherentStolon.Stolon.Id"><i class="fas fa-sync"></i></a>
                     MODE SIMULATION :
                     @(EnumHelper<Stolon.Modes>.GetDisplayValue(Model.ActiveAdherentStolon.Stolon.Mode))
                 </div>
-                
+
             </div>
-           </div>
+        </div>
     }
     <div class="nav container">
         <div class="row">
@@ -76,7 +76,12 @@
                     <img src="~/images/logos/Logo_HD.png" style="max-width: 55px;" />
                 </div>
                 <div class="stolons-info">
-                    <p class="information">@Html.Raw(Model.ActiveAdherentStolon.Stolon.Address)</p>
+                    <p class="information">
+                        @Html.Raw(Model.ActiveAdherentStolon.Stolon.Address)
+                        (<a asp-controller="Home" asp-action="StolonContact" asp-route-id="@Model.ActiveAdherentStolon.Stolon.Id">
+                            Contact <i class="fas fa-phone"></i>
+                        </a>)
+                    </p>
                 </div>
 
 

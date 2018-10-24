@@ -271,6 +271,19 @@ namespace Stolons.Controllers
             return Json(new VmProducerBill(GetActiveAdherentStolon(), bill));
         }
 
+        public IActionResult RegenerateStolonBill(Guid id)
+        {
+            var weekStolonBill = _context.StolonsBills.Include(x => x.BillEntries).ThenInclude(x => x.ProducerBill).ThenInclude(x => x.AdherentStolon).ThenInclude(x => x.Adherent)
+                                                          .Include(x => x.BillEntries).ThenInclude(x => x.ConsumerBill).ThenInclude(x => x.AdherentStolon).ThenInclude(x => x.Adherent)
+                                                          .Include(x => x.BillEntries).ThenInclude(x => x.ProductStock).ThenInclude(x => x.Product)
+                                                          .First(x => x.StolonBillId == id);
+
+
+            string test = BillGenerator.GenerateHtmlContent(weekStolonBill);
+
+            return RedirectToAction("WeekBaskets");
+        }
+
         //Debug and last resort utility method
         public string RegenerateOrders()
         {
