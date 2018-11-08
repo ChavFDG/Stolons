@@ -77,20 +77,23 @@
     <h1 class="col-lg-12 text-center">Qui sommes nous ?</h1>
     <div class="col-lg-12 text-center" id="presentation-text">@Model.Stolon.AboutText</div>
 </div>
-
-<div class="row">
-    <h1 class="col-lg-12 text-center">Nos producteurs</h1>
+@if (Model.ActiveAdherentStolon.Stolon.StolonType == Stolon.OrganisationType.Association)
+{
     <div class="row">
-        <div class="col-lg-4">
+        <h1 class="col-lg-12 text-center">Nos producteurs</h1>
+        <div class="row">
+            <div class="col-lg-4">
+            </div>
+            <div class="col-lg-8 producersStolonInformations">
+                <span class="producersStolonInformationsNumber">@Model.Producers.Count().ToString()</span><span> producteurs </span>
+                <span class="producersStolonInformationsNumber">@Model.TotalProducts.ToString()</span><span> produits bio et locaux</span>
+            </div>
         </div>
-        <div class="col-lg-8 producersStolonInformations">
-            <span class="producersStolonInformationsNumber">@Model.Producers.Count().ToString()</span><span> producteurs </span>
-            <span class="producersStolonInformationsNumber">@Model.TotalProducts.ToString()</span><span> produits bio et locaux</span>
-        </div>
-    </div>
 
-    @{ Html.RenderPartial("PublicProducersMap", new PublicProducersViewModel(Model.Producers, Model.TotalProducts)); }
-</div>
+        @{ Html.RenderPartial("PublicProducersMap", new PublicProducersViewModel(Model.Producers, Model.TotalProducts)); }
+    </div>
+}
+
 
 <br />
 
