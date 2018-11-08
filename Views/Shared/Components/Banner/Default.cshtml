@@ -78,9 +78,25 @@
                 <div class="stolons-info">
                     <p class="information">
                         @Html.Raw(Model.ActiveAdherentStolon.Stolon.Address)
-                        (<a asp-controller="Home" asp-action="StolonContact" asp-route-id="@Model.ActiveAdherentStolon.Stolon.Id">
-                            Contact <i class="fas fa-phone"></i>
-                        </a>)
+                        (<a href="#" data-toggle="modal" data-target="#connexion">Contact <i class="fas fa-phone"></i></a>)
+
+                        <div class="modal fade" id="connexion" tabindex="-1" role="dialog">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                        <h4 class="modal-title">Nous contacter</h4>
+                                    </div>
+                                    <div class="modal-body text-center">
+                                        @Model.ActiveAdherentStolon.Stolon.Address
+                                        <br />
+                                        @Model.ActiveAdherentStolon.Stolon.PhoneNumber
+                                        <br />
+                                        <a href="mailto:@Model.ActiveAdherentStolon.Stolon.ContactMailAddress">@Model.ActiveAdherentStolon.Stolon.ContactMailAddress</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </p>
                 </div>
 
