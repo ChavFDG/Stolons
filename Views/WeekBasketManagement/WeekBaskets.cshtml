@@ -258,7 +258,7 @@ else
                                 <col>
                                 </col>
                                 <% _.forEach(producerBill.getProductStocks(), function(productStock) { %>
-                                <col id="product-col-<%= productStock.get(" Id") %>">
+                                <col id="product-col-<%= productStock.get("Id") %>">
                                 </col>
                                 <% }); %>
                             </colgroup>
@@ -270,7 +270,7 @@ else
                                     </th>
                                     <% _.forEach(producerBill.getProductStocks(), function(productStock) { %>
                                     <th class="correction-product-description productMgtImage">
-                                        <img src="<%= productStock.get(" Product").getPictureUrl("light") %>">
+                                        <img src="<%= productStock.get("Product").getPictureUrl("light") %>">
                                         <span><%= productStock.get("Product").get("Name") %></span>
                                     </th>
                                     <% }); %>
