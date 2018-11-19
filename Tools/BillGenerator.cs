@@ -370,6 +370,7 @@ namespace Stolons.Tools
                     message += "<br/><h4>Retrouver aussi en pièce jointe votre commande de la semaine (Commande " + bill.BillNumber + ")</h4>";
                 if (bill.AdherentStolon.Token > 0)
                     message += "<p>Vous avez " + bill.AdherentStolon.Token + "Ṩ, pensez à payer avec vos stols lors de la récupération de votre commande.</p>";
+                message += "<p><i>Pour annuler votre commande, merci de nous prévenir au moins 24h à l'avance : "+bill.AdherentStolon.Stolon.ContactMailAddress+" " + bill.AdherentStolon.Stolon.PhoneNumber+" </i></p>";
 
                 try
                 {
