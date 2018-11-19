@@ -73,7 +73,7 @@ namespace Stolons.Controllers
             var activeAdherentStolon = GetActiveAdherentStolon();
             var variableWeightProductsVM = new VariableWeighViewModel(activeAdherentStolon);
             var producer = activeAdherentStolon.Adherent;
-            var variableWeighOrders = _context.BillEntrys.Include(x => x.ConsumerBill).ThenInclude(x => x.AdherentStolon).Include(x => x.ProductStock).ThenInclude(x => x.Product).Include(x => x.ProducerBill).ThenInclude(x => x.AdherentStolon).ThenInclude(x => x.Stolon).Include(x => x.StolonsBill).Where(x => x.IsNotAssignedVariableWeigh && x.ProducerBill.AdherentStolon.AdherentId == producer.Id).AsNoTracking().ToList().GroupBy(x => x.ProducerBill);
+            var variableWeighOrders = _context.BillEntrys.Include(x => x.ConsumerBill).ThenInclude(x => x.AdherentStolon).Include(x => x.ProductStock).ThenInclude(x => x.Product).Include(x => x.ProducerBill).ThenInclude(x => x.AdherentStolon).ThenInclude(x => x.Stolon).Include(x => x.StolonsBill).Where(x => x.IsNotAssignedVariableWeigh && x.ProducerBill.AdherentStolon.AdherentId == producer.Id && x.ConsumerBill.State != BillState.Cancelled).AsNoTracking().ToList().GroupBy(x => x.ProducerBill);
 
             foreach (var prodOrderBillsEntries in variableWeighOrders)
             {
@@ -193,7 +193,7 @@ namespace Stolons.Controllers
             _context.SaveChanges();
 
             // - global
-            var stolonBill = _context.StolonsBills.Include(x => x.BillEntries).ThenInclude(x=>x.ProducerBill).ThenInclude(x=>x.AdherentStolon).ThenInclude(x=>x.Adherent).Include(x=>x.BillEntries).ThenInclude(x => x.ProductStock).ThenInclude(x => x.Product).First(x => x.BillEntries.Any(y => y.Id == producerBill.BillEntries.First().Id));
+            var stolonBill = _context.StolonsBills.Include(x => x.BillEntries).ThenInclude(x=>x.ProducerBill).ThenInclude(x=>x.AdherentStolon).ThenInclude(x=>x.Adherent).Include(x=>x.BillEntries).ThenInclude(x => x.ProductStock).ThenInclude(x => x.Product).Include(x => x.BillEntries).ThenInclude(x=>x.ConsumerBill).ThenInclude(x=>x.AdherentStolon).First(x => x.BillEntries.Any(y => y.Id == producerBill.BillEntries.First().Id));
             stolonBill.HtmlBillContent = BillGenerator.GenerateHtmlContent(stolonBill);
             
             BillGenerator.GeneratePDF(stolonBill.HtmlBillContent, stolonBill.GetStolonBillFilePath());
