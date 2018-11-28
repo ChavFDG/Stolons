@@ -277,10 +277,11 @@ namespace Stolons.Controllers
                                                           .Include(x => x.BillEntries).ThenInclude(x => x.ConsumerBill).ThenInclude(x => x.AdherentStolon).ThenInclude(x => x.Adherent)
                                                           .Include(x => x.BillEntries).ThenInclude(x => x.ProductStock).ThenInclude(x => x.Product)
                                                           .First(x => x.StolonBillId == id);
-
-
-            string test = BillGenerator.GenerateHtmlContent(weekStolonBill);
-
+            
+            weekStolonBill.HtmlBillContent = BillGenerator.GenerateHtmlContent(weekStolonBill);
+            _context.Update(weekStolonBill);
+            _context.SaveChanges();
+            BillGenerator.GeneratePDF(weekStolonBill.HtmlBillContent,weekStolonBill.GetStolonBillFilePath());
             return RedirectToAction("WeekBaskets");
         }
 
