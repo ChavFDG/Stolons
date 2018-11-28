@@ -308,8 +308,8 @@ namespace Stolons.Models
             Weigh = 0,
             [Display(Name = "A la pièce")]
             Piece = 1,
-            [Display(Name = "Emballé")]
-            Wrapped = 2,
+            //[Display(Name = "Emballé")]
+            //Wrapped = 2,
             [Display(Name = "Poids variable")]
             VariableWeigh = 3
         }
