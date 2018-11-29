@@ -20,10 +20,10 @@ namespace Stolons.Models.Messages
         public News(Stolon stolon): this()
         {
             var day = stolon.BasketPickEndUpDay - DateTime.Now.DayOfWeek;
-            if (day < 0)
-                day = 7 + day ;
             var hours =  stolon.BasketPickUpEndHour - DateTime.Now.Hour;
             var minutes =  stolon.BasketPickUpEndMinute - DateTime.Now.Minute;
+            if (day < 0 || hours < 0 || minutes < 0)
+                day = 7 + day;
 
             var publishEnd = DateTime.Now;
             publishEnd = publishEnd.AddDays(day);
@@ -64,7 +64,7 @@ namespace Stolons.Models.Messages
 
         [Required]
         [Display(Name = "Date de fin de publication")]
-        public DateTime PublishEnd { get; set; }
+        public DateTime PublishEnd { get; set; } = DateTime.Now + new TimeSpan(24, 0, 0);
 
         [Required]
         [Display(Name = "Publié en tant que")]
