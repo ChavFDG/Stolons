@@ -31,7 +31,7 @@ namespace Stolons.Controllers
             {
                 ApplicationUser appUser = await _userManager.FindByIdAsync(_userManager.GetUserId(HttpContext.User));
                 AdherentStolon adherentStolon = _dbContext.AdherentStolons.Include(x => x.Adherent).ThenInclude(x=>x.AdherentStolons).Include(x => x.Stolon).FirstOrDefault(x => x.IsActiveStolon && x.Adherent.Email.Equals(appUser.Email, StringComparison.CurrentCultureIgnoreCase));
-                adherentStolon.Adherent.AdherentStolons.ForEach(x => x.Stolon = _dbContext.Stolons.First(stolon => stolon.Id == x.StolonId));
+                adherentStolon.Adherent.AdherentStolons.ForEach(x => x.Stolon = _dbContext.Stolons.FirstOrDefault(stolon => stolon.Id == x.StolonId));
                 TempWeekBasket tempWeekBasket = _dbContext.TempsWeekBaskets.Include(x => x.AdherentStolon).Include(x => x.AdherentStolon.Adherent).Include(x => x.BillEntries).FirstOrDefault(x => x.AdherentStolon.Id == adherentStolon.Id);
                 if(tempWeekBasket != null)
                     tempWeekBasket.Validated = WeekBasketController.IsBasketValidated(tempWeekBasket, _dbContext);

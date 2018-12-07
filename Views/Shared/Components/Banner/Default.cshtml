@@ -30,7 +30,7 @@
                             <img src="@Model.ActiveAdherentStolon.Stolon.LogoFilePath" class="stolon-avatar-banner" />
                         </a>
                         <ul class="dropdown-menu">
-                            @foreach (var adherentStolon in Model.ActiveAdherentStolon.Adherent.AdherentStolons.Where(x => !x.Deleted).OrderBy(x => x.Stolon.Label))
+                            @foreach (var adherentStolon in Model.ActiveAdherentStolon.Adherent.AdherentStolons.Where(x => !x.Deleted && x.Stolon != null).OrderBy(x => x.Stolon.Label))
                             {
                                 if (!adherentStolon.IsActiveStolon)
                                 {
