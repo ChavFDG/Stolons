@@ -212,6 +212,8 @@ namespace Stolons.Models
         [Display(Name = "Raison de la modification")]
         public string ModificationReason { get; set; }
 
+        [Display(Name = "Erreur de génération")]
+        public bool GenerationError { get; set; } = false;
 
         [NotMapped]
         public decimal ProducersAmount

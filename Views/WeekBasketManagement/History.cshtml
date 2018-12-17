@@ -6,7 +6,7 @@
 
 <h2>Historique des commandes</h2>
 
-@if (Model.ActiveAdherentStolon.Authorized(Role.Admin) && Configurations.Environment.IsProduction() != true)
+@if (Model.ActiveAdherentStolon.Adherent.IsWebAdmin && Configurations.Environment.IsProduction() != true)
 {
     <a class="btn btn-small btn-default" asp-controller="WeekBasketManagement" asp-action="RegenerateOrders">(Test) Regénérer les commandes en pdf</a>
     <a class="btn btn-small btn-default" asp-controller="WeekBasketManagement" asp-action="LinkBillEntry">(Test)  Re créer le lien entre stolon bill et bill entry</a>

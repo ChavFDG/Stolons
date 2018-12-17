@@ -413,7 +413,14 @@ namespace Stolons.Controllers
         {
             StolonsBill bill = _context.StolonsBills.FirstOrDefault(x => x.BillNumber == id);
             if (bill != null)
+            {
+                if (bill.GenerationError)
+                {
+                    RegenerateStolonBill(bill.StolonBillId);
+                    bill = _context.StolonsBills.FirstOrDefault(x => x.BillNumber == id);
+                }
                 return View(bill);
+            }
             //Bill not found
             return View(null);
         }

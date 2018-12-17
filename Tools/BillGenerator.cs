@@ -252,6 +252,15 @@ namespace Stolons.Tools
             //Stolons
 
             StolonsBill stolonBill = GenerateBill(stolon, consumerBills, dbContext);
+            dbContext.SaveChanges();
+            if (stolonBill.GenerationError)
+            {
+                var weekStolonBill = dbContext.StolonsBills.Include(x => x.BillEntries).ThenInclude(x => x.ProducerBill).ThenInclude(x => x.AdherentStolon).ThenInclude(x => x.Adherent)
+                                                         .Include(x => x.BillEntries).ThenInclude(x => x.ConsumerBill).ThenInclude(x => x.AdherentStolon).ThenInclude(x => x.Adherent)
+                                                         .Include(x => x.BillEntries).ThenInclude(x => x.ProductStock).ThenInclude(x => x.Product)
+                                                         .First(x => x.BillNumber == stolonBill.BillNumber);
+                weekStolonBill.HtmlBillContent = GenerateHtmlContent(weekStolonBill);
+            }
             var allBillEntries = new List<BillEntry>();
             consumerBills.ForEach(bill => bill.BillEntries.ForEach(billEntry => allBillEntries.Add(billEntry)));
             stolonBill.BillEntries = new List<BillEntry>(allBillEntries);
@@ -511,11 +520,13 @@ namespace Stolons.Tools
                 }
                 builder.AddBootstrap();
                 builder.AddFooterAndHeaderRemoval();
+                bill.GenerationError = false;
                 return builder.ToString();
 
             }
             catch (Exception e)
             {
+                bill.GenerationError = true;
                 Logger.LogError(e, "Erreur lors de la génération de la stolon bill : " + e.Message);
                 return "Erreur lors de la génération" + e.Message;
             }

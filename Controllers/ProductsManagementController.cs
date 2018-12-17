@@ -195,9 +195,8 @@ namespace Stolons.Controllers
             // - global
             var stolonBill = _context.StolonsBills.Include(x => x.BillEntries).ThenInclude(x=>x.ProducerBill).ThenInclude(x=>x.AdherentStolon).ThenInclude(x=>x.Adherent).Include(x=>x.BillEntries).ThenInclude(x => x.ProductStock).ThenInclude(x => x.Product).Include(x => x.BillEntries).ThenInclude(x=>x.ConsumerBill).ThenInclude(x=>x.AdherentStolon).First(x => x.BillEntries.Any(y => y.Id == producerBill.BillEntries.First().Id));
             stolonBill.HtmlBillContent = BillGenerator.GenerateHtmlContent(stolonBill);
-            
-            BillGenerator.GeneratePDF(stolonBill.HtmlBillContent, stolonBill.GetStolonBillFilePath());
             _context.SaveChanges();
+            BillGenerator.GeneratePDF(stolonBill.HtmlBillContent, stolonBill.GetStolonBillFilePath());
             //Send mail to producer with sumary
             try
             {
