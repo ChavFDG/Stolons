@@ -52,7 +52,76 @@
         <p>Chiffre d'affaire total annuel : @yearWeekAmount.ToString("0.00") €</p>
         <p>Commission perçue totale annuelle : @yearWeekFee.ToString("0.00") €</p>
         <br />
-
+        <div class="panel-group">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" href="@("#producer"+year)">Cumul @year par producteur <i class="fas fa-info pull-right"></i></a>
+                    </h4>
+                </div>
+                <div id="@("producer"+year)" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <table class="table">
+                            <tr>
+                                <th>
+                                    Numéro
+                                </th>
+                                <th>
+                                    Raison sociale
+                                </th>
+                                <th>
+                                    Téléphone
+                                </th>
+                                <th>
+                                    Cumul HT
+                                </th>
+                                <th>
+                                    Cumul TVA
+                                </th>
+                                <th>
+                                    Cumul TTC
+                                </th>
+                                <th>
+                                    Cumul com-
+                                </th>
+                                <th>
+                                    Cumul net à payer
+                                </th>
+                            </tr>
+                            @foreach (var prodBill in Model.ProducerBills.Where(x => x.EditionDate.Year == year).GroupBy(x => x.AdherentStolon))
+                            {
+                            <tr>
+                                <td>@prodBill.Key.LocalId</td>
+                                <td>@prodBill.Key.Adherent.CompanyName</td>
+                                <td>@prodBill.Key.Adherent.PhoneNumber</td>
+                                @{
+                                    decimal totalWithoutTax = 0;
+                                    decimal totalTax = 0;
+                                    decimal totalWithTax = 0;
+                                    decimal totalFee = 0;
+                                    decimal totalToPay = 0;
+                                    foreach (var bill in prodBill)
+                                    {
+                                        totalWithoutTax += bill.OrderAmount - bill.TaxAmount;
+                                        totalTax += bill.TaxAmount;
+                                        totalWithTax += bill.OrderAmount;
+                                        totalFee += bill.FeeAmount;
+                                        totalToPay += bill.BillAmount;
+                                    }
+                                }
+                                <td>@totalWithoutTax.ToString("0.00") €</td>
+                                <td>@totalTax.ToString("0.00") €</td>
+                                <td>@totalWithTax.ToString("0.00") €</td>
+                                <td>@totalFee.ToString("0.00") €</td>
+                                <td>@totalToPay.ToString("0.00") €</td>
+                            </tr>
+                            }
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
         <table class="table">
             <tr>
                 <th>
@@ -71,7 +140,7 @@
                     Producteurs
                 </th>
                 <th>
-                    CA TTC
+                    Net à payer
                 </th>
                 <th>
                     Commissions
@@ -148,7 +217,7 @@
                                     Téléphone
                                 </th>
                                 <th>
-                                    CA TTC
+                                    Net à payer
                                 </th>
                                 <th>
                                     Commission totale
@@ -191,32 +260,6 @@
                                     </td>
                                 </tr>
                             }
-                            <tr>
-                                <td>
-                                </td>
-                                <td>
-                                </td>
-                                <td>
-                                   Total :
-                                </td>
-                                <td>
-                                    @{
-                                        decimal producersAmount = 0;
-                                        stolonBill.Value.ProducerBills.ForEach(x => producersAmount += x.BillAmount);
-                                    }
-                                    @(producersAmount.ToString("0.00") + "€ TTC")
-                                </td>
-                                <td>
-                                    @{
-                                        decimal producersFeeAmount = 0;
-                                        stolonBill.Value.ProducerBills.ForEach(x => producersFeeAmount += x.FeeAmount);
-                                    }
-                                    @(producersFeeAmount.ToString("0.00") + "€ TTC")
-                                </td>
-                                <td>
-                                    @((producersFeeAmount+ producersAmount).ToString("0.00") + "€ TTC")
-                                </td>
-                            </tr>
                         </table>
                         <h3>Consommateurs</h3>
                         <table class="table">
@@ -267,20 +310,6 @@
                                     </td>
                                 </tr>
                             }
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td>
-                                    TOTAL :
-                                </td>
-                                <td>
-                                    @{
-                                        decimal consumersAmount = 0;
-                                        stolonBill.Value.ConsumerBills.ForEach(x => consumersAmount += x.OrderAmount);
-                                    }
-                                    @( consumersAmount.ToString("0.00") + "€")
-                                <td></td>
-                            </tr>
                         </table>
                     </div>
                 </div>

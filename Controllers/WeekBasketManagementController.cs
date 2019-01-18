@@ -312,6 +312,9 @@ namespace Stolons.Controllers
                                 .Include(x => x.AdherentStolon)
                                 .Include(x => x.AdherentStolon.Adherent)
                                 .Include(x => x.AdherentStolon.Stolon)
+                                .Include(x=>x.BillEntries)
+                                .ThenInclude(x=>x.ProductStock)
+                                .ThenInclude(x => x.Product)
                                 .OrderBy(x => x.AdherentStolon.Adherent.Id)
                                 .Where(x => producerBillIds.Contains(x.BillId))
                                 .ToList();
@@ -324,6 +327,11 @@ namespace Stolons.Controllers
             Dictionary<ConsumerBill, bool> consumers = new Dictionary<ConsumerBill, bool>();
             consumersBills.ForEach(x => consumers.Add(x, BillGenerator.GenerateBillPDF(x)));
             Dictionary<ProducerBill, bool> producers = new Dictionary<ProducerBill, bool>();
+            foreach (var prodBill in producersBills)
+            {
+                prodBill.HtmlBillContent = BillGenerator.GenerateHtmlBillContent(prodBill, _context);
+            }
+            _context.SaveChanges();
             producersBills.ForEach(x => producers.Add(x, BillGenerator.GenerateOrderPDF(x)));
             Dictionary<StolonsBill, bool> weeks = new Dictionary<StolonsBill, bool>();
             weekStolonBill.ForEach(x => weeks.Add(x, BillGenerator.GeneratePDF(x.HtmlBillContent, x.GetStolonBillFilePath())));

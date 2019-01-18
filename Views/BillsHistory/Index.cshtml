@@ -11,6 +11,73 @@ else
     <h2>Factures de @Model.AdherentStolon.Adherent.Surname @Model.AdherentStolon.Adherent.Name</h2>
 }
 
+<div class="panel-group">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" href="#summary">Cumul par année <i class="fas fa-info pull-right"></i></a>
+            </h4>
+        </div>
+        <div id="summary" class="panel-collapse collapse">
+            <div class="panel-body">
+                <table class="table">
+                    <tr>
+                        <th>
+                            Année
+                        </th>
+                        <th>
+                            Cumul HT
+                        </th>
+                        <th>
+                            Cumul TVA
+                        </th>
+                        <th>
+                            Cumul TTC
+                        </th>
+                        <th>
+                            Cumul com-
+                        </th>
+                        <th>
+                            Cumul net à payer
+                        </th>
+                    </tr>
+                    @{
+                        var years = Model.Bills.Select(s => s.EditionDate.Year).Distinct().ToList();
+                        years.Sort();
+                        years.Reverse();
+                    }
+
+                    @foreach (var year in years)
+                    {
+                        decimal totalWithoutTax = 0;
+                        decimal totalTax = 0;
+                        decimal totalWithTax = 0;
+                        decimal totalFee = 0;
+                        decimal totalToPay = 0;
+                        foreach (var bill in Model.Bills.OrderBy(x => x.EditionDate).Where(x => x.EditionDate.Year == year))
+                        {
+                            totalWithoutTax += bill.OrderAmount - bill.TaxAmount;
+                            totalTax += bill.TaxAmount;
+                            totalWithTax += bill.OrderAmount;
+                            totalFee += bill.FeeAmount;
+                            totalToPay += bill.BillAmount;
+                        }
+                        <tr>
+                            <td>@year</td>
+                            <td>@totalWithoutTax.ToString("0.00") €</td>
+                            <td>@totalTax.ToString("0.00") €</td>
+                            <td>@totalWithTax.ToString("0.00") €</td>
+                            <td>@totalFee.ToString("0.00") €</td>
+                            <td>@totalToPay.ToString("0.00") €</td>
+                        </tr>
+                    }
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="boxContainer">
     <div class="col-lg-5" style="overflow: scroll; max-height: 400px;">
         <table class="table">
@@ -27,10 +94,8 @@ else
             </tr>
             <tbody class="clickable-table">
                 @{
-                    decimal total = 0;
                     foreach (var item in Model.Bills.Where(x => x.State == BillState.Pending).OrderBy(x => x.EditionDate))
                     {
-                        total += item.OrderAmount;
                         <tr data-content='@((item as ProducerBill).HtmlOrderContent)'>
                             <td>
                                 <i>
@@ -65,7 +130,6 @@ else
                 }
             </tbody>
         </table>
-        <p>Total commandes : @total.ToString("0.00") €</p>
         <table class="table">
             <tr>
                 <th>
@@ -80,10 +144,8 @@ else
             </tr>
             <tbody class="clickable-table">
                 @{
-                    total = 0;
                     foreach (var item in Model.Bills.Where(x => x.State != BillState.Pending).OrderBy(x => x.EditionDate))
                     {
-                        total += item.OrderAmount;
                         <tr data-content='@item.HtmlBillContent'>
                             <td>
                                 <i>
@@ -127,7 +189,6 @@ else
                 }
             </tbody>
         </table>
-        <p>Total factures: @total.ToString("0.00") €</p>
     </div>
     <div class="col-lg-7">
         <div id="billContent">

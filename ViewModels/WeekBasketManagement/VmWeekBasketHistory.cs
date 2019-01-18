@@ -27,11 +27,15 @@ namespace Stolons.ViewModels.WeekBasketManagement
                 //Re arange
                 HistoryBills.Add(stolonsBill, new ProdConsumBillsValues() { ConsumerBills = consBills, ProducerBills = prodBills });
             }
+
+            ProducerBills = producerBills;
         }
 
         public Stolon Stolon { get; set; }
 
         public Dictionary<StolonsBill, ProdConsumBillsValues> HistoryBills { get; set; } = new Dictionary<StolonsBill, ProdConsumBillsValues>();
+
+        public List<ProducerBill> ProducerBills { get; set; }
     }
 
     public class ProdConsumBillsValues

@@ -217,9 +217,10 @@ namespace Stolons.Models
             {
                 if (Tax == 0)
                     return UnitPrice;
-                return UnitPrice - UnitPrice * Tax / 100;
+                return UnitPrice/(1+ Tax / 100);
             }
         }
+
         [NotMapped]
         public decimal PriceWithoutTax
         {
@@ -227,9 +228,28 @@ namespace Stolons.Models
             {
                 if (Tax == 0)
                     return Price;
-                return Price - Price * Tax / 100;
+                return Price / (1 + Tax / 100);
             }
         }
+
+        [NotMapped]
+        public decimal UnitTax
+        {
+            get
+            {
+                return UnitPrice - UnitPriceWithoutTax;
+            }
+        }
+
+        [NotMapped]
+        public decimal TotalTax
+        {
+            get
+            {
+                return Price - PriceWithoutTax;
+            }
+        }
+
 
         [Display(Name = "Gestion du stock")]
         public StockType StockManagement { get; set; } = StockType.Week;

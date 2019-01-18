@@ -674,14 +674,15 @@ namespace Stolons.Tools
                 billBuilder.AppendLine("<th>PU HT</th>");
                 billBuilder.AppendLine("<th>TOTAL HT</th>");
                 billBuilder.AppendLine("</tr>");
-                //Taux tax / Total HT
-                Dictionary<decimal, decimal> taxTotal = new Dictionary<decimal, decimal>();
+                //Taux tax / TotalTaxOlder => Total HT / Total Tax
+                Dictionary<decimal, TotalTaxOlder> taxTotal = new Dictionary<decimal, TotalTaxOlder>();
                 decimal totalWithoutTax = 0;
                 foreach (var productBillEntries in bill.BillEntries.Where(x => x.ConsumerBill.State != BillState.Cancelled).GroupBy(x => x.ProductStock.Product, x => x).OrderBy(x => x.Key.Name))
                 {
                     int quantity = 0;
                     productBillEntries.ForEach(x => quantity += x.Quantity);
                     decimal productTotalWithoutTax = Convert.ToDecimal(productBillEntries.First().UnitPriceWithoutTax * quantity);
+                    decimal productTotalTax = Convert.ToDecimal(productBillEntries.First().UnitTax * quantity);
                     billBuilder.AppendLine("<tr>");
                     billBuilder.AppendLine("<td>" + productBillEntries.Key.Name + "</td>");
                     billBuilder.AppendLine("<td>" + (productBillEntries.Key.Type == SellType.VariableWeigh ? productBillEntries.Key.FormatQuantityString(quantity) : productBillEntries.Key.GetQuantityString(quantity)) + "</td>");
@@ -693,9 +694,13 @@ namespace Stolons.Tools
                     if (productBillEntries.Key.TaxEnum != Product.TAX.None)
                     {
                         if (taxTotal.ContainsKey(productBillEntries.Key.Tax))
-                            taxTotal[productBillEntries.Key.Tax] += productTotalWithoutTax;
+                        {
+                            taxTotal[productBillEntries.Key.Tax].TotalPriceWithoutTaxe += productTotalWithoutTax;
+                            taxTotal[productBillEntries.Key.Tax].TotalTax += productTotalTax;
+
+                        }
                         else
-                            taxTotal.Add(productBillEntries.Key.Tax, productTotalWithoutTax);
+                            taxTotal.Add(productBillEntries.Key.Tax, new TotalTaxOlder(productTotalWithoutTax, productTotalTax));
                     }
                     totalWithoutTax += productTotalWithoutTax;
                 }
@@ -709,7 +714,7 @@ namespace Stolons.Tools
                 bill.TaxAmount = 0;
                 foreach (var tax in taxTotal)
                 {
-                    decimal taxAmount = Math.Round(tax.Value / 100m * tax.Key, 2);
+                    decimal taxAmount = Math.Round(tax.Value.TotalTax, 2);
                     billBuilder.AppendLine("<tr>");
                     billBuilder.AppendLine("<td></td>");
                     billBuilder.AppendLine("<td></td>");
@@ -943,6 +948,20 @@ namespace Stolons.Tools
             var billEntriesToRemove = dbContext.BillEntrys.Where(x => x.ConsumerBillId == null && x.ProducerBillId == null && x.TempWeekBasketId == null && x.ValidatedWeekBasketId == null).ToList();
             dbContext.RemoveRange(billEntriesToRemove);
             dbContext.SaveChanges();
+        }
+
+        private class TotalTaxOlder
+        {
+
+            public TotalTaxOlder(decimal productTotalWithoutTax, decimal price)
+            {
+                TotalPriceWithoutTaxe = productTotalWithoutTax;
+                TotalTax = price;
+            }
+
+            public decimal TotalPriceWithoutTaxe { get; set; } = 0;
+            public decimal TotalTax { get; set; } = 0;
+
         }
 
     }
