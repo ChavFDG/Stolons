@@ -254,8 +254,11 @@ namespace Stolons.Models
         {
             Consumers = BillEntries.DistinctBy(x => x.ConsumerBillId).Count();
             Producers = BillEntries.DistinctBy(x => x.ProducerBillId).Count();
+
             Amount = 0;
-            BillEntries.ForEach(x => Amount += x.Price);
+            var consumerBillIds = BillEntries.Select(x => x.ConsumerBill).Distinct().ToList();
+            consumerBillIds.ForEach(x => Amount += x.OrderAmount);
+
             FeeAmount = 0;
             BillEntries.DistinctBy(billEntry => billEntry.ProducerBill).ToList().ForEach(x => FeeAmount += x.ProducerBill.FeeAmount);
         }

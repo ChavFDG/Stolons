@@ -8,7 +8,6 @@
 
 @if (Model.ActiveAdherentStolon.Adherent.IsWebAdmin && Configurations.Environment.IsProduction() != true)
 {
-    <a class="btn btn-small btn-default" asp-controller="WeekBasketManagement" asp-action="RegenerateOrders">(Test) Regénérer les commandes en pdf</a>
     <a class="btn btn-small btn-default" asp-controller="WeekBasketManagement" asp-action="LinkBillEntry">(Test)  Re créer le lien entre stolon bill et bill entry</a>
 }
 
@@ -75,7 +74,7 @@
                     CA TTC
                 </th>
                 <th>
-                    Commission totale
+                    Commissions
                 </th>
                 <th>
                 </th>
@@ -89,6 +88,7 @@
                     <td data-toggle="modal" data-target="#@stolonBill.Key.BillNumber">@stolonBill.Key.Consumers </td>
                     <td data-toggle="modal" data-target="#@stolonBill.Key.BillNumber">@stolonBill.Key.Producers </td>
                     <td data-toggle="modal" data-target="#@stolonBill.Key.BillNumber">@stolonBill.Key.Amount.ToString("0.00") €</td>
+                    <td data-toggle="modal" data-target="#@stolonBill.Key.BillNumber">@stolonBill.Key.FeeAmount.ToString("0.00") €</td>
                     <td>
                         <a class="btn btn-small btn-default" title="Voir" asp-action="ShowStolonsBill" asp-route-id="@stolonBill.Key.BillNumber">
                             <span class="glyphicon glyphicon-eye-open"> </span>
@@ -96,7 +96,12 @@
                         <a class="btn btn-small btn-default" title="Télécharger" target="_blank" href="/@stolonBill.Key.UrlPath">
                             <span class="glyphicon glyphicon-download-alt"> </span>
                         </a>
-
+                        @if (Model.ActiveAdherentStolon.Authorized(Role.Admin))
+                        {
+                            <a class="btn btn-small btn-default" title="Regénérer" asp-action="RegenerateStolonBill" asp-route-id="@stolonBill.Key.StolonBillId" asp-route-redirectTo="History">
+                                <span class="glyphicon glyphicon glyphicon-refresh"> </span>
+                            </a>
+                        }
                         @if (stolonBill.Key.HasBeenModified)
                         {
                             <a class="isa_warning"
@@ -125,6 +130,11 @@
                         <h4 class="modal-title">@stolonBill.Key.BillNumber du @stolonBill.Key.EditionDate</h4>
                     </div>
                     <div class="billModalContent">
+                        @if (Model.ActiveAdherentStolon.Adherent.IsWebAdmin && Configurations.Environment.IsProduction() != true)
+                        {
+                            <a class="btn btn-small btn-default" asp-controller="WeekBasketManagement" asp-action="RegenerateOrders" asp-route-billNumber="@stolonBill.Key.BillNumber">(Test) Regénérer les pdfs</a>
+                        }
+
                         <h3>Producteurs</h3>
                         <table class="table">
                             <tr>
@@ -181,6 +191,32 @@
                                     </td>
                                 </tr>
                             }
+                            <tr>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                   Total :
+                                </td>
+                                <td>
+                                    @{
+                                        decimal producersAmount = 0;
+                                        stolonBill.Value.ProducerBills.ForEach(x => producersAmount += x.BillAmount);
+                                    }
+                                    @(producersAmount.ToString("0.00") + "€ TTC")
+                                </td>
+                                <td>
+                                    @{
+                                        decimal producersFeeAmount = 0;
+                                        stolonBill.Value.ProducerBills.ForEach(x => producersFeeAmount += x.FeeAmount);
+                                    }
+                                    @(producersFeeAmount.ToString("0.00") + "€ TTC")
+                                </td>
+                                <td>
+                                    @((producersFeeAmount+ producersAmount).ToString("0.00") + "€ TTC")
+                                </td>
+                            </tr>
                         </table>
                         <h3>Consommateurs</h3>
                         <table class="table">
@@ -231,6 +267,20 @@
                                     </td>
                                 </tr>
                             }
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    TOTAL :
+                                </td>
+                                <td>
+                                    @{
+                                        decimal consumersAmount = 0;
+                                        stolonBill.Value.ConsumerBills.ForEach(x => consumersAmount += x.OrderAmount);
+                                    }
+                                    @( consumersAmount.ToString("0.00") + "€")
+                                <td></td>
+                            </tr>
                         </table>
                     </div>
                 </div>

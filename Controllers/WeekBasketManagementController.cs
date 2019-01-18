@@ -271,7 +271,7 @@ namespace Stolons.Controllers
             return Json(new VmProducerBill(GetActiveAdherentStolon(), bill));
         }
 
-        public IActionResult RegenerateStolonBill(Guid id)
+        public IActionResult RegenerateStolonBill(Guid id, string redirectTo)
         {
             var weekStolonBill = _context.StolonsBills.Include(x => x.BillEntries).ThenInclude(x => x.ProducerBill).ThenInclude(x => x.AdherentStolon).ThenInclude(x => x.Adherent)
                                                           .Include(x => x.BillEntries).ThenInclude(x => x.ConsumerBill).ThenInclude(x => x.AdherentStolon).ThenInclude(x => x.Adherent)
@@ -279,37 +279,47 @@ namespace Stolons.Controllers
                                                           .First(x => x.StolonBillId == id);
             
             weekStolonBill.HtmlBillContent = BillGenerator.GenerateHtmlContent(weekStolonBill);
+
+            weekStolonBill.UpdateBillInfo();
             _context.Update(weekStolonBill);
             _context.SaveChanges();
             BillGenerator.GeneratePDF(weekStolonBill.HtmlBillContent,weekStolonBill.GetStolonBillFilePath());
-            return RedirectToAction("WeekBaskets");
+            return RedirectToAction(redirectTo);
         }
 
         //Debug and last resort utility method
-        public string RegenerateOrders()
+        public string RegenerateOrders(string billNumber)
         {
             var stolon = GetCurrentStolon();
+
+            var weekStolonBill = _context.StolonsBills
+                            .Include(x => x.Stolon)
+                            .Include(x=>x.BillEntries)
+                            .Where(x => x.StolonId == stolon.Id && x.BillNumber == billNumber)
+                            .ToList();
+
+            var consumerBillIds = weekStolonBill.First().BillEntries.Select(x => x.ConsumerBillId).Distinct().ToList();
+            var producerBillIds = weekStolonBill.First().BillEntries.Select(x => x.ProducerBillId).Distinct().ToList();
+
             var consumersBills = _context.ConsumerBills
                                 .Include(x => x.AdherentStolon)
                                 .Include(x => x.AdherentStolon.Adherent)
                                 .Include(x => x.AdherentStolon.Stolon)
                                 .OrderBy(x => x.AdherentStolon.Adherent.Id)
+                                .Where(x=>consumerBillIds.Contains(x.BillId))
                                 .ToList();
             var producersBills = _context.ProducerBills
                                 .Include(x => x.AdherentStolon)
                                 .Include(x => x.AdherentStolon.Adherent)
                                 .Include(x => x.AdherentStolon.Stolon)
                                 .OrderBy(x => x.AdherentStolon.Adherent.Id)
+                                .Where(x => producerBillIds.Contains(x.BillId))
                                 .ToList();
 
-            var weekStolonBill = _context.StolonsBills
-                            .Include(x => x.Stolon)
-                            .Where(x => x.StolonId == stolon.Id)
-                            .ToList();
 
             DateTime start = DateTime.Now;
             StringBuilder report = new StringBuilder();
-            report.Append("Rapport de génération des commandes : ");
+            report.Append("Rapport de re-génération des pdfs: ");
             report.AppendLine();
             Dictionary<ConsumerBill, bool> consumers = new Dictionary<ConsumerBill, bool>();
             consumersBills.ForEach(x => consumers.Add(x, BillGenerator.GenerateBillPDF(x)));
@@ -416,7 +426,7 @@ namespace Stolons.Controllers
             {
                 if (bill.GenerationError)
                 {
-                    RegenerateStolonBill(bill.StolonBillId);
+                    RegenerateStolonBill(bill.StolonBillId, "WeekBaskets");
                     bill = _context.StolonsBills.FirstOrDefault(x => x.BillNumber == id);
                 }
                 return View(bill);

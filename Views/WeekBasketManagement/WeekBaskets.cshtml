@@ -29,7 +29,7 @@
 
         @if (Model.ActiveAdherentStolon.Authorized(Role.Admin))
         {
-            <a class="btn btn-small btn-default" title="Regénérer" asp-action="RegenerateStolonBill" asp-route-id="@Model.WeekStolonsBill.StolonBillId"><span class="glyphicon glyphicon glyphicon-refresh"> </span></a>
+            <a class="btn btn-small btn-default" title="Regénérer" asp-action="RegenerateStolonBill" asp-route-id="@Model.WeekStolonsBill.StolonBillId" asp-route-redirectTo="WeekBaskets"><span class="glyphicon glyphicon glyphicon-refresh"> </span></a>
         }
     </div>
 }
