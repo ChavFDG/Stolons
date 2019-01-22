@@ -99,7 +99,7 @@ namespace Stolons.Tools
                                             .ToList();
                         string message = "<h2>Rappel " + stolon.Label + " : panier à récupérer aujourd'hui</h2>";
                         message += "<b>"+stolon.OrderDeliveryMessage+"</b>";
-                        message += "<br><i>En commandant en ligne sur notre site, vous vous engagés à venir chercher votre panier.<br>En cas d'indisponibilité, veuillez nous prévenir au plus tôt";
+                        message += "<br><i>En commandant en ligne sur notre site, vous vous engagez à venir chercher votre panier.<br>En cas d'indisponibilité, veuillez nous prévenir au plus tôt";
                         if (!String.IsNullOrWhiteSpace(stolon.PhoneNumber))
                             message += "au " + stolon.PhoneNumber;
                         message += ".</ i > ";

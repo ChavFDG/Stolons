@@ -199,7 +199,7 @@
                         <h4 class="modal-title">@stolonBill.Key.BillNumber du @stolonBill.Key.EditionDate</h4>
                     </div>
                     <div class="billModalContent">
-                        @if (Model.ActiveAdherentStolon.Adherent.IsWebAdmin && Configurations.Environment.IsProduction() != true)
+                        @if (Model.ActiveAdherentStolon.Adherent.IsWebAdmin )//&& Configurations.Environment.IsProduction() != true)
                         {
                             <a class="btn btn-small btn-default" asp-controller="WeekBasketManagement" asp-action="RegenerateOrders" asp-route-billNumber="@stolonBill.Key.BillNumber">(Test) Regénérer les pdfs</a>
                         }
