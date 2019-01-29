@@ -74,6 +74,13 @@ namespace Stolons.Controllers
         .Include(x => x.AdherentStolon.Adherent)
         .AsNoTracking()
         .FirstOrDefault(x => x.BillNumber == id);
+            var bills = _context.ProducerBills
+        .Include(x => x.AdherentStolon)
+        .Include(x => x.AdherentStolon.Adherent)
+        .AsNoTracking()
+        .Where(x => x.BillNumber == id);
+
+
             if (bill != null)
                 return View(bill);
             //Bill not found
