@@ -38,8 +38,6 @@ else
     <p>Pas de panier cette semaine :'(</p>
 }
 
-
-
 <ul class="nav nav-tabs">
     <li class="active"><a data-toggle="tab" href="#consumersPickUp" name="consumersPickUp">Adhérents ayant une commande</a></li>
     <li><a data-toggle="tab" href="#producersDelivery" name="producersDelivery">Producteurs ayant à livrer</a></li>
@@ -263,7 +261,7 @@ else
                                 <col>
                                 </col>
                                 <% _.forEach(producerBill.getProductStocks(), function(productStock) { %>
-                                <col id="product-col-<%= productStock.get("Id") %>">
+                                    <col id="product-col-<%= productStock.get("Id") %>">
                                 </col>
                                 <% }); %>
                             </colgroup>
@@ -288,32 +286,37 @@ else
                                         <span><%= consumer.Adherent.Surname %> <%= consumer.Adherent.Name  %> (<%= consumer.LocalId %>)</span>
                                     </td>
                                     <% _.forEach(producerBill.getProductStocks(), function(productStock) { %>
-                                    <% var consumerBillEntry = producerBill.getBillEntry(consumer.Id, productStock.get('Id')); %>
-                                    <% if (consumerBillEntry == null) { %>
+                                    <% var consumerBillEntries = producerBill.getBillEntries(consumer.Id, productStock.get('Id')); %>
+                                    <% if (_.isEmpty(consumerBillEntries)) { %>
                                     <td class="td-disabled correction-bill-entry">
                                         Pas de commande
                                     </td>
-                                    <% } else if (consumerBillEntry.IsAssignedVariableWeigh === true) { %>
-                                    <td class="td-disabled correction-bill-entry">
-                                        Produit poids variable
-                                    </td>
-                                    <% } else  { %>
-                                    <td>
-                                        <div class="correction-bill-entry">
-                                            <div class="productQuantityChanger">
-                                                <a href="#" class="minus" data-bill-entry-id="<%= consumerBillEntry.Id %>">
-                                                    <img src="/images/basket-remove.png" />
-                                                </a>
-                                                <span class="quantity">
-                                                    <%= producerBill.getBillEntryQuantityString(consumerBillEntry.Id) %>
-                                                </span>
-                                                <a href="#" class="plus" data-bill-entry-id="<%= consumerBillEntry.Id %>">
-                                                    <img src="/images/basket-add.png" />
-                                                </a>
+                                    <% } else { %>
+					<% _.forEach(consumerBillEntries, function(entry) { %>
+	                              	    <td>
+                                            <div class="correction-bill-entry">
+                                                <div class="productQuantityChanger">
+					    	    <% if (productStock.get("Product").get("Type") === 3 && entry.IsAssignedVariableWeigh) { %>
+						       	<input data-bill-entry-id="<%= entry.Id %>" class="ppvInput1" type="text" value="<%= entry.Quantity %>" style="background-color: white; max-width: 60px;" />
+							<b>g</b>
+							<a href="#" class="deleteEntry" data-bill-entry-id="<%= entry.Id %>" style="color: red;">
+							   <span class="glyphicon glyphicon-trash"></span>
+							</a>
+						    <% } else { %>
+						        <a href="#" class="minus" data-bill-entry-id="<%= entry.Id %>">
+                                                            <img src="/images/basket-remove.png" />
+                                                        </a>
+							<span class="quantity">
+							   <%= producerBill.getBillEntryQuantityString(entry.Id) %>
+							</span>
+							<a href="#" class="plus" data-bill-entry-id="<%= entry.Id %>">
+							   <img src="/images/basket-add.png" />
+							</a>
+						    <% } %>
+						</div>
                                             </div>
-                                        </div>
-                                    </td>
-                                    <% } %>
+                                    	    </td>
+                                    <% })}; %>
                                     <% }); %>
                                 </tr>
                                 <% }); %>
@@ -322,29 +325,27 @@ else
                                         <h5>Total</h5>
                                     </td>
                                     <% _.forEach(producerBill.getProductStocks(), function(productStock) { %>
-                                    <% if (producerBill.isAssignedVariableWeigh(productStock) === true) { %>
-                                    <td class="td-disabled correction-bill-entry">
-                                        Produit poids variable
-                                    </td>
-                                    <% } else { %>
-                                    <td>
                                         <div class="correction-bill-entry">
-
-
                                             <div class="productQuantityChanger">
-                                                <a href="#" class="minus decrementTotal" data-product-stock-id="<%= productStock.get('Id') %>">
-                                                    <img src="/images/basket-remove.png" />
-                                                </a>
-                                                <span class="quantity">
-                                                    <%= producerBill.getProductStockTotalQuantityString(productStock.get('Id')) %>
-                                                </span>
-                                                <a href="#" class="plus incrementTotal" data-product-stock-id="<%= productStock.get('Id') %>">
-                                                    <img src="/images/basket-add.png" />
-                                                </a>
+					    	<% if (producerBill.isAssignedVariableWeigh(productStock)) { %>
+					        <td class="td-disabled correction-bill-entry">
+						     Produit poids variable
+                                    		</td>
+						<% } else { %>
+	                                    	<td>
+							<a href="#" class="minus decrementTotal" data-product-stock-id="<%= productStock.get('Id') %>">
+                                                    	   <img src="/images/basket-remove.png" />
+                                                	</a>
+							<span class="quantity">
+                                                    	    <%= producerBill.getProductStockTotalQuantityString(productStock.get('Id')) %>
+                                                	</span>
+                                                	<a href="#" class="plus incrementTotal" data-product-stock-id="<%= productStock.get('Id') %>">
+                                                    	<img src="/images/basket-add.png" />
+                                                	</a>
+						<% } %>
+                                    		</td>
                                             </div>
                                         </div>
-                                    </td>
-                                    <% } %>
                                     <% }); %>
                                 </tr>
                             </tbody>
@@ -353,7 +354,7 @@ else
                     <div class="row">
                         <div class="col-lg-5">
                             <label style="margin: auto;">Raison de l'erreur de livraison: </label>
-                            <textarea id="correction-reason" value="<%= view.reason %>" />
+                            <textarea id="correction-reason" value="<%= view.reason %>" style="background-color: white;" />
                         </div>
                     </div>
                     <div class="row">

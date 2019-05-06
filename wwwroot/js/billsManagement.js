@@ -16,7 +16,8 @@ $(function () {
             "click .decrementTotal": "decrementProductTotal",
             "click .incrementTotal": "incrementProductTotal",
             "keyup #correction-reason": "reasonChanged",
-            "click #validateCorrection": "save"
+            "click #validateCorrection": "save",
+	    "click .deleteEntry": "resetVWPQuantity"
         },
 
         initialize: function (model) {
@@ -55,6 +56,7 @@ $(function () {
             this.$el.on('hide.bs.modal', _.bind(this.onClose, this));
             //Initialize changed billEntries
             this.billEntries = {};
+	    this.vwpBillEntries = {};
         },
 
         onClose: function () {
@@ -68,16 +70,25 @@ $(function () {
             var billEntry = this.model.getBillEntryById(billEntryId);
 
             if (billEntry) {
-                this.billEntries[billEntryId] = billEntry;
                 billEntry.Quantity -= 1;
                 if (billEntry.Quantity <= 0) {
-                    billEntry.Quantity = 0;
+		    billEntry.Quantity = 0;
                 }
-                this.render();
-            }
+		this.billEntries[billEntryId] = billEntry;
+	    }
+            this.render();
             event.preventDefault();
             return false;
         },
+
+	resetVWPQuantity: function(event) {
+	    var billEntryId = $(event.currentTarget).data("bill-entry-id");
+	    var billEntry = this.model.getBillEntryById(billEntryId);
+
+	    $('input[data-bill-entry-id="' + billEntryId + '"]').val("0");
+	    billEntry.Quantity = 0;
+	    event.preventDefault();
+	},
 
         increment: function (event) {
             var billEntryId = $(event.currentTarget).data("bill-entry-id");
@@ -86,8 +97,8 @@ $(function () {
             if (billEntry) {
                 this.billEntries[billEntryId] = billEntry;
                 billEntry.Quantity += 1;
-                this.render();
             }
+	    this.render();
             event.preventDefault();
             return false;
         },
@@ -121,9 +132,10 @@ $(function () {
             var that = this;
             this.valid = true;
 
-            // validates that the total product quantity is equal to the sum of the quantities in billentries.
+            //validates that the total product quantity is equal to the sum of the quantities in billentries.
             _.each(this.model.getProductStocks(), function (productStock) {
 		if (that.model.isAssignedVariableWeigh(productStock) == true) {
+		    //Do not validate in case this is a variable weight product and all weights are assigned
 		    return;
 		}
                 var productStockId = productStock.get("Id");
@@ -161,6 +173,16 @@ $(function () {
                 "NewQuantities": [],
                 "ProducerBillId": that.model.get("BillId")
             };
+	    //Update variable product quantity
+	    $('input[data-bill-entry-id]').each(function(idx, val) {
+		var billEntryId = $(val).data("bill-entry-id");
+		if (billEntryId) {
+		    var billEntry = that.model.getBillEntryById(billEntryId);
+
+		    billEntry.Quantity = parseInt($(val).val());
+		    that.billEntries[billEntryId] = billEntry;
+		}
+	    });
             this.reason = $("#correction-reason").val();
             if (_.isEmpty(this.reason)) {
                 $("#correction-reason").toggleClass("error", true);

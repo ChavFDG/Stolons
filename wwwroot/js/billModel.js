@@ -64,17 +64,17 @@ ProducerBillModel = Backbone.Model.extend({
 	return billEntry;
     },
 
-    //Return consumer bill entry for a given product or nil
-    getBillEntry: function(consumerId, productStockId) {
-	var billEntry = null;
+    //Return bill entries for a given product or empty
+    //The list contains several bill entries only in the case of variable weight products
+    getBillEntries: function(consumerId, productStockId) {
+	var billEntries = [];
 
 	_.forEach(this.get("BillEntries"), function(entry) {
 	    if (entry.ProductStock.get('Id') == productStockId && entry.ConsumerBill.AdherentStolon.Id == consumerId) {
-		billEntry = entry;
-		return false;
+		billEntries.push(entry);
 	    }
 	});
-	return billEntry;
+	return billEntries;
     },
 
     getBillEntriesForProductStock: function(productStockId) {
@@ -97,7 +97,11 @@ ProducerBillModel = Backbone.Model.extend({
 	    //Working with cloned object here because bill entries can be modified
 	    _.forEach(this.get("ClonedBillEntries"), function(entry) {
 		if (entry.ProductStock.get('Id') == productStockId) {
-		    totalQty += parseInt(entry.Quantity);
+		    if (entry.ProductStock.get("Product").get("Type") === 3 && entry.IsAssignedVariableWeigh) {
+			totalQty += 1;
+		    } else {
+			totalQty += parseInt(entry.Quantity);
+		    }
 		}
 	    });
 	    this.productStocksTotals[productStockId] = totalQty;
@@ -114,16 +118,31 @@ ProducerBillModel = Backbone.Model.extend({
 	return this.getQuantityString(productStock.get("Product").toJSON(), totalQty);
     },
 
-    getBillEntryQuantityString: function(billEntryId) {
-	var billEntry;
-	_.forEach(this.get("BillEntries"), function(entry) {
-	    if (entry.Id == billEntryId) {
-		billEntry = entry;
-		return false;
+    getVariableWeightProductQuantityString: function(billEntry) {
+	var nbConsumerBillEntrys = 0;
+
+	console.log("getVariableWeightProductQuantityString", billEntry);
+	_.forEach(this.get("ClonedBillEntries"), function(entry) {
+	    if (entry.ProductStock.get('Id') == billEntry.ProductStock.get("Id")
+		&& entry.ConsumerBill.AdherentStolon.Id == billEntry.ConsumerBill.AdherentStolon.Id
+		&& billEntry.Quantity !== 0) {
+		nbConsumerBillEntrys += 1;
 	    }
 	});
+	return nbConsumerBillEntrys;
+    },
+
+    getBillEntryQuantityString: function(billEntryId) {
+	var billEntry = this.getBillEntryById(billEntryId);
 	var product = billEntry.ProductStock.get('Product').toJSON();
-	return this.getQuantityString(product, billEntry.Quantity);
+
+	//Hack Produit poids variable
+	if (billEntry.ProductStock.get("Product").get("Type") == 3 && billEntry.IsAssignedVariableWeigh) {
+	    var qty = this.getVariableWeightProductQuantityString(billEntry);
+	    return this.getQuantityString(product, qty);
+	} else {
+	    return this.getQuantityString(product, billEntry.Quantity);
+	}
     },
 
     getQuantityString: function (product, quantity) {
