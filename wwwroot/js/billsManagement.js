@@ -180,6 +180,9 @@ $(function () {
 		    var billEntry = that.model.getBillEntryById(billEntryId);
 
 		    billEntry.Quantity = parseInt($(val).val());
+		    if (billEntry.Quantity < 0)  {
+			billEntry.Quantity = 0;
+		    }
 		    that.billEntries[billEntryId] = billEntry;
 		}
 	    });
