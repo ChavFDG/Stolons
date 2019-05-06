@@ -13,9 +13,9 @@ ProductModel = Backbone.Model.extend({
             return "/images/panier.jpg";
         }
         if (type === 'light') {
-            return this.get("LightPath") + "\\" + pictures[0];
+            return "/" + this.get("LightPath") + "/" + pictures[0];
         }
-        return this.get("HeavyPath") + "\\" + pictures[0];
+        return "/" + this.get("HeavyPath") + "/" + pictures[0];
     }
 });
 
