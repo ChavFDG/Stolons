@@ -292,8 +292,8 @@ else
                                         Pas de commande
                                     </td>
                                     <% } else { %>
+                              	    <td>
 					<% _.forEach(consumerBillEntries, function(entry) { %>
-	                              	    <td>
                                             <div class="correction-bill-entry">
                                                 <div class="productQuantityChanger">
 					    	    <% if (productStock.get("Product").get("Type") === 3 && entry.IsAssignedVariableWeigh) { %>
@@ -315,8 +315,8 @@ else
 						    <% } %>
 						</div>
                                             </div>
-                                    	    </td>
                                     <% })}; %>
+                              	    </td>
                                     <% }); %>
                                 </tr>
                                 <% }); %>
