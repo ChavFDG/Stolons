@@ -116,7 +116,7 @@
     <div class="tiny-pictures">
         @{int cpt = 0;}
 
-        @foreach (var product in Model.Products)
+        @foreach (var product in Model.Products.Where(x=>!x.IsArchive))
         {
             cpt = cpt + 1;
             <div class="col-xs-12 col-sm-4 col-md-3 publicProd @(cpt>12?"hidden":"")">
