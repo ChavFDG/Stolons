@@ -210,7 +210,7 @@ SellTypeVariableWeightView = Backbone.View.extend({
 	var meanPrice = meanWeight * weightPrice;
 
 	if (this.validate()) {
-	    $("#quantityStep").val(meanWeight * 1000);
+	    $("#quantityStep").val((meanWeight * 1000).toFixed());
 	    $("#unitPrice").val(meanPrice.toFixed(2).toString().replace(".", ",")); //Just to be sure
 	    $("#meanPrice").val(meanPrice.toFixed(2).toString().replace(".", ","));
 	    $("#minimumPrice").val((minWeight * weightPrice).toFixed(2));
