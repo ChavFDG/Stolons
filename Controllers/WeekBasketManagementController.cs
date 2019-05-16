@@ -105,6 +105,12 @@ namespace Stolons.Controllers
             return Redirect(nameof(History));
         }
 
+        /*
+         * Si un jour on souhaite regénérer une stolon bill :
+         * BillGenerator.GenerateStolonBill(stolon, _context, vm.ConsumerBills.Where(x => x.BillNumber.EndsWith(DateTime.Now.Year + "_" + DateTime.Now.GetIso8601WeekOfYear())).ToList());
+         * 
+         */
+
 
         // GET: 
         public IActionResult WeekBaskets()
@@ -165,9 +171,7 @@ namespace Stolons.Controllers
 
 
 
-            var test = vm.ConsumerBills.Where(x => x.BillEntries.Any(y => y.ProducerBill == null));
 
-            BillGenerator.GenerateStolonBill(stolon, _context, vm.ConsumerBills.Where(x => x.BillNumber.EndsWith(DateTime.Now.Year + "_" + DateTime.Now.GetIso8601WeekOfYear())).ToList());
 
 
             return View(vm);
