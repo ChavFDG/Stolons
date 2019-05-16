@@ -173,6 +173,18 @@ namespace Stolons.Tools
 
         private static void TriggerDeliveryAndStockUpdateMode(Stolon stolon, ApplicationDbContext dbContext)
         {
+
+            //Remove Temps week basket from consumer to be sure that the next week the temp week basket will not stay
+            List<TempWeekBasket> consumerTempsWeekBaskets = dbContext.TempsWeekBaskets
+            .Include(x => x.BillEntries)
+            .Include(x => x.AdherentStolon)
+            .Include(x => x.AdherentStolon.Stolon)
+            .Include(x => x.AdherentStolon.Adherent)
+            .Where(x => x.AdherentStolon.StolonId == stolon.Id)
+            .ToList();
+            dbContext.TempsWeekBaskets.RemoveRange(consumerTempsWeekBaskets);
+            dbContext.SaveChanges();
+
             //Consumer (create bills)
             List<ValidatedWeekBasket> consumerWeekBaskets = dbContext.ValidatedWeekBaskets
             .Include(x => x.BillEntries)
@@ -251,52 +263,8 @@ namespace Stolons.Tools
 
             //Stolons
 
-            StolonsBill stolonBill = GenerateBill(stolon, consumerBills, dbContext);
-            dbContext.SaveChanges();
-            if (stolonBill.GenerationError)
-            {
-                var weekStolonBill = dbContext.StolonsBills.Include(x => x.BillEntries).ThenInclude(x => x.ProducerBill).ThenInclude(x => x.AdherentStolon).ThenInclude(x => x.Adherent)
-                                                         .Include(x => x.BillEntries).ThenInclude(x => x.ConsumerBill).ThenInclude(x => x.AdherentStolon).ThenInclude(x => x.Adherent)
-                                                         .Include(x => x.BillEntries).ThenInclude(x => x.ProductStock).ThenInclude(x => x.Product)
-                                                         .First(x => x.BillNumber == stolonBill.BillNumber);
-                weekStolonBill.HtmlBillContent = GenerateHtmlContent(weekStolonBill);
-            }
-            var allBillEntries = new List<BillEntry>();
-            consumerBills.ForEach(bill => bill.BillEntries.ForEach(billEntry => allBillEntries.Add(billEntry)));
-            stolonBill.BillEntries = new List<BillEntry>(allBillEntries);
-            stolonBill.UpdateBillInfo();
-            if (dbContext.StolonsBills.Any(x => x.BillNumber == stolonBill.BillNumber))
-            {
-                dbContext.Remove(dbContext.StolonsBills.FirstOrDefault(x => x.BillNumber == stolonBill.BillNumber));
-                dbContext.SaveChanges();
-            }
-            dbContext.Add(stolonBill);
-            dbContext.SaveChanges();
-            //Move stolon's products to stock 
-            foreach (ProductStockStolon productStock in dbContext.ProductsStocks.Include(x => x.AdherentStolon).Include(x => x.Product).Where(x => x.AdherentStolon.StolonId == stolon.Id).ToList())
-            {
-                if (productStock.State == ProductState.Enabled && productStock.Product.StockManagement == StockType.Week)
-                {
-                    productStock.State = ProductState.Stock;
-                    productStock.RemainingStock = productStock.WeekStock;
-                }
-            }
-            //
+            GenerateStolonBill(stolon, dbContext, consumerBills);
 
-            dbContext.SaveChanges();
-            //For stolons
-            try
-            {
-                GeneratePDF(stolonBill.HtmlBillContent, stolonBill.GetStolonBillFilePath());
-            }
-            catch (Exception exept)
-            {
-                AuthMessageSender.SendEmail(stolon.Label,
-                                Configurations.Application.ContactMailAddress,
-                                "Stolons",
-                                "Erreur lors de la génération de la facture Stolons",
-                                "Message d'erreur : " + exept.Message);
-            }
 
             // => Producer, send mails
             foreach (var bill in producerBills)
@@ -313,6 +281,66 @@ namespace Stolons.Tools
 
         }
 
+        public static StolonsBill GenerateStolonBill(Stolon stolon, ApplicationDbContext dbContext, List<ConsumerBill> consumerBills)
+        {
+            try
+            {
+                StolonsBill stolonBill = GenerateBill(stolon, consumerBills, dbContext);
+                dbContext.SaveChanges();
+                if (stolonBill.GenerationError)
+                {
+                    var weekStolonBill = dbContext.StolonsBills.Include(x => x.BillEntries).ThenInclude(x => x.ProducerBill).ThenInclude(x => x.AdherentStolon).ThenInclude(x => x.Adherent)
+                                                                .Include(x => x.BillEntries).ThenInclude(x => x.ConsumerBill).ThenInclude(x => x.AdherentStolon).ThenInclude(x => x.Adherent)
+                                                                .Include(x => x.BillEntries).ThenInclude(x => x.ProductStock).ThenInclude(x => x.Product)
+                                                                .First(x => x.BillNumber == stolonBill.BillNumber);
+                    weekStolonBill.HtmlBillContent = GenerateHtmlContent(weekStolonBill);
+                }
+                var allBillEntries = new List<BillEntry>();
+                consumerBills.ForEach(bill => bill.BillEntries.ForEach(billEntry => allBillEntries.Add(billEntry)));
+                stolonBill.BillEntries = new List<BillEntry>(allBillEntries);
+                stolonBill.UpdateBillInfo();
+                if (dbContext.StolonsBills.Any(x => x.BillNumber == stolonBill.BillNumber))
+                {
+                    dbContext.Remove(dbContext.StolonsBills.FirstOrDefault(x => x.BillNumber == stolonBill.BillNumber));
+                    dbContext.SaveChanges();
+                }
+                dbContext.Add(stolonBill);
+                dbContext.SaveChanges();
+                //Move stolon's products to stock 
+                foreach (ProductStockStolon productStock in dbContext.ProductsStocks.Include(x => x.AdherentStolon).Include(x => x.Product).Where(x => x.AdherentStolon.StolonId == stolon.Id).ToList())
+                {
+                    if (productStock.State == ProductState.Enabled && productStock.Product.StockManagement == StockType.Week)
+                    {
+                        productStock.State = ProductState.Stock;
+                        productStock.RemainingStock = productStock.WeekStock;
+                    }
+                }
+                dbContext.SaveChanges();
+                //Pdf
+                try
+                {
+                    GeneratePDF(stolonBill.HtmlBillContent, stolonBill.GetStolonBillFilePath());
+                }
+                catch (Exception exept)
+                {
+                    AuthMessageSender.SendEmail(stolon.Label,
+                                    Configurations.Application.ContactMailAddress,
+                                    "Stolons",
+                                    "Erreur lors de la génération de la facture Stolons en pdf",
+                                    "Message d'erreur : " + exept.Message);
+                }
+                return stolonBill;
+            }
+            catch (Exception exept)
+            {
+                AuthMessageSender.SendEmail(stolon.Label,
+                                Configurations.Application.ContactMailAddress,
+                                "Stolons",
+                                "Erreur lors de la création puis génération de la facture Stolons",
+                                "Message d'erreur : " + exept.Message);
+            }
+            return null;
+        }
 
         private static void GenerateOrderPdfAndSendEmail(ProducerBill bill)
         {

@@ -12,7 +12,10 @@
         <div class="nav container">
             <div class="row simulationModeWarningContainerMessage">
                 <div class="simulationModeWarningMessage">
-                    <a asp-action="SwitchMode" asp-controller="Stolons" asp-route-id="@Model.ActiveAdherentStolon.Stolon.Id"><i class="fas fa-sync"></i></a>
+                    @if (Model.ActiveAdherentStolon.Authorized(Role.Admin))
+                    {
+                        <a asp-action="SwitchMode" asp-controller="Stolons" asp-route-id="@Model.ActiveAdherentStolon.Stolon.Id"><i class="fas fa-sync"></i></a>
+                    }
                     MODE SIMULATION :
                     @(EnumHelper<Stolon.Modes>.GetDisplayValue(Model.ActiveAdherentStolon.Stolon.Mode))
                 </div>
