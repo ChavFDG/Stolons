@@ -95,6 +95,7 @@ namespace Stolons.Controllers
                     }
                     for (int cpt = 0; cpt < billEntry.Quantity; cpt++)
                         varWeighVm.ConsumersAssignedWeighs.Add(new ConsumerAssignedWeigh(billEntry));
+                    varWeighVm.ConsumersAssignedWeighs = varWeighVm.ConsumersAssignedWeighs.OrderBy(x => x.ConsumerLocalId).ToList();
                 }
                 variableWeightProductsVM.VariableWeighOrdersViewModel.Add(variableWeighOrderViewModel);
             }
