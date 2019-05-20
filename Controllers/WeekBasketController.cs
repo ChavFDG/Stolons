@@ -443,7 +443,7 @@ namespace Stolons.Controllers
                     tempWeekBasket.BillEntries.Add(entry.Clone());
                 }
                 tempWeekBasket.Validated = true;
-
+                _context.Update(tempWeekBasket);
                 _context.SaveChanges();
                 //END LOCK TODO
 

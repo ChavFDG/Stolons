@@ -173,18 +173,6 @@ namespace Stolons.Tools
 
         private static void TriggerDeliveryAndStockUpdateMode(Stolon stolon, ApplicationDbContext dbContext)
         {
-
-            //Remove Temps week basket from consumer to be sure that the next week the temp week basket will not stay
-            List<TempWeekBasket> consumerTempsWeekBaskets = dbContext.TempsWeekBaskets
-            .Include(x => x.BillEntries)
-            .Include(x => x.AdherentStolon)
-            .Include(x => x.AdherentStolon.Stolon)
-            .Include(x => x.AdherentStolon.Adherent)
-            .Where(x => x.AdherentStolon.StolonId == stolon.Id)
-            .ToList();
-            dbContext.TempsWeekBaskets.RemoveRange(consumerTempsWeekBaskets);
-            dbContext.SaveChanges();
-
             //Consumer (create bills)
             List<ValidatedWeekBasket> consumerWeekBaskets = dbContext.ValidatedWeekBaskets
             .Include(x => x.BillEntries)
@@ -224,6 +212,24 @@ namespace Stolons.Tools
                 dbContext.Add(consumerBill);
                 dbContext.SaveChanges();
             }
+
+            //Remove Temps week basket from consumer to be sure that the next week the temp week basket will not stay
+            List<TempWeekBasket> consumerTempsWeekBaskets = dbContext.TempsWeekBaskets
+            .Include(x => x.BillEntries)
+            .Include(x => x.AdherentStolon)
+            .Include(x => x.AdherentStolon.Stolon)
+            .Include(x => x.AdherentStolon.Adherent)
+            .Where(x => x.AdherentStolon.StolonId == stolon.Id)
+            .ToList();
+            foreach(var tempWeekBasket in consumerTempsWeekBaskets)
+            {
+                var linkedBillEntriesToRemove = dbContext.BillEntrys.Where(x => x.TempWeekBasketId == tempWeekBasket.Id).ToList();
+                dbContext.RemoveRange(linkedBillEntriesToRemove);
+                dbContext.SaveChanges();
+            }
+            dbContext.TempsWeekBaskets.RemoveRange(consumerTempsWeekBaskets);
+            dbContext.SaveChanges();
+            //
 
             List<ProducerBill> producerBills = new List<ProducerBill>();
             List<ConsumerBill> consumerBills = dbContext.ConsumerBills
