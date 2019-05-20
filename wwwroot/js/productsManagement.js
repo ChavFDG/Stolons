@@ -34,6 +34,7 @@ var ProductsManagementView = Backbone.View.extend({
         var that = this;
         var productStockId = $(event.currentTarget).data("product-stock-id");
 
+	$.blockUI();
         this.getProductStockModel(productStockId).done(function (productStock) {
             that.stockMgtModal.open(productStock);
         });
@@ -284,6 +285,7 @@ var StockMgtViewModal = Backbone.View.extend({
         this.render();
         this.$el.modal({ keyboard: true, show: true });
         this.$el.on('hide.bs.modal', _.bind(this.onClose, this));
+	$.unblockUI();
     }
 });
 
@@ -317,10 +319,12 @@ var VariableWeightsProductsManagementView = Backbone.View.extend({
     renderModal: function () {
         var that = this;
 
+	$.blockUI();
         this.fetchDeferred.done(function () {
             that.render();
             that.$el.modal({ keyboard: true, show: true });
             that.$el.on('hide.bs.modal', _.bind(that.onClose, that));
+	    $.unblockUI();
         });
     },
 

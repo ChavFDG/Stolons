@@ -49,6 +49,7 @@ $(function () {
             }));
 	    //this.doubleScroll(document.getElementById('correction-table'));
             this.validate();
+    	    $.unblockUI();
         },
 
         open: function () {
@@ -226,6 +227,7 @@ $(function () {
     var openCorrectionModal = function (billId) {
 	producerBillModel = new ProducerBillModel(billId);
 	producerBillModel.fetchDeferred.done(function () {
+	    $.blockUI();
             CorrectionView = new BillsManagement.CorrectionView(producerBillModel);
             CorrectionView.open();
 	});
