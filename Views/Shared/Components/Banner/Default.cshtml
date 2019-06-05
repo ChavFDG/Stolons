@@ -28,8 +28,8 @@
             <div class=" col-sm-1 col-xs-2">
                 @if (Model.ActiveAdherentStolon.Adherent.AdherentStolons.Where(x => !x.Deleted).ToList().Count != 1)
                 {
-                    <div class="stolon-avatar-banner-container">
-                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                    <div class="stolon-avatar-banner-container auto-dropdown">
+                        <a id="stolons-chooser" class="dropdown-toggle" data-toggle="dropdown" href="#">
                             <img src="@Model.ActiveAdherentStolon.Stolon.LogoFilePath" class="stolon-avatar-banner" />
                         </a>
                         <ul class="dropdown-menu">
