@@ -241,6 +241,7 @@ namespace Stolons.Controllers
                 return Unauthorized();
 
             AdherentStolon adherentStolon = _context.AdherentStolons.Include(x=>x.Adherent).First(x => x.Id == id);
+            adherentStolon.IsProducer = false;
             adherentStolon.Deleted = true;
             if (!_context.AdherentStolons.Any(x => x.AdherentId == adherentStolon.AdherentId && x.Deleted == false))
             {
